@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0009_alter_user_last_name_max_length'),
+        ('auth', '0008_alter_user_last_name_max_length'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('groupmanagement', '0008_remove_authgroup_permissions'),
     ]
