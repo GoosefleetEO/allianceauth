@@ -126,8 +126,8 @@ class Teamspeak3Manager:
         outlist = {}
         if group_cache:
             for group in group_cache:
-            if group['keys']['type'] != '1':
-                continue
+                if group['keys']['type'] != '1':
+                    continue
                 logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
