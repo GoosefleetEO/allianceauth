@@ -15,9 +15,11 @@ SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sw
 """
 Swagger spec operations:
 
+Character
 get_characters_character_id
 get_corporations_corporation_id_members
-get_characters_names
+Universe
+post_universe_names
 """
 
 
@@ -55,11 +57,11 @@ class CorpStats(models.Model):
             # the swagger spec doesn't have a maxItems count
             # manual testing says we can do over 350, but let's not risk it
             member_id_chunks = [member_ids[i:i + 255] for i in range(0, len(member_ids), 255)]
-            member_name_chunks = [c.Character.get_characters_names(character_ids=id_chunk).result() for id_chunk in
+            member_name_chunks = [c.Universe.post_universe_names(ids=id_chunk).result() for id_chunk in
                                   member_id_chunks]
             member_list = {}
             for name_chunk in member_name_chunks:
-                member_list.update({m['character_id']: m['character_name'] for m in name_chunk})
+                member_list.update({m['id']: m['name'] for m in name_chunk})
 
             # bulk create new member models
             missing_members = [m_id for m_id in member_ids if
