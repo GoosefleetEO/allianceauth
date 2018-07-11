@@ -341,7 +341,7 @@ def group_request_leave(request, group_id):
         messages.warning(request, "You already have a pending leave request for that group.")
         return redirect("groupmanagement:groups")
     if hasattr(settings, 'AUTO_LEAVE'):
-        if settings.auto_leave:
+        if settings.AUTO_LEAVE:
             logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
             request.user.groups.remove(group)
             return redirect('groupmanagement:groups')
