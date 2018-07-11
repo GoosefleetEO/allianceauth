@@ -14,6 +14,8 @@ from .models import GroupRequest
 
 from allianceauth.notifications import notify
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -333,6 +335,18 @@ def group_request_leave(request, group_id):
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
         return redirect("groupmanagement:groups")
+    req = GroupRequest.objects.filter(user=request.user, group=group)
+    if len(req) > 0:
+        logger.info("%s attempted to leave %s but already has an pending leave request." % (request.user, group))
+        messages.warning(request, "You already have a pending leave request for that group.")
+        return redirect("groupmanagement:groups")
+    if hasattr(settings, 'AUTO_LEAVE'):
+        if settings.auto_leave:
+            logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
+            request.user.groups.remove(group)
+            return redirect('groupmanagement:groups')
+        else:
+            pass
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
