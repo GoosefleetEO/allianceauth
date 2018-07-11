@@ -299,6 +299,11 @@ def group_request_add(request, group_id):
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
         return redirect("groupmanagement:groups")
+    req = GroupRequest.objects.filter(user=request.user, group=group)
+    if len(req) > 0:
+        logger.info("%s attempted to join %s but already has an open application" % (request.user, group))
+        messages.warning(request, "You already have a pending application for that group.")
+        return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
