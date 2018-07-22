@@ -24,6 +24,15 @@ class GroupManager:
         return not group.authgroup.internal
 
     @staticmethod
+    def auditable_group(group):
+        """
+        Check if a group is auditable, i.e not an internal group
+        :param group: django.contrib.auth.models.Group object
+        :return: bool True if it is auditable, false otherwise
+        """
+        return not group.authgroup.internal
+
+    @staticmethod
     def has_management_permission(user):
         return user.has_perm('auth.group_management')
 

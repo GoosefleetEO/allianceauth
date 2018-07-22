@@ -74,7 +74,7 @@ def group_membership_audit(request, group_id):
 
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
-        if not GroupManager.joinable_group(group) or not GroupManager.can_manage_group(request.user, group):
+        if not GroupManager.auditable_group(group) or not GroupManager.can_manage_group(request.user, group):
             logger.warning("User %s attempted to view the membership of group %s but permission was denied" %
                            (request.user, group_id))
             raise PermissionDenied
