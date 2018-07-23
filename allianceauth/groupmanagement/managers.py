@@ -24,7 +24,7 @@ class GroupManager:
         return not group.authgroup.internal
 
     @staticmethod
-    def auditable_group(group):
+    def check_internal_group(group):
         """
         Check if a group is auditable, i.e not an internal group
         :param group: django.contrib.auth.models.Group object
