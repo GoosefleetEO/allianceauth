@@ -59,7 +59,7 @@ def srp_fleet_view(request, fleet_id):
 
 
 @login_required
-@permission_required('auth.srp_management')
+@permissions_required(('auth.srp_management', 'srp.add_srpfleetmain'))
 def srp_fleet_add_view(request):
     logger.debug("srp_fleet_add_view called by user %s" % request.user)
     completed = False

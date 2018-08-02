@@ -17,6 +17,8 @@
                         <a href="{% url 'srp:all' %}" class="btn btn-primary">
                             {% trans "View All" %}
                         </a>
+                    {% endif %}
+                    {% if perms.srp.add_srpfleetmain or perms.auth.srp_management %}
                         <a href="{% url 'srp:add' %}" class="btn btn-success">
                             {% trans "Add SRP Fleet" %}
                         </a>
