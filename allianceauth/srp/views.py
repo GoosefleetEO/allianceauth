@@ -3,6 +3,7 @@ import uuid
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
