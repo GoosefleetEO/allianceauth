@@ -24,7 +24,7 @@ class Fat(models.Model):
     character = models.ForeignKey(EveCharacter, on_delete=models.CASCADE)
     fatlink = models.ForeignKey(Fatlink, on_delete=models.CASCADE)
     system = models.CharField(max_length=30)
-    shiptype = models.CharField(max_length=30)
+    shiptype = models.CharField(max_length=100)
     station = models.CharField(max_length=125)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
