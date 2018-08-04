@@ -355,11 +355,14 @@ class DiscourseManager:
         user_groups = DiscourseManager.__get_user_groups(username)
         add_groups = [group_dict[x] for x in group_dict if not group_dict[x] in user_groups]
         rem_groups = [x for x in user_groups if x not in inv_group_dict]
-        if add_groups or rem_groups:
+        if add_groups:
             logger.info(
-                "Updating discourse user %s groups: adding %s, removing %s" % (username, add_groups, rem_groups))
+                "Updating discourse user %s groups: adding %s" % (username, add_groups))
             for g in add_groups:
                 DiscourseManager.__add_user_to_group(g, username)
+        if rem_groups:
+            logger.info(
+                "Updating discourse user %s groups: removing %s" % (username, rem_groups))
             for g in rem_groups:
                 DiscourseManager.__remove_user_from_group(g, username)
 
