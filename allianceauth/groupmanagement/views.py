@@ -340,13 +340,10 @@ def group_request_leave(request, group_id):
         logger.info("%s attempted to leave %s but already has an pending leave request." % (request.user, group))
         messages.warning(request, "You already have a pending leave request for that group.")
         return redirect("groupmanagement:groups")
-    if hasattr(settings, 'AUTO_LEAVE'):
-        if settings.AUTO_LEAVE:
-            logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
-            request.user.groups.remove(group)
-            return redirect('groupmanagement:groups')
-        else:
-            pass
+    if hasattr(settings, 'AUTO_LEAVE', False) and settings.AUTO_LEAVE:
+        logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
+        request.user.groups.remove(group)
+        return redirect('groupmanagement:groups')
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
