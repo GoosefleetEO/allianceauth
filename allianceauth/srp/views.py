@@ -10,6 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Sum
+from allianceauth.authentication.decorators import permissions_required
 from allianceauth.eveonline.providers import provider
 from allianceauth.notifications import notify
 from .form import SrpFleetMainForm
@@ -59,7 +60,7 @@ def srp_fleet_view(request, fleet_id):
 
 
 @login_required
-@permission_required('auth.srp_management')
+@permissions_required(('auth.srp_management', 'srp.add_srpfleetmain'))
 def srp_fleet_add_view(request):
     logger.debug("srp_fleet_add_view called by user %s" % request.user)
     completed = False
