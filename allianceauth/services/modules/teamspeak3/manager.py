@@ -67,6 +67,8 @@ class Teamspeak3Manager:
         group_cache = self.server.send_command('servergrouplist')
         logger.debug("Received group cache from server: %s" % group_cache)
         for group in group_cache:
+            if group['keys']['type'] != '1':
+                continue
             logger.debug("Checking group %s" % group)
             if group['keys']['name'] == groupname:
                 logger.debug("Found group %s, returning id %s" % (groupname, group['keys']['sgid']))
@@ -124,6 +126,8 @@ class Teamspeak3Manager:
         outlist = {}
         if group_cache:
             for group in group_cache:
+                if group['keys']['type'] != '1':
+                    continue
                 logger.debug("Assigning name/id dict: %s = %s" % (group['keys']['name'], group['keys']['sgid']))
                 outlist[group['keys']['name']] = group['keys']['sgid']
         else:
@@ -214,7 +218,7 @@ class Teamspeak3Manager:
             if isinstance(clients, dict):
                 # Rewrap list
                 clients = [clients]
-                
+
             for client in clients:
                 try:
                     if client['keys']['client_database_id'] == user:
