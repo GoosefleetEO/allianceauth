@@ -10,7 +10,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from .managers import GroupManager
-from .models import GroupRequest
+from .models import GroupRequest, RequestLog
 
 from allianceauth.notifications import notify
 
@@ -67,6 +67,32 @@ def group_membership(request):
 
 @login_required
 @user_passes_test(GroupManager.can_manage_groups)
+def group_membership_audit(request, group_id):
+    logger.debug("group_management_audit called by user %s" % request.user)
+    group = get_object_or_404(Group, id=group_id)
+    try:
+
+        # Check its a joinable group i.e. not corp or internal
+        # And the user has permission to manage it
+        if not GroupManager.check_internal_group(group) or not GroupManager.can_manage_group(request.user, group):
+            logger.warning("User %s attempted to view the membership of group %s but permission was denied" %
+                           (request.user, group_id))
+            raise PermissionDenied
+
+    except ObjectDoesNotExist:
+        raise Http404("Group does not exist")
+
+    entries = RequestLog.objects.filter(group=group)
+
+    render_items = {'entries': entries, 'group': group.name}
+
+    return render(request, 'groupmanagement/audit.html', context=render_items)
+
+
+
+
+@login_required
+@user_passes_test(GroupManager.can_manage_groups)
 def group_membership_list(request, group_id):
     logger.debug("group_membership_list called by user %s for group id %s" % (request.user, group_id))
     group = get_object_or_404(Group, id=group_id)
@@ -112,6 +138,9 @@ def group_membership_remove(request, group_id, user_id):
 
         try:
             user = group.user_set.get(id=user_id)
+            request_info = user.username + ":" + group.name
+            log = RequestLog(request_type=None,group=group,request_info=request_info,action=1,request_actor=request.user)
+            log.save()
             # Remove group from user
             user.groups.remove(group)
             logger.info("User %s removed user %s from group %s" % (request.user, user, group))
@@ -139,6 +168,8 @@ def group_accept_request(request, group_request_id):
 
         group_request.user.groups.add(group)
         group_request.user.save()
+        log = RequestLog(request_type=group_request.leave_request,group=group,request_info=group_request.__str__(),action=1,request_actor=request.user)
+        log.save()
         group_request.delete()
         logger.info("User %s accepted group request from user %s to group %s" % (
             request.user, group_request.user, group_request.group.name))
@@ -172,6 +203,8 @@ def group_reject_request(request, group_request_id):
         if group_request:
             logger.info("User %s rejected group request from user %s to group %s" % (
                 request.user, group_request.user, group_request.group.name))
+            log = RequestLog(request_type=group_request.leave_request,group=group_request.group,request_info=group_request.__str__(),action=0,request_actor=request.user)
+            log.save()
             group_request.delete()
             notify(group_request.user, "Group Application Rejected", level="danger",
                    message="Your application to %s has been rejected." % group_request.group)
@@ -204,6 +237,8 @@ def group_leave_accept_request(request, group_request_id):
         group, created = Group.objects.get_or_create(name=group_request.group.name)
         group_request.user.groups.remove(group)
         group_request.user.save()
+        log = RequestLog(request_type=group_request.leave_request,group=group_request.group,request_info=group_request.__str__(),action=1,request_actor=request.user)
+        log.save()
         group_request.delete()
         logger.info("User %s accepted group leave request from user %s to group %s" % (
             request.user, group_request.user, group_request.group.name))
@@ -236,6 +271,8 @@ def group_leave_reject_request(request, group_request_id):
             raise PermissionDenied
 
         if group_request:
+            log = RequestLog(request_type=group_request.leave_request,group=group_request.group,request_info=group_request.__str__(),action=0,request_actor=request.user)
+            log.save()
             group_request.delete()
             logger.info("User %s rejected group leave request from user %s for group %s" % (
                 request.user, group_request.user, group_request.group.name))

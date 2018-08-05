@@ -41,6 +41,9 @@
                                 title="{% trans "View Members" %}">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
+                            <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
+                                <i class="glyphicon glyphicon-list-alt"></i>
+                            </a>
                         </td>
                     </tr>
                 {% endfor %}

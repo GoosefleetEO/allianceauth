@@ -23,6 +23,37 @@ class GroupRequest(models.Model):
         return self.user.username + ":" + self.group.name
 
 
+class RequestLog(models.Model):
+    request_type = models.NullBooleanField(default=0)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    request_info = models.CharField(max_length=254)
+    action = models.BooleanField(default=0)
+    request_actor = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def requestor(self):
+        return self.request_info.split(":")[0]
+
+    def type_to_str(self):
+        if self.request_type is None:
+            return "Removed"
+        elif self.request_type is True:
+            return "Leave"
+        elif self.request_type is False:
+            return "Join"
+
+    def action_to_str(self):
+        if self.action is True:
+            return "Accept"
+        elif self.action is False:
+            return "Reject"
+
+    def req_char(self):
+        usr = self.requestor()
+        user = User.objects.get(username=usr)
+        return user.profile.main_character
+
+
+
 class AuthGroup(models.Model):
     """
     Extends Django Group model with a one-to-one field
