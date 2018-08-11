@@ -8,12 +8,12 @@
 {% block content %}
 <div class="col-lg-12">
     {% include "fleetup/menu.html" %}
-    <div class="panel">
+    <div>
         {% if doctrines_list %}
         {% for a, j in doctrines_list.items %}
         {% regroup j|dictsort:"FolderName" by FolderName as folder_list %}
             {% for FolderName in folder_list %}
-            <div class="col-lg-8">
+            <div>
             <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title"><b>{{ FolderName.grouper }}</b></h3>
@@ -29,11 +29,11 @@
                                     <th class="col-lg-2">Note</th>-->
                                 </tr>
                                 {% for item in FolderName.list %}
-                
+
                                 <tr>
                                     <td>
                                     <a href="{% url 'fleetup:doctrine' item.DoctrineId %}"><img src="https://image.eveonline.com/InventoryType/{{ item.IconId }}_32.png"></a>
-                                    </td> 
+                                    </td>
                                     <td>
                                     {{ item.Name }}
                                     </td>

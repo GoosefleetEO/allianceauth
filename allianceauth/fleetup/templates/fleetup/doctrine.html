@@ -8,12 +8,12 @@
 {% block content %}
 <div class="col-lg-12">
     {% include "fleetup/menu.html" %}
-    <div class="panel">
+    <div>
         {% for a, j in doctrine.items %}
         {% regroup j.Data|dictsort:"Role" by Role as role_list %}
 
             {% for Role in role_list %}
-            
+
             <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title"><b>{{ Role.grouper }}</b></h3>
@@ -50,7 +50,7 @@
                                         {% load humanize %}{{ item.EstPrice|intword }}
                                     </td>
                                     <td>
-                                        {% for categories in item.Categories %} 
+                                        {% for categories in item.Categories %}
                                         {{ categories }},
                                         {% endfor %}
                                     </td>

@@ -8,9 +8,9 @@
 {% block content %}
 <div class="col-lg-12">
     {% include "fleetup/menu.html" %}
-    <div class="tab-content">
+    <div class="tab-content row">
         <div id="fit" class="tab-pane fade in active">
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 {% for x, y in fitting_data.items %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -18,22 +18,24 @@
                     </div>
                     <div class="panel-body">
                         {% for doctrin in y.Doctrines %}
-                        <h4>{{ doctrin.Name }}</h4>
-                        <div class="col-lg-12">
-                            <p>{% trans "Role in doctrine:" %} {{ doctrin.Role }}</p>
-                        </div>
-                        <div class="col-lg-4">
-                            <p>{% trans "Priority:" %}</p>
-                        </div>
-                        <div class="col-lg-8">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{ doctrin.Priority }}" aria-valuemin="0" aria-valuemax="5" style="width: {% widthratio doctrin.Priority 5 100 %}%;">
-                                    {{ doctrin.Priority }}/5
+                        <div class="clearfix">
+                            <h4>{{ doctrin.Name }}</h4>
+                            <div class="col-lg-12">
+                                <p>{% trans "Role in doctrine:" %} {{ doctrin.Role }}</p>
+                            </div>
+                            <div class="col-lg-4">
+                                <p>{% trans "Priority:" %}</p>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="{{ doctrin.Priority }}" aria-valuemin="0" aria-valuemax="5" style="width: {% widthratio doctrin.Priority 5 100 %}%;">
+                                        {{ doctrin.Priority }}/5
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="pull-right">
-                            <a class="btn btn-primary" href="{% url 'fleetup:doctrine' doctrin.DoctrineId %}">{% trans "See doctrine" %}</a>
+                            <div class="pull-right">
+                                <a class="btn btn-primary" href="{% url 'fleetup:doctrine' doctrin.DoctrineId %}">{% trans "See doctrine" %}</a>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
@@ -56,10 +58,10 @@
                         <div class="panel-body">
                             <div class="list-group">
                             {% for arbit, orbit in doctrines_list.items %}
-                              
+
                                 {% for fitting in orbit.Data %}
                                 <a href="{% url 'fleetup:fitting' fitting.FittingId %}" class="list-group-item">
-                                
+
                                 <h4 class="list-group-item-heading">{{ fitting.Name }}<span class="pull-right"><img src="https://image.eveonline.com/InventoryType/{{ fitting.EveTypeId }}_32.png" class="img-circle"></span></h4>
                                 <p class="list-group-item-heading">{{ fitting.Role }} - {{ fitting.ShipType }}</p>
                                 </a>
@@ -107,8 +109,8 @@
                         {% endfor %}
                 </div>
             </div>
-            
-            <div class="col-lg-3">
+
+            <div class="col-lg-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">{% trans "EFT/Export" %}</h3>
