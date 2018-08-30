@@ -291,6 +291,12 @@ def group_request_add(request, group_id):
                        (request.user, group_id))
         messages.warning(request, _("You cannot join that group"))
         return redirect('groupmanagement:groups')
+    if group in request.user.groups.all():
+        # User is already a member of this group.
+        logger.warning("User %s attempted to join group id %s but they are already a member." %
+                       (request.user, group_id))
+        messages.warning(request, "You are already a member of that group.")
+        return redirect('groupmanagement:groups')
     if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
         # Does not have the required permission, trying to join a non-public group
         logger.warning("User %s attempted to join group id %s but it is not a public group" %
