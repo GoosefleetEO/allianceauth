@@ -16,7 +16,7 @@ install_requires = [
     'celery>=4.0.2',
     'celery_once',
 
-    'django>=1.11',
+    'django>=1.11,<2.1',
     'django-bootstrap-form',
     'django-registration==2.4',
     'django-sortedm2m',
