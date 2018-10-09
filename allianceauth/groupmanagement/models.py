@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from allianceauth.authentication.models import State
 
 
 class GroupRequest(models.Model):
@@ -95,6 +96,10 @@ class AuthGroup(models.Model):
                                            help_text="Group leaders can process group requests for this group "
                                                      "specifically. Use the auth.group_management permission to allow "
                                                      "a user to manage all groups.")
+
+    states = models.ManyToManyField(State, related_name='valid_states', blank=True,
+                                    help_text="States listed here will have the ability to join this group provided "
+                                              "they have the proper permissions.")
 
     description = models.CharField(max_length=512, blank=True, help_text="Description of the group shown to users.")
 

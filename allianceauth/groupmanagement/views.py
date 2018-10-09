@@ -53,7 +53,7 @@ def group_membership(request):
     # Get all open and closed groups
     if GroupManager.has_management_permission(request.user):
         # Full access
-        groups = GroupManager.get_joinable_groups()
+        groups = GroupManager.get_all_non_internal_groups()
     else:
         # Group leader specific
         groups = GroupManager.get_group_leaders_groups(request.user)
@@ -100,7 +100,7 @@ def group_membership_list(request, group_id):
 
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
-        if not GroupManager.joinable_group(group) or not GroupManager.can_manage_group(request.user, group):
+        if not GroupManager.check_internal_group(group) or not GroupManager.can_manage_group(request.user, group):
             logger.warning("User %s attempted to view the membership of group %s but permission was denied" %
                            (request.user, group_id))
             raise PermissionDenied
@@ -131,7 +131,7 @@ def group_membership_remove(request, group_id, user_id):
     try:
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
-        if not GroupManager.joinable_group(group) or not GroupManager.can_manage_group(request.user, group):
+        if not GroupManager.check_internal_group(group) or not GroupManager.can_manage_group(request.user, group):
             logger.warning("User %s attempted to remove a user from group %s but permission was denied" % (request.user,
                                                                                                            group_id))
             raise PermissionDenied
@@ -162,7 +162,7 @@ def group_accept_request(request, group_request_id):
     try:
         group, created = Group.objects.get_or_create(name=group_request.group.name)
 
-        if not GroupManager.joinable_group(group_request.group) or \
+        if not GroupManager.joinable_group(group_request.group, group_request.user.profile.state) or \
                 not GroupManager.can_manage_group(request.user, group_request.group):
             raise PermissionDenied
 
@@ -299,7 +299,7 @@ def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
     groups = []
 
-    group_query = GroupManager.get_joinable_groups()
+    group_query = GroupManager.get_joinable_groups(request.user.profile.state)
 
     if not request.user.has_perm('groupmanagement.request_groups'):
         # Filter down to public groups only for non-members
@@ -321,7 +321,8 @@ def groups_view(request):
 def group_request_add(request, group_id):
     logger.debug("group_request_add called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
-    if not GroupManager.joinable_group(group):
+    state = request.user.profile.state
+    if not GroupManager.joinable_group(group, state):
         logger.warning("User %s attempted to join group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, _("You cannot join that group"))
@@ -351,7 +352,7 @@ def group_request_add(request, group_id):
 def group_request_leave(request, group_id):
     logger.debug("group_request_leave called by user %s for group id %s" % (request.user, group_id))
     group = Group.objects.get(id=group_id)
-    if not GroupManager.joinable_group(group):
+    if not GroupManager.check_internal_group(group):
         logger.warning("User %s attempted to leave group id %s but it is not a joinable group" %
                        (request.user, group_id))
         messages.warning(request, _("You cannot leave that group"))
