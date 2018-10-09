@@ -14,6 +14,8 @@ from .models import GroupRequest, RequestLog
 
 from allianceauth.notifications import notify
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -327,6 +329,12 @@ def group_request_add(request, group_id):
                        (request.user, group_id))
         messages.warning(request, _("You cannot join that group"))
         return redirect('groupmanagement:groups')
+    if group in request.user.groups.all():
+        # User is already a member of this group.
+        logger.warning("User %s attempted to join group id %s but they are already a member." %
+                       (request.user, group_id))
+        messages.warning(request, "You are already a member of that group.")
+        return redirect('groupmanagement:groups')
     if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
         # Does not have the required permission, trying to join a non-public group
         logger.warning("User %s attempted to join group id %s but it is not a public group" %
@@ -336,6 +344,11 @@ def group_request_add(request, group_id):
     if group.authgroup.open:
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
+        return redirect("groupmanagement:groups")
+    req = GroupRequest.objects.filter(user=request.user, group=group)
+    if len(req) > 0:
+        logger.info("%s attempted to join %s but already has an open application" % (request.user, group))
+        messages.warning(request, "You already have a pending application for that group.")
         return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
@@ -366,6 +379,15 @@ def group_request_leave(request, group_id):
         logger.info("%s leaving %s as is an open group" % (request.user, group))
         request.user.groups.remove(group)
         return redirect("groupmanagement:groups")
+    req = GroupRequest.objects.filter(user=request.user, group=group)
+    if len(req) > 0:
+        logger.info("%s attempted to leave %s but already has an pending leave request." % (request.user, group))
+        messages.warning(request, "You already have a pending leave request for that group.")
+        return redirect("groupmanagement:groups")
+    if hasattr(settings, 'AUTO_LEAVE', False) and settings.AUTO_LEAVE:
+        logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
+        request.user.groups.remove(group)
+        return redirect('groupmanagement:groups')
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
     grouprequest.group = group
