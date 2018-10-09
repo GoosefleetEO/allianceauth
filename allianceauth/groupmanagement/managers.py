@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from django.db.models import Q
 
 
 class GroupManager:
@@ -6,7 +7,12 @@ class GroupManager:
         pass
 
     @staticmethod
-    def get_joinable_groups():
+    def get_joinable_groups(state):
+        return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)\
+            .filter(Q(authgroup__states=state) | Q(authgroup__state=None))
+
+    @staticmethod
+    def get_all_non_internal_groups():
         return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)
 
     @staticmethod
@@ -14,12 +20,25 @@ class GroupManager:
         return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user])
 
     @staticmethod
-    def joinable_group(group):
+    def joinable_group(group, state):
         """
-        Check if a group is a user joinable group, i.e.
-        not an internal group for Corp, Alliance, Members etc
+        Check if a group is a user/state joinable group, i.e.
+        not an internal group for Corp, Alliance, Members etc,
+        or restricted from the user's current state.
         :param group: django.contrib.auth.models.Group object
+        :param state: allianceauth.authentication.State object
         :return: bool True if its joinable, False otherwise
+        """
+        if len(group.authgroup.states.all()) != 0 and state not in group.authgroup.states.all():
+            return False
+        return not group.authgroup.internal
+
+    @staticmethod
+    def check_internal_group(group):
+        """
+        Check if a group is auditable, i.e not an internal group
+        :param group: django.contrib.auth.models.Group object
+        :return: bool True if it is auditable, false otherwise
         """
         return not group.authgroup.internal
 
