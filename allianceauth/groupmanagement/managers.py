@@ -9,7 +9,7 @@ class GroupManager:
     @staticmethod
     def get_joinable_groups(state):
         return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)\
-            .filter(Q(authgroup__states=state) | Q(authgroup__state=None))
+            .filter(Q(authgroup__states=state) | Q(authgroup__states=None))
 
     @staticmethod
     def get_all_non_internal_groups():
