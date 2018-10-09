@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('authentication', '0016_ownershiprecord'),
-        ('groupmanagement', '0008_remove_authgroup_permissions'),
+        ('groupmanagement', '0009_requestlog'),
     ]
 
     operations = [
