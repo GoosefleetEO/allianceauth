@@ -17,16 +17,16 @@ NOTIFICATION_CACHE_TIME = 300  # 5 minutes
 logger = logging.getLogger(__name__)
 
 
-def get_github_tags():
-    request = requests.get('https://api.github.com/repos/allianceauth/allianceauth/releases')
+def get_git_tags():
+    request = requests.get('https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/repository/tags')
     request.raise_for_status()
     return request.json()
 
 
-def get_github_notification_issues():
+def get_notification_issues():
     # notification
     request = requests.get(
-        'https://api.github.com/repos/allianceauth/allianceauth/issues?labels=announcement&state=all')
+        'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/issues?labels=announcement')
     request.raise_for_status()
     return request.json()
 
@@ -68,10 +68,10 @@ def get_notifications():
         'notifications': list(),
     }
     try:
-        notifications = cache.get_or_set('github_notification_issues', get_github_notification_issues,
+        notifications = cache.get_or_set('gitlab_notification_issues', get_notification_issues,
                                          NOTIFICATION_CACHE_TIME)
         # Limit notifications to those posted by repo owners and members
-        response['notifications'] += [n for n in notifications if n['author_association'] in ['OWNER', 'MEMBER']][:5]
+        response['notifications'] += notifications[:5]
     except requests.RequestException:
         logger.exception('Error while getting github notifications')
     return response
@@ -85,7 +85,7 @@ def get_version_info():
         'current_version': __version__,
     }
     try:
-        tags = cache.get_or_set('github_release_tags', get_github_tags, TAG_CACHE_TIME)
+        tags = cache.get_or_set('git_release_tags', get_git_tags, TAG_CACHE_TIME)
         current_ver = semver.Version.coerce(__version__)
 
         # Set them all to the current version to start
@@ -102,7 +102,7 @@ def get_version_info():
         })
 
         for tag in tags:
-            tag_name = tag.get('tag_name')
+            tag_name = tag.get('name')
             if tag_name[0] == 'v':
                 # Strip 'v' off front of verison if it exists
                 tag_name = tag_name[1:]
@@ -114,24 +114,21 @@ def get_version_info():
                 if latest_major is None or tag_ver > latest_major:
                     latest_major = tag_ver
                     response['latest_major_version'] = tag_name
-                    response['latest_major_url'] = tag['html_url']
                 if tag_ver.major > current_ver.major:
                     response['latest_major'] = False
                 elif tag_ver.major == current_ver.major:
                     if latest_minor is None or tag_ver > latest_minor:
                         latest_minor = tag_ver
                         response['latest_minor_version'] = tag_name
-                        response['latest_minor_url'] = tag['html_url']
                     if tag_ver.minor > current_ver.minor:
                         response['latest_minor'] = False
                     elif tag_ver.minor == current_ver.minor:
                         if latest_patch is None or tag_ver > latest_patch:
                             latest_patch = tag_ver
                             response['latest_patch_version'] = tag_name
-                            response['latest_patch_url'] = tag['html_url']
                         if tag_ver.patch > current_ver.patch:
                             response['latest_patch'] = False
 
     except requests.RequestException:
-        logger.exception('Error while getting github release tags')
+        logger.exception('Error while getting gitlab release tags')
     return response
