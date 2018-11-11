@@ -16,12 +16,12 @@ install_requires = [
     'celery>=4.0.2',
     'celery_once',
 
-    'django>=1.11,<2.1',
+    'django>=1.11,<=2.0.8',
     'django-bootstrap-form',
     'django-registration==2.4',
     'django-sortedm2m',
     'django-redis-cache>=1.7.1',
-    'django-celery-beat',
+    'django-celery-beat<=1.1.1',
 
     'openfire-restapi',
     'sleekxmpp',
