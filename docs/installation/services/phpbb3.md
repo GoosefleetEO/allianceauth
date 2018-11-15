@@ -58,7 +58,7 @@ Nginx: `chown -R nginx:nginx /var/www/forums`
 
 ```eval_rst
 .. tip::
-   Nginx: Some distributions use the ``www-data:www-data`` user:group instead of ``nginx:nginx``. If you run into problems with permissions try it instead. 
+   Nginx: Some distributions use the ``www-data:www-data`` user:group instead of ``nginx:nginx``. If you run into problems with permissions try it instead.
 ..
 ```
 
@@ -103,7 +103,7 @@ A minimal Nginx config file might look like:
         }
     }
 
-Enter your forum's web address as the `PHPBB3_URL` setting in your auth project's settings file. 
+Enter your forum's web address as the `PHPBB3_URL` setting in your auth project's settings file.
 
 ### Web Install
 Navigate to your forums web address where you will be presented with an installer.
@@ -143,6 +143,16 @@ AllianceAuth sets user avatars to their character portrait when the account is c
 You can allow members to overwrite the portrait with a custom image if desired. Navigate to `Users and Groups`, `Group Permissions`, select the appropriate group (usually `Member` if you want everyone to have this ability), expand `Advanced Permissions`, under the `Profile` tab, set `Can Change Avatars` to `Yes`, and press `Apply Permissions`.
 
 ![location of change avatar setting](/_static/images/installation/services/phpbb3/avatar_permissions.png)
+
+## Setting the default theme
+
+Users generated via Alliance Auth do not have a default theme set. You will need to set this on the phpbb_users table in SQL
+
+    mysql -u root -p
+    use alliance_forum;
+    alter table phpbb_users change user_style user_style int not null default 1
+
+If you would like to use a theme that is NOT prosilver or theme "1". You will need to deactivate prosilver, this will then fall over to the set forum wide default.
 
 ### Prepare Auth
 Once settings have been configured, run migrations and restart Gunicorn and Celery.
