@@ -18,7 +18,7 @@ class SRPManager:
 
     @staticmethod
     def get_kill_data(kill_id):
-        url = ("https://www.zkillboard.com/api/killID/%s/" % kill_id)
+        url = ("https://zkillboard.com/api/killID/%s/" % kill_id)
         headers = {
             'User-Agent': NAME,
             'Content-Type': 'application/json',
