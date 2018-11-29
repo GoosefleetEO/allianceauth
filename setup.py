@@ -12,7 +12,7 @@ install_requires = [
     'requests-oauthlib',
     'semantic_version',
 
-    'redis',
+    'redis<=2.10.6',
     'celery>=4.0.2',
     'celery_once',
 
