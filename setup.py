@@ -50,7 +50,7 @@ setup(
     python_requires='~=3.4',
     license='GPLv2',
     packages=['allianceauth'],
-    url='https://github.com/allianceauth/allianceauth',
+    url='https://gitlab.com/allianceauth/allianceauth',
     zip_safe=False,
     include_package_data=True,
     entry_points="""

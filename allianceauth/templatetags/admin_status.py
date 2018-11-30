@@ -73,7 +73,7 @@ def get_notifications():
         # Limit notifications to those posted by repo owners and members
         response['notifications'] += notifications[:5]
     except requests.RequestException:
-        logger.exception('Error while getting github notifications')
+        logger.exception('Error while getting gitlab notifications')
     return response
 
 

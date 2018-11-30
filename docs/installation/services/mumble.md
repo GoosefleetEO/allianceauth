@@ -22,7 +22,7 @@ Now two packages need to be installed:
 
     apt-get install python-software-properties mumble-server
 
-Download the appropriate authenticator release from [the authenticator repository](https://github.com/allianceauth/mumble-authenticator) and install the python dependencies for it:
+Download the appropriate authenticator release from [the authenticator repository](https://gitlab.com/allianceauth/mumble-authenticator) and install the python dependencies for it:
 
     pip install -r requirements.txt
 

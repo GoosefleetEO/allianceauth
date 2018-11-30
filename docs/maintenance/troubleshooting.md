@@ -2,17 +2,17 @@
 
 ## Something broken? Stuck on an issue? Can't get it set up?
 
-Start by checking the [issues](https://github.com/allianceauth/allianceauth/issues?q=is%3Aissue) - especially closed ones.
+Start by checking the [issues](https://gitlab.com/allianceauth/allianceauth/issues?scope=all&utf8=%E2%9C%93&state=all&search=my+issue) - especially closed ones.
 
 No answer?
- - open an [issue](https://github.com/allianceauth/allianceauth/issues)
+ - open an [issue](https://gitlab.com/allianceauth/allianceauth/issues)
  - harass us on [gitter](https://gitter.im/R4stl1n/allianceauth)
- 
+
 ## Logging
 
 In its default configuration your auth project logs INFO and above messages to myauth/log/allianceauth.log. If you're encountering issues it's a good idea to view DEBUG messages as these greatly assist the troubleshooting process. These are printed to the console with manually starting the webserver via `python manage.py runserver`.
 
-To record DEBUG messages in the log file, alter a setting in your auth project's settings file: `LOGGING['handlers']['log_file']['level'] = 'DEBUG'`. After restarting gunicorn and celery your log file will record all logging messages. 
+To record DEBUG messages in the log file, alter a setting in your auth project's settings file: `LOGGING['handlers']['log_file']['level'] = 'DEBUG'`. After restarting gunicorn and celery your log file will record all logging messages.
 
 ## Common Problems
 

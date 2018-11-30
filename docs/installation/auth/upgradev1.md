@@ -56,7 +56,7 @@ Put comma-separated IDs into the brackets and the migration will create states w
 
 If you used member/blue group names other than the standard "Member" and "Blue" you can enter settings to have the member/blue states created through this migration take these names.
  - `DEFAULT_AUTH_GROUP = ""` the desired name of the "Member" state
- - `DEFAULT_BLUE_GROUP = ""` the desired name of the "Blue" state 
+ - `DEFAULT_BLUE_GROUP = ""` the desired name of the "Blue" state
 
 Any permissions assigned to these groups will be copied to the state replacing them. Because these groups are no longer managed they pose a security risk and so are deleted at the end of the migration automatically.
 
@@ -82,4 +82,4 @@ A similar process can be used to ensure users who may have lost service permissi
 
 ## Help
 
-If something goes wrong during the migration reach out for help on [Gitter](https://gitter.im/R4stl1n/allianceauth) or open an [issue](https://github.com/allianceauth/allianceauth/issues).
+If something goes wrong during the migration reach out for help on [Gitter](https://gitter.im/R4stl1n/allianceauth) or open an [issue](https://gitlab.com/allianceauth/allianceauth/issues).
