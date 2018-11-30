@@ -16,10 +16,16 @@ class CorpStatsQuerySet(models.QuerySet):
             assert char
             # build all accepted queries
             queries = [models.Q(token__user=user)]
-            if user.has_perm('corputils.view_corp_corpstats'):
-                queries.append(models.Q(corp__corporation_id=char.corporation_id))
             if user.has_perm('corputils.view_alliance_corpstats'):
-                queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
+                if char.alliance_id is not None:
+                    queries.append(models.Q(corp__alliance__alliance_id=char.alliance_id))
+                else:
+                    queries.append(models.Q(corp__corporation_id=char.corporation_id))
+            if user.has_perm('corputils.view_corp_corpstats'):
+                if user.has_perm('corputils.view_alliance_corpstats'):
+                    pass
+                else:
+                    queries.append(models.Q(corp__corporation_id=char.corporation_id))
             if user.has_perm('corputils.view_state_corpstats'):
                 queries.append(models.Q(corp__in=user.profile.state.member_corporations.all()))
                 queries.append(models.Q(corp__alliance__in=user.profile.state.member_alliances.all()))
