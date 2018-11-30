@@ -17,13 +17,13 @@ An auth system for EVE Online to help in-game organizations manage online servic
 
 Active Developers:
 
- - [Adarnof](https://github.com/adarnof/)
- - [Basraah](https://github.com/basraah/)
+ - [Adarnof](https://gitlab.com/adarnof/)
+ - [Basraah](https://gitlab.com/basraah/)
 
 Beta Testers / Bug Fixers:
 
- - [ghoti](https://github.com/ghoti/)
- - [mmolitor87](https://github.com/mmolitor87/)
+ - [ghoti](https://gitlab.com/ChainsawMcGinny/)
+ - [mmolitor87](https://gitlab.com/mmolitor87/)
  - [TargetZ3R0](https://github.com/TargetZ3R0)
  - [kaezon](https://github.com/kaezon/)
  - [orbitroom](https://github.com/orbitroom/)

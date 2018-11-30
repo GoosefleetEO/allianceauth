@@ -2,7 +2,7 @@
 
 ```eval_rst
 .. tip::
-   If you are uncomfortable with Linux permissions follow the steps below as the root user. 
+   If you are uncomfortable with Linux permissions follow the steps below as the root user.
 ```
 
 ## Dependencies
@@ -12,7 +12,7 @@ Alliance Auth can be installed on any operating system. Dependencies are provide
 ```eval_rst
 .. hint::
    CentOS: A few packages are included in a non-default repository. Add it and update the package lists. ::
-   
+
       yum -y install https://centos7.iuscommunity.org/ius-release.rpm
       yum update
 ```
@@ -61,7 +61,7 @@ CentOS:
 ```eval_rst
 .. important::
    CentOS: Make sure Redis is running before continuing. ::
-   
+
       systemctl enable redis.service
       systemctl start redis.service
 ```
@@ -106,7 +106,7 @@ Create a Python virtual environment and put it somewhere convenient (e.g. `/home
    A virtual environment provides support for creating a lightweight "copy" of Python with their own site directories. Each virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories. You can read more about virtual environments on the Python_ docs.
 .. _Python: https://docs.python.org/3/library/venv.html
 ```
-    
+
 Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activate`. Note the `/bin/activate` on the end of the path.
 
 ```eval_rst
@@ -131,7 +131,7 @@ Django needs to install models to the database before it can start.
     python /home/allianceserver/myauth/manage.py migrate
 
 Now we need to round up all the static files required to render templates. Make a directory to serve them from and populate it.
-    
+
     mkdir -p /var/www/myauth/static
     python /home/allianceserver/myauth/manage.py collectstatic
 
@@ -182,7 +182,7 @@ You can check the status of the processes with `supervisorctl status`. Logs from
 ```eval_rst
 .. note::
    Any time the code or your settings change you'll need to restart Gunicorn and Celery. ::
-   
+
        supervisorctl restart myauth:
 ```
 
@@ -202,10 +202,10 @@ If you intend to use this account as your personal auth account you need to add 
 
 ## Updating
 
-Periodically [new releases](https://github.com/allianceauth/allianceauth/releases/) are issued with bug fixes and new features. To update your install, simply activate your virtual environment and update with `pip install --upgrade allianceauth`. Be sure to read the release notes which will highlight changes.
+Periodically [new releases](https://gitlab.com/allianceauth/allianceauth/tags) are issued with bug fixes and new features. To update your install, simply activate your virtual environment and update with `pip install --upgrade allianceauth`. Be sure to read the release notes which will highlight changes.
 
 Some releases come with changes to settings: update your project's settings with `allianceauth update /home/allianceserver/myauth`.
 
 Some releases come with new or changed models. Update your database to reflect this with `python /home/allianceserver/myauth/manage.py migrate`.
- 
+
 Always restart Celery and Gunicorn after updating.
