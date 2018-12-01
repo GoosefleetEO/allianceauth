@@ -64,14 +64,19 @@
                         href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
                 </td>
                 <td class="text-center">
+                    {% ifequal timer.structure "POCO" %}
+                        <div class="label label-info">
+                            POCO
+                        </div>
+                    {% endifequal %}
                     {% ifequal timer.structure "I-HUB" %}
                         <div class="label label-warning">
                             I-HUB
                         </div>
                     {% endifequal %}
-                    {% ifequal timer.structure "POCO" %}
-                        <div class="label label-success">
-                            POCO
+                    {% ifequal timer.structure "TCU" %}
+                        <div class="label label-danger">
+                            TCU
                         </div>
                     {% endifequal %}
                     {% ifequal timer.structure "POS[S]" %}
@@ -119,16 +124,6 @@
                             Engineering Complex [XL]
                         </div>
                     {% endifequal %}
-                    {% ifequal timer.structure "Station" %}
-                        <div class="label label-danger">
-                            Station
-                        </div>
-                    {% endifequal %}
-                    {% ifequal timer.structure "TCU" %}
-                        <div class="label label-danger">
-                            TCU
-                        </div>
-                    {% endifequal %}
                     {% ifequal timer.structure "Refinery[M]" %}
                         <div class="label label-warning">
                             Refinery [M]
@@ -137,6 +132,21 @@
                     {% ifequal timer.structure "Refinery[L]" %}
                         <div class="label label-warning">
                             Refinery [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Cyno Beacon" %}
+                        <div class="label label-warning">
+                            Cyno Beacon
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Cyno Jammer" %}
+                        <div class="label label-warning">
+                            Cyno Jammer
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Jump Gate" %}
+                        <div class="label label-warning">
+                            Jump Gate
                         </div>
                     {% endifequal %}
                     {% ifequal timer.structure "Moon Mining Cycle" %}
@@ -213,91 +223,101 @@
                     <a href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }}</a>
                 </td>
                 <td class="text-center">
-                {% ifequal timer.structure "I-HUB" %}
-                    <div class="label label-warning">
-                        I-HUB
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "POCO" %}
-                    <div class="label label-success">
-                        POCO
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "POS[S]" %}
-                    <div class="label label-info">
-                        POS [S]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "POS[M]" %}
-                    <div class="label label-info">
-                        POS [M]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "POS[L]" %}
-                    <div class="label label-info">
-                        POS [L]
-                    </div>
-                {% endifequal %}
-              {% ifequal timer.structure "Citadel[M]" %}
-                    <div class="label label-danger">
-                        Citadel [M]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Citadel[L]" %}
-                    <div class="label label-danger">
-                        Citadel [L]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Citadel[XL]" %}
-                    <div class="label label-danger">
-                        Citadel [XL]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Engineering Complex[M]" %}
-                    <div class="label label-warning">
-                        Engineering Complex [M]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Engineering Complex[L]" %}
-                    <div class="label label-warning">
-                        Engineering Complex [L]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Engineering Complex[XL]" %}
-                    <div class="label label-warning">
-                        Engineering Complex [XL]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Station" %}
-                    <div class="label label-danger">
-                        Station
-                    </div>
-	        	{% endifequal %}
-                {% ifequal timer.structure "TCU" %}
-                    <div class="label label-danger">
-                        TCU
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Refinery[M]" %}
-                    <div class="label label-warning">
-                        Refinery [M]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Refinery[L]" %}
-                    <div class="label label-warning">
-                        Refinery [L]
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Moon Mining Cycle" %}
-                    <div class="label label-success">
-                        Moon Mining Cycle
-                    </div>
-                {% endifequal %}
-                {% ifequal timer.structure "Other" %}
-                    <div class="label label-default">
-                        Other
-                    </div>
-                {% endifequal %}
+                    {% ifequal timer.structure "POCO" %}
+                        <div class="label label-info">
+                            POCO
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "I-HUB" %}
+                        <div class="label label-warning">
+                            I-HUB
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "TCU" %}
+                        <div class="label label-danger">
+                            TCU
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[S]" %}
+                        <div class="label label-info">
+                            POS [S]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[M]" %}
+                        <div class="label label-info">
+                            POS [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "POS[L]" %}
+                        <div class="label label-info">
+                            POS [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Citadel[M]" %}
+                        <div class="label label-danger">
+                            Citadel [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Citadel[L]" %}
+                        <div class="label label-danger">
+                            Citadel [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Citadel[XL]" %}
+                        <div class="label label-danger">
+                            Citadel [XL]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[M]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[L]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Engineering Complex[XL]" %}
+                        <div class="label label-warning">
+                            Engineering Complex [XL]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Refinery[M]" %}
+                        <div class="label label-warning">
+                            Refinery [M]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Refinery[L]" %}
+                        <div class="label label-warning">
+                            Refinery [L]
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Cyno Beacon" %}
+                        <div class="label label-warning">
+                            Cyno Beacon
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Cyno Jammer" %}
+                        <div class="label label-warning">
+                            Cyno Jammer
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Jump Gate" %}
+                        <div class="label label-warning">
+                            Jump Gate
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Moon Mining Cycle" %}
+                        <div class="label label-success">
+                            Moon Mining Cycle
+                        </div>
+                    {% endifequal %}
+                    {% ifequal timer.structure "Other" %}
+                        <div class="label label-default">
+                            Other
+                        </div>
+                    {% endifequal %}
                 </td>
                 <td class="text-center" nowrap>{{ timer.eve_time | date:"Y-m-d H:i" }}</td>
                 <td class="text-center" nowrap>

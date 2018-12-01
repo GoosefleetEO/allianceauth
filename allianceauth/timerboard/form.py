@@ -34,6 +34,7 @@ class TimerForm(forms.ModelForm):
 
     structure_choices = [('POCO', 'POCO'),
                          ('I-HUB', 'I-HUB'),
+                         ('TCU', 'TCU'),
                          ('POS[S]', 'POS[S]'),
                          ('POS[M]', 'POS[M]'),
                          ('POS[L]', 'POS[L]'),
@@ -45,8 +46,9 @@ class TimerForm(forms.ModelForm):
                          ('Engineering Complex[XL]', 'Engineering Complex[XL]'),
                          ('Refinery[M]', 'Refinery[M]'),
                          ('Refinery[L]', 'Refinery[L]'),
-                         ('Station', 'Station'),
-                         ('TCU', 'TCU'),
+                         ('Cyno Beacon','Cyno Beacon'),
+                         ('Cyno Jammer','Cyno Jammer'),
+                         ('Jump Gate','Jump Gate'),
                          ('Moon Mining Cycle', 'Moon Mining Cycle'),
                          (_('Other'), _('Other'))]
     objective_choices = [('Friendly', _('Friendly')),
