@@ -8,12 +8,12 @@
                     <ul class="list-group">
                         {% for notif in notifications %}
                         <li class="list-group-item">
-                            {% if notif.state == 'open' %}
+                            {% if notif.state == 'opened' %}
                                 <span class="label label-success">{% trans "Open" %}</span>
                             {% else %}
                                 <span class="label label-danger">{% trans "Closed" %}</span>
                             {% endif %}
-                            <a href="{{ notif.web_url }}" target="_blank">#{{ notif.number }} {{ notif.title }}</a>
+                            <a href="{{ notif.web_url }}" target="_blank">#{{ notif.iid }} {{ notif.title }}</a>
                         </li>
                         {% endfor %}
                     </ul>
