@@ -1,7 +1,7 @@
 Alliance Auth
 ============
 
-[![Join the chat at https://gitter.im/R4stl1n/allianceauth](https://badges.gitter.im/R4stl1n/allianceauth.svg)](https://gitter.im/R4stl1n/allianceauth?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Chat on Discord](https://img.shields.io/discord/399006117012832262.svg)](https://discord.gg/fjnHAmk)
 [![Documentation Status](https://readthedocs.org/projects/allianceauth/badge/?version=latest)](http://allianceauth.readthedocs.io/?badge=latest)
 [![pipeline status](https://gitlab.com/allianceauth/allianceauth/badges/master/pipeline.svg)](https://gitlab.com/allianceauth/allianceauth/commits/master)
 [![coverage report](https://gitlab.com/allianceauth/allianceauth/badges/master/coverage.svg)](https://gitlab.com/allianceauth/allianceauth/commits/master)
@@ -12,7 +12,7 @@ An auth system for EVE Online to help in-game organizations manage online servic
 
 [Read the docs here.](http://allianceauth.rtfd.io)
 
-[Get help on gitter](https://gitter.im/R4stl1n/allianceauth) or submit an Issue.
+[Get help on Discord](https://discord.gg/fjnHAmk) or submit an Issue.
 
 
 Active Developers:
