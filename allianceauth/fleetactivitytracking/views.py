@@ -122,7 +122,7 @@ def fatlink_statistics_corp_view(request, corpid, year=None, month=None):
     start_of_next_month = first_day_of_next_month(year, month)
     start_of_previous_month = first_day_of_previous_month(year, month)
     fat_stats = {}
-    corp_members = CharacterOwnership.objects.filter(character__corporation_id=corpid).values('user_id').distinct()
+    corp_members = CharacterOwnership.objects.filter(character__corporation_id=corpid).order_by('user_id').values('user_id').distinct()
 
     for member in corp_members:
         try:
