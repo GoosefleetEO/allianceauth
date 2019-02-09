@@ -235,7 +235,7 @@ class DiscourseManager:
     @staticmethod
     def __add_user_to_group(g_id, username):
         endpoint = ENDPOINTS['groups']['add_user']
-        DiscourseManager.__exc(endpoint, g_id, usernames=[username])
+        DiscourseManager.__exc(endpoint, g_id, usernames=username)
 
     @staticmethod
     def __remove_user_from_group(g_id, username):
