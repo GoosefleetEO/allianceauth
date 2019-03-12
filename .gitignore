@@ -62,5 +62,7 @@ celerybeat-schedule
 
 #pycharm
 .idea/*
-
 /nbproject/
+
+#gitlab configs
+.gitlab/
