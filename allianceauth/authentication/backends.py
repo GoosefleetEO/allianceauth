@@ -27,7 +27,7 @@ class StateBackend(ModelBackend):
             user_obj._perm_cache.update(self.get_state_permissions(user_obj))
         return user_obj._perm_cache
 
-    def authenticate(self, token=None):
+    def authenticate(self, request=None, token=None, **credentials):
         if not token:
             return None
         try:

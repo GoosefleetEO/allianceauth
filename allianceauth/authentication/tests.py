@@ -119,7 +119,7 @@ class BackendTestCase(TestCase):
     def test_authenticate_character_record(self):
         t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
         record = OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
-        user = StateBackend().authenticate(t)
+        user = StateBackend().authenticate(token=t)
         self.assertEqual(user, self.old_user)
         self.assertTrue(CharacterOwnership.objects.filter(owner_hash='4', user=self.old_user).exists())
         self.assertTrue(user.profile.main_character)
