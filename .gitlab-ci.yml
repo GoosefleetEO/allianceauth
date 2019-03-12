@@ -25,14 +25,6 @@
     
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
 
-
-py36-dj111:
-  <<: *job_definition
-  image: python:3.6-stretch
-  script:
-  - export TOXENV=py36-dj111
-  - tox
-
 py36-dj20:
   <<: *job_definition
   image: python:3.6-stretch
