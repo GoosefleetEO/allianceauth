@@ -74,6 +74,19 @@ Alliance Auth needs a MySQL user account and database. Open an SQL shell with `m
     CREATE DATABASE alliance_auth CHARACTER SET utf8;
     GRANT ALL PRIVILEGES ON alliance_auth . * TO 'allianceserver'@'localhost';
 
+Add timezone tables to your mysql installation:
+
+    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
+    
+```eval_rst
+.. note::
+   You may see errors when you add the timezone tables. To make sure that they were correctly added run the following commands and check for the ``time_zone`` tables::
+   
+     mysql -u root -p
+     use mysql;
+     show tables;
+```
+
 Close the SQL shell and secure your database server with the `mysql_secure_installation` command.
 
 ## Auth Install
