@@ -1,4 +1,5 @@
 import logging
+import urllib
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -61,7 +62,7 @@ class MumbleService(ServicesHook):
             'service_name': self.title,
             'urls': urls,
             'service_url': self.service_url,
-            'connect_url': request.user.mumble.username + '@' + self.service_url if MumbleTasks.has_account(request.user) else self.service_url,
+            'connect_url': urllib.parse.quote(request.user.mumble.username, safe="") + '@' + self.service_url if MumbleTasks.has_account(request.user) else self.service_url,
             'username': request.user.mumble.username if MumbleTasks.has_account(request.user) else '',
         }, request=request)
 
