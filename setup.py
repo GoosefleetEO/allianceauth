@@ -13,20 +13,21 @@ install_requires = [
     'semantic_version',
 
     'redis<=2.10.6',
-    'celery>=4.0.2',
+    'celery>=4.0.2,<4.3.0',
     'celery_once',
 
     'django>=2.0',
     'django-bootstrap-form',
     'django-registration==2.4',
     'django-sortedm2m',
-    'django-redis-cache>=1.7.1',
+    'django-redis-cache==1.8.1',
     'django-celery-beat<=1.1.1',
 
     'openfire-restapi',
     'sleekxmpp',
 
     'adarnauth-esi>=1.4.10,<2.0',
+    'kombu<=4.3.0',
 ]
 
 testing_extras = [

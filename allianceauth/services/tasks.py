@@ -4,8 +4,8 @@ from celery import shared_task
 from django.contrib.auth.models import User
 from .hooks import ServicesHook
 from celery_once import QueueOnce as BaseTask, AlreadyQueued
-from celery_once.helpers import now_unix
 from django.core.cache import cache
+from time import time
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ class DjangoBackend:
 
     @staticmethod
     def raise_or_lock(key, timeout):
-        now = now_unix()
+        now = int(time())
         result = cache.get(key)
         if result:
             remaining = int(result) - now
