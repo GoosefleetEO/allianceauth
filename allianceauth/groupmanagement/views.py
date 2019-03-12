@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -83,10 +84,9 @@ def group_membership_audit(request, group_id):
 
     except ObjectDoesNotExist:
         raise Http404("Group does not exist")
-
-    entries = RequestLog.objects.filter(group=group)
-
-    render_items = {'entries': entries, 'group': group.name}
+    render_items = {'group': group.name}
+    entries = RequestLog.objects.filter(group=group).order_by('-date')
+    render_items['entries'] = entries
 
     return render(request, 'groupmanagement/audit.html', context=render_items)
 

@@ -12,7 +12,7 @@ urlpatterns = [
             name='membership'),
         url(r'^membership/(\w+)/$', views.group_membership_list,
             name='membership_list'),
-        url(r'^membership/(\w+)/audit/', views.group_membership_audit, name="audit_log"),
+        url(r'^membership/(\w+)/audit/$', views.group_membership_audit, name="audit_log"),
         url(r'^membership/(\w+)/remove/(\w+)/$', views.group_membership_remove,
             name='membership_remove'),
         url(r'^request_add/(\w+)', views.group_request_add,

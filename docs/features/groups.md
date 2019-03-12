@@ -66,6 +66,17 @@ Clicking on the blue eye will take you to the group member management screen. He
 
 ![Group overview](/_static/images/features/group-member-management.png)
 
+### Group Audit Log
+Whenever a user Joins, Leaves, or is Removed from a group, this is logged. To find the audit log for a given group, click the light-blue button to the right of the Group Member Management (blue eye) button.
+
+These logs contain the Date and Time the action was taken (in EVE/UTC), the user which submitted the request being acted upon (requestor), the user's main character, the type of request (join, leave or removed), the action taken (accept, reject or remove), and the user that took the action (actor).
+
+![Audit Log Example](/_static/images/features/group_audit_log.png)
+
+```eval_rst
+.. note::
+    There is no tracking for "Open" groups as members are able to freely join/leave these groups.
+```
 
 ## Group Leaders
 

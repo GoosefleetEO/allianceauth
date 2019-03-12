@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from allianceauth.authentication.models import State
+from datetime import datetime
 
 
 class GroupRequest(models.Model):
@@ -30,6 +31,7 @@ class RequestLog(models.Model):
     request_info = models.CharField(max_length=254)
     action = models.BooleanField(default=0)
     request_actor = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=datetime.utcnow())
 
     def requestor(self):
         return self.request_info.split(":")[0]
