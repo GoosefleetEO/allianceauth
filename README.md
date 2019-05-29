@@ -19,6 +19,8 @@ Active Developers:
 
  - [Adarnof](https://gitlab.com/adarnof/)
  - [Basraah](https://gitlab.com/basraah/)
+ - [Ariel Rin](https://gitlab.com/soratidus999/)
+ - [Col Crunch](https://gitlab.com/colcrunch/)
 
 Beta Testers / Bug Fixers:
 
