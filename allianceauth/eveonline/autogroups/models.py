@@ -179,15 +179,13 @@ class AutogroupsConfig(models.Model):
     @transaction.atomic
     def create_alliance_group(self, alliance: EveAllianceInfo) -> Group:
         group, created = Group.objects.get_or_create(name=self.get_alliance_group_name(alliance))
-        if created:
-            ManagedAllianceGroup.objects.create(group=group, config=self, alliance=alliance)
+        ManagedAllianceGroup.objects.get_or_create(group=group, config=self, alliance=alliance)
         return group
 
     @transaction.atomic
     def create_corp_group(self, corp: EveCorporationInfo) -> Group:
         group, created = Group.objects.get_or_create(name=self.get_corp_group_name(corp))
-        if created:
-            ManagedCorpGroup.objects.create(group=group, config=self, corp=corp)
+        ManagedCorpGroup.objects.get_or_create(group=group, config=self, corp=corp)
         return group
 
     def delete_alliance_managed_groups(self):
@@ -240,6 +238,8 @@ class ManagedGroup(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return "Managed Group: %s" % self.group.name
 
 class ManagedCorpGroup(ManagedGroup):
     corp = models.ForeignKey(EveCorporationInfo, on_delete=models.CASCADE)
