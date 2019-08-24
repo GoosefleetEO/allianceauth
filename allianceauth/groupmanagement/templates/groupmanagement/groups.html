@@ -32,9 +32,15 @@ url
                                 </button>
                             {% endif %}
                         {% elif not g.request %}
-                            <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
-                                {% trans "Request" %}
-                            </a>
+                            {% if g.group.authgroup.open %}
+                                <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
+                                    {% trans "Join" %}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-primary">
+                                    {% trans "Request" %}
+                                </a>
+                            {% endif %}
                         {% else %}
                             <button type="button" class="btn btn-primary" disabled>
                                 {{ g.request.status }}
