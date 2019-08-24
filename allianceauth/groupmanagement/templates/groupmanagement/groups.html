@@ -19,7 +19,7 @@ url
             {% for g in groups %}
                 <tr>
                     <td class="text-center">{{ g.group.name }}</td>
-                    <td class="text-center">{{ g.group.authgroup.description }}</td>
+                    <td class="text-center">{{ g.group.authgroup.description|urlize }}</td>
                     <td class="text-center">
                         {% if g.group in user.groups.all %}
                             {% if not g.request %}
