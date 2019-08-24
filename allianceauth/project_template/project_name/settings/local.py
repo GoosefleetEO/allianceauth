@@ -30,6 +30,7 @@ DATABASES['default'] = {
     'PASSWORD': '',
     'HOST': '127.0.0.1',
     'PORT': '3306',
+    'OPTIONS': {'charset': 'utf8mb4'},
 }
 
 # Register an application at https://developers.eveonline.com for Authentication
