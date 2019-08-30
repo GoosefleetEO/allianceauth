@@ -6,6 +6,11 @@ Discord is very popular amongst ad-hoc small groups and larger organizations see
 
 ## Setup
 
+```eval_rst
+.. warning::
+    Do not run the `discord.update_*` periodic tasks on a regular schedule, doing so can cause your discord service to stop syncing completely. 
+```
+
 ### Prepare Your Settings File
 In your auth project's settings file, do the following:
  - Add `'allianceauth.services.modules.discord',` to your `INSTALLED_APPS` list
