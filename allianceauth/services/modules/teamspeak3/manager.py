@@ -199,7 +199,7 @@ class Teamspeak3Manager:
                                                         'tokendescription': username_clean,
                                                         'tokencustomset': "ident=sso_uid value=%s" % username_clean})
         except TeamspeakError as e:
-            logger.error("Failed to add teamspeak user %s: %s" % (username, str(e)))
+            logger.error("Failed to add teamspeak user %s: %s" % (username_clean, str(e)))
             return "",""
 
         try:

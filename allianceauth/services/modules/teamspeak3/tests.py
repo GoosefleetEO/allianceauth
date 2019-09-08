@@ -12,6 +12,10 @@ from .models import Teamspeak3User, AuthTS, TSgroup, StateGroup
 from .tasks import Teamspeak3Tasks
 from .signals import m2m_changed_authts_group, post_save_authts, post_delete_authts
 
+from .manager import Teamspeak3Manager
+from .util.ts3 import TeamspeakError
+from allianceauth.authentication.models import State
+
 MODULE_PATH = 'allianceauth.services.modules.teamspeak3'
 DEFAULT_AUTH_GROUP = 'Member'
 
@@ -290,3 +294,31 @@ class Teamspeak3SignalsTestCase(TestCase):
         self.member.profile.save()
 
         self.assertTrue(update_groups.called)
+
+
+class Teamspeak3ManagerTestCase(TestCase):
+
+    @staticmethod
+    def my_side_effect(*args, **kwargs):
+        raise TeamspeakError(1)
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    @mock.patch.object(Teamspeak3Manager, '_group_id_by_name')
+    def test_add_user_exception(self, _group_id_by_name, _group_list):  
+        """test 1st exception occuring in add_user()"""
+        # set mocks in Teamspeak3Manager class
+        _group_list.return_value = ['Member', 'Guest']
+        _group_id_by_name.return_value =  99        
+        manager = Teamspeak3Manager()
+        server = mock.MagicMock()
+        server._connected.return_value = True
+        server.send_command = mock.Mock(side_effect=Teamspeak3ManagerTestCase.my_side_effect)
+        manager._server = server
+
+        # create test data                
+        user = User.objects.create_user("dummy")
+        user.profile.state = State.objects.filter(name="Member").first()
+        
+        # perform test
+        manager.add_user(user, "Dummy User")
+    
