@@ -4,7 +4,7 @@ from django.db.models.signals import pre_save, post_save, pre_delete, post_delet
 from django.dispatch import receiver
 from .models import AuthGroup
 from .models import GroupRequest
-
+from . import signals
 
 class AuthGroupInlineAdmin(admin.StackedInline):
     model = AuthGroup
