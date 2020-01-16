@@ -24,7 +24,6 @@ INSTALLED_APPS += [
     'allianceauth.optimer',
     'allianceauth.corputils',
     'allianceauth.fleetactivitytracking',
-    'allianceauth.fleetup',
     'allianceauth.permissions_tool',
     'allianceauth.services.modules.mumble',
     'allianceauth.services.modules.discord',
@@ -173,19 +172,6 @@ SEAT_XTOKEN = 'tokentokentoken'
 # SMF Configuration
 ######################################
 SMF_URL = ''
-
-######################################
-# Fleet-Up Configuration
-######################################
-# FLEETUP_APP_KEY - The app key from http://fleet-up.com/Api/MyApps
-# FLEETUP_USER_ID - The user id from http://fleet-up.com/Api/MyKeys
-# FLEETUP_API_ID - The API id from http://fleet-up.com/Api/MyKeys
-# FLEETUP_GROUP_ID - The id of the group you want to pull data from, see http://fleet-up.com/Api/Endpoints#groups_mygroupmemberships
-######################################
-FLEETUP_APP_KEY = ''
-FLEETUP_USER_ID = ''
-FLEETUP_API_ID = ''
-FLEETUP_GROUP_ID = ''
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
