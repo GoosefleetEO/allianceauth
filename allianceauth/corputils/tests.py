@@ -205,13 +205,13 @@ class CorpStatsPropertiesTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_logos(self):
-        self.assertEqual(self.corpstats.corp_logo(size=128), 'https://image.eveonline.com/Corporation/2_128.png')
-        self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://image.eveonline.com/Alliance/1_128.png')
+        self.assertEqual(self.corpstats.corp_logo(size=128), 'https://images.evetech.net/corporations/2/logo?size=128')
+        self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://images.evetech.net/alliances/1/logo?size=128')
 
         alliance = EveAllianceInfo.objects.create(alliance_name='test alliance', alliance_id='3', alliance_ticker='TEST', executor_corp_id='2')
         self.corp.alliance = alliance
         self.corp.save()
-        self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://image.eveonline.com/Alliance/3_128.png')
+        self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://images.evetech.net/alliances/3/logo?size=128')
         alliance.delete()
 
 
@@ -273,5 +273,7 @@ class CorpMemberTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_portrait_url(self):
-        self.assertEquals(self.member.portrait_url(size=32), 'https://image.eveonline.com/Character/2_32.jpg')
+        self.assertEquals(self.member.portrait_url(size=32), 'https://images.evetech.net/characters/2/portrait?size=32')
         self.assertEquals(self.member.portrait_url(size=32), self.member.portrait_url_32)
+        self.assertEquals(self.member.portrait_url(size=64), self.member.portrait_url_64)
+        self.assertEquals(self.member.portrait_url(size=128), self.member.portrait_url_128)

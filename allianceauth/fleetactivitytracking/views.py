@@ -287,8 +287,13 @@ def click_fatlink_view(request, token, fat_hash=None):
                     err_messages.append(message[0])
                 messages.error(request, ' '.join(err_messages))
         else:
-            context = {'character_id': token.character_id,
-                       'character_name': token.character_name}
+            context = {
+                'character_id': token.character_id,
+                'character_name': token.character_name,
+                'character_portrait_url': EveCharacter.generic_portrait_url(
+                    token.character_id, 128
+                ),
+            }
             return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
     else:
         messages.error(request, _('FAT link has expired.'))

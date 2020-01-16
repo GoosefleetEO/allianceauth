@@ -12,7 +12,6 @@ from hashlib import md5
 logger = logging.getLogger(__name__)
 
 DISCORD_URL = "https://discordapp.com/api"
-EVE_IMAGE_SERVER = "https://image.eveonline.com"
 
 AUTH_URL = "https://discordapp.com/api/oauth2/authorize"
 TOKEN_URL = "https://discordapp.com/api/oauth2/token"
