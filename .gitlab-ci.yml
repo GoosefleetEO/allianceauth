@@ -1,5 +1,6 @@
 stages:
 - "test"
+- deploy
 
 before_script:
 - python -V
@@ -19,3 +20,17 @@ test-3.7:
   image: python:3.7-stretch
   script:  
   - tox -e py37
+
+deploy_production:
+  stage: deploy
+  image: python:3.6-stretch
+
+  before_script:
+    - pip install twine
+
+  script:
+    - python setup.py sdist
+    - twine upload dist/*
+
+  only:
+    - tags
