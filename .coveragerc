@@ -8,6 +8,8 @@ omit =
     */example/*
     */project_template/*
     */bin/*
+    */tests/*
+    */tests.py
 
 [report]
 exclude_lines =
