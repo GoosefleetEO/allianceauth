@@ -12,6 +12,7 @@ get_alliances_alliance_id_corporations
 get_corporations_corporation_id
 get_characters_character_id
 get_universe_types_type_id
+post_character_affiliation
 """
 
 
@@ -189,11 +190,13 @@ class EveSwaggerProvider(EveProvider):
     def get_character(self, character_id):
         try:
             data = self.client.Character.get_characters_character_id(character_id=character_id).result()
+            affiliation = self.client.Character.post_characters_affiliation(characters=[character_id]).result()[0]
+
             model = Character(
                 id=character_id,
                 name=data['name'],
-                corp_id=data['corporation_id'],
-                alliance_id=data['alliance_id'] if 'alliance_id' in data else None,
+                corp_id=affiliation['corporation_id'],
+                alliance_id=affiliation['alliance_id'] if 'alliance_id' in affiliation else None,
             )
             return model
         except (HTTPNotFound, HTTPUnprocessableEntity):
