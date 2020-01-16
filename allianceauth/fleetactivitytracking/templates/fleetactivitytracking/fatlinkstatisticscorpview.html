@@ -29,7 +29,7 @@
             {% for memberStat in fatStats %}
             <tr>
                 <td>
-                    <img src="https://image.eveonline.com/Character/{{ memberStat.mainchid }}_32.jpg" class="ra-avatar img-responsive">
+                    <img src="{{ memberStat.mainchar.portrait_url_32 }}" class="ra-avatar img-responsive">
                 </td>
                 <td class="text-center">{{ memberStat.mainchar.character_name }}</td>
                 <td class="text-center">{{ memberStat.n_chars }}</td>

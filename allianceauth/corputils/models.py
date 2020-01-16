@@ -6,7 +6,8 @@ from bravado.exception import HTTPForbidden
 from django.db import models
 from esi.errors import TokenError
 from esi.models import Token
-from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter
+from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter,\
+     EveAllianceInfo
 from allianceauth.notifications import notify
 
 from allianceauth.corputils.managers import CorpStatsManager
@@ -137,13 +138,13 @@ class CorpStats(models.Model):
         return self.token.user == user or self.visible_to(user)
 
     def corp_logo(self, size=128):
-        return "https://image.eveonline.com/Corporation/%s_%s.png" % (self.corp.corporation_id, size)
+        return self.corp.logo_url(size)
 
     def alliance_logo(self, size=128):
         if self.corp.alliance:
-            return "https://image.eveonline.com/Alliance/%s_%s.png" % (self.corp.alliance.alliance_id, size)
+            return self.corp.alliance.logo_url(size)
         else:
-            return "https://image.eveonline.com/Alliance/1_%s.png" % size
+            return EveAllianceInfo.generic_logo_url(1, size)
 
 
 class CorpMember(models.Model):
@@ -185,10 +186,16 @@ class CorpMember(models.Model):
         return CharacterOwnership.objects.filter(character__character_id=self.character_id).exists()
 
     def portrait_url(self, size=32):
-        return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
+        return EveCharacter.generic_portrait_url(self.character_id, size)
 
-    def __getattr__(self, item):
-        if item.startswith('portrait_url_'):
-            size = item.strip('portrait_url_')
-            return self.portrait_url(size)
-        return self.__getattribute__(item)
+    @property
+    def portrait_url_32(self):
+        return self.portrait_url(32)
+
+    @property
+    def portrait_url_64(self):
+        return self.portrait_url(64)
+
+    @property
+    def portrait_url_128(self):
+        return self.portrait_url(128)

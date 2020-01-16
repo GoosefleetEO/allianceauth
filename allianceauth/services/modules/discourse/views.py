@@ -83,7 +83,7 @@ def discourse_sso(request):
     }
 
     if main_char:
-        params['avatar_url'] = 'https://image.eveonline.com/Character/%s_256.jpg' % main_char.character_id
+        params['avatar_url'] = main_char.portrait_url(256)
 
     return_payload = base64.encodestring(urlencode(params).encode('utf-8'))
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
