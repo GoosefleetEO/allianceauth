@@ -29,9 +29,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <ul class="nav nav-pills pull-left">
-                            <li class="active"><a href="#mains" data-toggle="pill">{% trans 'Mains' %} ({{ corpstats.main_count }})</a></li>
+                            <li class="active"><a href="#mains" data-toggle="pill">{% trans 'Mains' %} ({{ total_mains }})</a></li>
                             <li><a href="#members" data-toggle="pill">{% trans 'Members' %} ({{ corpstats.member_count }})</a></li>
-                            <li><a href="#unregistered" data-toggle="pill">{% trans 'Unregistered' %} ({{ corpstats.unregistered_member_count }})</a></li>
+                            <li><a href="#unregistered" data-toggle="pill">{% trans 'Unregistered' %} ({{ unregistered.count }})</a></li>
                         </ul>
                         <div class="pull-right">
                             {% trans "Last update:" %} {{ corpstats.last_update|naturaltime }}
@@ -54,14 +54,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {% for main in mains %}
+                                                {% for id, main in mains.items %}
                                                     <tr>
                                                         <td class="text-center" style="vertical-align:middle">
                                                             <div class="thumbnail"
                                                                  style="border: 0 none; box-shadow: none; background: transparent;">
-                                                                <img src="{{ main.portrait_url_64 }}" class="img-circle">
+                                                                <img src="{{ main.main.portrait_url_64 }}" class="img-circle">
                                                                 <div class="caption text-center">
-                                                                    {{ main }}
+                                                                    {{ main.main }}
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -119,16 +119,29 @@
                                             </thead>
                                             <tbody>
                                                 {% for member in members %}
-                                                    <tr {% if not member.registered %}class="danger"{% endif %}>
+                                                    <tr>
+                                                        <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
+                                                        <td class="text-center">{{ member }}</td>
+                                                        <td class="text-center"><a
+                                                                href="https://zkillboard.com/character/{{ member.character_id }}/"
+                                                                class="label label-danger"
+                                                                target="_blank">{% trans "Killboard" %}</a></td>
+                                                        <td class="text-center">{{ member.character_ownership.user.profile.main_character.character_name }}</td>
+                                                        <td class="text-center">{{ member.character_ownership.user.profile.main_character.corporation_name }}</td>
+                                                        <td class="text-center">{{ member.character_ownership.user.profile.main_character.alliance_name }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                {% for member in unregistered %}
+                                                    <tr class="danger">
                                                         <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                         <td class="text-center">{{ member.character_name }}</td>
                                                         <td class="text-center"><a
                                                                 href="https://zkillboard.com/character/{{ member.character_id }}/"
                                                                 class="label label-danger"
                                                                 target="_blank">{% trans "Killboard" %}</a></td>
-                                                        <td class="text-center">{{ member.main_character.character_name }}</td>
-                                                        <td class="text-center">{{ member.main_character.corporation_name }}</td>
-                                                        <td class="text-center">{{ member.main_character.alliance_name }}</td>
+                                                        <td class="text-center"></td>
+                                                        <td class="text-center"></td>
+                                                        <td class="text-center"></td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>
