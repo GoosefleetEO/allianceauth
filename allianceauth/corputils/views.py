@@ -3,14 +3,14 @@ import os
 from bravado.exception import HTTPError
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from esi.decorators import token_required
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 
-from .models import CorpStats
+from .models import CorpStats, CorpMember
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
 """
@@ -68,7 +68,7 @@ def corpstats_view(request, corp_id=None):
         corpstats = get_object_or_404(CorpStats, corp=corp)
 
     # get available models
-    available = CorpStats.objects.visible_to(request.user).order_by('corp__corporation_name')
+    available = CorpStats.objects.visible_to(request.user).order_by('corp__corporation_name').select_related('corp')
 
     # ensure we can see the requested model
     if corpstats and corpstats not in available:
@@ -89,13 +89,49 @@ def corpstats_view(request, corp_id=None):
     }
 
     if corpstats:
-        members = corpstats.members.all()
-        mains = corpstats.mains.all()
-        unregistered = corpstats.unregistered_members.all()
+        character_list = CorpMember.objects.filter(corpstats=corpstats)
+        linked_chars = EveCharacter.objects.filter(
+            character_id__in=character_list.values_list('character_id', flat=True))
+        linked_chars = linked_chars | EveCharacter.objects.filter(
+            character_ownership__user__profile__main_character__corporation_id=corpstats.corp.corporation_id)
+
+        linked_chars = linked_chars.select_related('character_ownership',
+                                                   'character_ownership__user__profile__main_character') \
+            .prefetch_related('character_ownership__user__character_ownerships') \
+            .prefetch_related('character_ownership__user__character_ownerships__character')
+
+        members = []
+        mains = {}
+
+        temp_ids = []
+        for char in linked_chars:
+            try:
+                main = char.character_ownership.user.profile.main_character
+                if main is not None:
+                    if main.character_id not in mains:
+                        mains[main.character_id] = {'main':main, 'alts':[]}
+
+                    mains[main.character_id]['alts'].append(char)
+
+                    if char.corporation_id == corpstats.corp.corporation_id:
+                        members.append(char)
+
+                    temp_ids.append(char.character_id)
+
+            except ObjectDoesNotExist:
+                pass
+
+        unregistered = character_list.exclude(character_id__in=temp_ids)
+
+        members = members
+        mains = mains
+        total_mains = len(mains)
+        unregistered = unregistered
         context.update({
             'corpstats': corpstats,
             'members': members,
             'mains': mains,
+            'total_mains': total_mains,
             'unregistered': unregistered,
         })
 
