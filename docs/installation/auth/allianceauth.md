@@ -19,7 +19,7 @@ Alliance Auth can be installed on any operating system. Dependencies are provide
 
 ### Python
 
-Alliance Auth requires python3.4 or higher. Ensure it is installed on your server before proceeding.
+Alliance Auth requires python3.5 or higher. Ensure it is installed on your server before proceeding.
 
 Ubuntu:
 
