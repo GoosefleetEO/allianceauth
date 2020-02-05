@@ -102,9 +102,12 @@ class GroupAdmin(admin.ModelAdmin):
 
     def _attributes(self, obj):
         attributes = list()
-        if _has_auto_groups and (obj.managedalliancegroup_set.exists() 
+        if (_has_auto_groups 
+            and (
+                obj.managedalliancegroup_set.exists() 
                 or obj.managedcorpgroup_set.exists()
-            ):
+            )
+        ):
             attributes.append('Auto Group')
         elif obj.authgroup.internal:
             attributes.append('Internal')

@@ -1,15 +1,28 @@
+from django.conf import settings
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User as BaseUser, Permission as BasePermission
-from django.utils.text import slugify
+from django.contrib.auth.models import User as BaseUser, \
+    Permission as BasePermission
 from django.db.models import Q
 from allianceauth.services.hooks import ServicesHook
-from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
+from django.db.models.signals import pre_save, post_save, pre_delete, \
+    post_delete, m2m_changed
 from django.dispatch import receiver
-from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile, OwnershipRecord
+from django.forms import ModelForm
+from django.utils.safestring import mark_safe
+from django.utils.text import slugify
+
+from allianceauth.authentication.models import State, get_guest_state,\
+    CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter
-from django.forms import ModelForm
+
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import *
+else:
+    _has_auto_groups = False
 
 
 def make_service_hooks_update_groups_action(service):
@@ -83,6 +96,25 @@ class UserProfileInline(admin.StackedInline):
         return False
 
 
+class MyGroupFilter(admin.SimpleListFilter):
+    title = 'group'
+    parameter_name = 'my_groups'
+
+    def lookups(self, request, model_admin):
+        qs = Group.objects.all().order_by('name')
+        if _has_auto_groups:
+            qs = qs\
+                .filter(managedalliancegroup__exact=None)\
+                .filter(managedcorpgroup__exact=None)
+        return tuple([(x.pk, x.name) for x in qs])
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset.all()
+        else:    
+            return queryset.filter(groups__pk=self.value())
+        
+
 class UserAdmin(BaseUserAdmin):
     """
     Extending Django's UserAdmin model
@@ -106,48 +138,139 @@ class UserAdmin(BaseUserAdmin):
                                             action.short_description)
 
         return actions
+    
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
 
-    list_select_related = True
-    
-    list_filter = BaseUserAdmin.list_filter + (                
-        'profile__main_character__corporation_name', 
-        'profile__main_character__alliance_name', 
-        'profile__state', 
-        'date_joined'
-    )
+    list_select_related = True    
+    show_full_result_count = True 
     
     list_display = (
-        'username',         
-        'get_main_character',
-        'get_main_corporation',
-        'get_main_alliance',
-        'get_state', 
+        '_profile_pic',
+        '_username',                 
+        '_state', 
+        '_groups',
+        '_main_organization',        
+        '_characters',
+        'is_active',
         'date_joined',
-        'is_active'
+        '_role'
+    )    
+    list_display_links = None
+
+    list_filter = ( 
+        'profile__state',
+        MyGroupFilter,
+        'profile__main_character__corporation_name', 
+        'profile__main_character__alliance_name',                 
+        'is_active',
+        'date_joined',
+        'is_staff',
+        'is_superuser'
+    )
+    search_fields = (
+        'username', 
+        'character_ownerships__character__character_name',
+        'groups__name'
     )
 
-    def get_main_character(self, obj):
-        return obj.profile.main_character
-    get_main_character.short_description = "Main Character"
-
-    def get_main_corporation(self, obj):
+    def _profile_pic(self, obj):
         if obj.profile.main_character:
-            return obj.profile.main_character.corporation_name
+            return mark_safe(
+                '<img src="{}" style="border-radius: 50%;">'.format(
+                    obj.profile.main_character.portrait_url(size=32)
+            ))
         else:
-            return None
-    get_main_corporation.short_description = "Main Corporation"
+            return ''
+    _profile_pic.short_description = ''
 
-    def get_main_alliance(self, obj):
+
+    def _username(self, obj):
+        #/admin/<app>/<model>/<pk>/change/
+        link = '/admin/authentication/{}/{}/change/'.format(            
+            type(obj).__name__.lower(),
+            obj.pk
+        )
+        return mark_safe('<strong><a href="{}">{}</a></strong><br>{}'.format(
+            link, 
+            obj.username,
+            obj.email
+        ))
+    
+    _username.short_description = 'user'
+    _username.admin_order_field = 'username'
+
+    def _main_organization(self, obj):
         if obj.profile.main_character:
-            return obj.profile.main_character.alliance_name
+            corporation = obj.profile.main_character.corporation_name
         else:
-            return None
-    get_main_alliance.short_description = "Main Alliance"
+            corporation = ''
+        if (obj.profile.main_character 
+            and obj.profile.main_character.alliance_id
+        ):
+            alliance = obj.profile.main_character.alliance_name
+        else:
+            alliance = ''
+        return mark_safe('{}<br>{}'.format(corporation, alliance))
 
-    def get_state(self, obj):
+    _main_organization.short_description = 'Corporation / Alliance (Main)'
+    _main_organization.admin_order_field = \
+        'profile__main_character__corporation_name'
+
+
+    def _characters(self, obj):
+        alts = [
+            x.character.character_name 
+            for x in CharacterOwnership.objects\
+                .filter(user=obj)\
+                .order_by('character__character_name')
+                .exclude(character=obj.profile.main_character)            
+        ]
+        if obj.profile.main_character:
+            result = [
+                '<b>{}</b>'.format(obj.profile.main_character.character_name)
+            ]
+        else:
+            result =  []
+        return mark_safe(', '.join(result + alts))
+          
+    _characters.short_description = 'characters'
+    
+
+    def _state(self, obj):
         return obj.profile.state
-    get_state.short_description = "State"
+    
+    _state.short_description = 'state'
+    _state.admin_order_field = 'profile__state'
+
+
+    def _groups(self, obj):
+        if not _has_auto_groups:
+            my_groups = [x.name for x in obj.groups.order_by('name')]
+        else:
+            my_groups = [
+                x.name for x in obj.groups\
+                    .filter(managedalliancegroup=None)\
+                    .filter(managedcorpgroup=None)\
+                    .order_by('name')
+            ]
+        
+        return ', '.join(my_groups)
+
+    _groups.short_description = 'groups'
+
+
+    def _role(self, obj):
+        if obj.is_superuser:
+            role = 'Superuser'
+        elif obj.is_staff:
+            role = 'Staff'
+        else:
+            role = 'User'
+        
+        return role
+    
+    _role.short_description = 'role'
+    
 
     def has_change_permission(self, request, obj=None):
         return request.user.has_perm('auth.change_user')
