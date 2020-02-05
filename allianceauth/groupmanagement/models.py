@@ -98,6 +98,11 @@ class AuthGroup(models.Model):
                                            help_text="Group leaders can process group requests for this group "
                                                      "specifically. Use the auth.group_management permission to allow "
                                                      "a user to manage all groups.")
+    # allow groups to be *group leads*
+    group_leader_groups = models.ManyToManyField(Group, related_name='leads_group_groups', blank=True,
+                                           help_text="Group leaders can process group requests for this group "
+                                                     "specifically. Use the auth.group_management permission to allow "
+                                                     "a user to manage all groups.")
 
     states = models.ManyToManyField(State, related_name='valid_states', blank=True,
                                     help_text="States listed here will have the ability to join this group provided "
