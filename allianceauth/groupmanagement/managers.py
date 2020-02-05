@@ -17,7 +17,8 @@ class GroupManager:
 
     @staticmethod
     def get_group_leaders_groups(user):
-        return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user])
+        return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user]) | \
+               Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
 
     @staticmethod
     def joinable_group(group, state):
@@ -66,7 +67,7 @@ class GroupManager:
         :return: bool True if user can manage groups, False otherwise
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or user.leads_groups.all()
+            return cls.has_management_permission(user) or cls.get_group_leaders_groups(user)
         return False
 
     @classmethod

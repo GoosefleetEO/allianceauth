@@ -8,8 +8,8 @@ from .models import GroupRequest
 
 class AuthGroupInlineAdmin(admin.StackedInline):
     model = AuthGroup
-    filter_horizontal = ('group_leaders', 'states',)
-    fields = ('description', 'group_leaders', 'states', 'internal', 'hidden', 'open', 'public')
+    filter_horizontal = ('group_leaders', 'group_leader_groups', 'states',)
+    fields = ('description', 'group_leaders', 'group_leader_groups', 'states', 'internal', 'hidden', 'open', 'public')
     verbose_name_plural = 'Auth Settings'
     verbose_name = ''
 
