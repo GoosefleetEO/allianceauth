@@ -96,32 +96,47 @@ def group_membership_audit(request, group_id):
 @login_required
 @user_passes_test(GroupManager.can_manage_groups)
 def group_membership_list(request, group_id):
-    logger.debug("group_membership_list called by user %s for group id %s" % (request.user, group_id))
+    logger.debug(
+        "group_membership_list called by user %s "
+        "for group id %s" % (request.user, group_id)
+    )
     group = get_object_or_404(Group, id=group_id)
     try:
 
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
-        if not GroupManager.check_internal_group(group) or not GroupManager.can_manage_group(request.user, group):
-            logger.warning("User %s attempted to view the membership of group %s but permission was denied" %
-                           (request.user, group_id))
+        if (not GroupManager.check_internal_group(group) 
+            or not GroupManager.can_manage_group(request.user, group)
+        ):
+            logger.warning(
+                "User %s attempted to view the membership of group %s "
+                "but permission was denied" % (request.user, group_id)
+            )
             raise PermissionDenied
 
     except ObjectDoesNotExist:
         raise Http404("Group does not exist")
 
+    group_leaders = group.authgroup.group_leaders.all()
     members = list()
-
-    for member in group.user_set.select_related('profile').all().order_by('username'):
+    for member in \
+        group.user_set\
+            .all()\
+            .select_related('profile')\
+            .order_by('profile__main_character__character_name'):
 
         members.append({
             'user': member,
-            'main_char': member.profile.main_character
+            'main_char': member.profile.main_character,
+            'is_leader': member in group_leaders
         })
 
     render_items = {'group': group, 'members': members}
 
-    return render(request, 'groupmanagement/groupmembers.html', context=render_items)
+    return render(
+        request, 'groupmanagement/groupmembers.html', 
+        context=render_items
+    )
 
 
 @login_required

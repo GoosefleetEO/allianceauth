@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
+{% load evelinks %}
 
 {% block page_title %}{% trans "Structure Timer Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
@@ -61,7 +62,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center"><a
-                        href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }} </a>
+                        href="{{ timer.system|dotlan_solar_system_url }}">{{ timer.system }} {{ timer.planet_moon }} </a>
                 </td>
                 <td class="text-center">
                     {% if timer.structure == "POCO" %}
@@ -220,7 +221,7 @@
                 {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }}</a>
+                    <a href="{{ timer.system|dotlan_solar_system_url }}">{{ timer.system }} {{ timer.planet_moon }}</a>
                 </td>
                 <td class="text-center">
                     {% if timer.structure == "POCO" %}
@@ -381,7 +382,7 @@
                 {% endif %}
                 </td>
                 <td class="text-center">
-                    <a href="http://evemaps.dotlan.net/system/{{ timer.system }}">{{ timer.system }} {{ timer.planet_moon }}</a>
+                    <a href="{{ timer.system|dotlan_solar_system_url }}">{{ timer.system }} {{ timer.planet_moon }}</a>
                 </td>
                 <td class="text-center">
                     {% if timer.structure == "POCO" %}

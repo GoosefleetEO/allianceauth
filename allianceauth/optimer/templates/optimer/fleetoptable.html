@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load evelinks %}
 
 {% block content %}
      <table class="table">
@@ -23,7 +24,7 @@
                 <td class="text-center">{{ ops.operation_name }}</td>
                 <td class="text-center">{{ ops.doctrine }}</td>
                 <td class="text-center">
-                    <a href="http://evemaps.dotlan.net/system/{{ ops.system }}">{{ ops.system }}</a>
+                    <a href="{{ ops.system|dotlan_solar_system_url }}">{{ ops.system }}</a>
                 </td>
                 <td class="text-center" nowrap>{{ ops.start | date:"Y-m-d H:i" }}</td>
                 <td class="text-center" nowrap><div id="localtime{{ ops.id }}"></div><div id="countdown{{ ops.id }}"></div></td>
