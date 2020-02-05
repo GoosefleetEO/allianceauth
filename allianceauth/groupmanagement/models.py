@@ -31,7 +31,7 @@ class RequestLog(models.Model):
     request_info = models.CharField(max_length=254)
     action = models.BooleanField(default=0)
     request_actor = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=datetime.utcnow())
+    date = models.DateTimeField(auto_now_add=True)
 
     def requestor(self):
         return self.request_info.split(":")[0]
