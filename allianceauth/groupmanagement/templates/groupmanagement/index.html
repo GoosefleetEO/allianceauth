@@ -1,33 +1,65 @@
 {% extends "allianceauth/base.html" %}
 {% load staticfiles %}
 {% load i18n %}
+{% load evelinks %}
 
 {% block page_title %}{% trans "Groups Management" %}{% endblock page_title %}
-{% block extra_css %}{% endblock extra_css %}
+{% block extra_css %}
+<style>    
+    .nav-tabs>li.active>a {
+        background-color: #ECF0F1 !important;
+        color: #2C3E50;
+    }
+</style>
+
+{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
         <br>
         {% include 'groupmanagement/menu.html' %}
+        
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#add">{% trans "Group Add Requests" %}</a></li>
             <li><a data-toggle="tab" href="#leave">{% trans "Group Leave Requests" %}</a></li>
         </ul>
+        
         <div class="tab-content">
+
             <div id="add" class="tab-pane fade in active panel panel-default">
                 <div class="panel-body">
                 {% if acceptrequests %}
                     <table class="table">
                         <tr>
-                            <th class="text-center">{% trans "RequestID" %}</th>
-                            <th class="text-center">{% trans "CharacterName" %}</th>
-                            <th class="text-center">{% trans "GroupName" %}</th>
-                            <th class="text-center">{% trans "Action" %}</th>
+                            <th class="text-center">{% trans "#" %}</th>
+                            <th class="text-center">{% trans "Portrait" %}</th>
+                            <th class="text-center">{% trans "Character" %}</th>
+                            <th class="text-center">{% trans "Corporation" %}</th>
+                            <th class="text-center">{% trans "Alliance" %}</th>
+                            <th class="text-center">{% trans "Group" %}</th>
+                            <th class="text-center"></th>
                         </tr>
                         {% for acceptrequest in acceptrequests %}
                             <tr>
                                 <td class="text-center">{{ acceptrequest.id }}</td>
-                                <td class="text-center">{{ acceptrequest.main_char.character_name }}</td>
+                                <td class="text-center">
+                                    <img src="{{ acceptrequest.main_char|character_portrait_url:32 }}" class="img-circle">
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ acceptrequest.main_char|evewho_character_url }}" target="_blank">
+                                        {{ acceptrequest.main_char.character_name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ acceptrequest.main_char|dotlan_corporation_url }}" target="_blank">
+                                        {{ acceptrequest.main_char.corporation_name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ acceptrequest.main_char|dotlan_alliance_url }}" target="_blank">
+                                        {{ acceptrequest.main_char.alliance_name|default_if_none:"" }}
+                                    </a>
+                                </td>                     
                                 <td class="text-center">{{ acceptrequest.group.name }}</td>
                                 <td class="text-center">
                                     <a href="{% url 'groupmanagement:accept_request' acceptrequest.id %}" class="btn btn-success">
@@ -45,20 +77,41 @@
                 {% endif %}
                 </div>
             </div>
+
             <div id="leave" class="tab-pane fade panel panel-default">
                 <div class="panel-body">
                 {% if leaverequests %}
                     <table class="table">
                         <tr>
-                            <th class="text-center">{% trans "RequestID" %}</th>
-                            <th class="text-center">{% trans "CharacterName" %}</th>
-                            <th class="text-center">{% trans "GroupName" %}</th>
-                            <th class="text-center">{% trans "Action" %}</th>
+                            <th class="text-center">{% trans "#" %}</th>
+                            <th class="text-center">{% trans "Portrait" %}</th>
+                            <th class="text-center">{% trans "Character" %}</th>
+                            <th class="text-center">{% trans "Corporation" %}</th>
+                            <th class="text-center">{% trans "Alliance" %}</th>
+                            <th class="text-center">{% trans "Group" %}</th>
+                            <th class="text-center"></th>
                         </tr>
                         {% for leaverequest in leaverequests %}
                             <tr>
                                 <td class="text-center">{{ leaverequest.id }}</td>
-                                <td class="text-center">{{ leaverequest.main_char.character_name }}</td>
+                                <td class="text-center">
+                                    <img src="{{ leaverequest.main_char|character_portrait_url:32 }}" class="img-circle">
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ leaverequest.main_char|evewho_character_url }}" target="_blank">
+                                        {{ leaverequest.main_char.character_name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ leaverequest.main_char|dotlan_corporation_url }}" target="_blank">
+                                        {{ leaverequest.main_char.corporation_name }}
+                                    </a>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ leaverequest.main_char|dotlan_alliance_url }}" target="_blank">
+                                        {{ leaverequest.main_char.alliance_name|default_if_none:"" }}
+                                    </a>
+                                </td>  
                                 <td class="text-center">{{ leaverequest.group.name }}</td>
                                 <td class="text-center">
                                     <a href="{% url 'groupmanagement:leave_accept_request' leaverequest.id %}" class="btn btn-success">
@@ -76,6 +129,7 @@
                 {% endif %}
                 </div>
             </div>
+            
         </div>
     </div>
 {% endblock content %}
