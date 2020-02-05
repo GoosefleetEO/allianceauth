@@ -106,13 +106,44 @@ class UserAdmin(BaseUserAdmin):
                                             action.short_description)
 
         return actions
-    list_filter = BaseUserAdmin.list_filter + ('profile__state',)
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
-    list_display = ('username', 'email', 'get_main_character', 'get_state', 'is_active')
+
+    list_select_related = True
+    
+    list_filter = BaseUserAdmin.list_filter + (                
+        'profile__main_character__corporation_name', 
+        'profile__main_character__alliance_name', 
+        'profile__state', 
+        'date_joined'
+    )
+    
+    list_display = (
+        'username',         
+        'get_main_character',
+        'get_main_corporation',
+        'get_main_alliance',
+        'get_state', 
+        'date_joined',
+        'is_active'
+    )
 
     def get_main_character(self, obj):
         return obj.profile.main_character
     get_main_character.short_description = "Main Character"
+
+    def get_main_corporation(self, obj):
+        if obj.profile.main_character:
+            return obj.profile.main_character.corporation_name
+        else:
+            return None
+    get_main_corporation.short_description = "Main Corporation"
+
+    def get_main_alliance(self, obj):
+        if obj.profile.main_character:
+            return obj.profile.main_character.alliance_name
+        else:
+            return None
+    get_main_alliance.short_description = "Main Alliance"
 
     def get_state(self, obj):
         return obj.profile.state
