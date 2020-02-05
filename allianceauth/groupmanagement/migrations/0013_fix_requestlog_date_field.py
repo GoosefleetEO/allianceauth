@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('groupmanagement', '0011_requestlog_date'),
+        ('groupmanagement', '0012_group_leads'),
     ]
 
     operations = [
