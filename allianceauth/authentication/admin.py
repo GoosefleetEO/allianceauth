@@ -122,10 +122,9 @@ class MainCorporationsFilter(admin.SimpleListFilter):
     parameter_name = 'main_corporations'
 
     def lookups(self, request, model_admin):
-        qs = UserProfile.objects\
-            .exclude(main_character=None)\
-            .values(corporation_id=F('main_character__corporation_id'))\
-            .annotate(corporation_name=F('main_character__corporation_name'))\
+        qs = EveCharacter.objects\
+            .exclude(userprofile=None)\
+            .values('corporation_id', 'corporation_name')\
             .distinct()
         return tuple([
            (x['corporation_id'], x['corporation_name']) for x in qs
@@ -145,11 +144,10 @@ class MainAllianceFilter(admin.SimpleListFilter):
     parameter_name = 'main_alliances'
 
     def lookups(self, request, model_admin):
-        qs = UserProfile.objects\
-            .exclude(main_character=None)\
-            .exclude(main_character__alliance_id=None)\
-            .values(alliance_id=F('main_character__alliance_id'))\
-            .annotate(alliance_name=F('main_character__alliance_name'))\
+        qs = EveCharacter.objects\
+            .exclude(alliance_id=None)\
+            .exclude(userprofile=None)\
+            .values('alliance_id', 'alliance_name')\
             .distinct()
         return tuple([
             (x['alliance_id'], x['alliance_name']) for x in qs

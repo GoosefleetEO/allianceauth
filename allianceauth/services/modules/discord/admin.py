@@ -1,5 +1,54 @@
 from django.contrib import admin
+from allianceauth.eveonline.models import EveCharacter
+
 from .models import DiscordUser
+
+
+class MainCorporationsFilter(admin.SimpleListFilter):
+    """Custom filter to show corporations from service users only"""
+    title = 'corporation'
+    parameter_name = 'main_corporations'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(userprofile=None)\
+            .exclude(userprofile__user__discord=None)\
+            .values('corporation_id', 'corporation_name')\
+            .distinct()
+        return tuple([
+           (x['corporation_id'], x['corporation_name']) for x in qs
+        ])
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset.all()
+        else:    
+            return queryset\
+                .filter(user__profile__main_character__corporation_id=self.value())
+
+
+class MainAllianceFilter(admin.SimpleListFilter):
+    """Custom filter to show alliances from service users only"""
+    title = 'alliance'
+    parameter_name = 'main_alliances'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(alliance_id=None)\
+            .exclude(userprofile=None)\
+            .exclude(userprofile__user__discord=None)\
+            .values('alliance_id', 'alliance_name')\
+            .distinct()
+        return tuple([
+            (x['alliance_id'], x['alliance_name']) for x in qs
+        ])
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset.all()
+        else:    
+            return queryset\
+                .filter(user__profile__main_character__alliance_id=self.value())
 
 
 class DiscordUserAdmin(admin.ModelAdmin):
@@ -17,9 +66,9 @@ class DiscordUserAdmin(admin.ModelAdmin):
         'user__username', 
         'uid'
     )
-    list_filter = (
-        'user__profile__main_character__corporation_name',
-        'user__profile__main_character__alliance_name',
+    list_filter = (        
+        MainCorporationsFilter,        
+        MainAllianceFilter,
         'user__date_joined',
     )
 

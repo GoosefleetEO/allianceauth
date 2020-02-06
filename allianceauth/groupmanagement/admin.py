@@ -52,7 +52,8 @@ class GroupAdmin(admin.ModelAdmin):
         'authgroup__open', 
         'authgroup__public'
     )
-    
+    search_fields = ('name', 'authgroup__description')
+
     filter_horizontal = ('permissions',)
     inlines = (AuthGroupInlineAdmin,)
 
@@ -83,12 +84,15 @@ class GroupAdmin(admin.ModelAdmin):
 
     def _properties(self, obj):
         properties = list()       
-        if obj.authgroup.hidden:
-            properties.append('Hidden')
-        if obj.authgroup.open:
-            properties.append('Open')
-        if obj.authgroup.public:
-            properties.append('Public')
+        if obj.authgroup.internal:
+            properties.append('Internal')
+        else:
+            if obj.authgroup.hidden:
+                properties.append('Hidden')
+            if obj.authgroup.open:
+                properties.append('Open')
+            if obj.authgroup.public:
+                properties.append('Public')
         if not properties:
             properties.append('Default')
         
