@@ -189,12 +189,13 @@ class UserAdmin(BaseUserAdmin):
     
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
 
+    ordering = ('username', )
     list_select_related = True    
     show_full_result_count = True 
     
     list_display = (
         '_profile_pic',
-        '_username',                 
+        '_user',                 
         '_state', 
         '_groups',
         '_main_organization',        
@@ -234,7 +235,7 @@ class UserAdmin(BaseUserAdmin):
     _profile_pic.short_description = ''
 
 
-    def _username(self, obj):
+    def _user(self, obj):
         #/admin/<app>/<model>/<pk>/change/
         link = '/admin/authentication/{}/{}/change/'.format(            
             type(obj).__name__.lower(),
@@ -244,11 +245,12 @@ class UserAdmin(BaseUserAdmin):
             '<strong><a href="{}">{}</a></strong><br>{}',
             link, 
             obj.username,
-            obj.email
+            obj.profile.main_character.character_name \
+                if obj.profile.main_character else ''
         )
     
-    _username.short_description = 'user'
-    _username.admin_order_field = 'username'
+    _user.short_description = 'user / main'
+    _user.admin_order_field = 'username'
 
     def _main_organization(self, obj):
         if obj.profile.main_character:
@@ -272,22 +274,12 @@ class UserAdmin(BaseUserAdmin):
 
 
     def _characters(self, obj):
-        alts = [
+        return [
             x.character.character_name 
             for x in CharacterOwnership.objects\
                 .filter(user=obj)\
                 .order_by('character__character_name')
-                .exclude(character=obj.profile.main_character)            
-        ]
-        if obj.profile.main_character:
-            result = [
-                '<strong>{}</strong>'.format(
-                    obj.profile.main_character.character_name
-                )
-            ]
-        else:
-            result =  []
-        return format_html(', '.join(result + alts))
+        ]        
           
     _characters.short_description = 'characters'
     
@@ -372,7 +364,7 @@ class StateAdmin(admin.ModelAdmin):
 
 class BaseOwnershipAdmin(admin.ModelAdmin):
     list_display = ('user', 'character')
-    search_fields = ('user__username', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
+    search_fields = ('user__user', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.pk:
