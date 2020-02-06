@@ -8,6 +8,7 @@ from django.db.models import Q, F
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, \
     post_delete, m2m_changed
+from django.db.models.functions import Lower
 from django.dispatch import receiver
 from django.forms import ModelForm
 from django.utils.html import format_html
@@ -102,11 +103,11 @@ class RealGroupsFilter(admin.SimpleListFilter):
     parameter_name = 'real_groups'
 
     def lookups(self, request, model_admin):
-        qs = Group.objects.all().order_by('name')
+        qs = Group.objects.all().order_by(Lower('name'))
         if _has_auto_groups:
             qs = qs\
                 .filter(managedalliancegroup__exact=None)\
-                .filter(managedcorpgroup__exact=None)
+                .filter(managedcorpgroup__exact=None)                
         return tuple([(x.pk, x.name) for x in qs])
 
     def queryset(self, request, queryset):
@@ -125,10 +126,11 @@ class MainCorporationsFilter(admin.SimpleListFilter):
         qs = EveCharacter.objects\
             .exclude(userprofile=None)\
             .values('corporation_id', 'corporation_name')\
-            .distinct()
-        return tuple([
-           (x['corporation_id'], x['corporation_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('corporation_name'))
+        return tuple(
+            [(x['corporation_id'], x['corporation_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -148,10 +150,11 @@ class MainAllianceFilter(admin.SimpleListFilter):
             .exclude(alliance_id=None)\
             .exclude(userprofile=None)\
             .values('alliance_id', 'alliance_name')\
-            .distinct()
-        return tuple([
-            (x['alliance_id'], x['alliance_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('alliance_name'))
+        return tuple(
+            [(x['alliance_id'], x['alliance_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -234,8 +237,8 @@ class UserAdmin(BaseUserAdmin):
 
 
     def _user(self, obj):
-        #/admin/<app>/<model>/<pk>/change/
-        link = '/admin/authentication/{}/{}/change/'.format(            
+        link = '/admin/{}/{}/{}/change/'.format(            
+            __package__.rsplit('.', 1)[-1],
             type(obj).__name__.lower(),
             obj.pk
         )

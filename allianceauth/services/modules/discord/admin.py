@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models.functions import Lower
+from django.utils.html import format_html
+
 from allianceauth.eveonline.models import EveCharacter
 
 from .models import DiscordUser
@@ -14,10 +17,11 @@ class MainCorporationsFilter(admin.SimpleListFilter):
             .exclude(userprofile=None)\
             .exclude(userprofile__user__discord=None)\
             .values('corporation_id', 'corporation_name')\
-            .distinct()
-        return tuple([
-           (x['corporation_id'], x['corporation_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('corporation_name'))
+        return tuple(
+            [(x['corporation_id'], x['corporation_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -38,10 +42,11 @@ class MainAllianceFilter(admin.SimpleListFilter):
             .exclude(userprofile=None)\
             .exclude(userprofile__user__discord=None)\
             .values('alliance_id', 'alliance_name')\
-            .distinct()
-        return tuple([
-            (x['alliance_id'], x['alliance_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('alliance_name'))
+        return tuple(
+            [(x['alliance_id'], x['alliance_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -52,14 +57,19 @@ class MainAllianceFilter(admin.SimpleListFilter):
 
 
 class DiscordUserAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            "all": ("services/discord/admin.css",)
+        }
+    
     ordering = ('user__username', )
     list_select_related = True  
     
     list_display = (
-        'user', 
-        'uid',
-        '_corporation',
-        '_alliance',
+        '_profile_pic',
+        '_user',                 
+        '_uid',
+        '_main_organization',        
         '_date_joined'
     )
     search_fields = (
@@ -72,28 +82,61 @@ class DiscordUserAdmin(admin.ModelAdmin):
         'user__date_joined',
     )
 
-    def _corporation(self, obj):
+    def _profile_pic(self, obj):
         if obj.user.profile.main_character:
-            return obj.user.profile.main_character.corporation_name
+            return format_html(
+                '<img src="{}" class="img-circle">',
+                obj.user.profile.main_character.portrait_url(size=32)
+            )
         else:
             return ''
+    _profile_pic.short_description = ''
+
+
+    def _user(self, obj):
+        link = '/admin/{}/{}/{}/change/'.format(            
+            __package__.rsplit('.', 1)[-1],
+            type(obj).__name__.lower(),
+            obj.pk
+        )
+        return format_html(
+            '<strong><a href="{}">{}</a></strong><br>{}',
+            link, 
+            obj.user.username,
+            obj.user.profile.main_character.character_name \
+                if obj.user.profile.main_character else ''
+        )
     
-    _corporation.short_description = 'corporation (main)'
-    _corporation.admin_order_field \
-        = 'user__profile__main_character__corporation_name'
+    _user.short_description = 'user / main'
+    _user.admin_order_field = 'user__username'
 
 
-    def _alliance(self, obj):        
+    def _uid(self, obj):
+        return obj.uid
+    
+    _uid.short_description = 'Discord ID (UID)'
+    _uid.admin_order_field = 'uid'
+
+
+    def _main_organization(self, obj):
+        if obj.user.profile.main_character:
+            corporation = obj.user.profile.main_character.corporation_name
+        else:
+            corporation = ''
         if (obj.user.profile.main_character 
             and obj.user.profile.main_character.alliance_id
         ):
-            return obj.user.profile.main_character.alliance_name
+            alliance = obj.user.profile.main_character.alliance_name
         else:
-            return ''
-    
-    _alliance.short_description = 'alliance (main)'
-    _alliance.admin_order_field \
-        = 'user__profile__main_character__alliance_name'
+            alliance = ''
+        return format_html('{}<br>{}',
+            corporation, 
+            alliance
+        )
+
+    _main_organization.short_description = 'Corporation / Alliance (Main)'
+    _main_organization.admin_order_field = \
+        'profile__main_character__corporation_name'
 
 
     def _date_joined(self, obj):

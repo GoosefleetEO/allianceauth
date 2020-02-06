@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models.functions import Lower
 from allianceauth.eveonline.models import EveCharacter
 
 from .models import AuthTS, Teamspeak3User, StateGroup
@@ -14,10 +15,11 @@ class MainCorporationsFilter(admin.SimpleListFilter):
             .exclude(userprofile=None)\
             .exclude(userprofile__user__teamspeak3=None)\
             .values('corporation_id', 'corporation_name')\
-            .distinct()
-        return tuple([
-           (x['corporation_id'], x['corporation_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('corporation_name'))
+        return tuple(
+            [(x['corporation_id'], x['corporation_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
@@ -38,10 +40,11 @@ class MainAllianceFilter(admin.SimpleListFilter):
             .exclude(userprofile=None)\
             .exclude(userprofile__user__teamspeak3=None)\
             .values('alliance_id', 'alliance_name')\
-            .distinct()
-        return tuple([
-            (x['alliance_id'], x['alliance_name']) for x in qs
-        ])
+            .distinct()\
+            .order_by(Lower('alliance_name'))
+        return tuple(
+            [(x['alliance_id'], x['alliance_name']) for x in qs]
+        )
 
     def queryset(self, request, queryset):
         if self.value() is None:
