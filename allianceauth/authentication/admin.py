@@ -4,19 +4,19 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User as BaseUser, \
     Permission as BasePermission
-from django.db.models import Q
+from django.db.models import Q, F
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, \
     post_delete, m2m_changed
 from django.dispatch import receiver
 from django.forms import ModelForm
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.utils.text import slugify
 
 from allianceauth.authentication.models import State, get_guest_state,\
     CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
-from allianceauth.eveonline.models import EveCharacter
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -96,9 +96,10 @@ class UserProfileInline(admin.StackedInline):
         return False
 
 
-class MyGroupFilter(admin.SimpleListFilter):
+class RealGroupsFilter(admin.SimpleListFilter):
+    """Custom filter to get groups w/o Autogroups"""
     title = 'group'
-    parameter_name = 'my_groups'
+    parameter_name = 'real_groups'
 
     def lookups(self, request, model_admin):
         qs = Group.objects.all().order_by('name')
@@ -113,7 +114,54 @@ class MyGroupFilter(admin.SimpleListFilter):
             return queryset.all()
         else:    
             return queryset.filter(groups__pk=self.value())
-        
+
+
+class MainCorporationsFilter(admin.SimpleListFilter):
+    """Custom filter to show corporations from mains only"""
+    title = 'corporation'
+    parameter_name = 'main_corporations'
+
+    def lookups(self, request, model_admin):
+        qs = UserProfile.objects\
+            .exclude(main_character=None)\
+            .values(corporation_id=F('main_character__corporation_id'))\
+            .annotate(corporation_name=F('main_character__corporation_name'))\
+            .distinct()
+        return tuple([
+           (x['corporation_id'], x['corporation_name']) for x in qs
+        ])
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset.all()
+        else:    
+            return queryset\
+                .filter(profile__main_character__corporation_id=self.value())
+
+
+class MainAllianceFilter(admin.SimpleListFilter):
+    """Custom filter to show alliances from mains only"""
+    title = 'alliance'
+    parameter_name = 'main_alliances'
+
+    def lookups(self, request, model_admin):
+        qs = UserProfile.objects\
+            .exclude(main_character=None)\
+            .exclude(main_character__alliance_id=None)\
+            .values(alliance_id=F('main_character__alliance_id'))\
+            .annotate(alliance_name=F('main_character__alliance_name'))\
+            .distinct()
+        return tuple([
+            (x['alliance_id'], x['alliance_name']) for x in qs
+        ])
+
+    def queryset(self, request, queryset):
+        if self.value() is None:
+            return queryset.all()
+        else:    
+            return queryset\
+                .filter(profile__main_character__alliance_id=self.value())
+
 
 class UserAdmin(BaseUserAdmin):
     """
@@ -159,9 +207,11 @@ class UserAdmin(BaseUserAdmin):
 
     list_filter = ( 
         'profile__state',
-        MyGroupFilter,
-        'profile__main_character__corporation_name', 
-        'profile__main_character__alliance_name',                 
+        RealGroupsFilter,
+        #'profile__main_character__corporation_name', 
+        MainCorporationsFilter,
+        #'profile__main_character__alliance_name',
+        MainAllianceFilter,
         'is_active',
         'date_joined',
         'is_staff',
@@ -175,10 +225,10 @@ class UserAdmin(BaseUserAdmin):
 
     def _profile_pic(self, obj):
         if obj.profile.main_character:
-            return mark_safe(
-                '<img src="{}" style="border-radius: 50%;">'.format(
-                    obj.profile.main_character.portrait_url(size=32)
-            ))
+            return format_html(
+                '<img src="{}" style="border-radius: 50%;">',
+                obj.profile.main_character.portrait_url(size=32)
+            )
         else:
             return ''
     _profile_pic.short_description = ''
@@ -190,11 +240,12 @@ class UserAdmin(BaseUserAdmin):
             type(obj).__name__.lower(),
             obj.pk
         )
-        return mark_safe('<strong><a href="{}">{}</a></strong><br>{}'.format(
+        return format_html(
+            '<strong><a href="{}">{}</a></strong><br>{}',
             link, 
             obj.username,
             obj.email
-        ))
+        )
     
     _username.short_description = 'user'
     _username.admin_order_field = 'username'
@@ -210,7 +261,10 @@ class UserAdmin(BaseUserAdmin):
             alliance = obj.profile.main_character.alliance_name
         else:
             alliance = ''
-        return mark_safe('{}<br>{}'.format(corporation, alliance))
+        return format_html('{}<br>{}',
+            corporation, 
+            alliance
+        )
 
     _main_organization.short_description = 'Corporation / Alliance (Main)'
     _main_organization.admin_order_field = \
@@ -227,11 +281,13 @@ class UserAdmin(BaseUserAdmin):
         ]
         if obj.profile.main_character:
             result = [
-                '<b>{}</b>'.format(obj.profile.main_character.character_name)
+                '<strong>{}</strong>'.format(
+                    obj.profile.main_character.character_name
+                )
             ]
         else:
             result =  []
-        return mark_safe(', '.join(result + alts))
+        return format_html(', '.join(result + alts))
           
     _characters.short_description = 'characters'
     
