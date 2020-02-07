@@ -4,6 +4,7 @@ from .models import AuthTS, Teamspeak3User, StateGroup
 from ...admin import ServicesUserAdmin
 
 
+@admin.register(Teamspeak3User)
 class Teamspeak3UserAdmin(ServicesUserAdmin):    
     list_display = ServicesUserAdmin.list_display + (        
         'uid',
@@ -11,6 +12,7 @@ class Teamspeak3UserAdmin(ServicesUserAdmin):
     )
     
 
+@admin.register(AuthTS)
 class AuthTSgroupAdmin(admin.ModelAdmin):
     ordering = ('auth_group__name', )
     list_select_related = True  
@@ -32,7 +34,3 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 class StateGroupAdmin(admin.ModelAdmin):
     list_display = ('state', 'ts_group')
     search_fields = ('state__name', 'ts_group__ts_group_name')
-
-
-admin.site.register(AuthTS, AuthTSgroupAdmin)
-admin.site.register(Teamspeak3User, Teamspeak3UserAdmin)

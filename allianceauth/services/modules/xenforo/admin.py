@@ -1,9 +1,10 @@
 from django.contrib import admin
+
 from .models import XenforoUser
+from ...admin import ServicesUserAdmin
 
 
-class XenforoUserAdmin(admin.ModelAdmin):
-        list_display = ('user', 'username')
-        search_fields = ('user__username', 'username')
-
-admin.site.register(XenforoUser, XenforoUserAdmin)
+@admin.register(XenforoUser)
+class XenforoUserAdmin(ServicesUserAdmin):
+    list_display = ServicesUserAdmin.list_display + ('username',)         
+    search_fields = ServicesUserAdmin.search_fields + ('username', )

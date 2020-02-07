@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.db.models.functions import Lower
+from django.urls import reverse
 from django.utils.html import format_html
 
 from allianceauth import hooks
@@ -97,10 +98,12 @@ class ServicesUserAdmin(admin.ModelAdmin):
 
 
     def _user(self, obj):
-        link = '/admin/{}/{}/{}/change/'.format(            
-            __package__.rsplit('.', 1)[-1],
-            type(obj).__name__.lower(),
-            obj.pk
+        link = reverse(
+            'admin:{}_{}_change'.format(
+                obj._meta.app_label,
+                type(obj).__name__.lower()
+            ), 
+            args=(obj.pk,)
         )
         return format_html(
             '<strong><a href="{}">{}</a></strong><br>{}',

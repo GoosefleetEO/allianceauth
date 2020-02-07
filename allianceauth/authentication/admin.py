@@ -12,6 +12,7 @@ from django.db.models.functions import Lower
 from django.dispatch import receiver
 from django.forms import ModelForm
 from django.utils.html import format_html
+from django.urls import reverse
 from django.utils.text import slugify
 
 from allianceauth.authentication.models import State, get_guest_state,\
@@ -99,102 +100,6 @@ class UserProfileInline(admin.StackedInline):
         return False
 
 
-class RealGroupsFilter(admin.SimpleListFilter):
-    """Custom filter to get groups w/o Autogroups"""
-    title = 'group'
-    parameter_name = 'real_groups'
-
-    def lookups(self, request, model_admin):
-        qs = Group.objects.all().order_by(Lower('name'))
-        if _has_auto_groups:
-            qs = qs\
-                .filter(managedalliancegroup__exact=None)\
-                .filter(managedcorpgroup__exact=None)                
-        return tuple([(x.pk, x.name) for x in qs])
-
-    def queryset(self, request, queryset):
-        if self.value() is None:
-            return queryset.all()
-        else:    
-            return queryset.filter(groups__pk=self.value())
-
-
-class MainCorporationsFilter(admin.SimpleListFilter):
-    """Custom filter to show corporations from mains only"""
-    title = 'corporation'
-    parameter_name = 'main_corporations'
-
-    def lookups(self, request, model_admin):
-        qs = EveCharacter.objects\
-            .exclude(userprofile=None)\
-            .values('corporation_id', 'corporation_name')\
-            .distinct()\
-            .order_by(Lower('corporation_name'))
-        return tuple(
-            [(x['corporation_id'], x['corporation_name']) for x in qs]
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() is None:
-            return queryset.all()
-        else:    
-            return queryset\
-                .filter(profile__main_character__corporation_id=self.value())
-
-
-class MainAllianceFilter(admin.SimpleListFilter):
-    """Custom filter to show alliances from mains only"""
-    title = 'alliance'
-    parameter_name = 'main_alliances'
-
-    def lookups(self, request, model_admin):
-        qs = EveCharacter.objects\
-            .exclude(alliance_id=None)\
-            .exclude(userprofile=None)\
-            .values('alliance_id', 'alliance_name')\
-            .distinct()\
-            .order_by(Lower('alliance_name'))
-        return tuple(
-            [(x['alliance_id'], x['alliance_name']) for x in qs]
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() is None:
-            return queryset.all()
-        else:    
-            return queryset\
-                .filter(profile__main_character__alliance_id=self.value())
-
-
-def update_main_character_model(modeladmin, request, queryset):
-    tasks_count = 0
-    for obj in queryset:
-        if obj.profile.main_character:
-            update_character.delay(obj.profile.main_character.character_id)
-            tasks_count += 1
-
-    modeladmin.message_user(
-        request, 
-        'Update from ESI started for {} characters'.format(tasks_count)
-    )
-
-update_main_character_model.short_description = \
-    'Update main character model from ESI'
-
-def list_2_html_w_tooltips(my_items: list, max_items: int) -> str:    
-    """converts list of strings into HTML with cutoff and tooltip when > max"""
-    items_truncated_str = ', '.join(my_items[:max_items])
-    if len(my_items) <= max_items:
-        return items_truncated_str
-    else:
-        items_truncated_str += ' (...)'
-        items_all_str = ', '.join(my_items)
-        return format_html(
-            '<span data-tooltip="{}" class="tooltip">{}</span>',
-            items_all_str,
-            items_truncated_str
-        )
-
 class UserAdmin(BaseUserAdmin):
     """
     Extending Django's UserAdmin model
@@ -204,14 +109,98 @@ class UserAdmin(BaseUserAdmin):
         css = {
             "all": ("authentication/css/admin.css",)
         }
-    
+
+
+    class MainCorporationsFilter(admin.SimpleListFilter):
+        """Custom filter to filter on corporations from mains only"""
+        title = 'corporation'
+        parameter_name = 'main_corporations'
+
+        def lookups(self, request, model_admin):
+            qs = EveCharacter.objects\
+                .exclude(userprofile=None)\
+                .values('corporation_id', 'corporation_name')\
+                .distinct()\
+                .order_by(Lower('corporation_name'))
+            return tuple(
+                [(x['corporation_id'], x['corporation_name']) for x in qs]
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset\
+                    .filter(profile__main_character__corporation_id=self.value())
+
+
+    class MainAllianceFilter(admin.SimpleListFilter):
+        """Custom filter to filter on alliances from mains only"""
+        title = 'alliance'
+        parameter_name = 'main_alliances'
+
+        def lookups(self, request, model_admin):
+            qs = EveCharacter.objects\
+                .exclude(alliance_id=None)\
+                .exclude(userprofile=None)\
+                .values('alliance_id', 'alliance_name')\
+                .distinct()\
+                .order_by(Lower('alliance_name'))
+            return tuple(
+                [(x['alliance_id'], x['alliance_name']) for x in qs]
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset\
+                    .filter(profile__main_character__alliance_id=self.value())
+
+         
+    class RealGroupsFilter(admin.SimpleListFilter):
+        """Custom filter to get groups w/o Autogroups"""
+        title = 'group'
+        parameter_name = 'real_groups'
+
+        def lookups(self, request, model_admin):
+            qs = Group.objects.all().order_by(Lower('name'))
+            if _has_auto_groups:
+                qs = qs\
+                    .filter(managedalliancegroup__exact=None)\
+                    .filter(managedcorpgroup__exact=None)                
+            return tuple([(x.pk, x.name) for x in qs])
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset.filter(groups__pk=self.value())
+
+
+    def update_main_character_model(self, request, queryset):    
+        tasks_count = 0
+        for obj in queryset:
+            if obj.profile.main_character:
+                update_character.delay(obj.profile.main_character.character_id)
+                tasks_count += 1
+
+        self.message_user(
+            request, 
+            'Update from ESI started for {} characters'.format(tasks_count)
+        )
+
+    update_main_character_model.short_description = \
+        'Update main character model from ESI'
+
+
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
 
-        actions[update_main_character_model.__name__] = (
-            update_main_character_model, 
-            update_main_character_model.__name__, 
-            update_main_character_model.short_description
+        actions[self.update_main_character_model.__name__] = (
+            self.update_main_character_model, 
+            self.update_main_character_model.__name__, 
+            self.update_main_character_model.short_description
         )
 
         for hook in get_hooks('services_hook'):
@@ -231,18 +220,33 @@ class UserAdmin(BaseUserAdmin):
 
         return actions
     
+    def _list_2_html_w_tooltips(self, my_items: list, max_items: int) -> str:    
+        """converts list of strings into HTML with cutoff and tooltip when > max"""
+        items_truncated_str = ', '.join(my_items[:max_items])
+        if len(my_items) <= max_items:
+            return items_truncated_str
+        else:
+            items_truncated_str += ' (...)'
+            items_all_str = ', '.join(my_items)
+            return format_html(
+                '<span data-tooltip="{}" class="tooltip">{}</span>',
+                items_all_str,
+                items_truncated_str
+            )
+
+    
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
 
     ordering = ('username', )
-    list_select_related = True    
+    list_select_related = True
     show_full_result_count = True 
     
     list_display = (
         '_profile_pic',
-        '_user',                 
+        '_user', 
         '_state', 
         '_groups',
-        '_main_organization',        
+        '_main_organization',
         '_characters',
         'is_active',
         'date_joined',
@@ -265,7 +269,9 @@ class UserAdmin(BaseUserAdmin):
         'character_ownerships__character__character_name'
     )
 
+    
     def _profile_pic(self, obj):
+        """profile pic column data for user objects"""
         if obj.profile.main_character:
             return format_html(
                 '<img src="{}" class="img-circle">',
@@ -277,10 +283,13 @@ class UserAdmin(BaseUserAdmin):
 
 
     def _user(self, obj):
-        link = '/admin/{}/{}/{}/change/'.format(            
-            __package__.rsplit('.', 1)[-1],
-            type(obj).__name__.lower(),
-            obj.pk
+        """user column data for user objects"""
+        link = reverse(
+            'admin:{}_{}_change'.format(
+                obj._meta.app_label,
+                type(obj).__name__.lower()
+            ), 
+            args=(obj.pk,)
         )
         return format_html(
             '<strong><a href="{}">{}</a></strong><br>{}',
@@ -289,11 +298,13 @@ class UserAdmin(BaseUserAdmin):
             obj.profile.main_character.character_name \
                 if obj.profile.main_character else ''
         )
-    
+
     _user.short_description = 'user / main'
     _user.admin_order_field = 'username'
 
+
     def _main_organization(self, obj):
+        """main organization column data for user objects"""
         if obj.profile.main_character:
             corporation = obj.profile.main_character.corporation_name
         else:
@@ -313,7 +324,6 @@ class UserAdmin(BaseUserAdmin):
     _main_organization.admin_order_field = \
         'profile__main_character__corporation_name'
 
-
     def _characters(self, obj):
         my_characters = [
             x.character.character_name 
@@ -321,7 +331,7 @@ class UserAdmin(BaseUserAdmin):
                 .filter(user=obj)\
                 .order_by('character__character_name')
         ]
-        return list_2_html_w_tooltips(
+        return self._list_2_html_w_tooltips(
             my_characters, 
             AUTHENTICATION_ADMIN_USERS_MAX_CHARS
         )
@@ -347,7 +357,7 @@ class UserAdmin(BaseUserAdmin):
                     .order_by('name')
             ]
         
-        return list_2_html_w_tooltips(
+        return self._list_2_html_w_tooltips(
             my_groups, 
             AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
         )
@@ -411,13 +421,137 @@ class StateAdmin(admin.ModelAdmin):
 
 
 class BaseOwnershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'character')
-    search_fields = ('user__user', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
+    class Media:
+        css = {
+            "all": ("authentication/css/admin.css",)
+        }
+
+    class MainCorporationsFilter(admin.SimpleListFilter):
+        """Custom filter to filter on corporations from mains only"""
+        title = 'corporation'
+        parameter_name = 'main_corporations'
+
+        def lookups(self, request, model_admin):
+            qs = EveCharacter.objects\
+                .exclude(userprofile=None)\
+                .values('corporation_id', 'corporation_name')\
+                .distinct()\
+                .order_by(Lower('corporation_name'))
+            return tuple(
+                [(x['corporation_id'], x['corporation_name']) for x in qs]
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset.filter(
+                    user__profile__main_character__corporation_id=self.value()
+                )
+
+
+    class MainAllianceFilter(admin.SimpleListFilter):
+        """Custom filter to filter on alliances from mains only"""
+        title = 'alliance'
+        parameter_name = 'main_alliances'
+
+        def lookups(self, request, model_admin):
+            qs = EveCharacter.objects\
+                .exclude(alliance_id=None)\
+                .exclude(userprofile=None)\
+                .values('alliance_id', 'alliance_name')\
+                .distinct()\
+                .order_by(Lower('alliance_name'))
+            return tuple(
+                [(x['alliance_id'], x['alliance_name']) for x in qs]
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset.filter(
+                    user__profile__main_character__alliance_id=self.value()
+                )
+
+        
+    list_select_related = True
+    list_display = (
+        '_profile_pic',
+        '_user',
+        '_main_organization',
+        'character',
+    )
+    search_fields = (
+        'user__user', 
+        'character__character_name', 
+        'character__corporation_name', 
+        'character__alliance_name'
+    )
+    list_filter = (                 
+        MainCorporationsFilter,        
+        MainAllianceFilter,
+    )
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.pk:
             return 'owner_hash', 'character'
         return tuple()
+
+    
+    def _profile_pic(self, obj):
+        """profile pic column data for user objects"""
+        if obj.user.profile.main_character:
+            return format_html(
+                '<img src="{}" class="img-circle">',
+                obj.user.profile.main_character.portrait_url(size=32)
+            )
+        else:
+            return ''
+    _profile_pic.short_description = ''
+
+
+    def _user(self, obj):
+        """user column data for user objects"""
+        link = reverse(
+            'admin:{}_{}_change'.format(
+                obj._meta.app_label,
+                type(obj).__name__.lower()
+            ), 
+            args=(obj.pk,)
+        )
+        return format_html(
+            '<strong><a href="{}">{}</a></strong><br>{}',
+            link, 
+            obj.user.username,
+            obj.user.profile.main_character.character_name \
+                if obj.user.profile.main_character else ''
+        )
+
+    _user.short_description = 'user / main'
+    _user.admin_order_field = 'user__username'
+
+
+    def _main_organization(self, obj):
+        """main organization column data for user objects"""
+        if obj.user.profile.main_character:
+            corporation = obj.user.profile.main_character.corporation_name
+        else:
+            corporation = ''
+        if (obj.user.profile.main_character 
+            and obj.user.profile.main_character.alliance_id
+        ):
+            alliance = obj.user.profile.main_character.alliance_name
+        else:
+            alliance = ''
+        return format_html('{}<br>{}',
+            corporation, 
+            alliance
+        )
+
+    _main_organization.short_description = 'Corporation / Alliance (Main)'
+    _main_organization.admin_order_field = \
+        'user__profile__main_character__corporation_name'
 
 
 @admin.register(OwnershipRecord)

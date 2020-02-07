@@ -1,9 +1,11 @@
 from django.contrib import admin
+
 from .models import DiscourseUser
+from ...admin import ServicesUserAdmin
 
 
-class DiscourseUserAdmin(admin.ModelAdmin):
-        list_display = ('user',)
-        search_fields = ('user__username',)
-
-admin.site.register(DiscourseUser, DiscourseUserAdmin)
+@admin.register(DiscourseUser)
+class DiscourseUserAdmin(ServicesUserAdmin):
+    list_display = ServicesUserAdmin.list_display + (        
+        'enabled',        
+    ) 

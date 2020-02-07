@@ -4,6 +4,7 @@ from .models import DiscordUser
 from ...admin import ServicesUserAdmin
 
 
+@admin.register(DiscordUser)
 class DiscordUserAdmin(ServicesUserAdmin):            
     list_display = ServicesUserAdmin.list_display + (        
         '_uid',        
@@ -15,5 +16,3 @@ class DiscordUserAdmin(ServicesUserAdmin):
     _uid.short_description = 'Discord ID (UID)'
     _uid.admin_order_field = 'uid'
 
-
-admin.site.register(DiscordUser, DiscordUserAdmin)

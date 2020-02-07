@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Phpbb3User
+from ...admin import ServicesUserAdmin
 
 
-class Phpbb3UserAdmin(admin.ModelAdmin):
-        list_display = ('user', 'username')
-        search_fields = ('user__username', 'username')
-
-admin.site.register(Phpbb3User, Phpbb3UserAdmin)
+@admin.register(Phpbb3User)
+class Phpbb3UserAdmin(ServicesUserAdmin):
+    list_display = ServicesUserAdmin.list_display + ('username',)         
+    search_fields = ServicesUserAdmin.search_fields + ('username', )

@@ -4,6 +4,7 @@ from .models import MumbleUser
 from ...admin import ServicesUserAdmin
 
 
+@admin.register(MumbleUser)
 class MumbleUserAdmin(ServicesUserAdmin):            
     list_display = ServicesUserAdmin.list_display + (        
         'username',        
@@ -15,6 +16,3 @@ class MumbleUserAdmin(ServicesUserAdmin):
     )
 
     fields = ('user', 'username', 'groups')  # pwhash is hidden from admin panel
-
-
-admin.site.register(MumbleUser, MumbleUserAdmin)
