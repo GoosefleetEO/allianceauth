@@ -50,11 +50,14 @@ if _has_auto_groups:
             value = self.value()
             if value == 'Yes':
                 return queryset.exclude(
-                    managedalliancegroup__exact=None, 
-                    managedcorpgroup__exact=None
+                    managedalliancegroup__isnull=True, 
+                    managedcorpgroup__isnull=True
                 )
             elif value == 'No':
-                return queryset.filter(managedalliancegroup__exact=None).filter(managedcorpgroup__exact=None)
+                return queryset.filter(
+                    managedalliancegroup__isnull=True, 
+                    managedcorpgroup__isnull=True
+                )
             else:
                 return queryset
 

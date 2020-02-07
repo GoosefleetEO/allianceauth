@@ -4,7 +4,7 @@ CSS for allianceauth admin site
 
 /* styling for profile pic */
 .img-circle { border-radius: 50%; }
-.column-_profile_pic { width: 50px; }
+.column-user_profile_pic { width: 50px; }
 
 /* tooltip */
 .tooltip {
