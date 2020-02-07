@@ -19,16 +19,13 @@ from allianceauth.authentication.models import State, get_guest_state,\
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 from allianceauth.eveonline.tasks import update_character
+from .app_settings import *
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
     from allianceauth.eveonline.autogroups.models import *
 else:
     _has_auto_groups = False
-
-
-_USERS_MAX_GROUPS = 5
-_USERS_MAX_CHARACTERS = 3
 
 
 def make_service_hooks_update_groups_action(service):
@@ -324,7 +321,10 @@ class UserAdmin(BaseUserAdmin):
                 .filter(user=obj)\
                 .order_by('character__character_name')
         ]
-        return list_2_html_w_tooltips(my_characters, _USERS_MAX_CHARACTERS)   
+        return list_2_html_w_tooltips(
+            my_characters, 
+            AUTHENTICATION_ADMIN_USERS_MAX_CHARS
+        )
           
     _characters.short_description = 'characters'
     
@@ -347,7 +347,10 @@ class UserAdmin(BaseUserAdmin):
                     .order_by('name')
             ]
         
-        return list_2_html_w_tooltips(my_groups, _USERS_MAX_GROUPS)
+        return list_2_html_w_tooltips(
+            my_groups, 
+            AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
+        )
        
     _groups.short_description = 'groups'
 

@@ -1,22 +1,27 @@
 from unittest import mock
 from io import StringIO
-from django.test import TestCase
-from django.contrib.auth.models import User
-from allianceauth.tests.auth_utils import AuthUtils
-from .models import CharacterOwnership, UserProfile, State, get_guest_state, OwnershipRecord
-from .backends import StateBackend
-from .tasks import check_character_ownership
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from esi.models import Token
-from esi.errors import IncompleteResponseError
-from allianceauth.authentication.decorators import main_character_required
-from django.test.client import RequestFactory
-from django.http.response import HttpResponse
-from django.contrib.auth.models import AnonymousUser
-from django.conf import settings
-from django.shortcuts import reverse
-from django.core.management import call_command
 from urllib import parse
+
+from django.conf import settings
+from django.contrib.auth.models import AnonymousUser, User
+from django.core.management import call_command
+from django.http.response import HttpResponse
+from django.shortcuts import reverse
+from django.test import TestCase
+from django.test.client import RequestFactory
+
+
+from allianceauth.authentication.decorators import main_character_required
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
+    EveAllianceInfo
+from allianceauth.tests.auth_utils import AuthUtils
+from esi.errors import IncompleteResponseError
+from esi.models import Token
+
+from ..backends import StateBackend
+from ..models import CharacterOwnership, UserProfile, State, get_guest_state,\
+    OwnershipRecord
+from ..tasks import check_character_ownership
 
 MODULE_PATH = 'allianceauth.authentication'
 

@@ -35,6 +35,49 @@ class AuthGroupInlineAdmin(admin.StackedInline):
         return request.user.has_perm('auth.change_group')
 
 
+if _has_auto_groups:
+    class IsAutoGroupFilter(admin.SimpleListFilter):
+        title = 'auto group'
+        parameter_name = 'auto_group'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('Yes', 'Yes'),
+                ('No', 'No'),
+            )
+
+        def queryset(self, request, queryset):
+            value = self.value()
+            if value == 'Yes':
+                return queryset.exclude(
+                    managedalliancegroup__exact=None, 
+                    managedcorpgroup__exact=None
+                )
+            elif value == 'No':
+                return queryset.filter(managedalliancegroup__exact=None).filter(managedcorpgroup__exact=None)
+            else:
+                return queryset
+
+
+class HasLeaderFilter(admin.SimpleListFilter):
+    title = 'has leader'
+    parameter_name = 'has_leader'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', 'Yes'),
+            ('No', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            return queryset.filter(authgroup__group_leaders__isnull=False)
+        elif value == 'No':
+            return queryset.filter(authgroup__group_leaders__isnull=True)
+        else:
+            return queryset
+
 class GroupAdmin(admin.ModelAdmin):    
     list_select_related = True
     ordering = ('name', )
@@ -50,7 +93,9 @@ class GroupAdmin(admin.ModelAdmin):
         'authgroup__internal', 
         'authgroup__hidden', 
         'authgroup__open', 
-        'authgroup__public'
+        'authgroup__public',
+        IsAutoGroupFilter,
+        HasLeaderFilter
     )
     search_fields = ('name', 'authgroup__description')
 
@@ -58,13 +103,9 @@ class GroupAdmin(admin.ModelAdmin):
     inlines = (AuthGroupInlineAdmin,)
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)        
-        if _has_auto_groups:
-            qs = qs\
-                .filter(managedalliancegroup__exact=None)\
-                .filter(managedcorpgroup__exact=None)
+        qs = super().get_queryset(request)                
         qs = qs.annotate(
-            member_count=Count('user', distinct=True),         
+            member_count=Count('user', distinct=True),
         )        
         return qs
 
@@ -80,11 +121,17 @@ class GroupAdmin(admin.ModelAdmin):
     def has_leader(self, obj):
         return obj.authgroup.group_leaders.exists()
     
-    has_leader.boolean = True
+    has_leader.boolean = True    
+    
 
     def _properties(self, obj):
         properties = list()       
-        if obj.authgroup.internal:
+        if _has_auto_groups and (
+            obj.managedalliancegroup_set.exists() 
+            or obj.managedcorpgroup_set.exists()
+        ):
+            properties.append('Auto Group')
+        elif obj.authgroup.internal:
             properties.append('Internal')
         else:
             if obj.authgroup.hidden:
