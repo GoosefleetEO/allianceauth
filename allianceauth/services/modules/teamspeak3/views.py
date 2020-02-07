@@ -25,7 +25,7 @@ def activate_teamspeak3(request):
         result = ts3man.add_user(request.user, Teamspeak3Tasks.get_username(request.user))
 
     # if its empty we failed
-    if result[0] is not "":
+    if result[0] != "":
         Teamspeak3User.objects.update_or_create(user=request.user, defaults={'uid': result[0], 'perm_key': result[1]})
         logger.debug("Updated authserviceinfo for user %s with TS3 credentials. Updating groups." % request.user)
         logger.info("Successfully activated TS3 for user %s" % request.user)
