@@ -25,7 +25,7 @@ def activate_jabber(request):
     logger.debug("Adding jabber user for user %s with main character %s" % (request.user, character))
     info = OpenfireManager.add_user(OpenfireTasks.get_username(request.user))
     # If our username is blank means we already had a user
-    if info[0] is not "":
+    if info[0] != "":
         OpenfireUser.objects.update_or_create(user=request.user, defaults={'username': info[0]})
         logger.debug("Updated authserviceinfo for user %s with jabber credentials. Updating groups." % request.user)
         OpenfireTasks.update_groups.delay(request.user.pk)

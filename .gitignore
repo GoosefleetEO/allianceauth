@@ -64,5 +64,8 @@ celerybeat-schedule
 .idea/*
 /nbproject/
 
+#VSCode
+.vscode/
+
 #gitlab configs
 .gitlab/
