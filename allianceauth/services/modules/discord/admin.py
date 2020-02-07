@@ -12,10 +12,9 @@ class MainCorporationsFilter(admin.SimpleListFilter):
     title = 'corporation'
     parameter_name = 'main_corporations'
 
-    def lookups(self, request, model_admin):
+    def lookups(self, request, model_admin):        
         qs = EveCharacter.objects\
             .exclude(userprofile=None)\
-            .exclude(userprofile__user__discord=None)\
             .values('corporation_id', 'corporation_name')\
             .distinct()\
             .order_by(Lower('corporation_name'))
@@ -40,7 +39,6 @@ class MainAllianceFilter(admin.SimpleListFilter):
         qs = EveCharacter.objects\
             .exclude(alliance_id=None)\
             .exclude(userprofile=None)\
-            .exclude(userprofile__user__discord=None)\
             .values('alliance_id', 'alliance_name')\
             .distinct()\
             .order_by(Lower('alliance_name'))

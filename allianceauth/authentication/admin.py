@@ -18,12 +18,17 @@ from allianceauth.authentication.models import State, get_guest_state,\
     CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
+from allianceauth.eveonline.tasks import update_character
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
     from allianceauth.eveonline.autogroups.models import *
 else:
     _has_auto_groups = False
+
+
+_USERS_MAX_GROUPS = 5
+_USERS_MAX_CHARACTERS = 3
 
 
 def make_service_hooks_update_groups_action(service):
@@ -164,12 +169,53 @@ class MainAllianceFilter(admin.SimpleListFilter):
                 .filter(profile__main_character__alliance_id=self.value())
 
 
+def update_main_character_model(modeladmin, request, queryset):
+    tasks_count = 0
+    for obj in queryset:
+        if obj.profile.main_character:
+            update_character.delay(obj.profile.main_character.character_id)
+            tasks_count += 1
+
+    modeladmin.message_user(
+        request, 
+        'Update from ESI started for {} characters'.format(tasks_count)
+    )
+
+update_main_character_model.short_description = \
+    'Update main character model from ESI'
+
+def list_2_html_w_tooltips(my_items: list, max_items: int) -> str:    
+    """converts list of strings into HTML with cutoff and tooltip when > max"""
+    items_truncated_str = ', '.join(my_items[:max_items])
+    if len(my_items) <= max_items:
+        return items_truncated_str
+    else:
+        items_truncated_str += ' (...)'
+        items_all_str = ', '.join(my_items)
+        return format_html(
+            '<span data-tooltip="{}" class="tooltip">{}</span>',
+            items_all_str,
+            items_truncated_str
+        )
+
 class UserAdmin(BaseUserAdmin):
     """
     Extending Django's UserAdmin model
     """
+
+    class Media:
+        css = {
+            "all": ("authentication/css/admin.css",)
+        }
+    
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
+
+        actions[update_main_character_model.__name__] = (
+            update_main_character_model, 
+            update_main_character_model.__name__, 
+            update_main_character_model.short_description
+        )
 
         for hook in get_hooks('services_hook'):
             svc = hook()
@@ -209,10 +255,8 @@ class UserAdmin(BaseUserAdmin):
 
     list_filter = ( 
         'profile__state',
-        RealGroupsFilter,
-        #'profile__main_character__corporation_name', 
-        MainCorporationsFilter,
-        #'profile__main_character__alliance_name',
+        RealGroupsFilter,        
+        MainCorporationsFilter,        
         MainAllianceFilter,
         'is_active',
         'date_joined',
@@ -221,14 +265,13 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = (
         'username', 
-        'character_ownerships__character__character_name',
-        'groups__name'
+        'character_ownerships__character__character_name'
     )
 
     def _profile_pic(self, obj):
         if obj.profile.main_character:
             return format_html(
-                '<img src="{}" style="border-radius: 50%;">',
+                '<img src="{}" class="img-circle">',
                 obj.profile.main_character.portrait_url(size=32)
             )
         else:
@@ -275,12 +318,13 @@ class UserAdmin(BaseUserAdmin):
 
 
     def _characters(self, obj):
-        return [
+        my_characters = [
             x.character.character_name 
             for x in CharacterOwnership.objects\
                 .filter(user=obj)\
                 .order_by('character__character_name')
-        ]        
+        ]
+        return list_2_html_w_tooltips(my_characters, _USERS_MAX_CHARACTERS)   
           
     _characters.short_description = 'characters'
     
@@ -303,8 +347,8 @@ class UserAdmin(BaseUserAdmin):
                     .order_by('name')
             ]
         
-        return ', '.join(my_groups)
-
+        return list_2_html_w_tooltips(my_groups, _USERS_MAX_GROUPS)
+       
     _groups.short_description = 'groups'
 
 
