@@ -150,9 +150,18 @@ class EveProvider(object):
 
 
 class EveSwaggerProvider(EveProvider):
-    def __init__(self, token=None, adapter=None):
-        self.client = esi_client_factory(token=token, spec_file=SWAGGER_SPEC_PATH)
+    def __init__(self, token=None, adapter=None):        
+        self._client = None
+        self._token = token
         self.adapter = adapter or self
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = esi_client_factory(
+                token=self._token, spec_file=SWAGGER_SPEC_PATH
+            )
+        return self._client
 
     def __str__(self):
         return 'esi'
