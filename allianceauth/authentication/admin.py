@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User as BaseUser, \
-    Permission as BasePermission
+    Permission as BasePermission, Group
 from django.db.models import Q, F
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, \
@@ -113,7 +113,7 @@ def user_profile_pic(obj):
             user_obj.profile.main_character.portrait_url(size=32)
         )
     else:
-        return ''
+        return None
 user_profile_pic.short_description = ''
 
 
@@ -131,13 +131,19 @@ def user_username(obj):
         args=(obj.pk,)
     )
     user_obj = obj.user if hasattr(obj, 'user') else obj
-    return format_html(
-        '<strong><a href="{}">{}</a></strong><br>{}',
-        link, 
-        user_obj.username,
-        user_obj.profile.main_character.character_name \
-            if user_obj.profile.main_character else ''
-    )
+    if user_obj.profile.main_character:
+        return format_html(
+            '<strong><a href="{}">{}</a></strong><br>{}',
+            link, 
+            user_obj.username,
+            user_obj.profile.main_character.character_name
+        )
+    else:
+        return format_html(
+            '<strong><a href="{}">{}</a></strong>',
+            link, 
+            user_obj.username,
+        )
 
 user_username.short_description = 'user / main'
 user_username.admin_order_field = 'username'
@@ -150,20 +156,18 @@ def user_main_organization(obj):
     To be used for all user based admin lists
     """
     user_obj = obj.user if hasattr(obj, 'user') else obj
-    if user_obj.profile.main_character:
+    if not user_obj.profile.main_character:
+        result = None
+    else:        
         corporation = user_obj.profile.main_character.corporation_name
-    else:
-        corporation = ''
-    if (user_obj.profile.main_character 
-        and user_obj.profile.main_character.alliance_id
-    ):
-        alliance = user_obj.profile.main_character.alliance_name
-    else:
-        alliance = ''
-    return format_html('{}<br>{}',
-        corporation, 
-        alliance
-    )
+        if user_obj.profile.main_character.alliance_id:        
+            result = format_html('{}<br>{}',
+                corporation, 
+                user_obj.profile.main_character.alliance_name
+            )
+        else:
+            result = corporation    
+    return result
 
 user_main_organization.short_description = 'Corporation / Alliance (Main)'
 user_main_organization.admin_order_field = \
@@ -177,7 +181,7 @@ class MainCorporationsFilter(admin.SimpleListFilter):
     To be used for all user based admin lists
     """
     title = 'corporation'
-    parameter_name = 'main_corporations'
+    parameter_name = 'main_corporation_id__exact'
 
     def lookups(self, request, model_admin):
         qs = EveCharacter.objects\
@@ -210,7 +214,7 @@ class MainAllianceFilter(admin.SimpleListFilter):
     To be used for all user based admin lists
     """
     title = 'alliance'
-    parameter_name = 'main_alliances'
+    parameter_name = 'main_alliance_id__exact'
 
     def lookups(self, request, model_admin):
         qs = EveCharacter.objects\
@@ -251,7 +255,7 @@ class UserAdmin(BaseUserAdmin):
     class RealGroupsFilter(admin.SimpleListFilter):
         """Custom filter to get groups w/o Autogroups"""
         title = 'group'
-        parameter_name = 'real_groups'
+        parameter_name = 'group_id__exact'
 
         def lookups(self, request, model_admin):
             qs = Group.objects.all().order_by(Lower('name'))
@@ -267,7 +271,6 @@ class UserAdmin(BaseUserAdmin):
             else:    
                 return queryset.filter(groups__pk=self.value())
 
-
     def update_main_character_model(self, request, queryset):    
         tasks_count = 0
         for obj in queryset:
@@ -282,7 +285,6 @@ class UserAdmin(BaseUserAdmin):
 
     update_main_character_model.short_description = \
         'Update main character model from ESI'
-
 
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
@@ -313,21 +315,22 @@ class UserAdmin(BaseUserAdmin):
                 )
         return actions
 
-    
     def _list_2_html_w_tooltips(self, my_items: list, max_items: int) -> str:    
         """converts list of strings into HTML with cutoff and tooltip"""
         items_truncated_str = ', '.join(my_items[:max_items])
-        if len(my_items) <= max_items:
-            return items_truncated_str
+        if not my_items:
+            result = None
+        elif len(my_items) <= max_items:
+            result = items_truncated_str
         else:
-            items_truncated_str += ' (...)'
+            items_truncated_str += ', (...)'
             items_all_str = ', '.join(my_items)
-            return format_html(
+            result = format_html(
                 '<span data-tooltip="{}" class="tooltip">{}</span>',
                 items_all_str,
                 items_truncated_str
             )
-
+        return result
     
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
 
@@ -380,11 +383,10 @@ class UserAdmin(BaseUserAdmin):
     
 
     def _state(self, obj):
-        return obj.profile.state
+        return obj.profile.state.name
     
     _state.short_description = 'state'
     _state.admin_order_field = 'profile__state'
-
 
     def _groups(self, obj):
         if not _has_auto_groups:
@@ -404,20 +406,17 @@ class UserAdmin(BaseUserAdmin):
        
     _groups.short_description = 'groups'
 
-
     def _role(self, obj):
         if obj.is_superuser:
             role = 'Superuser'
         elif obj.is_staff:
             role = 'Staff'
         else:
-            role = 'User'
-        
+            role = 'User'        
         return role
     
     _role.short_description = 'role'
     
-
     def has_change_permission(self, request, obj=None):
         return request.user.has_perm('auth.change_user')
 
