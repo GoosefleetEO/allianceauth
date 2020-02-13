@@ -1,11 +1,22 @@
+import os
 from unittest.mock import Mock, patch
 
 from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
+from jsonschema.exceptions import RefResolutionError
+
 from django.test import TestCase
 
+from . import set_logger
 from ..models import EveCharacter, EveCorporationInfo, EveAllianceInfo
 from ..providers import ObjectNotFound, Entity, Character, Corporation, \
     Alliance, ItemType, EveProvider, EveSwaggerProvider
+
+
+MODULE_PATH = 'allianceauth.eveonline.providers'
+SWAGGER_OLD_SPEC_PATH = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'swagger_old.json'
+    )
+set_logger(MODULE_PATH, __file__)
 
 
 class TestObjectNotFound(TestCase):
@@ -65,7 +76,7 @@ class TestEntity(TestCase):
 
 class TestCorporation(TestCase):
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_alliance')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
     def test_alliance_defined(self, mock_provider_get_alliance):
         my_alliance = Alliance(
             id=3001,
@@ -89,7 +100,7 @@ class TestCorporation(TestCase):
         self.assertEqual(mock_provider_get_alliance.call_count, 1)
 
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_alliance')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
     def test_alliance_not_defined(self, mock_provider_get_alliance):        
         mock_provider_get_alliance.return_value = None
         
@@ -100,7 +111,7 @@ class TestCorporation(TestCase):
         )
         
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_character')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_character')
     def test_ceo(self, mock_provider_get_character):        
         my_ceo = Character(
             id=1001,
@@ -162,7 +173,7 @@ class TestAlliance(TestCase):
         if corp_id:                
             return corps[int(corp_id)]
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_corp')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_corp(self, mock_provider_get_corp):                
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
         
@@ -190,7 +201,7 @@ class TestAlliance(TestCase):
         self.assertEqual(mock_provider_get_corp.call_count, 2)
 
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_corp')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_corps(self, mock_provider_get_corp):
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
 
@@ -203,7 +214,7 @@ class TestAlliance(TestCase):
             ]
         )
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_corp')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_executor_corp(self, mock_provider_get_corp):
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
         
@@ -229,7 +240,7 @@ class TestCharacter(TestCase):
             alliance_id=3001
         )
 
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_corp')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_corp(self, mock_provider_get_corp):
         my_corp = Corporation(
             id=2001,
@@ -244,8 +255,8 @@ class TestCharacter(TestCase):
         self.assertEqual(mock_provider_get_corp.call_count, 1)
 
     
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_alliance')
-    @patch('allianceauth.eveonline.providers.EveSwaggerProvider.get_corp')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_alliance_has_one(
         self, 
         mock_provider_get_corp,
@@ -311,7 +322,6 @@ class TestEveProvider(TestCase):
 
 
 class TestEveSwaggerProvider(TestCase):
-
     
     @staticmethod
     def esi_get_alliances_alliance_id(alliance_id):
@@ -437,13 +447,13 @@ class TestEveSwaggerProvider(TestCase):
             raise HTTPNotFound(Mock())
 
 
-    @patch('allianceauth.eveonline.providers.esi_client_factory')
+    @patch(MODULE_PATH + '.esi_client_factory')
     def test_str(self, mock_esi_client_factory):        
         my_provider = EveSwaggerProvider()
         self.assertEqual(str(my_provider), 'esi')
 
 
-    @patch('allianceauth.eveonline.providers.esi_client_factory')
+    @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_alliance(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
             .Alliance.get_alliances_alliance_id \
@@ -472,7 +482,7 @@ class TestEveSwaggerProvider(TestCase):
             my_provider.get_alliance(3999)
 
 
-    @patch('allianceauth.eveonline.providers.esi_client_factory')
+    @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_corp(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
             .Corporation.get_corporations_corporation_id \
@@ -499,7 +509,7 @@ class TestEveSwaggerProvider(TestCase):
             my_provider.get_corp(2999)
         
 
-    @patch('allianceauth.eveonline.providers.esi_client_factory')
+    @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_character(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
             .Character.get_characters_character_id \
@@ -527,7 +537,7 @@ class TestEveSwaggerProvider(TestCase):
             my_provider.get_character(1999)
 
 
-    @patch('allianceauth.eveonline.providers.esi_client_factory')
+    @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_itemtype(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
             .Universe.get_universe_types_type_id \
@@ -543,3 +553,53 @@ class TestEveSwaggerProvider(TestCase):
         # type not found
         with self.assertRaises(ObjectNotFound):
             my_provider.get_itemtype(4999)
+
+    @patch(MODULE_PATH + '.settings.DEBUG', False)
+    @patch(MODULE_PATH + '.esi_client_factory')
+    def test_create_client_on_normal_startup(self, mock_esi_client_factory):
+        my_provider = EveSwaggerProvider()
+        self.assertTrue(mock_esi_client_factory.called)
+        self.assertIsNotNone(my_provider._client)
+    
+    @patch(MODULE_PATH + '.SWAGGER_SPEC_PATH', SWAGGER_OLD_SPEC_PATH)
+    @patch(MODULE_PATH + '.settings.DEBUG', False)
+    @patch('socket.socket')
+    def test_create_client_on_normal_startup_w_old_swagger_spec(
+        self, mock_socket
+    ):
+        mock_socket.side_effect = Exception('Network blocked for testing')
+        my_provider = EveSwaggerProvider()        
+        self.assertIsNone(my_provider._client)    
+
+    @patch(MODULE_PATH + '.settings.DEBUG', True)
+    @patch(MODULE_PATH + '.esi_client_factory')
+    def test_dont_create_client_on_debug_startup(self, mock_esi_client_factory):
+        my_provider = EveSwaggerProvider()
+        self.assertFalse(mock_esi_client_factory.called)
+        self.assertIsNone(my_provider._client)
+
+    @patch(MODULE_PATH + '.settings.DEBUG', False)
+    @patch(MODULE_PATH + '.esi_client_factory')
+    def test_dont_create_client_if_client_creation_fails_on_normal_startup(
+        self, mock_esi_client_factory
+    ):
+        mock_esi_client_factory.side_effect = RefResolutionError(cause='Test')
+        my_provider = EveSwaggerProvider()
+        self.assertTrue(mock_esi_client_factory.called)
+        self.assertIsNone(my_provider._client)
+
+    @patch(MODULE_PATH + '.settings.DEBUG', True)
+    @patch(MODULE_PATH + '.esi_client_factory')
+    def test_client_loads_on_demand(
+        self, mock_esi_client_factory
+    ):
+        mock_esi_client_factory.return_value = 'my_client'
+        my_provider = EveSwaggerProvider()
+        self.assertFalse(mock_esi_client_factory.called)
+        self.assertIsNone(my_provider._client)
+        my_client = my_provider.client
+        self.assertTrue(mock_esi_client_factory.called)
+        self.assertIsNotNone(my_provider._client)
+        self.assertEqual(my_client, 'my_client')
+        
+
