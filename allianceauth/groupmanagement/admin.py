@@ -38,22 +38,22 @@ class AuthGroupInlineAdmin(admin.StackedInline):
 if _has_auto_groups:
     class IsAutoGroupFilter(admin.SimpleListFilter):
         title = 'auto group'
-        parameter_name = 'auto_group'
+        parameter_name = 'is_auto_group__exact'
 
         def lookups(self, request, model_admin):
             return (
-                ('Yes', 'Yes'),
-                ('No', 'No'),
+                ('yes', 'Yes'),
+                ('no', 'No'),
             )
 
         def queryset(self, request, queryset):
             value = self.value()
-            if value == 'Yes':
+            if value == 'yes':
                 return queryset.exclude(
                     managedalliancegroup__isnull=True, 
                     managedcorpgroup__isnull=True
                 )
-            elif value == 'No':
+            elif value == 'no':
                 return queryset.filter(
                     managedalliancegroup__isnull=True, 
                     managedcorpgroup__isnull=True
@@ -64,19 +64,19 @@ if _has_auto_groups:
 
 class HasLeaderFilter(admin.SimpleListFilter):
     title = 'has leader'
-    parameter_name = 'has_leader'
+    parameter_name = 'has_leader__exact'
 
     def lookups(self, request, model_admin):
         return (
-            ('Yes', 'Yes'),
-            ('No', 'No'),
+            ('yes', 'Yes'),
+            ('no', 'No'),
         )
 
     def queryset(self, request, queryset):
         value = self.value()
-        if value == 'Yes':
+        if value == 'yes':
             return queryset.filter(authgroup__group_leaders__isnull=False)
-        elif value == 'No':
+        elif value == 'no':
             return queryset.filter(authgroup__group_leaders__isnull=True)
         else:
             return queryset
@@ -86,12 +86,11 @@ class GroupAdmin(admin.ModelAdmin):
     ordering = ('name', )
     list_display = (
         'name', 
-        'description', 
+        '_description', 
         '_properties', 
         '_member_count', 
         'has_leader'
     )
-
     list_filter = (
         'authgroup__internal', 
         'authgroup__hidden', 
@@ -101,7 +100,6 @@ class GroupAdmin(admin.ModelAdmin):
         HasLeaderFilter
     )
     search_fields = ('name', 'authgroup__description')
-
     filter_horizontal = ('permissions',)
     inlines = (AuthGroupInlineAdmin,)
 
@@ -112,7 +110,7 @@ class GroupAdmin(admin.ModelAdmin):
         )        
         return qs
 
-    def description(self, obj):
+    def _description(self, obj):
         return obj.authgroup.description
 
     def _member_count(self, obj):
@@ -125,7 +123,6 @@ class GroupAdmin(admin.ModelAdmin):
         return obj.authgroup.group_leaders.exists()
     
     has_leader.boolean = True    
-    
 
     def _properties(self, obj):
         properties = list()       
@@ -145,8 +142,8 @@ class GroupAdmin(admin.ModelAdmin):
                 properties.append('Public')
         if not properties:
             properties.append('Default')
-        
-        return ', '.join(properties)
+                    
+        return properties
 
     _properties.short_description = "properties"
 
