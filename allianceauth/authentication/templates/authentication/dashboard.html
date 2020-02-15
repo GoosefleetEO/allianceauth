@@ -10,10 +10,12 @@
         {% include 'allianceauth/admin-status/include.html' %}
     {% endif %}
     <div class="col-sm-12">
-        <div class="row vertical-flexbox-row">
+        <div class="row vertical-flexbox-row2">
             <div class="col-sm-6 text-center">
                 <div class="panel panel-primary" style="height:100%">
-                    <div class="panel-heading"><h3 class="panel-title">{% trans "Main Character" %}</h3></div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans "Main Character" %}</h3>
+                    </div>
                     <div class="panel-body">
                         {% if request.user.profile.main_character %}
                         {% with request.user.profile.main_character as main %}
@@ -25,12 +27,21 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-center">{{ main.character_name }}</td>
+                                    <td class="text-center">
+                                        <span class="hidden-xs">
+                                            {{ main.character_name }}
+                                        </span>
+                                        <span class="visible-xs-block">
+                                            <strong>{{ main.character_name }}</strong><br>
+                                            {{ main.corporation_name }}<br>
+                                            {{ main.alliance_name }}
+                                        </span>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-lg-4 col-sm-2">
-                            <table class="table">
+                            <table class="table hidden-xs">
                                 <tr>
                                     <td class="text-center">
                                         <img class="ra-avatar"src="{{ main.corporation_logo_url_128 }}">
@@ -43,7 +54,7 @@
                         </div>
                         <div class="col-lg-4 col-sm-2">
                             {% if main.alliance_id %}
-                            <table class="table">
+                            <table class="table hidden-xs">
                                 <tr>
                                     <td class="text-center">
                                         <img class="ra-avatar"src="{{ main.alliance_logo_url_128 }}">
@@ -60,20 +71,24 @@
                         <div class="alert alert-danger" role="alert">{% trans "No main character set." %}</div>
                         {% endif %}
                         <div class="clearfix"></div>
-                        <div class="col-xs-6">
-                            <a href="{% url 'authentication:add_character' %}" class="btn btn-block btn-info"
-                               title="Add Character">{% trans 'Add Character' %}</a>
-                        </div>
-                        <div class="col-xs-6">
-                            <a href="{% url 'authentication:change_main_character' %}" class="btn btn-block btn-info"
-                               title="Change Main Character">{% trans "Change Main" %}</a>
+                        <div class="row">
+                            <div class="col-sm-6 button-wrapper">
+                                <a href="{% url 'authentication:add_character' %}" class="btn btn-block btn-info"
+                                title="Add Character">{% trans 'Add Character' %}</a>
+                            </div>
+                            <div class="col-sm-6 button-wrapper">
+                                <a href="{% url 'authentication:change_main_character' %}" class="btn btn-block btn-info"
+                                title="Change Main Character">{% trans "Change Main" %}</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6 text-center">
                 <div class="panel panel-success" style="height:100%">
-                    <div class="panel-heading"><h3 class="panel-title">{% trans "Groups" %}</h3></div>
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans "Groups" %}</h3>
+                    </div>
                     <div class="panel-body">
                         <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                             <table class="table table-striped">
@@ -90,26 +105,52 @@
         </div>
         <div class="clearfix"></div>
         <div class="panel panel-default">
-            <div class="panel-heading" style="display:flex;"><h3 class="panel-title">{% trans 'Characters' %}</h3></div>
-            <div class="panel-body">
-                <table class="table table-hover">
-                    <tr>
-                        <th class="text-center"></th>
-                        <th class="text-center">{% trans 'Name' %}</th>
-                        <th class="text-center">{% trans 'Corp' %}</th>
-                        <th class="text-center">{% trans 'Alliance' %}</th>
-                    </tr>
-                    {% for ownership in request.user.character_ownerships.all %}
-                    {% with ownership.character as char %}
-                    <tr>
-                        <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
-                        </td>
-                        <td class="text-center">{{ char.character_name }}</td>
-                        <td class="text-center">{{ char.corporation_name }}</td>
-                        <td class="text-center">{{ char.alliance_name }}</td>
-                    </tr>
-                    {% endwith %}
-                    {% endfor %}
+            <div class="panel-heading">
+                <h3 class="panel-title text-center" style="text-align: center">
+                    {% trans 'Characters' %}
+                </h3>
+            </div>
+            <div class="panel-body">                
+                <table class="table table-striped hidden-xs">
+                    <thead>
+                        <tr>
+                            <th class="text-center"></th>
+                            <th class="text-center">{% trans 'Name' %}</th>
+                            <th class="text-center">{% trans 'Corp' %}</th>
+                            <th class="text-center">{% trans 'Alliance' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ownership in request.user.character_ownerships.all %}
+                            {% with ownership.character as char %}
+                            <tr>
+                                <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                </td>
+                                <td class="text-center">{{ char.character_name }}</td>
+                                <td class="text-center">{{ char.corporation_name }}</td>
+                                <td class="text-center">{{ char.alliance_name }}</td>
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <table class="table table-striped visible-xs-block" style="width: 100%">
+                    <tbody>
+                        {% for ownership in request.user.character_ownerships.all %}
+                            {% with ownership.character as char %}
+                            <tr>
+                                <td class="text-center" style="vertical-align: middle">
+                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                </td>
+                                <td class="text-center" style="vertical-align: middle; width: 100%">
+                                    <strong>{{ char.character_name }}</strong><br>
+                                    {{ char.corporation_name }}<br>
+                                    {{ char.alliance_name|default:"" }}
+                                </td> 
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>

@@ -42,3 +42,28 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 .flex-center-horizontal {
     justify-content: center;
 }
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    
+    /* class for vertically aligning columns in a bootstrap row */
+    .row.vertical-flexbox-row2 {
+        display:  -webkit-box;
+        display: -webkit-flex;
+        display:  -ms-flexbox;
+        display:         flex;
+        flex-wrap: wrap;
+      }
+      
+      .row.vertical-flexbox-row2 > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+      }
+}
+
+/* Extra Small devices (Phones, <768px) */
+@media (max-width: 767px) {
+    .button-wrapper .btn {
+        margin-bottom:5px;
+    }
+}
