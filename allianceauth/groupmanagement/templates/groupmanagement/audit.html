@@ -27,37 +27,42 @@
                                 <th class="text-center" scope="col">{% trans "Actor" %}</th>
                             </thead>
                             <tbody>
-                            {% for entry in entries %}
-                                <tr>
-                                    <td class="text-center">{{ entry.date }}</td>
-                                    <td class="text-center">{{ entry.requestor }}</td>
-                                    <td class="text-center">{{ entry.req_char }}</td>
-                                    <td class="text-center">{{ entry.group }}</td>
-                                    <td class="text-center">{{ entry.type_to_str }}</td>
-                                    {% if entry.request_type is None %}
-                                        <td class="text-center"> Removed</td>
-                                    {% else %}
-                                        <td class="text-center">{{ entry.action_to_str }}</td>
-                                    {% endif %}
-                                    <td class="text-center">{{ entry.request_actor }}</td>
-                                </tr>
-                            {% endfor %}
+                                {% for entry in entries %}
+                                    <tr>
+                                        <td class="text-center">{{ entry.date }}</td>
+                                        <td class="text-center">{{ entry.requestor }}</td>
+                                        <td class="text-center">{{ entry.req_char }}</td>
+                                        <td class="text-center">{{ entry.group }}</td>
+                                        <td class="text-center">{{ entry.type_to_str }}</td>
+                                        {% if entry.request_type is None %}
+                                            <td class="text-center"> Removed</td>
+                                        {% else %}
+                                            <td class="text-center">{{ entry.action_to_str }}</td>
+                                        {% endif %}
+                                        <td class="text-center">{{ entry.request_actor }}</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 {% else %}
-                    <div class="alert alert-warning text-center">{% trans "No entries found for this group." %}</div>
+                    <div class="alert alert-warning text-center">
+                        {% trans "No entries found for this group." %}
+                    </div>
                 {% endif %}
             </div>        
         </div>
     </div>
 {% endblock %}
+
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
 {% endblock %}
+
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
 {% endblock %}
+
 {% block extra_script %}
     $(document).ready(function(){
         $('#log-entries').DataTable();

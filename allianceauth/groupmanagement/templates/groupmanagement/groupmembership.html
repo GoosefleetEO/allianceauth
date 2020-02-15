@@ -15,44 +15,52 @@
             </div>
             <div class="panel-body">
                 {% if groups %}                    
-                    <table class="table">
-                        <tr>
-                            <th class="text-center">{% trans "Name" %}</th>
-                            <th class="text-center">{% trans "Description" %}</th>
-                            <th class="text-center">{% trans "Status" %}</th>
-                            <th class="text-center">{% trans "Member Count" %}</th>
-                            <th class="text-center">{% trans "Action" %}</th>
-                        </tr>
-                        {% for group in groups %}
-                            <tr>
-                                <td class="text-center">{{ group.name }}</td>
-                                <td class="text-center">{{ group.authgroup.description }}</td>
-                                <td class="text-center">
-                                    {% if group.authgroup.hidden %}
-                                        <span class="label label-info">{% trans "Hidden" %}</span>
-                                    {% elif group.authgroup.open %}
-                                        <span class="label label-success">{% trans "Open" %}</span>
-                                    {% else %}
-                                        <span class="label label-default">{% trans "Requestable" %}</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center">
-                                    {{ group.num_members }}
-                                </td>
-                                <td class="text-center">
-                                    <a href="{% url 'groupmanagement:membership_list' group.id %}" class="btn btn-primary"
-                                        title="{% trans "View Members" %}">
-                                            <i class="glyphicon glyphicon-eye-open"></i>
-                                    </a>
-                                    <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
-                                        <i class="glyphicon glyphicon-list-alt"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">{% trans "Name" %}</th>
+                                    <th class="text-center">{% trans "Description" %}</th>
+                                    <th class="text-center">{% trans "Status" %}</th>
+                                    <th class="text-center">{% trans "Member Count" %}</th>
+                                    <th class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in groups %}
+                                    <tr>
+                                        <td class="text-center">{{ group.name }}</td>
+                                        <td class="text-center">{{ group.authgroup.description }}</td>
+                                        <td class="text-center">
+                                            {% if group.authgroup.hidden %}
+                                                <span class="label label-info">{% trans "Hidden" %}</span>
+                                            {% elif group.authgroup.open %}
+                                                <span class="label label-success">{% trans "Open" %}</span>
+                                            {% else %}
+                                                <span class="label label-default">{% trans "Requestable" %}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ group.num_members }}
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{% url 'groupmanagement:membership_list' group.id %}" class="btn btn-primary"
+                                                title="{% trans "View Members" %}">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                            </a>
+                                            <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
+                                                <i class="glyphicon glyphicon-list-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% else %}
-                    <div class="alert alert-warning text-center">{% trans "No groups to list." %}</div>
+                    <div class="alert alert-warning text-center">
+                        {% trans "No groups to list." %}
+                    </div>
                 {% endif %}
             </div>
         </div>

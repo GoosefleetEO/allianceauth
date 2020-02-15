@@ -18,57 +18,64 @@
                     </div>
                     <div class="panel-body">
                         {% if request.user.profile.main_character %}
-                        {% with request.user.profile.main_character as main %}
-                        <div class="col-lg-4 col-sm-2">
-                            <table class="table">
-                                <tr>
-                                    <td class="text-center">
-                                        <img class="ra-avatar"src="{{ main.portrait_url_128 }}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="hidden-xs">
-                                            {{ main.character_name }}
-                                        </span>
-                                        <span class="visible-xs-block">
-                                            <strong>{{ main.character_name }}</strong><br>
-                                            {{ main.corporation_name }}<br>
-                                            {{ main.alliance_name }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-lg-4 col-sm-2">
-                            <table class="table hidden-xs">
-                                <tr>
-                                    <td class="text-center">
-                                        <img class="ra-avatar"src="{{ main.corporation_logo_url_128 }}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">{{ main.corporation_name }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-lg-4 col-sm-2">
-                            {% if main.alliance_id %}
-                            <table class="table hidden-xs">
-                                <tr>
-                                    <td class="text-center">
-                                        <img class="ra-avatar"src="{{ main.alliance_logo_url_128 }}">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">{{ main.alliance_name }}</td>
-                                <tr>
-                            </table>
-                            {% endif %}
-                        </div>
-                        {% endwith %}
+                            {% with request.user.profile.main_character as main %}
+                                <div class="hidden-xs">
+                                    <div class="col-lg-4 col-sm-2">
+                                        <table class="table">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <img class="ra-avatar"src="{{ main.portrait_url_128 }}">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">{{ main.character_name }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-2">
+                                        <table class="table">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <img class="ra-avatar"src="{{ main.corporation_logo_url_128 }}">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">{{ main.corporation_name }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-2">
+                                        {% if main.alliance_id %}
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <img class="ra-avatar"src="{{ main.alliance_logo_url_128 }}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center">{{ main.alliance_name }}</td>
+                                                <tr>
+                                            </table>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="table visible-xs-block">                        
+                                    <p>
+                                        <img class="ra-avatar" src="{{ main.portrait_url_64 }}">
+                                        <img class="ra-avatar" src="{{ main.corporation_logo_url_64 }}">
+                                        <img class="ra-avatar" src="{{ main.alliance_logo_url_64 }}">
+                                    </p>
+                                    <p>
+                                        <strong>{{ main.character_name }}</strong><br>
+                                        {{ main.corporation_name }}<br>
+                                        {{ main.alliance_name }}
+                                    </p>
+                                </div>                                
+                            {% endwith %}
                         {% else %}
-                        <div class="alert alert-danger" role="alert">{% trans "No main character set." %}</div>
+                            <div class="alert alert-danger" role="alert">
+                                {% trans "No main character set." %}
+                            </div>
                         {% endif %}
                         <div class="clearfix"></div>
                         <div class="row">
@@ -93,9 +100,9 @@
                         <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                             <table class="table table-striped">
                                 {% for group in user.groups.all %}
-                                <tr>
-                                    <td>{{ group.name }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ group.name }}</td>
+                                    </tr>
                                 {% endfor %}
                             </table>
                         </div>
@@ -123,13 +130,13 @@
                     <tbody>
                         {% for ownership in request.user.character_ownerships.all %}
                             {% with ownership.character as char %}
-                            <tr>
-                                <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
-                                </td>
-                                <td class="text-center">{{ char.character_name }}</td>
-                                <td class="text-center">{{ char.corporation_name }}</td>
-                                <td class="text-center">{{ char.alliance_name }}</td>
-                            </tr>
+                                <tr>
+                                    <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                    </td>
+                                    <td class="text-center">{{ char.character_name }}</td>
+                                    <td class="text-center">{{ char.corporation_name }}</td>
+                                    <td class="text-center">{{ char.alliance_name }}</td>
+                                </tr>
                             {% endwith %}
                         {% endfor %}
                     </tbody>
@@ -138,16 +145,16 @@
                     <tbody>
                         {% for ownership in request.user.character_ownerships.all %}
                             {% with ownership.character as char %}
-                            <tr>
-                                <td class="text-center" style="vertical-align: middle">
-                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
-                                </td>
-                                <td class="text-center" style="vertical-align: middle; width: 100%">
-                                    <strong>{{ char.character_name }}</strong><br>
-                                    {{ char.corporation_name }}<br>
-                                    {{ char.alliance_name|default:"" }}
-                                </td> 
-                            </tr>
+                                <tr>
+                                    <td class="text-center" style="vertical-align: middle">
+                                        <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                    </td>
+                                    <td class="text-center" style="vertical-align: middle; width: 100%">
+                                        <strong>{{ char.character_name }}</strong><br>
+                                        {{ char.corporation_name }}<br>
+                                        {{ char.alliance_name|default:"" }}
+                                    </td> 
+                                </tr>
                             {% endwith %}
                         {% endfor %}
                     </tbody>
