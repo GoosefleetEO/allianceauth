@@ -13,7 +13,14 @@
                 {{ group }} - {% trans 'Audit Log' %}
             </div>
             <div class="panel-body">            
-                <p> All times displayed are EVE/UTC.</p>
+                <p> 
+                    <span class="pull-right">
+                        &nbsp;
+                        <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
+                            Back
+                        </a>
+                    </span>
+                </p>              
                 {% if entries %}
                     <div class="table-responsive">
                         <table class="table table-striped" id="log-entries">
@@ -44,6 +51,9 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <p class="text-muted">
+                            All times displayed are EVE/UTC.
+                        </p>
                     </div>
                 {% else %}
                     <div class="alert alert-warning text-center">

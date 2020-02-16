@@ -14,17 +14,23 @@
             <div class="panel-heading">
                 {{ group.name }} - {% trans 'Members' %}
             </div>
-            <div class="panel-body">
-                <div id="list" class="">
-                    {% if group.user_set %}
+            <div class="panel-body">                
+                <p>
+                    <span class="pull-right">
+                        &nbsp;
+                        <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
+                            Back
+                        </a>
+                    </span>
+                </p>                
+                {% if group.user_set %}                    
                     <div class="table-responsive">
                         <table class="table table-striped" id="tab_group_members">
                             <thead>
                                 <tr>                                                        
                                     <th class="text-right">{% trans "Portrait" %}</th>
                                     <th class="text-center">{% trans "Character" %}</th>
-                                    <th class="text-center">{% trans "Corporation" %}</th>
-                                    <th class="text-center">{% trans "Alliance" %}</th>
+                                    <th class="text-center">{% trans "Organization" %}</th>                                    
                                     <th class="text-center"></th>
                                 </tr>
                             </thead>
@@ -38,20 +44,24 @@
                                             <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle">                                            
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ member.main_char|evewho_character_url }}" target="_blank">
-                                                {{ member.main_char.character_name }}
-                                            </a>
+                                            {% if member.main_char %}
+                                                <a href="{{ member.main_char|evewho_character_url }}" target="_blank">
+                                                    {{ member.main_char.character_name }}
+                                                </a>
+                                            {% else %}
+                                                {{ member.user.username }}
+                                            {% endif %}
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{ member.main_char|dotlan_corporation_url }}" target="_blank">
-                                                {{ member.main_char.corporation_name }}
-                                            </a>
-                                        </td>                        
-                                        <td class="text-center">
-                                            <a href="{{ member.main_char|dotlan_alliance_url }}" target="_blank">
+                                            {% if member.main_char %}
+                                                <a href="{{ member.main_char|dotlan_corporation_url }}" target="_blank">
+                                                    {{ member.main_char.corporation_name }}
+                                                </a><br>
                                                 {{ member.main_char.alliance_name|default_if_none:"" }}
-                                            </a>
-                                        </td>
+                                            {% else %}
+                                                (unknown)
+                                            {% endif %}
+                                        </td>                                                                
                                         <td class="text-center">
                                             <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger"
                                                 title="{% trans "Remove from group" %}">
@@ -64,13 +74,13 @@
                         </table>
                         <p class="text-muted"><i class="fa fa-star"></i>: Group leader</p>
                     </div>
-                    {% else %}
-                        <div class="alert alert-warning text-center">
-                            {% trans "No group members to list." %}
-                        </div>
-                    {% endif %}
-                </div>
+                {% else %}
+                    <div class="alert alert-warning text-center">
+                        {% trans "No group members to list." %}
+                    </div>
+                {% endif %}
             </div>
+            
         </div>
     </div>
 {% endblock content %}
@@ -88,7 +98,7 @@
         $('#tab_group_members').DataTable({
             order: [ [ 1, "asc" ] ],
             columnDefs: [
-                { "sortable": false, "targets": [0, 4] },
+                { "sortable": false, "targets": [0, 3] },
             ]
         });
     });

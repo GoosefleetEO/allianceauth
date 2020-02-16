@@ -29,7 +29,9 @@
                             <tbody>
                                 {% for group in groups %}
                                     <tr>
-                                        <td class="text-center">{{ group.name }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'groupmanagement:membership_list' group.id %}">{{ group.name }}</a>
+                                        </td>
                                         <td class="text-center">{{ group.authgroup.description }}</td>
                                         <td class="text-center">
                                             {% if group.authgroup.hidden %}
