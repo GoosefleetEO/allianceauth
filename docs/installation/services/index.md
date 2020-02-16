@@ -4,7 +4,6 @@
 .. toctree::
 
     permissions
-    market
     discord
     discourse
     mumble

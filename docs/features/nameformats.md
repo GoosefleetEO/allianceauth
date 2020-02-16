@@ -25,8 +25,6 @@ Currently the following services support custom name formats:
 +-------------+-----------+-------------------------------------+
 | phpBB3      | Username  | ``{character_name}``                |
 +-------------+-----------+-------------------------------------+
-| SeAT        | Username  | ``{character_name}``                |
-+-------------+-----------+-------------------------------------+
 | SMF         | Username  | ``{character_name}``                |
 +-------------+-----------+-------------------------------------+
 | Teamspeak 3 | Nickname  | ``[{corp_ticker}]{character_name}`` |

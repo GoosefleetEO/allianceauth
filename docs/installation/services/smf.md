@@ -62,7 +62,7 @@ SMF needs a database. Create one:
 Enter the database information into the `DATABASES['smf']` section of your auth project's settings file.
 
 ### Web Server Configuration
-Your web server needs to be configured to serve Alliance Market.
+Your web server needs to be configured to serve SMF.
 
 A minimal Apache config might look like:
 
