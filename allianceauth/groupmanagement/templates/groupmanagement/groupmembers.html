@@ -15,17 +15,14 @@
                 {{ group.name }} - {% trans 'Members' %}
             </div>
             <div class="panel-body">                
-                <p>
-                    <span class="pull-right">
-                        &nbsp;
-                        <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
-                            Back
-                        </a>
-                    </span>
+                <p>                    
+                    <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
+                        Back
+                    </a>
                 </p>                
                 {% if group.user_set %}                    
                     <div class="table-responsive">
-                        <table class="table table-striped" id="tab_group_members">
+                        <table class="table table-aa" id="tab_group_members">
                             <thead>
                                 <tr>                                                        
                                     <th class="text-right">{% trans "Portrait" %}</th>

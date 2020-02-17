@@ -14,12 +14,9 @@
             </div>
             <div class="panel-body">            
                 <p> 
-                    <span class="pull-right">
-                        &nbsp;
-                        <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
-                            Back
-                        </a>
-                    </span>
+                    <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
+                        Back
+                    </a>
                 </p>              
                 {% if entries %}
                     <div class="table-responsive">
@@ -27,8 +24,8 @@
                             <thead>
                                 <th class="text-center" scope="col">{% trans "Date/Time" %}</th>
                                 <th class="text-center" scope="col">{% trans "Requestor" %}</th>
-                                <th class="text-center" scope="col">{% trans "Main Character" %}</th>
-                                <th class="text-center" scope="col">{% trans "Group" %}</th>
+                                <th class="text-center" scope="col">{% trans "Character" %}</th>
+                                <th class="text-center" scope="col">{% trans "Corporation" %}</th>
                                 <th class="text-center" scope="col">{% trans "Type" %}</th>
                                 <th class="text-center" scope="col">{% trans "Action" %}</th>
                                 <th class="text-center" scope="col">{% trans "Actor" %}</th>
@@ -39,7 +36,7 @@
                                         <td class="text-center">{{ entry.date }}</td>
                                         <td class="text-center">{{ entry.requestor }}</td>
                                         <td class="text-center">{{ entry.req_char }}</td>
-                                        <td class="text-center">{{ entry.group }}</td>
+                                        <td class="text-center">{{ entry.req_char.corporation_name }}</td>
                                         <td class="text-center">{{ entry.type_to_str }}</td>
                                         {% if entry.request_type is None %}
                                             <td class="text-center"> Removed</td>
@@ -55,10 +52,12 @@
                             All times displayed are EVE/UTC.
                         </p>
                     </div>
-                {% else %}
-                    <div class="alert alert-warning text-center">
+                {% else %}                                        
+                    <div class="clearfix"></div>
+                    <br>
+                    <div class="alert alert-warning text-center">                        
                         {% trans "No entries found for this group." %}
-                    </div>
+                    </div>                    
                 {% endif %}
             </div>        
         </div>
@@ -67,6 +66,7 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
+    <script type="text/javascript" src="{% static 'js/filterDropDown/filterDropDown.min.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -75,7 +75,33 @@
 
 {% block extra_script %}
     $(document).ready(function(){
-        $('#log-entries').DataTable();
+        $('#log-entries').DataTable({
+            order: [[ 0, 'desc' ], [ 1, 'asc' ] ],
+            filterDropDown:
+            {
+                columns: [                                       
+                    {
+                        idx: 1
+                    },
+                    {
+                        idx: 2
+                    },
+                    {
+                        idx: 3
+                    },
+                    {
+                        idx: 4
+                    },
+                    {
+                        idx: 5
+                    },
+                    {
+                        idx: 6
+                    }
+                ],
+                bootstrap: true
+            },
+        });
     });
 {% endblock %}
 
