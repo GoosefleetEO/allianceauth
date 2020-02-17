@@ -1,10 +1,8 @@
 {% extends 'public/middle_box.html' %}
 {% load static %}
 {% block page_title %}Login{% endblock %}
-{% block middle_box_content %}
-    <p style="text-align:center">
-        <a href="{% url 'auth_sso_login' %}{% if request.GET.next %}?next={{request.GET.next}}{%endif%}">            
-            <img class="img-responsive" src="{% static 'img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}" border=0>
-        </a>
-    </p>
+{% block middle_box_content %}    
+    <a href="{% url 'auth_sso_login' %}{% if request.GET.next %}?next={{request.GET.next}}{%endif%}">
+        <img class="img-responsive center-block" src="{% static 'img/sso/EVE_SSO_Login_Buttons_Large_Black.png' %}" border=0>
+    </a>
 {% endblock %}

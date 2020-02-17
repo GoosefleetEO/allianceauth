@@ -8,19 +8,17 @@
 {% block content %}
     <div class="col-sm-12">
         <h1 class="page-header">{% trans "Permissions Overview" %}</h1>
-        {% if request.GET.all != 'yes' %}
-            <span class="pull-right">
-                {% blocktrans %}Showing only applied permissions{% endblocktrans %}
-                <a href="{% url 'permissions_tool:overview' %}?all=yes" class="btn btn-primary">{% trans "Show All" %}</a>
-            </span>
+        <p>
+        {% if request.GET.all != 'yes' %}            
+            {% blocktrans %}Showing only applied permissions{% endblocktrans %}
+            <a href="{% url 'permissions_tool:overview' %}?all=yes" class="btn btn-primary">{% trans "Show All" %}</a>            
         {% else %}
-            <span class="pull-right">
-                {% blocktrans %}Showing all permissions{% endblocktrans %}
-                <a href="{% url 'permissions_tool:overview' %}?all=no" class="btn btn-primary">{% trans "Show Applied" %}</a>
-            </span>
+            {% blocktrans %}Showing all permissions{% endblocktrans %}
+            <a href="{% url 'permissions_tool:overview' %}?all=no" class="btn btn-primary">{% trans "Show Applied" %}</a>
         {% endif %}
+        </p>
         <div class="table-responsive">
-            <table class="table table-striped" id="tab_permissions_overview">
+            <table class="table table-striped" id="tab_permissions_overview" style="width:100%">
                 <thead>
                     <tr>
                         <th>
@@ -81,7 +79,8 @@
 {% endblock content %}
 
 {% block extra_javascript %}
-    {% include 'bundles/datatables-js.html' %}
+    {% include 'bundles/datatables-js.html' %}    
+    <script type="text/javascript" src="{% static 'js/filterDropDown/filterDropDown.min.js' %}"></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -89,9 +88,40 @@
 {% endblock %}
 
 {% block extra_script %}
-    $(document).ready(function(){
-        $('#tab_permissions_overview').DataTable({
-            order: [ [ 0, "asc" ], [ 1, "asc" ], [ 2, "asc" ] ]            
-        });
-    });
+    $(document).ready(function() {
+        var groupColumn = 0;
+        var table = $('#tab_permissions_overview').DataTable({
+            columnDefs: [
+                { "visible": false, "targets": groupColumn }
+            ],
+            order: [[ groupColumn, 'asc' ], [ 1, 'asc' ], [ 2, 'asc' ] ],
+            filterDropDown:
+            {
+                columns: [                                       
+                    {
+                        idx: 0
+                    },
+                    {
+                        idx: 1
+                    }
+                ],
+                bootstrap: true
+            },
+            drawCallback: function ( settings ) {
+                var api = this.api();
+                var rows = api.rows( {page:'current'} ).nodes();
+                var last=null;
+    
+                api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
+                    if ( last !== group ) {
+                        $(rows).eq( i ).before(
+                            '<tr class="tr-group"><td colspan="6">' + group + '</td></tr>'
+                        );
+    
+                        last = group;
+                    }
+                } );
+            }
+        } );
+    } );
 {% endblock %}
