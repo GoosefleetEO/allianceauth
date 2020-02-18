@@ -103,14 +103,16 @@ class GroupAdmin(admin.ModelAdmin):
         '_member_count', 
         'has_leader'
     )
-    list_filter = (
+    list_filter = [
         'authgroup__internal', 
         'authgroup__hidden', 
         'authgroup__open', 
-        'authgroup__public',
-        IsAutoGroupFilter,
-        HasLeaderFilter
-    )
+        'authgroup__public',        
+    ]
+    if _has_auto_groups:
+        list_filter.append(IsAutoGroupFilter)
+    list_filter.append(HasLeaderFilter)
+
     search_fields = ('name', 'authgroup__description')
     
     def get_queryset(self, request):

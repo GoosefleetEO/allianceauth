@@ -1,22 +1,28 @@
 from unittest.mock import patch
 
-from django.test import TestCase, RequestFactory
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
+from django.test import TestCase, RequestFactory
 
 from allianceauth.authentication.models import CharacterOwnership, State
-from allianceauth.eveonline.autogroups.models import AutogroupsConfig
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
 
-from ..admin import (
-   IsAutoGroupFilter,
+from ..admin import (   
    HasLeaderFilter,
    GroupAdmin,   
    Group
 )
+
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import AutogroupsConfig
+    from ..admin import IsAutoGroupFilter
+else:
+    _has_auto_groups = False
 
 
 MODULE_PATH = 'allianceauth.groupmanagement.admin'
@@ -210,14 +216,15 @@ class TestGroupAdmin(TestCase):
 
     def _create_autogroups(self):
         """create autogroups for corps and alliances"""
-        autogroups_config = AutogroupsConfig(
-            corp_groups = True,
-            alliance_groups = True
-        )
-        autogroups_config.save()
-        for state in State.objects.all():
-            autogroups_config.states.add(state)        
-        autogroups_config.update_corp_group_membership(self.user_1)        
+        if _has_auto_groups:
+            autogroups_config = AutogroupsConfig(
+                corp_groups = True,
+                alliance_groups = True
+            )
+            autogroups_config.save()
+            for state in State.objects.all():
+                autogroups_config.states.add(state)
+            autogroups_config.update_corp_group_membership(self.user_1)
     
     # column rendering
 
@@ -267,70 +274,72 @@ class TestGroupAdmin(TestCase):
         result = self.modeladmin._properties(self.group_6)
         self.assertListEqual(result, expected)
 
-    @patch(MODULE_PATH + '._has_auto_groups', True)
-    def test_properties_6(self):
-        self._create_autogroups()
-        expected = ['Auto Group']
-        my_group = Group.objects\
-            .filter(managedcorpgroup__isnull=False)\
-            .first()
-        result = self.modeladmin._properties(my_group)
-        self.assertListEqual(result, expected)
+    if _has_auto_groups:
+        @patch(MODULE_PATH + '._has_auto_groups', True)
+        def test_properties_6(self):
+            self._create_autogroups()
+            expected = ['Auto Group']
+            my_group = Group.objects\
+                .filter(managedcorpgroup__isnull=False)\
+                .first()
+            result = self.modeladmin._properties(my_group)
+            self.assertListEqual(result, expected)
 
     # actions
    
     # filters
     
-    @patch(MODULE_PATH + '._has_auto_groups', True)
-    def test_filter_is_auto_group(self):
-        
-        class GroupAdminTest(admin.ModelAdmin): 
-            list_filter = (IsAutoGroupFilter,)
-                
-        self._create_autogroups()        
-        my_modeladmin = GroupAdminTest(Group, AdminSite())
+    if _has_auto_groups:
+        @patch(MODULE_PATH + '._has_auto_groups', True)
+        def test_filter_is_auto_group(self):
+            
+            class GroupAdminTest(admin.ModelAdmin): 
+                list_filter = (IsAutoGroupFilter,)
+                    
+            self._create_autogroups()        
+            my_modeladmin = GroupAdminTest(Group, AdminSite())
 
-        # Make sure the lookups are correct
-        request = self.factory.get('/')
-        request.user = self.user_1
-        changelist = my_modeladmin.get_changelist_instance(request)
-        filters = changelist.get_filters(request)
-        filterspec = filters[0][0]
-        expected = [
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        ]
-        self.assertEqual(filterspec.lookup_choices, expected)
+            # Make sure the lookups are correct
+            request = self.factory.get('/')
+            request.user = self.user_1
+            changelist = my_modeladmin.get_changelist_instance(request)
+            filters = changelist.get_filters(request)
+            filterspec = filters[0][0]
+            expected = [
+                ('yes', 'Yes'),
+                ('no', 'No'),
+            ]
+            self.assertEqual(filterspec.lookup_choices, expected)
 
-        # Make sure the correct queryset is returned - no
-        request = self.factory.get(
-            '/', {'is_auto_group__exact': 'no'}
-        )
-        request.user = self.user_1
-        changelist = my_modeladmin.get_changelist_instance(request)
-        queryset = changelist.get_queryset(request)
-        expected = [
-            self.group_1,
-            self.group_2,
-            self.group_3,
-            self.group_4,
-            self.group_5,
-            self.group_6
-        ]
-        self.assertSetEqual(set(queryset), set(expected))
+            # Make sure the correct queryset is returned - no
+            request = self.factory.get(
+                '/', {'is_auto_group__exact': 'no'}
+            )
+            request.user = self.user_1
+            changelist = my_modeladmin.get_changelist_instance(request)
+            queryset = changelist.get_queryset(request)
+            expected = [
+                self.group_1,
+                self.group_2,
+                self.group_3,
+                self.group_4,
+                self.group_5,
+                self.group_6
+            ]
+            self.assertSetEqual(set(queryset), set(expected))
 
-        # Make sure the correct queryset is returned - yes
-        request = self.factory.get(
-            '/', {'is_auto_group__exact': 'yes'}
-        )
-        request.user = self.user_1
-        changelist = my_modeladmin.get_changelist_instance(request)
-        queryset = changelist.get_queryset(request)
-        expected = Group.objects.exclude(
-                    managedalliancegroup__isnull=True, 
-                    managedcorpgroup__isnull=True
-        )
-        self.assertSetEqual(set(queryset), set(expected))
+            # Make sure the correct queryset is returned - yes
+            request = self.factory.get(
+                '/', {'is_auto_group__exact': 'yes'}
+            )
+            request.user = self.user_1
+            changelist = my_modeladmin.get_changelist_instance(request)
+            queryset = changelist.get_queryset(request)
+            expected = Group.objects.exclude(
+                        managedalliancegroup__isnull=True, 
+                        managedcorpgroup__isnull=True
+            )
+            self.assertSetEqual(set(queryset), set(expected))
          
     def test_filter_has_leader(self):
         

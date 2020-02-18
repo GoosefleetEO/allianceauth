@@ -1,10 +1,10 @@
 from unittest.mock import Mock, patch
-
 from django.test import TestCase
 
 from .. import app_settings
 
 MODULE_PATH = 'allianceauth.authentication'
+
 
 class TestSetAppSetting(TestCase):
 
@@ -17,7 +17,6 @@ class TestSetAppSetting(TestCase):
         )
         self.assertEqual(result, False)
 
-
     @patch(MODULE_PATH + '.app_settings.settings')
     def test_default_if_not_set_for_none(self, mock_settings):        
         mock_settings.TEST_SETTING_DUMMY = Mock(spec=None)
@@ -27,7 +26,6 @@ class TestSetAppSetting(TestCase):
             required_type=int
         )
         self.assertEqual(result, None)
-
 
     @patch(MODULE_PATH + '.app_settings.settings')
     def test_true_stays_true(self, mock_settings):
@@ -55,7 +53,6 @@ class TestSetAppSetting(TestCase):
             False
         )
         self.assertEqual(result, False)
-
 
     @patch(MODULE_PATH + '.app_settings.settings')
     def test_default_for_invalid_type_int(self, mock_settings):
@@ -95,7 +92,6 @@ class TestSetAppSetting(TestCase):
         )
         self.assertEqual(result, 50)
 
-    
     @patch(MODULE_PATH + '.app_settings.settings')
     def test_default_is_none_needs_required_type(self, mock_settings):
         mock_settings.TEST_SETTING_DUMMY = 'invalid type'
@@ -104,5 +100,3 @@ class TestSetAppSetting(TestCase):
                 'TEST_SETTING_DUMMY',             
                 default_value=None
             )
-        
-

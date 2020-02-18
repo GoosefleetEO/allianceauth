@@ -1,12 +1,12 @@
 from unittest.mock import patch
 
-from django.test import TestCase, RequestFactory
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User as BaseUser, Group
+from django.test import TestCase, RequestFactory
 
 from allianceauth.authentication.models import CharacterOwnership, State
-from allianceauth.eveonline.autogroups.models import AutogroupsConfig
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
@@ -22,6 +22,11 @@ from ..admin import (
     user_username,     
 )
 
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import AutogroupsConfig
+else:
+    _has_auto_groups = False
 
 MODULE_PATH = 'allianceauth.authentication.admin'
 
@@ -174,14 +179,15 @@ class TestUserAdmin(TestCase):
 
     def _create_autogroups(self):
         """create autogroups for corps and alliances"""
-        autogroups_config = AutogroupsConfig(
-            corp_groups = True,
-            alliance_groups = True
-        )
-        autogroups_config.save()
-        for state in State.objects.all():
-            autogroups_config.states.add(state)        
-        autogroups_config.update_corp_group_membership(self.user_1)        
+        if _has_auto_groups:
+            autogroups_config = AutogroupsConfig(
+                corp_groups = True,
+                alliance_groups = True
+            )
+            autogroups_config.save()
+            for state in State.objects.all():
+                autogroups_config.states.add(state)        
+            autogroups_config.update_corp_group_membership(self.user_1)        
     
     # column rendering
 
