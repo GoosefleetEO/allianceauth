@@ -1443,56 +1443,6 @@ msgstr "Ping Enviado"
 msgid "Broadcast"
 msgstr ""
 
-#: allianceauth/services/modules/seat/views.py:40
-#, python-format
-msgid "Successfully activated your %(service)s account."
-msgstr "Se activo con exito el %(service)s en tu cuenta."
-
-#: allianceauth/services/modules/seat/views.py:49
-#, python-format
-msgid ""
-"Failed to activate your %(service)s account, please contact your "
-"administrator."
-msgstr "Fallo al activar el %(service)s en tu cuenta, por favor contacta a tu administrador."
-
-#: allianceauth/services/modules/seat/views.py:62
-#, python-format
-msgid "Successfully deactivated your %(service)s account."
-msgstr "Se desactivo el servicio %(service)s con exito."
-
-#: allianceauth/services/modules/seat/views.py:68
-#, python-format
-msgid ""
-"Failed to deactivate your %(service)s account, please contact your "
-"administrator."
-msgstr "Fallo al desactivar el servicio %(service)s, por favor contacta a tu administrador."
-
-#: allianceauth/services/modules/seat/views.py:87
-#, python-format
-msgid "Successfully reset your %(service)s password."
-msgstr "Se restablecio con exito tu contraseña del servicio %(service)s."
-
-#: allianceauth/services/modules/seat/views.py:93
-#, python-format
-msgid ""
-"Failed to reset your %(service)s password, please contact your administrator."
-msgstr "Fallo al restablecer tu contraseña en el servicio %(service)s, por favor contacta a tu adminsitrador."
-
-#: allianceauth/services/modules/seat/views.py:114
-#, python-format
-msgid "Successfully set your %(service)s password."
-msgstr "Se cambio con exito tu contraseña en el servicio %(service)s"
-
-#: allianceauth/services/modules/seat/views.py:119
-#, python-format
-msgid ""
-"Failed to set your %(service)s password, please contact your administrator."
-msgstr "Fallo al cambiar tu contraseña en %(service)s, por favor contacta a tu administrador."
-
-#: allianceauth/services/modules/seat/views.py:123
-msgid "Invalid password."
-msgstr "Contraseña invalida."
-
 #: allianceauth/services/modules/teamspeak3/forms.py:14
 #, python-format
 msgid "Unable to locate user %s on server"
