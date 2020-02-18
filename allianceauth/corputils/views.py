@@ -108,10 +108,11 @@ def corpstats_view(request, corp_id=None):
             try:
                 main = char.character_ownership.user.profile.main_character
                 if main is not None:
-                    if main.character_id not in mains:
-                        mains[main.character_id] = {'main':main, 'alts':[]}
+                    if main.corporation_id == corpstats.corp.corporation_id:
+                        if main.character_id not in mains:
+                            mains[main.character_id] = {'main':main, 'alts':[]}
 
-                    mains[main.character_id]['alts'].append(char)
+                        mains[main.character_id]['alts'].append(char)
 
                     if char.corporation_id == corpstats.corp.corporation_id:
                         members.append(char)
