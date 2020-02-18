@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import Group as BaseGroup
 from django.db.models import Count
+from django.db.models.functions import Lower
 from django.db.models.signals import pre_save, post_save, pre_delete, \
     post_delete, m2m_changed
 from django.dispatch import receiver
@@ -24,6 +25,17 @@ class AuthGroupInlineAdmin(admin.StackedInline):
     fields = ('description', 'group_leaders', 'group_leader_groups', 'states', 'internal', 'hidden', 'open', 'public')
     verbose_name_plural = 'Auth Settings'
     verbose_name = ''
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """overriding this formfield to have sorted lists in the form"""
+        if db_field.name == "group_leaders":
+            kwargs["queryset"] = User.objects\
+                .filter(profile__state__name='Member')\
+                .order_by(Lower('username'))
+        elif db_field.name == "group_leader_groups":
+            kwargs["queryset"] = Group.objects\
+                .order_by(Lower('name'))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def has_add_permission(self, request):
         return False
@@ -100,9 +112,7 @@ class GroupAdmin(admin.ModelAdmin):
         HasLeaderFilter
     )
     search_fields = ('name', 'authgroup__description')
-    filter_horizontal = ('permissions',)
-    inlines = (AuthGroupInlineAdmin,)
-
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)                
         qs = qs.annotate(
@@ -146,6 +156,9 @@ class GroupAdmin(admin.ModelAdmin):
         return properties
 
     _properties.short_description = "properties"
+
+    filter_horizontal = ('permissions',)
+    inlines = (AuthGroupInlineAdmin,)
 
 
 class Group(BaseGroup):

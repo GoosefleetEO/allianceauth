@@ -20,7 +20,8 @@ from allianceauth.authentication.models import State, get_guest_state,\
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 from allianceauth.eveonline.tasks import update_character
-from .app_settings import *
+from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
+    AUTHENTICATION_ADMIN_USERS_MAX_CHARS
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -365,7 +366,7 @@ class UserAdmin(BaseUserAdmin):
         'username', 
         'character_ownerships__character__character_name'
     )
-
+    
     def _characters(self, obj):
         my_characters = [
             x.character.character_name 
@@ -426,19 +427,54 @@ class UserAdmin(BaseUserAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.has_perm('auth.delete_user')
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """overriding this formfield to have sorted lists in the form"""
+        if db_field.name == "groups":
+            kwargs["queryset"] = Group.objects.all().order_by(Lower('name'))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
 
 @admin.register(State)
-class StateAdmin(admin.ModelAdmin):
+class StateAdmin(admin.ModelAdmin):    
+    list_select_related = True
+    list_display = ('name', 'priority', '_user_count')
+    
+    def _user_count(self, obj):
+        return obj.userprofile_set.all().count()
+    _user_count.short_description = 'Users'
+
     fieldsets = (
         (None, {
             'fields': ('name', 'permissions', 'priority'),
         }),
         ('Membership', {
-            'fields': ('public', 'member_characters', 'member_corporations', 'member_alliances'),
+            'fields': (
+                'public', 
+                'member_characters', 
+                'member_corporations', 
+                'member_alliances'
+            ),
         })
     )
-    filter_horizontal = ['member_characters', 'member_corporations', 'member_alliances', 'permissions']
-    list_display = ('name', 'priority', 'user_count')
+    filter_horizontal = [
+        'member_characters', 
+        'member_corporations', 
+        'member_alliances', 
+        'permissions'
+    ]
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """overriding this formfield to have sorted lists in the form"""
+        if db_field.name == "member_characters":
+            kwargs["queryset"] = EveCharacter.objects.all()\
+                .order_by(Lower('character_name'))
+        elif db_field.name == "member_corporations":
+            kwargs["queryset"] = EveCorporationInfo.objects.all()\
+                .order_by(Lower('corporation_name'))
+        elif db_field.name == "member_alliances":
+            kwargs["queryset"] = EveAllianceInfo.objects.all()\
+                .order_by(Lower('alliance_name'))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
@@ -453,11 +489,7 @@ class StateAdmin(admin.ModelAdmin):
                 }),
             )
         return super(StateAdmin, self).get_fieldsets(request, obj=obj)
-
-    @staticmethod
-    def user_count(obj):
-        return obj.userprofile_set.all().count()
-
+    
 
 class BaseOwnershipAdmin(admin.ModelAdmin):
     class Media:

@@ -3,8 +3,13 @@ CSS for allianceauth admin site
 */
 
 /* styling for profile pic */
-.img-circle { border-radius: 50%; }
-.column-user_profile_pic { width: 50px; }
+.img-circle { 
+    border-radius: 50%; 
+}
+.column-user_profile_pic {     
+    width: 1px;
+    white-space: nowrap;
+}
 
 /* tooltip */
 .tooltip {
