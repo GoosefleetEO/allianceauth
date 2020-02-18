@@ -1,7 +1,48 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
+from django.db.models.functions import Lower
+from django.urls import reverse
+from django.utils.html import format_html
+
 from allianceauth import hooks
+from allianceauth.eveonline.models import EveCharacter
+from allianceauth.authentication.admin import user_profile_pic, \
+    user_username, user_main_organization, MainCorporationsFilter,\
+    MainAllianceFilter
+
 from .models import NameFormatConfig
+
+
+class ServicesUserAdmin(admin.ModelAdmin):
+    """Parent class for UserAdmin classes for all services"""
+    class Media:
+        css = {
+            "all": ("services/admin.css",)
+        }
+
+    search_fields = (
+        'user__username', 
+        'uid'
+    )
+    ordering = ('user__username', )
+    list_select_related = True              
+    list_display = (
+        user_profile_pic,
+        user_username,  
+        user_main_organization, 
+        '_date_joined'
+    )
+    list_filter = (        
+        MainCorporationsFilter,        
+        MainAllianceFilter,
+        'user__date_joined'
+    )
+
+    def _date_joined(self, obj):
+        return obj.user.date_joined
+    
+    _date_joined.short_description = 'date joined'
+    _date_joined.admin_order_field = 'user__date_joined'
 
 
 class NameFormatConfigForm(forms.ModelForm):

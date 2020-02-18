@@ -1,15 +1,33 @@
+from django.conf import settings
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User as BaseUser, Permission as BasePermission
-from django.utils.text import slugify
-from django.db.models import Q
+from django.contrib.auth.models import User as BaseUser, \
+    Permission as BasePermission, Group
+from django.db.models import Q, F
 from allianceauth.services.hooks import ServicesHook
-from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
+from django.db.models.signals import pre_save, post_save, pre_delete, \
+    post_delete, m2m_changed
+from django.db.models.functions import Lower
 from django.dispatch import receiver
-from allianceauth.authentication.models import State, get_guest_state, CharacterOwnership, UserProfile, OwnershipRecord
-from allianceauth.hooks import get_hooks
-from allianceauth.eveonline.models import EveCharacter
 from django.forms import ModelForm
+from django.utils.html import format_html
+from django.urls import reverse
+from django.utils.text import slugify
+
+from allianceauth.authentication.models import State, get_guest_state,\
+    CharacterOwnership, UserProfile, OwnershipRecord
+from allianceauth.hooks import get_hooks
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
+from allianceauth.eveonline.tasks import update_character
+from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
+    AUTHENTICATION_ADMIN_USERS_MAX_CHARS
+
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import *
+else:
+    _has_auto_groups = False
 
 
 def make_service_hooks_update_groups_action(service):
@@ -83,41 +101,323 @@ class UserProfileInline(admin.StackedInline):
         return False
 
 
+def user_profile_pic(obj):
+    """profile pic column data for user objects
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists (requires CSS)
+    """
+    user_obj = obj.user if hasattr(obj, 'user') else obj
+    if user_obj.profile.main_character:
+        return format_html(
+            '<img src="{}" class="img-circle">',
+            user_obj.profile.main_character.portrait_url(size=32)
+        )
+    else:
+        return None
+user_profile_pic.short_description = ''
+
+
+def user_username(obj):
+    """user column data for user objects
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """    
+    link = reverse(
+        'admin:{}_{}_change'.format(
+            obj._meta.app_label,
+            type(obj).__name__.lower()
+        ), 
+        args=(obj.pk,)
+    )
+    user_obj = obj.user if hasattr(obj, 'user') else obj
+    if user_obj.profile.main_character:
+        return format_html(
+            '<strong><a href="{}">{}</a></strong><br>{}',
+            link, 
+            user_obj.username,
+            user_obj.profile.main_character.character_name
+        )
+    else:
+        return format_html(
+            '<strong><a href="{}">{}</a></strong>',
+            link, 
+            user_obj.username,
+        )
+
+user_username.short_description = 'user / main'
+user_username.admin_order_field = 'username'
+
+
+def user_main_organization(obj):
+    """main organization column data for user objects
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """
+    user_obj = obj.user if hasattr(obj, 'user') else obj
+    if not user_obj.profile.main_character:
+        result = None
+    else:        
+        corporation = user_obj.profile.main_character.corporation_name
+        if user_obj.profile.main_character.alliance_id:        
+            result = format_html('{}<br>{}',
+                corporation, 
+                user_obj.profile.main_character.alliance_name
+            )
+        else:
+            result = corporation    
+    return result
+
+user_main_organization.short_description = 'Corporation / Alliance (Main)'
+user_main_organization.admin_order_field = \
+    'profile__main_character__corporation_name'
+
+
+class MainCorporationsFilter(admin.SimpleListFilter):
+    """Custom filter to filter on corporations from mains only
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """
+    title = 'corporation'
+    parameter_name = 'main_corporation_id__exact'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(userprofile=None)\
+            .values('corporation_id', 'corporation_name')\
+            .distinct()\
+            .order_by(Lower('corporation_name'))
+        return tuple(
+            [(x['corporation_id'], x['corporation_name']) for x in qs]
+        )
+
+    def queryset(self, request, qs):
+        if self.value() is None:
+            return qs.all()
+        else:    
+            if qs.model == User:
+                return qs\
+                    .filter(profile__main_character__corporation_id=\
+                        self.value())
+            else:
+                return qs\
+                    .filter(user__profile__main_character__corporation_id=\
+                        self.value())
+            
+
+class MainAllianceFilter(admin.SimpleListFilter):
+    """Custom filter to filter on alliances from mains only
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """
+    title = 'alliance'
+    parameter_name = 'main_alliance_id__exact'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(alliance_id=None)\
+            .exclude(userprofile=None)\
+            .values('alliance_id', 'alliance_name')\
+            .distinct()\
+            .order_by(Lower('alliance_name'))
+        return tuple(
+            [(x['alliance_id'], x['alliance_name']) for x in qs]
+        )
+
+    def queryset(self, request, qs):
+        if self.value() is None:
+            return qs.all()
+        else:    
+            if qs.model == User:
+                return qs\
+                    .filter(profile__main_character__alliance_id=self.value())                
+            else:
+                return qs\
+                    .filter(user__profile__main_character__alliance_id=\
+                        self.value())
+                
+
 class UserAdmin(BaseUserAdmin):
+    """Extending Django's UserAdmin model
+    
+    Behavior of groups and characters columns can be configured via settings
+
     """
-    Extending Django's UserAdmin model
-    """
+
+    class Media:
+        css = {
+            "all": ("authentication/css/admin.css",)
+        }
+         
+    class RealGroupsFilter(admin.SimpleListFilter):
+        """Custom filter to get groups w/o Autogroups"""
+        title = 'group'
+        parameter_name = 'group_id__exact'
+
+        def lookups(self, request, model_admin):
+            qs = Group.objects.all().order_by(Lower('name'))
+            if _has_auto_groups:
+                qs = qs\
+                    .filter(managedalliancegroup__isnull=True)\
+                    .filter(managedcorpgroup__isnull=True)                
+            return tuple([(x.pk, x.name) for x in qs])
+
+        def queryset(self, request, queryset):
+            if self.value() is None:
+                return queryset.all()
+            else:    
+                return queryset.filter(groups__pk=self.value())
+
+    def update_main_character_model(self, request, queryset):    
+        tasks_count = 0
+        for obj in queryset:
+            if obj.profile.main_character:
+                update_character.delay(obj.profile.main_character.character_id)
+                tasks_count += 1
+
+        self.message_user(
+            request, 
+            'Update from ESI started for {} characters'.format(tasks_count)
+        )
+
+    update_main_character_model.short_description = \
+        'Update main character model from ESI'
+
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
+
+        actions[self.update_main_character_model.__name__] = (
+            self.update_main_character_model, 
+            self.update_main_character_model.__name__, 
+            self.update_main_character_model.short_description
+        )
 
         for hook in get_hooks('services_hook'):
             svc = hook()
             # Check update_groups is redefined/overloaded
             if svc.update_groups.__module__ != ServicesHook.update_groups.__module__:
                 action = make_service_hooks_update_groups_action(svc)
-                actions[action.__name__] = (action,
-                                            action.__name__,
-                                            action.short_description)
+                actions[action.__name__] = (
+                    action, 
+                    action.__name__,
+                    action.short_description
+                )
+            
             # Create sync nickname action if service implements it
             if svc.sync_nickname.__module__ != ServicesHook.sync_nickname.__module__:
                 action = make_service_hooks_sync_nickname_action(svc)
-                actions[action.__name__] = (action,
-                                            action.__name__,
-                                            action.short_description)
-
+                actions[action.__name__] = (
+                    action, action.__name__, 
+                    action.short_description
+                )
         return actions
-    list_filter = BaseUserAdmin.list_filter + ('profile__state',)
+
+    def _list_2_html_w_tooltips(self, my_items: list, max_items: int) -> str:    
+        """converts list of strings into HTML with cutoff and tooltip"""
+        items_truncated_str = ', '.join(my_items[:max_items])
+        if not my_items:
+            result = None
+        elif len(my_items) <= max_items:
+            result = items_truncated_str
+        else:
+            items_truncated_str += ', (...)'
+            items_all_str = ', '.join(my_items)
+            result = format_html(
+                '<span data-tooltip="{}" class="tooltip">{}</span>',
+                items_all_str,
+                items_truncated_str
+            )
+        return result
+    
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
-    list_display = ('username', 'email', 'get_main_character', 'get_state', 'is_active')
 
-    def get_main_character(self, obj):
-        return obj.profile.main_character
-    get_main_character.short_description = "Main Character"
+    ordering = ('username', )
+    list_select_related = True
+    show_full_result_count = True 
+    
+    list_display = (
+        user_profile_pic,
+        user_username, 
+        '_state', 
+        '_groups',
+        user_main_organization,
+        '_characters',
+        'is_active',
+        'date_joined',
+        '_role'
+    )    
+    list_display_links = None
 
-    def get_state(self, obj):
-        return obj.profile.state
-    get_state.short_description = "State"
+    list_filter = ( 
+        'profile__state',
+        RealGroupsFilter,        
+        MainCorporationsFilter,        
+        MainAllianceFilter,
+        'is_active',
+        'date_joined',
+        'is_staff',
+        'is_superuser'
+    )
+    search_fields = (
+        'username', 
+        'character_ownerships__character__character_name'
+    )
+    
+    def _characters(self, obj):
+        my_characters = [
+            x.character.character_name 
+            for x in CharacterOwnership.objects\
+                .filter(user=obj)\
+                .order_by('character__character_name')\
+                .select_related()
+        ]
+        return self._list_2_html_w_tooltips(
+            my_characters, 
+            AUTHENTICATION_ADMIN_USERS_MAX_CHARS
+        )
+          
+    _characters.short_description = 'characters'
+    
 
+    def _state(self, obj):
+        return obj.profile.state.name
+    
+    _state.short_description = 'state'
+    _state.admin_order_field = 'profile__state'
+
+    def _groups(self, obj):
+        if not _has_auto_groups:
+            my_groups = [x.name for x in obj.groups.order_by('name')]
+        else:
+            my_groups = [
+                x.name for x in obj.groups\
+                    .filter(managedalliancegroup__isnull=True)\
+                    .filter(managedcorpgroup__isnull=True)\
+                    .order_by('name')
+            ]
+        
+        return self._list_2_html_w_tooltips(
+            my_groups, 
+            AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
+        )
+       
+    _groups.short_description = 'groups'
+
+    def _role(self, obj):
+        if obj.is_superuser:
+            role = 'Superuser'
+        elif obj.is_staff:
+            role = 'Staff'
+        else:
+            role = 'User'        
+        return role
+    
+    _role.short_description = 'role'
+    
     def has_change_permission(self, request, obj=None):
         return request.user.has_perm('auth.change_user')
 
@@ -127,19 +427,54 @@ class UserAdmin(BaseUserAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.has_perm('auth.delete_user')
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """overriding this formfield to have sorted lists in the form"""
+        if db_field.name == "groups":
+            kwargs["queryset"] = Group.objects.all().order_by(Lower('name'))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
 
 @admin.register(State)
-class StateAdmin(admin.ModelAdmin):
+class StateAdmin(admin.ModelAdmin):    
+    list_select_related = True
+    list_display = ('name', 'priority', '_user_count')
+    
+    def _user_count(self, obj):
+        return obj.userprofile_set.all().count()
+    _user_count.short_description = 'Users'
+
     fieldsets = (
         (None, {
             'fields': ('name', 'permissions', 'priority'),
         }),
         ('Membership', {
-            'fields': ('public', 'member_characters', 'member_corporations', 'member_alliances'),
+            'fields': (
+                'public', 
+                'member_characters', 
+                'member_corporations', 
+                'member_alliances'
+            ),
         })
     )
-    filter_horizontal = ['member_characters', 'member_corporations', 'member_alliances', 'permissions']
-    list_display = ('name', 'priority', 'user_count')
+    filter_horizontal = [
+        'member_characters', 
+        'member_corporations', 
+        'member_alliances', 
+        'permissions'
+    ]
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """overriding this formfield to have sorted lists in the form"""
+        if db_field.name == "member_characters":
+            kwargs["queryset"] = EveCharacter.objects.all()\
+                .order_by(Lower('character_name'))
+        elif db_field.name == "member_corporations":
+            kwargs["queryset"] = EveCorporationInfo.objects.all()\
+                .order_by(Lower('corporation_name'))
+        elif db_field.name == "member_alliances":
+            kwargs["queryset"] = EveAllianceInfo.objects.all()\
+                .order_by(Lower('alliance_name'))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
@@ -154,15 +489,31 @@ class StateAdmin(admin.ModelAdmin):
                 }),
             )
         return super(StateAdmin, self).get_fieldsets(request, obj=obj)
-
-    @staticmethod
-    def user_count(obj):
-        return obj.userprofile_set.all().count()
-
+    
 
 class BaseOwnershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'character')
-    search_fields = ('user__username', 'character__character_name', 'character__corporation_name', 'character__alliance_name')
+    class Media:
+        css = {
+            "all": ("authentication/css/admin.css",)
+        }
+     
+    list_select_related = True
+    list_display = (
+        user_profile_pic,
+        user_username,
+        user_main_organization,
+        'character',
+    )
+    search_fields = (
+        'user__user', 
+        'character__character_name', 
+        'character__corporation_name', 
+        'character__alliance_name'
+    )
+    list_filter = (                 
+        MainCorporationsFilter,        
+        MainAllianceFilter,
+    )
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.pk:
