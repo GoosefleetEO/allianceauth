@@ -1,5 +1,7 @@
 """
-Alliance Auth Test Suite Django settings.
+Alliance Auth Test Suite Django settings
+
+Testing all services and plug-in apps
 """
 
 from allianceauth.project_template.project_name.settings.base import *
@@ -40,14 +42,6 @@ INSTALLED_APPS += [
 ROOT_URLCONF = 'tests.urls'
 
 CACHES['default'] = {'BACKEND': 'django.core.cache.backends.db.DatabaseCache'}
-
-#####################
-# HR Configuration
-#####################
-# JACK_KNIFE_URL - Url for the audit page of API Jack knife
-#                  Should seriously replace with your own.
-#####################
-JACK_KNIFE_URL = 'http://example.com/eveapi/audit.php'
 
 ########################
 # XenForo Configuration
