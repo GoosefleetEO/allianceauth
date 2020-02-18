@@ -1,9 +1,16 @@
-from esi.clients import esi_client_factory
-from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
 import logging
 import os
 
-SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.json')
+from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity, HTTPError
+from jsonschema.exceptions import RefResolutionError
+
+from django.conf import settings
+from esi.clients import esi_client_factory
+
+
+SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), 'swagger.json'
+)
 """
 Swagger spec operations:
 
@@ -150,9 +157,34 @@ class EveProvider(object):
 
 
 class EveSwaggerProvider(EveProvider):
-    def __init__(self, token=None, adapter=None):
-        self.client = esi_client_factory(token=token, spec_file=SWAGGER_SPEC_PATH)
+    def __init__(self, token=None, adapter=None):        
+        if settings.DEBUG:
+            self._client = None
+            logger.info(
+                'DEBUG mode detected: ESI client will be loaded on-demand.'
+            )
+        else:
+            try:
+                self._client = esi_client_factory(
+                    token=token, spec_file=SWAGGER_SPEC_PATH
+                )
+            except (HTTPError, RefResolutionError):
+                logger.exception(
+                    'Failed to load ESI client on startup. '
+                    'Switching to on-demand loading for ESI client.'
+                )
+                self._client = None
+
+        self._token = token
         self.adapter = adapter or self
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = esi_client_factory(
+                token=self._token, spec_file=SWAGGER_SPEC_PATH
+            )
+        return self._client
 
     def __str__(self):
         return 'esi'
