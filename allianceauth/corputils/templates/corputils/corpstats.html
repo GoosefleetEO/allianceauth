@@ -7,11 +7,12 @@
             <div class="col-lg-12 text-center">
                 <table class="table">
                     <tr>
-                        <td class="text-center col-lg-6
-                                {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}"><img
-                                class="ra-avatar" src="{{ corpstats.corp.logo_url_128 }}"></td>
+                        <td class="text-center col-lg-6{% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}">
+                                <img class="ra-avatar" src="{{ corpstats.corp.logo_url_64 }}">
+                            </td>
                         {% if corpstats.corp.alliance %}
-                            <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.corp.alliance.logo_url_128 }}">
+                            <td class="text-center col-lg-6">
+                                <img class="ra-avatar" src="{{ corpstats.corp.alliance.logo_url_64 }}">
                             </td>
                         {% endif %}
                     </tr>
@@ -33,11 +34,11 @@
                             <li><a href="#members" data-toggle="pill">{% trans 'Members' %} ({{ corpstats.member_count }})</a></li>
                             <li><a href="#unregistered" data-toggle="pill">{% trans 'Unregistered' %} ({{ unregistered.count }})</a></li>
                         </ul>
-                        <div class="pull-right">
-                            {% trans "Last update:" %} {{ corpstats.last_update|naturaltime }}
-                                <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
-                                    <span class="glyphicon glyphicon-refresh"></span>
-                                </a>
+                        <div class="pull-right hidden-xs">
+                            {% trans "Last update:" %} {{ corpstats.last_update|naturaltime }}&nbsp;
+                            <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
+                                <span class="glyphicon glyphicon-refresh"></span>
+                            </a>
                         </div>
                         <div class="clearfix"></div>
                     </div>
