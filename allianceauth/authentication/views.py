@@ -7,18 +7,56 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
 from django.urls import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy as _
+
+from allianceauth.eveonline.models import EveCharacter
 from esi.decorators import token_required
 from esi.models import Token
-from registration.backends.hmac.views import RegistrationView as BaseRegistrationView, \
-    ActivationView as BaseActivationView, REGISTRATION_SALT
+
+from registration.backends.hmac.views import (
+    RegistrationView as BaseRegistrationView, 
+    ActivationView as BaseActivationView, 
+    REGISTRATION_SALT
+)
 from registration.signals import user_registered
 
 from .models import CharacterOwnership
 from .forms import RegistrationForm
 
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import *
+else:
+    _has_auto_groups = False
+
+
 logger = logging.getLogger(__name__)
+
+
+@login_required
+def index(request):
+    return redirect('authentication:dashboard')
+
+
+@login_required
+def dashboard(request):
+    groups = request.user.groups.all()
+    if _has_auto_groups:
+        groups = groups\
+            .filter(managedalliancegroup__isnull=True)\
+            .filter(managedcorpgroup__isnull=True)
+    groups = groups.order_by('name')
+    characters = EveCharacter.objects\
+        .filter(character_ownership__user=request.user)\
+        .select_related()\
+        .order_by('character_name')
+        
+    context = {
+        'groups': groups,
+        'characters': characters
+    }
+    return render(request, 'authentication/dashboard.html', context)
 
 
 @login_required
