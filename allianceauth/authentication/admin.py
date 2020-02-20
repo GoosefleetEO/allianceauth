@@ -241,6 +241,22 @@ class MainAllianceFilter(admin.SimpleListFilter):
                         self.value())
                 
 
+def update_main_character_model(modeladmin, request, queryset):    
+    tasks_count = 0
+    for obj in queryset:
+        if obj.profile.main_character:
+            update_character.delay(obj.profile.main_character.character_id)
+            tasks_count += 1
+
+    modeladmin.message_user(
+        request, 
+        'Update from ESI started for {} characters'.format(tasks_count)
+    )
+
+update_main_character_model.short_description = \
+    'Update main character model from ESI'
+
+
 class UserAdmin(BaseUserAdmin):
     """Extending Django's UserAdmin model
     
@@ -272,28 +288,13 @@ class UserAdmin(BaseUserAdmin):
             else:    
                 return queryset.filter(groups__pk=self.value())
 
-    def update_main_character_model(self, request, queryset):    
-        tasks_count = 0
-        for obj in queryset:
-            if obj.profile.main_character:
-                update_character.delay(obj.profile.main_character.character_id)
-                tasks_count += 1
-
-        self.message_user(
-            request, 
-            'Update from ESI started for {} characters'.format(tasks_count)
-        )
-
-    update_main_character_model.short_description = \
-        'Update main character model from ESI'
-
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
 
-        actions[self.update_main_character_model.__name__] = (
-            self.update_main_character_model, 
-            self.update_main_character_model.__name__, 
-            self.update_main_character_model.short_description
+        actions[update_main_character_model.__name__] = (
+            update_main_character_model, 
+            update_main_character_model.__name__, 
+            update_main_character_model.short_description
         )
 
         for hook in get_hooks('services_hook'):

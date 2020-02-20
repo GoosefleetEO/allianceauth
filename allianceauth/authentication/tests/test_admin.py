@@ -25,7 +25,8 @@ from ..admin import (
     UserAdmin,     
     user_main_organization,
     user_profile_pic, 
-    user_username,    
+    user_username,
+    update_main_character_model
 )
 from . import get_admin_change_view_url
 
@@ -409,8 +410,8 @@ class TestUserAdmin(TestCase):
         self, mock_task, mock_message_user
     ):
         users_qs = User.objects.filter(pk__in=[self.user_1.pk, self.user_2.pk])
-        self.modeladmin.update_main_character_model(
-            MockRequest(self.user_1), users_qs
+        update_main_character_model(
+            self.modeladmin, MockRequest(self.user_1), users_qs
         )
         self.assertEqual(mock_task.delay.call_count, 2)
         self.assertTrue(mock_message_user.called)
