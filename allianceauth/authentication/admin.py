@@ -18,14 +18,14 @@ from django.utils.text import slugify
 from allianceauth.authentication.models import State, get_guest_state,\
     CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
+    EveAllianceInfo
 from allianceauth.eveonline.tasks import update_character
 from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
     AUTHENTICATION_ADMIN_USERS_MAX_CHARS
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
-    _has_auto_groups = True
-    from allianceauth.eveonline.autogroups.models import *
+    _has_auto_groups = True    
 else:
     _has_auto_groups = False
 

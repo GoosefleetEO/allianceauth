@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
-from django.test import TestCase, RequestFactory
+from django.test import TestCase, RequestFactory, Client
 
 from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
@@ -16,6 +16,7 @@ from ..admin import (
    GroupAdmin,   
    Group
 )
+from . import get_admin_change_view_url
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -386,3 +387,11 @@ class TestGroupAdmin(TestCase):
         ]
         self.assertSetEqual(set(queryset), set(expected))
     
+    def test_change_view_loads_normally(self):
+        User.objects.create_superuser(
+            username='superuser', password='secret', email='admin@example.com'
+        )
+        c = Client()
+        c.login(username='superuser', password='secret')                
+        response = c.get(get_admin_change_view_url(self.group_1))
+        self.assertEqual(response.status_code, 200)

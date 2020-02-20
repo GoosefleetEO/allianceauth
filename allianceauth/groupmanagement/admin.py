@@ -1,7 +1,7 @@
 from django.conf import settings
 
 from django.contrib import admin
-from django.contrib.auth.models import Group as BaseGroup
+from django.contrib.auth.models import Group as BaseGroup, User
 from django.db.models import Count
 from django.db.models.functions import Lower
 from django.db.models.signals import pre_save, post_save, pre_delete, \
@@ -13,8 +13,7 @@ from .models import GroupRequest
 from . import signals
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
-    _has_auto_groups = True
-    from allianceauth.eveonline.autogroups.models import *
+    _has_auto_groups = True    
 else:
     _has_auto_groups = False
 
@@ -22,19 +21,24 @@ else:
 class AuthGroupInlineAdmin(admin.StackedInline):
     model = AuthGroup
     filter_horizontal = ('group_leaders', 'group_leader_groups', 'states',)
-    fields = ('description', 'group_leaders', 'group_leader_groups', 'states', 'internal', 'hidden', 'open', 'public')
+    fields = (
+        'description', 
+        'group_leaders', 
+        'group_leader_groups', 
+        'states', 'internal', 
+        'hidden', 
+        'open', 
+        'public'
+    )
     verbose_name_plural = 'Auth Settings'
     verbose_name = ''
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """overriding this formfield to have sorted lists in the form"""
         if db_field.name == "group_leaders":
-            kwargs["queryset"] = User.objects\
-                .filter(profile__state__name='Member')\
-                .order_by(Lower('username'))
+            kwargs["queryset"] = User.objects.order_by(Lower('username'))
         elif db_field.name == "group_leader_groups":
-            kwargs["queryset"] = Group.objects\
-                .order_by(Lower('name'))
+            kwargs["queryset"] = Group.objects.order_by(Lower('name'))
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def has_add_permission(self, request):
