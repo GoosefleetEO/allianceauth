@@ -1,187 +1,282 @@
 from unittest.mock import patch
 
-from django.test import TestCase, RequestFactory
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User as BaseUser, Group
+from django.test import TestCase, RequestFactory, Client
 
-from allianceauth.authentication.models import CharacterOwnership, State
-from allianceauth.eveonline.autogroups.models import AutogroupsConfig
+from allianceauth.authentication.models import CharacterOwnership, State, \
+    OwnershipRecord
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
+from allianceauth.tests.auth_utils import AuthUtils
 
 from ..admin import (
-    BaseUserAdmin, 
+    BaseUserAdmin,
+    CharacterOwnershipAdmin,
+    PermissionAdmin,
+    StateAdmin,
     MainCorporationsFilter,
     MainAllianceFilter,
+    OwnershipRecordAdmin,
     User,
     UserAdmin,     
     user_main_organization,
     user_profile_pic, 
-    user_username,     
+    user_username,
+    update_main_character_model
 )
+from . import get_admin_change_view_url
 
+if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+    _has_auto_groups = True
+    from allianceauth.eveonline.autogroups.models import AutogroupsConfig
+else:
+    _has_auto_groups = False
 
 MODULE_PATH = 'allianceauth.authentication.admin'
 
 
-class MockRequest(object):
-    
+class MockRequest(object):    
     def __init__(self, user=None):
         self.user = user
+
+
+def create_test_data():        
+    # groups
+    group_1 = Group.objects.create(
+        name='Group 1'
+    )
+    group_2 = Group.objects.create(
+        name='Group 2'
+    )
+    
+    # user 1 - corp and alliance, normal user
+    character_1 = EveCharacter.objects.create(
+        character_id='1001',
+        character_name='Bruce Wayne',
+        corporation_id='2001',
+        corporation_name='Wayne Technologies',
+        corporation_ticker='WT',
+        alliance_id='3001',
+        alliance_name='Wayne Enterprises',
+        alliance_ticker='WE',
+    )
+    character_1a = EveCharacter.objects.create(
+        character_id='1002',
+        character_name='Batman',
+        corporation_id='2001',
+        corporation_name='Wayne Technologies',
+        corporation_ticker='WT',
+        alliance_id='3001',
+        alliance_name='Wayne Enterprises',
+        alliance_ticker='WE',
+    )
+    alliance = EveAllianceInfo.objects.create(
+        alliance_id='3001',
+        alliance_name='Wayne Enterprises',
+        alliance_ticker='WE',            
+        executor_corp_id='2001'
+    )
+    EveCorporationInfo.objects.create(
+        corporation_id='2001',
+        corporation_name='Wayne Technologies',
+        corporation_ticker='WT',            
+        member_count=42,
+        alliance=alliance
+    )        
+    user_1 = User.objects.create_user(
+        character_1.character_name.replace(' ', '_'),
+        'abc@example.com',
+        'password'
+    )
+    CharacterOwnership.objects.create(
+        character=character_1,
+        owner_hash='x1' + character_1.character_name,
+        user=user_1
+    )
+    CharacterOwnership.objects.create(
+        character=character_1a,
+        owner_hash='x1' + character_1a.character_name,
+        user=user_1
+    )
+    user_1.profile.main_character = character_1
+    user_1.profile.save()
+    user_1.groups.add(group_1)        
+
+    # user 2 - corp only, staff
+    character_2 = EveCharacter.objects.create(
+        character_id=1003,
+        character_name='Clark Kent',
+        corporation_id=2002,
+        corporation_name='Daily Planet',
+        corporation_ticker='DP',
+        alliance_id=None
+    )
+    EveCorporationInfo.objects.create(
+        corporation_id=2002,
+        corporation_name='Daily Plane',
+        corporation_ticker='DP',            
+        member_count=99,
+        alliance=None
+    )
+    user_2 = User.objects.create_user(
+        character_2.character_name.replace(' ', '_'),
+        'abc@example.com',
+        'password'
+    )
+    CharacterOwnership.objects.create(
+        character=character_2,
+        owner_hash='x1' + character_2.character_name,
+        user=user_2
+    )
+    user_2.profile.main_character = character_2
+    user_2.profile.save()
+    user_2.groups.add(group_2)
+    user_2.is_staff = True
+    user_2.save()
+    
+    # user 3 - no main, no group, superuser
+    character_3 = EveCharacter.objects.create(
+        character_id=1101,
+        character_name='Lex Luthor',
+        corporation_id=2101,
+        corporation_name='Lex Corp',
+        corporation_ticker='LC',
+        alliance_id=None
+    )
+    EveCorporationInfo.objects.create(
+        corporation_id=2101,
+        corporation_name='Lex Corp',
+        corporation_ticker='LC',            
+        member_count=666,
+        alliance=None
+    )
+    EveAllianceInfo.objects.create(
+        alliance_id='3101',
+        alliance_name='Lex World Domination',
+        alliance_ticker='LWD',
+        executor_corp_id=''
+    )
+    user_3 = User.objects.create_user(
+        character_3.character_name.replace(' ', '_'),
+        'abc@example.com',
+        'password'
+    )
+    CharacterOwnership.objects.create(
+        character=character_3,
+        owner_hash='x1' + character_3.character_name,
+        user=user_3
+    )
+    user_3.is_superuser = True
+    user_3.save()
+    return user_1, user_2, user_3, group_1, group_2
+
+
+class TestCharacterOwnershipAdmin(TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()        
+        cls.user_1, _, _, _, _ = create_test_data()
+    
+    def setUp(self):
+        self.modeladmin = CharacterOwnershipAdmin(
+            model=User, admin_site=AdminSite()
+        )
+
+    def test_change_view_loads_normally(self):        
+        User.objects.create_superuser(
+            username='superuser', password='secret', email='admin@example.com'
+        )
+        c = Client()
+        c.login(username='superuser', password='secret')                
+        ownership = self.user_1.character_ownerships.first()
+        response = c.get(get_admin_change_view_url(ownership))
+        self.assertEqual(response.status_code, 200)
+
+
+class TestOwnershipRecordAdmin(TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()        
+        cls.user_1, _, _, _, _ = create_test_data()
+    
+    def setUp(self):
+        self.modeladmin = OwnershipRecordAdmin(
+            model=User, admin_site=AdminSite()
+        )
+
+    def test_change_view_loads_normally(self):        
+        User.objects.create_superuser(
+            username='superuser', password='secret', email='admin@example.com'
+        )
+        c = Client()
+        c.login(username='superuser', password='secret')                
+        ownership_record = OwnershipRecord.objects\
+            .filter(user=self.user_1)\
+            .first()
+        response = c.get(get_admin_change_view_url(ownership_record))
+        self.assertEqual(response.status_code, 200)
+
+
+class TestStateAdmin(TestCase):
+    
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()        
+        create_test_data()
+    
+    def setUp(self):
+        self.modeladmin = StateAdmin(
+            model=User, admin_site=AdminSite()
+        )
+
+    def test_change_view_loads_normally(self):        
+        User.objects.create_superuser(
+            username='superuser', password='secret', email='admin@example.com'
+        )
+        c = Client()
+        c.login(username='superuser', password='secret')                
+        
+        guest_state = AuthUtils.get_guest_state()
+        response = c.get(get_admin_change_view_url(guest_state))
+        self.assertEqual(response.status_code, 200)
+        
+        member_state = AuthUtils.get_member_state()
+        response = c.get(get_admin_change_view_url(member_state))
+        self.assertEqual(response.status_code, 200)
 
 
 class TestUserAdmin(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()
-
-        # groups
-        cls.group_1 = Group.objects.create(
-            name='Group 1'
-        )
-        cls.group_2 = Group.objects.create(
-            name='Group 2'
-        )
-        
-        # user 1 - corp and alliance, normal user
-        cls.character_1 = EveCharacter.objects.create(
-            character_id='1001',
-            character_name='Bruce Wayne',
-            corporation_id='2001',
-            corporation_name='Wayne Technologies',
-            corporation_ticker='WT',
-            alliance_id='3001',
-            alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',
-        )
-        cls.character_1a = EveCharacter.objects.create(
-            character_id='1002',
-            character_name='Batman',
-            corporation_id='2001',
-            corporation_name='Wayne Technologies',
-            corporation_ticker='WT',
-            alliance_id='3001',
-            alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',
-        )
-        alliance = EveAllianceInfo.objects.create(
-            alliance_id='3001',
-            alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',            
-            executor_corp_id='2001'
-        )
-        EveCorporationInfo.objects.create(
-            corporation_id='2001',
-            corporation_name='Wayne Technologies',
-            corporation_ticker='WT',            
-            member_count=42,
-            alliance=alliance
-        )        
-        cls.user_1 = User.objects.create_user(
-            cls.character_1.character_name.replace(' ', '_'),
-            'abc@example.com',
-            'password'
-        )
-        CharacterOwnership.objects.create(
-            character=cls.character_1,
-            owner_hash='x1' + cls.character_1.character_name,
-            user=cls.user_1
-        )
-        CharacterOwnership.objects.create(
-            character=cls.character_1a,
-            owner_hash='x1' + cls.character_1a.character_name,
-            user=cls.user_1
-        )
-        cls.user_1.profile.main_character = cls.character_1
-        cls.user_1.profile.save()
-        cls.user_1.groups.add(cls.group_1)        
-
-        # user 2 - corp only, staff
-        cls.character_2 = EveCharacter.objects.create(
-            character_id=1003,
-            character_name='Clark Kent',
-            corporation_id=2002,
-            corporation_name='Daily Planet',
-            corporation_ticker='DP',
-            alliance_id=None
-        )
-        EveCorporationInfo.objects.create(
-            corporation_id=2002,
-            corporation_name='Daily Plane',
-            corporation_ticker='DP',            
-            member_count=99,
-            alliance=None
-        )
-        cls.user_2 = User.objects.create_user(
-            cls.character_2.character_name.replace(' ', '_'),
-            'abc@example.com',
-            'password'
-        )
-        CharacterOwnership.objects.create(
-            character=cls.character_2,
-            owner_hash='x1' + cls.character_2.character_name,
-            user=cls.user_2
-        )
-        cls.user_2.profile.main_character = cls.character_2
-        cls.user_2.profile.save()
-        cls.user_2.groups.add(cls.group_2)
-        cls.user_2.is_staff = True
-        cls.user_2.save()
-        
-        # user 3 - no main, no group, superuser
-        cls.character_3 = EveCharacter.objects.create(
-            character_id=1101,
-            character_name='Lex Luthor',
-            corporation_id=2101,
-            corporation_name='Lex Corp',
-            corporation_ticker='LC',
-            alliance_id=None
-        )
-        EveCorporationInfo.objects.create(
-            corporation_id=2101,
-            corporation_name='Lex Corp',
-            corporation_ticker='LC',            
-            member_count=666,
-            alliance=None
-        )
-        EveAllianceInfo.objects.create(
-            alliance_id='3101',
-            alliance_name='Lex World Domination',
-            alliance_ticker='LWD',
-            executor_corp_id=''
-        )
-        cls.user_3 = User.objects.create_user(
-            cls.character_3.character_name.replace(' ', '_'),
-            'abc@example.com',
-            'password'
-        )
-        CharacterOwnership.objects.create(
-            character=cls.character_3,
-            owner_hash='x1' + cls.character_3.character_name,
-            user=cls.user_3
-        )
-        cls.user_3.is_superuser = True
-        cls.user_3.save()
+        super().setUpClass()        
+        cls.user_1, cls.user_2, cls.user_3, cls.group_1, cls.group_2  = \
+            create_test_data()
 
     def setUp(self):
         self.factory = RequestFactory()
         self.modeladmin = UserAdmin(
             model=User, admin_site=AdminSite()
         )
+        self.character_1 = self.user_1.character_ownerships.first().character
 
     def _create_autogroups(self):
         """create autogroups for corps and alliances"""
-        autogroups_config = AutogroupsConfig(
-            corp_groups = True,
-            alliance_groups = True
-        )
-        autogroups_config.save()
-        for state in State.objects.all():
-            autogroups_config.states.add(state)        
-        autogroups_config.update_corp_group_membership(self.user_1)        
+        if _has_auto_groups:
+            autogroups_config = AutogroupsConfig(
+                corp_groups = True,
+                alliance_groups = True
+            )
+            autogroups_config.save()
+            for state in State.objects.all():
+                autogroups_config.states.add(state)        
+            autogroups_config.update_corp_group_membership(self.user_1)        
     
     # column rendering
 
@@ -315,8 +410,8 @@ class TestUserAdmin(TestCase):
         self, mock_task, mock_message_user
     ):
         users_qs = User.objects.filter(pk__in=[self.user_1.pk, self.user_2.pk])
-        self.modeladmin.update_main_character_model(
-            MockRequest(self.user_1), users_qs
+        update_main_character_model(
+            self.modeladmin, MockRequest(self.user_1), users_qs
         )
         self.assertEqual(mock_task.delay.call_count, 2)
         self.assertTrue(mock_message_user.called)
@@ -437,3 +532,12 @@ class TestUserAdmin(TestCase):
         queryset = changelist.get_queryset(request)
         expected = [self.user_1]
         self.assertSetEqual(set(queryset), set(expected))
+
+    def test_change_view_loads_normally(self):
+        User.objects.create_superuser(
+            username='superuser', password='secret', email='admin@example.com'
+        )
+        c = Client()
+        c.login(username='superuser', password='secret')                
+        response = c.get(get_admin_change_view_url(self.user_1))
+        self.assertEqual(response.status_code, 200)

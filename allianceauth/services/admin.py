@@ -20,11 +20,8 @@ class ServicesUserAdmin(admin.ModelAdmin):
             "all": ("services/admin.css",)
         }
 
-    search_fields = (
-        'user__username', 
-        'uid'
-    )
-    ordering = ('user__username', )
+    search_fields = ('user__username',)
+    ordering = ('user__username',)
     list_select_related = True              
     list_display = (
         user_profile_pic,

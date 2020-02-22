@@ -10,6 +10,7 @@ class Teamspeak3UserAdmin(ServicesUserAdmin):
         'uid',
         'perm_key'        
     )
+    search_fields = ServicesUserAdmin.search_fields + ('uid', )
     
 
 @admin.register(AuthTS)
