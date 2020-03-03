@@ -89,7 +89,7 @@
                     {% if task_queue_length < 0 %}
                         {% trans "Error retrieving task queue length" %}
                     {% else %}
-                        {% blocktrans count tasks=task_queue_length %}
+                        {% blocktrans trimmed count tasks=task_queue_length %}
                         {{ tasks }} task
                         {% plural %}
                         {{ tasks }} tasks

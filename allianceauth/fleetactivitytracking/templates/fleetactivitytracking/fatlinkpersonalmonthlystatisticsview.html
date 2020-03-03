@@ -15,7 +15,13 @@
             </div>
             {% endif %}
         </h1>
-        <h2>{% blocktrans %}{{ user }} has collected {{ n_fats }} link{{ n_fats|pluralize }} this month.{% endblocktrans %}</h2>
+        <h2>
+            {% blocktrans count links=n_fats %}
+                {{ user }} has collected one link this month.
+            {% plural %}
+                {{ user }} has collected {{ links }} links this month.
+            {% endblocktrans %}
+        </h2>
         <table class="table table-responsive">
             <tr>
                 <th class="col-md-2 text-center">{% trans "Ship" %}</th>
@@ -29,7 +35,13 @@
             {% endfor %}
         </table>
         {%  if created_fats %}
-         <h2>{% blocktrans %}{{ user }} has created {{ n_created_fats }} link{{ n_created_fats|pluralize }} this month.{% endblocktrans %}</h2>
+        <h2>
+            {% blocktrans count links=n_created_fats %}
+                {{ user }} has created one link this month.
+            {% plural %}
+                {{ user }} has created {{ links }} links this month.
+            {% endblocktrans %}
+        </h2>
         {% if created_fats %}
         <table class="table">
             <tr>
