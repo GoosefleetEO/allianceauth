@@ -90,10 +90,9 @@
                                 <th class="text-center">{% trans "Ship Type" %}</th>
                                 <th class="text-center">{% trans "Killboard Loss Amt" %}</th>
                                 <th class="text-center">{% trans "SRP ISK Cost" %}
-                                {% blocktrans %}<i class="glyphicon glyphicon-question-sign" rel="tooltip" title="Click value to edit
-        Enter to save&next
-        ESC to cancel"
-                                id="blah"></i></th>{% endblocktrans %}
+                                <i class="glyphicon glyphicon-question-sign" rel="tooltip" title="{% blocktrans trimmed %}Click value to edit
+Enter to save & next
+ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                 <th class="text-center">{% trans "Post Time" %}</th>
                                 <th class="text-center">{% trans "Status" %}</th>
                                 {% if perms.auth.srp_management %}

@@ -16,7 +16,7 @@
             {% endif %}
         </h1>
         <h2>
-            {% blocktrans count links=n_fats %}
+            {% blocktrans count links=n_fats trimmed %}
                 {{ user }} has collected one link this month.
             {% plural %}
                 {{ user }} has collected {{ links }} links this month.
@@ -36,7 +36,7 @@
         </table>
         {%  if created_fats %}
         <h2>
-            {% blocktrans count links=n_created_fats %}
+            {% blocktrans count links=n_created_fats trimmed  %}
                 {{ user }} has created one link this month.
             {% plural %}
                 {{ user }} has created {{ links }} links this month.
