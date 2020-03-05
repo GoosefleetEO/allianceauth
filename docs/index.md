@@ -1,28 +1,18 @@
 
 # Alliance Auth
 
-An auth system for EVE Online to help in-game organizations manage online service access. 
+Welcome to the official documentation for **Alliance Auth**!
 
-# Installing
-
-[Setup Guide](installation/auth/allianceauth.md)
-
-# Using
-
-Learn about individual [features.](features/index.md)
-
-# Troubleshooting
-
-Read the [list of common problems.](maintenance/troubleshooting.md)
-
+**Alliance Auth** is a web application that helps Eve Online organizations efficiently manage access to external services and web apps.
 
 ```eval_rst
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :caption: Contents
 
-    features/index
     installation/index
+    features/index
     maintenance/index
     development/index
+    support/index
 ```
