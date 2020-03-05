@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Alliance Auth'
-copyright = u'2018, Alliance Auth'
+copyright = u'2018-2020, Alliance Auth'
 author = u'R4stl1n'
 
 # The version info for the project you're documenting, acts as replacement for
