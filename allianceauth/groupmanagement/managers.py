@@ -79,5 +79,5 @@ class GroupManager:
         :return: True if the user can manage the group
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or user.leads_groups.filter(group=group).exists()
+            return cls.has_management_permission(user) or cls.get_group_leaders_groups(user).filter(pk=group.pk).exists()
         return False

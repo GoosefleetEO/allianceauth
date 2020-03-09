@@ -26,9 +26,7 @@ class GroupManagementVisibilityTestCase(TestCase):
         self.user = User.objects.get(pk=self.user.pk)
 
 
-    def test_can_manage_group(self):
-        
-
+    def test_get_group_leaders_groups(self):
         self.group1.authgroup.group_leaders.add(self.user)
         self.group2.authgroup.group_leader_groups.add(self.group1)
         self._refresh_user()
@@ -45,6 +43,24 @@ class GroupManagementVisibilityTestCase(TestCase):
         self.assertIn(self.group1, groups) #avail due to user
         self.assertIn(self.group2, groups) #avail due to group1
         self.assertNotIn(self.group3, groups) #not avail at all 
+
+    def test_can_manage_group(self):
+        self.group1.authgroup.group_leaders.add(self.user)
+        self.user.groups.add(self.group1)
+        self._refresh_user()
+
+        self.assertTrue(GroupManager.can_manage_group(self.user, self.group1))
+        self.assertFalse(GroupManager.can_manage_group(self.user, self.group2))
+        self.assertFalse(GroupManager.can_manage_group(self.user, self.group3))
+        
+        self.group2.authgroup.group_leader_groups.add(self.group1)
+        self.group1.authgroup.group_leaders.remove(self.user)
+        self._refresh_user()
+
+        self.assertFalse(GroupManager.can_manage_group(self.user, self.group1))
+        self.assertTrue(GroupManager.can_manage_group(self.user, self.group2))
+        self.assertFalse(GroupManager.can_manage_group(self.user, self.group3))
+
 
 class GroupManagementStateTestCase(TestCase):
     @classmethod
@@ -72,7 +88,6 @@ class GroupManagementStateTestCase(TestCase):
         self.state_group = Group.objects.get(pk=self.state_group.pk)
 
     def test_drop_state_group(self):
-
         self.user.groups.add(self.open_group)
         self.user.groups.add(self.state_group)     
         self.assertEqual(self.user.profile.state.name, "Guest")
