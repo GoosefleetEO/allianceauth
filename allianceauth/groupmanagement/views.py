@@ -33,7 +33,8 @@ def group_management(request):
         group_requests = base_group_query.all()
     else:
         # Group specific leader
-        group_requests = base_group_query.filter(group__authgroup__group_leaders__in=[request.user])
+        users__groups = GroupManager.get_group_leaders_groups(request.user)
+        group_requests = base_group_query.filter(group__in=users__groups)
 
     for grouprequest in group_requests:
         if grouprequest.leave_request:
