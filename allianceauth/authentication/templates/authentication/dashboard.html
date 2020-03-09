@@ -94,12 +94,12 @@
             <div class="col-sm-6 text-center">
                 <div class="panel panel-success" style="height:100%">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{% trans "Groups" %}</h3>
+                        <h3 class="panel-title">{% trans "Group Memberships" %}</h3>
                     </div>
                     <div class="panel-body">
                         <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
                             <table class="table table-aa">
-                                {% for group in user.groups.all %}
+                                {% for group in groups %}
                                     <tr>
                                         <td>{{ group.name }}</td>
                                     </tr>
@@ -128,16 +128,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for ownership in request.user.character_ownerships.all %}
-                            {% with ownership.character as char %}
-                                <tr>
-                                    <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
-                                    </td>
-                                    <td class="text-center">{{ char.character_name }}</td>
-                                    <td class="text-center">{{ char.corporation_name }}</td>
-                                    <td class="text-center">{{ char.alliance_name }}</td>
-                                </tr>
-                            {% endwith %}
+                        {% for char in characters %}                            
+                            <tr>
+                                <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                </td>
+                                <td class="text-center">{{ char.character_name }}</td>
+                                <td class="text-center">{{ char.corporation_name }}</td>
+                                <td class="text-center">{{ char.alliance_name }}</td>
+                            </tr>                        
                         {% endfor %}
                     </tbody>
                 </table>
