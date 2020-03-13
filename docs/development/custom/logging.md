@@ -2,15 +2,13 @@
 Alliance Auth provides a logger for use with custom apps to make everyone's life a little easier.
 
 ## Using the Extensions Logger
-The extensions logger should not be directly used by custom apps as the error messages logged to it 
-will not be labeled with the correct name. In order to correctly use the extensions logger please follow
-the code below.
+AllianceAuth provides a helper function to get the logger for the current module to reduce the amount of
+code you need to write.
 
 ```python
-import logging
+from allianceauth.services.hooks import get_extension_logger
 
-logger = logging.getLogger('extensions.' + __name__)
-logger.name = __name__
+logger = get_extension_logger(__name__)
 ```
 
 This works by creating a child logger of the extension logger which propagates all log entries

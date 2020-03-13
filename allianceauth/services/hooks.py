@@ -9,6 +9,29 @@ from allianceauth.hooks import get_hooks
 from .models import NameFormatConfig
 
 
+def get_extension_logger(name):
+    """
+    Takes the name of a plugin/extension and generates a child logger of the extensions logger
+    to be used by the extension to log events to the extensions logger.
+
+    The logging level is decided by whether or not DEBUG is set to true in the project settings. If
+    DEBUG is set to false, then the logging level is set to INFO.
+
+    :param: name: the name of the extension doing the logging
+    :return: an extensions child logger
+    """
+    import logging
+    from django.conf import settings
+
+    logger = logging.getLogger('extensions.' + name)
+    logger.name = name
+    logger.level = logging.INFO
+    if settings.DEBUG:
+        logger.level = logging.DEBUG
+
+    return logger
+
+
 class ServicesHook:
     """
     Abstract base class for creating a compatible services
