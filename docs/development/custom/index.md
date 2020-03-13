@@ -9,4 +9,5 @@ This section describes how to extend **Alliance Auth** with custom apps and serv
     integrating-services
     menu-hooks
     url-hooks
+    logging
 ```
