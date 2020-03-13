@@ -219,7 +219,7 @@ LOGGING = {
             'backupCount': 5,  # edit this line to change number of log backups
         },
         'extension_file': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'log/extensions.log'),
             'formatter': 'verbose',
@@ -242,10 +242,9 @@ LOGGING = {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
         },
-        'allianceauth.extensions': {
+        'extensions': {
             'handlers': ['extension_file', 'console'],
             'level': 'DEBUG',
-            'propagate': False,
         },
         'django': {
             'handlers': ['log_file', 'console'],
