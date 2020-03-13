@@ -218,6 +218,14 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # edit this line to change max log file size
             'backupCount': 5,  # edit this line to change number of log backups
         },
+        'extension_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log/extensions.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024 * 1024 * 5,  # edit this line to change max log file size
+            'backupCount': 5,  # edit this line to change number of log backups
+        },
         'console': {
             'level': 'DEBUG',  # edit this line to change logging level to console
             'class': 'logging.StreamHandler',
@@ -233,6 +241,11 @@ LOGGING = {
         'allianceauth': {
             'handlers': ['log_file', 'console', 'notifications'],
             'level': 'DEBUG',
+        },
+        'allianceauth.extensions': {
+            'handlers': ['extension_file', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
         'django': {
             'handlers': ['log_file', 'console'],
