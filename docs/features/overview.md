@@ -1,6 +1,6 @@
 # Overview
 
-**Alliance Auth** (AA) is a web application that helps Eve Online organizations efficiently manage access to external services and web apps.
+**Alliance Auth** (AA) is a web site that helps Eve Online organizations efficiently manage access to applications and external services.
 
 It has the following key features:
 
@@ -13,7 +13,3 @@ It has the following key features:
 - Includes a set of web [apps](/features/apps/index) which add many useful functions, e.g.: fleet schedule, timer board, SRP request management, fleet activity tracker
 
 - Can be easily extended with additional services and apps. Many are provided by the [community](/features/community/index).
-
-Here is an example how the main page of the web site looks:
-
-![dashboard](/_static/images/features/core/dashboard/dashboard.png)

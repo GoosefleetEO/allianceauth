@@ -9,7 +9,7 @@ This document describes how to install **Alliance Auth** from scratch.
 
 ```eval_rst
 .. note::
-   There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter [Features](/features/index) for details.
+   There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter **Features** for details.
 ```
 
 ## Dependencies
@@ -44,7 +44,14 @@ yum install python36u python36u-devel python36u-setuptools python36u-pip
 
 ### Database
 
-It's recommended to use a database service instead of SQLite. Many options are available, but this guide will use MariaDB. Note that Alliance Auth requires Maria DB 10.2.x or higher.
+It's recommended to use a database service instead of SQLite. Many options are available, but this guide will use MariaDB.
+
+```eval_rst
+.. warning::
+   Many Ubuntu distributions come with an older version of Maria DB, which is not compatible with **Alliance Auth**. You need Maria DB 10.3 or higher!
+
+   For instructions on how To install a newer version of Maria DB on Ubuntu visit this page: `MariaDB Repositories <https://downloads.mariadb.org/mariadb/repositories/#distro=Ubuntu&mirror=osuosl>`_.
+```
 
 Ubuntu:
 
@@ -188,6 +195,12 @@ You can install **Alliance Auth** with the following command. This will install 
 pip install allianceauth
 ```
 
+You should also install Gunicorn now unless you want to use another WSGI server (see [Gunicorn](#gunicorn) for details):
+
+```bash
+pip install gunicorn
+```
+
 Now you need to create the application that will run the **Alliance Auth** install. Ensure you are in the allianceserver home directory by issuing:
 
 ```bash
@@ -237,15 +250,14 @@ To run the **Alliance Auth** website a [WSGI Server](https://www.fullstackpython
 
 The default configuration is good enough for most installations. Additional information is available in the [gunicorn](gunicorn.md) doc.
 
-Use this command to install Gunicorn:
-
-```bash
-pip install gunicorn
-```
-
 ### Supervisor
 
 [Supervisor](http://supervisord.org/) is a process watchdog service: it makes sure other processes are started automatically and kept running. It can be used to automatically start the WSGI server and Celery workers for background tasks. Installation varies by OS:
+
+```eval_rst
+.. note::
+   Many package managers will install Supervisor 3 by default, which requires Python 2.
+```
 
 Ubuntu:
 
