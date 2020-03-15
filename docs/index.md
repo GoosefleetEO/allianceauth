@@ -3,7 +3,9 @@
 
 Welcome to the official documentation for **Alliance Auth**!
 
-**Alliance Auth** is a web application that helps Eve Online organizations efficiently manage access to external services and web apps.
+![dashboard](/_static/images/features/core/dashboard/dashboard.png)
+
+**Alliance Auth** is a web site that helps Eve Online organizations efficiently manage access to applications and external services.
 
 ```eval_rst
 .. toctree::

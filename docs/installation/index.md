@@ -12,5 +12,5 @@ In addition to main guide for installation Alliance Auth you also find guides fo
     nginx
     apache
     gunicorn
-    upgradev1
+    upgrade_python
 ```
