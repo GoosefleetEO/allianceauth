@@ -3,8 +3,10 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.forms import ServicePasswordForm
+
 from .manager import Phpbb3Manager
 from .models import Phpbb3User
 from .tasks import Phpbb3Tasks
@@ -29,7 +31,7 @@ def activate_forum(request):
         logger.debug("Updated authserviceinfo for user %s with forum credentials. Updating groups." % request.user)
         Phpbb3Tasks.update_groups.delay(request.user.pk)
         logger.info("Successfully activated forum for user %s" % request.user)
-        messages.success(request, 'Activated forum account.')
+        messages.success(request, _('Activated forum account.'))
         credentials = {
             'username': result[0],
             'password': result[1],
@@ -38,7 +40,7 @@ def activate_forum(request):
                       context={'credentials': credentials, 'service': 'Forum'})
     else:
         logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your forum account.')
+        messages.error(request, _('An error occurred while processing your forum account.'))
     return redirect("services:services")
 
 
@@ -49,10 +51,10 @@ def deactivate_forum(request):
     # false we failed
     if Phpbb3Tasks.delete_user(request.user):
         logger.info("Successfully deactivated forum for user %s" % request.user)
-        messages.success(request, 'Deactivated forum account.')
+        messages.success(request, _('Deactivated forum account.'))
     else:
         logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your forum account.')
+        messages.error(request, _('An error occurred while processing your forum account.'))
     return redirect("services:services")
 
 
@@ -66,7 +68,7 @@ def reset_forum_password(request):
         # false we failed
         if result != "":
             logger.info("Successfully reset forum password for user %s" % request.user)
-            messages.success(request, 'Reset forum password.')
+            messages.success(request, _('Reset forum password.'))
             credentials = {
                 'username': request.user.phpbb3.username,
                 'password': result,
@@ -75,7 +77,7 @@ def reset_forum_password(request):
                           context={'credentials': credentials, 'service': 'Forum'})
 
     logger.error("Unsuccessful attempt to reset forum password for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your forum account.')
+    messages.error(request, _('An error occurred while processing your forum account.'))
     return redirect("services:services")
 
 
@@ -95,10 +97,10 @@ def set_forum_password(request):
                                                         password=password)
             if result != "":
                 logger.info("Successfully set forum password for user %s" % request.user)
-                messages.success(request, 'Set forum password.')
+                messages.success(request, _('Set forum password.'))
             else:
                 logger.error("Failed to install custom forum password for user %s" % request.user)
-                messages.error(request, 'An error occurred while processing your forum account.')
+                messages.error(request, _('An error occurred while processing your forum account.'))
             return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")

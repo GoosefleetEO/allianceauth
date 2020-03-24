@@ -17,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.db import models, IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, Http404, redirect
+from django.utils.translation import gettext_lazy as _
 
 from .forms import ServicePasswordModelForm
 
@@ -68,7 +69,7 @@ class BaseCreatePasswordServiceAccountView(BaseServiceView, ServiceCredentialsVi
         try:
             svc_obj = self.model.objects.create(user=request.user)
         except IntegrityError:
-            messages.error(request, "That service account already exists")
+            messages.error(request, _("That service account already exists"))
             return redirect(self.index_redirect)
 
         return render(request, self.template_name,
@@ -100,7 +101,7 @@ class BaseSetPasswordServiceAccountView(ServicesCRUDMixin, BaseServiceView, Upda
     def post(self, request, *args, **kwargs):
         result = super(BaseSetPasswordServiceAccountView, self).post(request, *args, **kwargs)
         if self.get_form().is_valid():
-            messages.success(request, "Successfully set your {} password".format(self.service_name))
+            messages.success(request, _("Successfully set your {} password".format(self.service_name)))
         return result
 
 

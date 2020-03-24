@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from .manager import DiscourseManager
 from .tasks import DiscourseTasks
@@ -33,12 +34,12 @@ def discourse_sso(request):
 
     # Check if user has access
     if not request.user.has_perm(ACCESS_PERM):
-        messages.error(request, 'You are not authorized to access Discourse.')
+        messages.error(request, _('You are not authorized to access Discourse.'))
         logger.warning('User %s attempted to access Discourse but does not have permission.' % request.user)
         return redirect('authentication:dashboard')
 
     if not request.user.profile.main_character:
-        messages.error(request, "You must have a main character set to access Discourse.")
+        messages.error(request, _("You must have a main character set to access Discourse."))
         logger.warning('User %s attempted to access Discourse but does not have a main character.' % request.user)
         return redirect('authentication:characters')
 
@@ -48,7 +49,7 @@ def discourse_sso(request):
     signature = request.GET.get('sig')
 
     if None in [payload, signature]:
-        messages.error(request, 'No SSO payload or signature. Please contact support if this problem persists.')
+        messages.error(request, _('No SSO payload or signature. Please contact support if this problem persists.'))
         return redirect('authentication:dashboard')
 
     # Validate the payload
@@ -58,7 +59,7 @@ def discourse_sso(request):
         assert 'nonce' in decoded
         assert len(payload) > 0
     except AssertionError:
-        messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
+        messages.error(request, _('Invalid payload. Please contact support if this problem persists.'))
         return redirect('authentication:dashboard')
 
     key = str(settings.DISCOURSE_SSO_SECRET).encode('utf-8')
@@ -66,7 +67,7 @@ def discourse_sso(request):
     this_signature = h.hexdigest()
 
     if this_signature != signature:
-        messages.error(request, 'Invalid payload. Please contact support if this problem persists.')
+        messages.error(request, _('Invalid payload. Please contact support if this problem persists.'))
         return redirect('authentication:dashboard')
 
     ## Build the return payload

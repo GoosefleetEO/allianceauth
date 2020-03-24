@@ -3,8 +3,10 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.forms import ServicePasswordForm
+
 from .manager import XenForoManager
 from .models import XenforoUser
 from .tasks import XenforoTasks
@@ -25,7 +27,7 @@ def activate_xenforo_forum(request):
     if result['response']['status_code'] == 200:
         XenforoUser.objects.update_or_create(user=request.user, defaults={'username': result['username']})
         logger.info("Updated user %s with XenForo credentials. Updating groups." % request.user)
-        messages.success(request, 'Activated XenForo account.')
+        messages.success(request, _('Activated XenForo account.'))
         credentials = {
             'username': result['username'],
             'password': result['password'],
@@ -35,7 +37,7 @@ def activate_xenforo_forum(request):
 
     else:
         logger.error("Unsuccessful attempt to activate xenforo for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your XenForo account.')
+        messages.error(request, _('An error occurred while processing your XenForo account.'))
     return redirect("services:services")
 
 
@@ -45,9 +47,9 @@ def deactivate_xenforo_forum(request):
     logger.debug("deactivate_xenforo_forum called by user %s" % request.user)
     if XenforoTasks.delete_user(request.user):
         logger.info("Successfully deactivated XenForo for user %s" % request.user)
-        messages.success(request, 'Deactivated XenForo account.')
+        messages.success(request, _('Deactivated XenForo account.'))
     else:
-        messages.error(request, 'An error occurred while processing your XenForo account.')
+        messages.error(request, _('An error occurred while processing your XenForo account.'))
     return redirect("services:services")
 
 
@@ -60,7 +62,7 @@ def reset_xenforo_password(request):
         # Based on XenAPI's response codes
         if result['response']['status_code'] == 200:
             logger.info("Successfully reset XenForo password for user %s" % request.user)
-            messages.success(request, 'Reset XenForo account password.')
+            messages.success(request, _('Reset XenForo account password.'))
             credentials = {
                 'username': request.user.xenforo.username,
                 'password': result['password'],
@@ -68,7 +70,7 @@ def reset_xenforo_password(request):
             return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'XenForo'})
     logger.error("Unsuccessful attempt to reset XenForo password for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your XenForo account.')
+    messages.error(request, _('An error occurred while processing your XenForo account.'))
     return redirect("services:services")
 
 
@@ -86,10 +88,10 @@ def set_xenforo_password(request):
             result = XenForoManager.update_user_password(request.user.xenforo.username, password)
             if result['response']['status_code'] == 200:
                 logger.info("Successfully reset XenForo password for user %s" % request.user)
-                messages.success(request, 'Changed XenForo password.')
+                messages.success(request, _('Changed XenForo password.'))
             else:
                 logger.error("Failed to install custom XenForo password for user %s" % request.user)
-                messages.error(request, 'An error occurred while processing your XenForo account.')
+                messages.error(request, _('An error occurred while processing your XenForo account.'))
             return redirect('services:services')
     else:
         logger.debug("Request is not type POST - providing empty form.")

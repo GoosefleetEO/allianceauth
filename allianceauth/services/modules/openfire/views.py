@@ -5,8 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.forms import ServicePasswordForm
+
 from .forms import JabberBroadcastForm
 from .manager import OpenfireManager, PingBotException
 from .models import OpenfireUser
@@ -30,7 +32,7 @@ def activate_jabber(request):
         logger.debug("Updated authserviceinfo for user %s with jabber credentials. Updating groups." % request.user)
         OpenfireTasks.update_groups.delay(request.user.pk)
         logger.info("Successfully activated jabber for user %s" % request.user)
-        messages.success(request, 'Activated jabber account.')
+        messages.success(request, _('Activated jabber account.'))
         credentials = {
             'username': info[0],
             'password': info[1],
@@ -39,7 +41,7 @@ def activate_jabber(request):
                       context={'credentials': credentials, 'service': 'Jabber'})
     else:
         logger.error("Unsuccessful attempt to activate jabber for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your jabber account.')
+        messages.error(request, _('An error occurred while processing your jabber account.'))
     return redirect("services:services")
 
 
@@ -52,7 +54,7 @@ def deactivate_jabber(request):
         messages.success(request, 'Deactivated jabber account.')
     else:
         logger.error("Unsuccessful attempt to deactivate jabber for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your jabber account.')
+        messages.error(request, _('An error occurred while processing your jabber account.'))
     return redirect("services:services")
 
 
@@ -65,7 +67,7 @@ def reset_jabber_password(request):
         # If our username is blank means we failed
         if result != "":
             logger.info("Successfully reset jabber password for user %s" % request.user)
-            messages.success(request, 'Reset jabber password.')
+            messages.success(request, _('Reset jabber password.'))
             credentials = {
                 'username': request.user.openfire.username,
                 'password': result,
@@ -73,7 +75,7 @@ def reset_jabber_password(request):
             return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'Jabber'})
     logger.error("Unsuccessful attempt to reset jabber for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your jabber account.')
+    messages.error(request, _('An error occurred while processing your jabber account.'))
     return redirect("services:services")
 
 
@@ -114,7 +116,7 @@ def jabber_broadcast_view(request):
 
                 OpenfireManager.send_broadcast_message(group_to_send, message_to_send)
 
-                messages.success(request, 'Sent jabber broadcast to %s' % group_to_send)
+                messages.success(request, _('Sent jabber broadcast to %s' % group_to_send))
                 logger.info("Sent jabber broadcast on behalf of user %s" % request.user)
             except PingBotException as e:
                 messages.error(request, e)
@@ -143,10 +145,10 @@ def set_jabber_password(request):
             result = OpenfireManager.update_user_pass(request.user.openfire.username, password=password)
             if result != "":
                 logger.info("Successfully set jabber password for user %s" % request.user)
-                messages.success(request, 'Set jabber password.')
+                messages.success(request, _('Set jabber password.'))
             else:
                 logger.error("Failed to install custom jabber password for user %s" % request.user)
-                messages.error(request, 'An error occurred while processing your jabber account.')
+                messages.error(request, _('An error occurred while processing your jabber account.'))
             return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")
