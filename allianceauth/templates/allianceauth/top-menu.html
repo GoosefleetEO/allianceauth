@@ -39,6 +39,13 @@
                 {% else %}
                     <li><a href="{% url 'authentication:login' %}">{% trans "Login" %}</a></li>
                 {% endif %}
+                {% if user.is_superuser %}
+                    <li>
+                        <a href="https://allianceauth.readthedocs.io/" target="_blank">
+                            <i class="fa fa-question-circle fa-fw"></i>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <form id="f-lang-select" class="navbar-form navbar-right" action="{% url 'set_language' %}" method="post">
                 {% csrf_token %}
