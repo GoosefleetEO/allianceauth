@@ -13,3 +13,5 @@ It has the following key features:
 - Includes a set of web [apps](/features/apps/index) which add many useful functions, e.g.: fleet schedule, timer board, SRP request management, fleet activity tracker
 
 - Can be easily extended with additional services and apps. Many are provided by the [community](/features/community/index).
+
+- Chinese, English, German and Spanish localization

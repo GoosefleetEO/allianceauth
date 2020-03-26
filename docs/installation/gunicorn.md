@@ -20,7 +20,7 @@ Check out the full [Gunicorn docs](http://docs.gunicorn.org/en/latest/index.html
 
 Install Gunicorn using pip, `pip install gunicorn`.
 
-In your `myauth` base directory, try running `gunicorn --bind 0.0.0.0:8000 myauth.wsgi`. You should be able to browse to http://yourserver:8000 and see your Alliance Auth installation running. Images and styling will be missing, but don't worry, your web server will provide them.
+In your `myauth` base directory, try running `gunicorn --bind 0.0.0.0:8000 myauth.wsgi`. You should be able to browse to `http://yourserver:8000` and see your Alliance Auth installation running. Images and styling will be missing, but don't worry, your web server will provide them.
 
 Once you validate its running, you can kill the process with Ctrl+C and continue.
 
@@ -30,28 +30,30 @@ You should use [Supervisor](allianceauth.md#supervisor) to keep all of Alliance 
 
 ### Sample Supervisor config
 
-You'll want to edit `/etc/supervisor/conf.d/myauth_gunicorn.conf` (or whatever you want to call the config file)
+You'll want to edit `/etc/supervisor/conf.d/myauth.conf` (or whatever you want to call the config file)
 
 ```text
-[program:myauth-gunicorn]
+[program:gunicorn]
 user = allianceserver
 directory=/home/allianceserver/myauth/
-command=gunicorn myauth.wsgi --workers=3 --timeout 120
+command=/home/allianceserver/venv/auth/bin/gunicorn myauth.wsgi --workers=3 --timeout 120
+stdout_logfile=/home/allianceserver/myauth/log/gunicorn.log
+stderr_logfile=/home/allianceserver/myauth/log/gunicorn.log
 autostart=true
 autorestart=true
 stopsignal=INT
 ```
 
-- `[program:myauth-gunicorn]` - Change myauth-gunicorn to whatever you wish to call your process in Supervisor.
+- `[program:gunicorn]` - Change `gunicorn` to whatever you wish to call your process in Supervisor.
 - `user = allianceserver` - Change to whatever user you wish Gunicorn to run as. You could even set this as allianceserver if you wished. I'll leave the question security of that up to you.
 - `directory=/home/allianceserver/myauth/` - Needs to be the path to your Alliance Auth project.
-- `command=gunicorn myauth.wsgi --workers=3 --timeout 120` - Running Gunicorn and the options to launch with. This is where you have some decisions to make, we'll continue below.
+- `command=/home/allianceserver/venv/auth/bin/gunicorn myauth.wsgi --workers=3 --timeout 120` - Running Gunicorn and the options to launch with. This is where you have some decisions to make, we'll continue below.
 
 #### Gunicorn Arguments
 
 See the [Commonly Used Arguments](http://docs.gunicorn.org/en/latest/run.html#commonly-used-arguments) or [Full list of settings](http://docs.gunicorn.org/en/stable/settings.html) for more information.
 
-##### Where to bind Gunicorn to?
+##### Where to bind Gunicorn to
 
 What address are you going to use to reference it? By default, without a bind parameter, Gunicorn will bind to `127.0.0.1:8000`. This might be fine for your application. If it clashes with another application running on that port you will need to change it. I would suggest using UNIX sockets too, if you can.
 
@@ -63,9 +65,9 @@ Whatever you decide to use, remember it because we'll need it when configuring y
 
 ##### Number of workers
 
-By default Gunicorn will spawn only one worker. The number you set this to will depend on your own server environment, how many visitors you have etc. Gunicorn suggests between 2-4 workers per core. Really you could probably get away with 2-4 in total for most installs.
+By default Gunicorn will spawn only one worker. The number you set this to will depend on your own server environment, how many visitors you have etc. Gunicorn suggests `(2 x $num_cores) + 1` for the number of workers. So for example if you have 2 cores you want 2 x 2 + 1 = 5 workers. See [here](https://docs.gunicorn.org/en/stable/design.html#how-many-workers) for the official discussion on this topic.
 
-Change it by adding `--workers=2` to the command.
+Change it by adding `--workers=5` to the command.
 
 ##### Running with a virtual environment
 
@@ -73,9 +75,11 @@ If you're running with a virtual environment, you'll need to add the path to the
 
 e.g. `command=/path/to/venv/bin/gunicorn myauth.wsgi`
 
+The example config is using the myauth venv from the main installation guide: `command=/home/allianceserver/venv/auth/bin/gunicorn myauth.wsgi`
+
 ### Starting via Supervisor
 
-Once you have your configuration all sorted, you will need to reload your supervisor config `service supervisor reload` and then you can start the Gunicorn server via `supervisorctl start aauth-gunicorn` (or whatever you renamed it to). You should see something like the following `aauth-gunicorn: started`. If you get some other message, you'll need to consult the Supervisor log files, usually found in `/var/log/supervisor/`.
+Once you have your configuration all sorted, you will need to reload your supervisor config `service supervisor reload` and then you can start the Gunicorn server via `supervisorctl start myauth:gunicorn` (or whatever you renamed it to). You should see something like the following `myauth-gunicorn: started`. If you get some other message, you'll need to consult the Supervisor log files, usually found in `/var/log/supervisor/`.
 
 ## Configuring your webserver
 
@@ -85,4 +89,4 @@ Any web server capable of proxy passing should be able to sit in front of Gunico
 
 In the past when you made changes you restarted the entire Apache server. This is no longer required. When you update or make configuration changes that ask you to restart Apache, instead you can just restart Gunicorn:
 
-`supervisorctl restart myauth-gunicorn`, or the service name you chose for it.
+`supervisorctl restart gunicorn`, or the service name you chose for it.
