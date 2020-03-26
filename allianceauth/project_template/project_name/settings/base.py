@@ -84,6 +84,8 @@ LANGUAGES = (
     ('de', ugettext('German')),
     ('es', ugettext('Spanish')),
     ('zh-hans', ugettext('Chinese Simplified')),
+    ('ru', ugettext('Russian')),
+    ('ko', ugettext('Korean')),
 )
 
 TEMPLATES = [

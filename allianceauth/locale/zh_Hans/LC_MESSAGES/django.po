@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Joel Falknau <ozirascal@gmail.com>, 2020
+# Jesse . <sgeine@hotmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 23:04+0000\n"
+"POT-Creation-Date: 2020-03-10 01:32+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2020\n"
+"Last-Translator: Jesse . <sgeine@hotmail.com>, 2020\n"
 "Language-Team: Chinese Simplified (https://www.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,10 +69,8 @@ msgid "Change Main"
 msgstr "修改主要角色"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:97
-#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
-msgid "Groups"
-msgstr "群组"
+msgid "Group Memberships"
+msgstr "用户组成员"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:117
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
@@ -135,40 +134,40 @@ msgstr "您的IT团队"
 msgid "Submit"
 msgstr "提交"
 
-#: allianceauth/authentication/views.py:39
+#: allianceauth/authentication/views.py:77
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr "修改主要角色为%(char)s"
 
-#: allianceauth/authentication/views.py:48
+#: allianceauth/authentication/views.py:86
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr "添加%(name)s到您的账户"
 
-#: allianceauth/authentication/views.py:50
+#: allianceauth/authentication/views.py:88
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr "添加%(name)s到您的账户失败：他们已经在一个账户中了"
 
-#: allianceauth/authentication/views.py:89
+#: allianceauth/authentication/views.py:127
 msgid "Unable to authenticate as the selected character."
 msgstr "无法作为选定的角色进行身份验证"
 
-#: allianceauth/authentication/views.py:107
+#: allianceauth/authentication/views.py:145
 msgid "Registration token has expired."
 msgstr "注册令牌过期。"
 
-#: allianceauth/authentication/views.py:159
+#: allianceauth/authentication/views.py:197
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "已经发送了确认邮件。请按照链接确定您的电邮地址"
 
-#: allianceauth/authentication/views.py:164
+#: allianceauth/authentication/views.py:202
 msgid "Confirmed your email address. Please login to continue."
 msgstr "已确认您的电邮地址。请登录以继续"
 
-#: allianceauth/authentication/views.py:169
+#: allianceauth/authentication/views.py:207
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "现在不允许注册新账户。"
 
@@ -706,61 +705,61 @@ msgstr "用户组请求"
 msgid "Group Membership"
 msgstr "用户组成员"
 
-#: allianceauth/groupmanagement/views.py:164
+#: allianceauth/groupmanagement/views.py:165
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "已将用户%(user)s从用户组%(group)s中移除"
 
-#: allianceauth/groupmanagement/views.py:166
+#: allianceauth/groupmanagement/views.py:167
 msgid "User does not exist in that group"
 msgstr "那个用户组中不存在这个用户"
 
-#: allianceauth/groupmanagement/views.py:169
+#: allianceauth/groupmanagement/views.py:170
 msgid "Group does not exist"
 msgstr "用户组不存在"
 
-#: allianceauth/groupmanagement/views.py:196
+#: allianceauth/groupmanagement/views.py:197
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "已接受用户%(mainchar)s加入%(group)s的申请"
 
-#: allianceauth/groupmanagement/views.py:203
-#: allianceauth/groupmanagement/views.py:236
+#: allianceauth/groupmanagement/views.py:204
+#: allianceauth/groupmanagement/views.py:237
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to %(group)s."
 msgstr "在处理用户%(mainchar)s加入%(group)s的申请的过程中出现了一个搞不定的错误"
 
-#: allianceauth/groupmanagement/views.py:229
+#: allianceauth/groupmanagement/views.py:230
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "%(mainchar)s加入%(group)s的申请已拒绝"
 
-#: allianceauth/groupmanagement/views.py:265
+#: allianceauth/groupmanagement/views.py:266
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s加入%(group)s的申请已通过"
 
-#: allianceauth/groupmanagement/views.py:271
-#: allianceauth/groupmanagement/views.py:305
+#: allianceauth/groupmanagement/views.py:272
+#: allianceauth/groupmanagement/views.py:306
 #, python-format
 msgid ""
 "An unhandled error occured while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr "在处理%(mainchar)s离开%(group)s的请求时发生了搞不定的错误"
 
-#: allianceauth/groupmanagement/views.py:298
+#: allianceauth/groupmanagement/views.py:299
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s离开%(group)s的请求已被拒绝"
 
-#: allianceauth/groupmanagement/views.py:345
+#: allianceauth/groupmanagement/views.py:346
 msgid "You cannot join that group"
 msgstr "你无法加入那个用户组"
 
-#: allianceauth/groupmanagement/views.py:369
-#: allianceauth/groupmanagement/views.py:407
+#: allianceauth/groupmanagement/views.py:370
+#: allianceauth/groupmanagement/views.py:408
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -772,20 +771,20 @@ msgstr "你无法加入那个用户组"
 msgid "Pending"
 msgstr "待定"
 
-#: allianceauth/groupmanagement/views.py:375
+#: allianceauth/groupmanagement/views.py:376
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "修改已经应用到%(group)s啦"
 
-#: allianceauth/groupmanagement/views.py:386
+#: allianceauth/groupmanagement/views.py:387
 msgid "You cannot leave that group"
 msgstr "你无法离开那个用户组"
 
-#: allianceauth/groupmanagement/views.py:391
+#: allianceauth/groupmanagement/views.py:392
 msgid "You are not a member of that group"
 msgstr "你不是那个用户组的成员"
 
-#: allianceauth/groupmanagement/views.py:413
+#: allianceauth/groupmanagement/views.py:414
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "已经离开群组%(group)s"
@@ -1175,6 +1174,11 @@ msgstr "操作类型"
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:37
 msgid "Users"
 msgstr "用户"
+
+#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
+#: allianceauth/templates/allianceauth/side-menu.html:15
+msgid "Groups"
+msgstr "群组"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:43
 msgid "States"
