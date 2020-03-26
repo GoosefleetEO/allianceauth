@@ -11,32 +11,34 @@
 
 An auth system for EVE Online to help in-game organizations manage online service access.
 
-## Contens
+## Content
 
 - [Overview](#overview)
 - [Documentation](http://allianceauth.rtfd.io)
 - [Support](#support)
 - [Release Notes](https://gitlab.com/allianceauth/allianceauth/-/releases)
-- [Devloper Team](#developer-team)
+- [Developer Team](#developer-team)
 - [Contributing](#contributing)
 
 ## Overview
 
-Alliance Auth (AA) is a web application that helps Eve Online organizations efficiently manage access to their applications and services.
+Alliance Auth (AA) is a web site that helps Eve Online organizations efficiently manage access to applications and services.
 
 Main features:
 
-- Automatically grants or revokes user access to external applications / services (e.g. Discord, Mumble) and web apps (e.g. SRP requests) based on the user's current membership to [in-game organizations](https://allianceauth.readthedocs.io/en/latest/features/states/) and [groups](https://allianceauth.readthedocs.io/en/latest/features/groups/)
+- Automatically grants or revokes user access to external services (e.g. Discord, Mumble) and web apps (e.g. SRP requests) based on the user's current membership to [in-game organizations](https://allianceauth.readthedocs.io/en/latest/features/core/states/) and [groups](https://allianceauth.readthedocs.io/en/latest/features/core/groups/)
 
 - Provides a central web site where users can directly access web apps (e.g. SRP requests, Fleet Schedule) and manage their access to external services and groups.
 
-- Includes a set of connectors (called ["services"](https://allianceauth.readthedocs.io/en/latest/installation/services/)) for integrating access management with many popular external applications / services like Discord, Mumble, Teamspeak 3, SMF and others
+- Includes a set of connectors (called ["services"](https://allianceauth.readthedocs.io/en/latest/features/services/)) for integrating access management with many popular external applications / services like Discord, Mumble, Teamspeak 3, SMF and others
 
-- Includes a set of web apps called ["plug-in apps"](https://allianceauth.readthedocs.io/en/latest/features/) which add many useful functions: fleet schedule, timer board, SRP request management, fleet activity tracker and character application management
+- Includes a set of web [apps](https://allianceauth.readthedocs.io/en/latest/features/apps/) which add many useful functions, e.g.: fleet schedule, timer board, SRP request management, fleet activity tracker
 
-- Can be easily extended with new services and plugin-apps. Many additional services and plugin-apps are provided by the community and can be found here: [Community Creations](https://gitlab.com/allianceauth/community-creations)
+- Can be easily extended with additional services and apps. Many are provided by the community and can be found here: [Community Creations](https://gitlab.com/allianceauth/community-creations)
 
-For further details about AA - including an installation guide and a full list of included services and plugin apps - please see the [offical documentation](http://allianceauth.rtfd.io).
+- Chinese :cn:, English :us:, German :de: and Spanish :es: localization
+
+For further details about AA - including an installation guide and a full list of included services and plugin apps - please see the [official documentation](http://allianceauth.rtfd.io).
 
 ## Screenshot
 
