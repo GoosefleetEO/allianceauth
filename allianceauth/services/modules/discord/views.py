@@ -5,8 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.views import superuser_test
+
 from .manager import DiscordOAuthManager
 from .tasks import DiscordTasks
 
@@ -21,10 +23,10 @@ def deactivate_discord(request):
     logger.debug("deactivate_discord called by user %s" % request.user)
     if DiscordTasks.delete_user(request.user):
         logger.info("Successfully deactivated discord for user %s" % request.user)
-        messages.success(request, 'Deactivated Discord account.')
+        messages.success(request, _('Deactivated Discord account.'))
     else:
         logger.error("Unsuccessful attempt to deactivate discord for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your Discord account.')
+        messages.error(request, _('An error occurred while processing your Discord account.'))
     return redirect("services:services")
 
 
@@ -36,7 +38,7 @@ def reset_discord(request):
         logger.info("Successfully deleted discord user for user %s - forwarding to discord activation." % request.user)
         return redirect("discord:activate")
     logger.error("Unsuccessful attempt to reset discord for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your Discord account.')
+    messages.error(request, _('An error occurred while processing your Discord account.'))
     return redirect("services:services")
 
 
@@ -57,10 +59,10 @@ def discord_callback(request):
         return redirect("services:services")
     if DiscordTasks.add_user(request.user, code):
         logger.info("Successfully activated Discord for user %s" % request.user)
-        messages.success(request, 'Activated Discord account.')
+        messages.success(request, _('Activated Discord account.'))
     else:
         logger.error("Failed to activate Discord for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your Discord account.')
+        messages.error(request, _('An error occurred while processing your Discord account.'))
     return redirect("services:services")
 
 

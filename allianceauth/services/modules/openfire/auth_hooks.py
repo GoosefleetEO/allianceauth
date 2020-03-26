@@ -2,6 +2,7 @@ import logging
 
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook, MenuItemHook
@@ -22,7 +23,7 @@ class OpenfireService(ServicesHook):
 
     @property
     def title(self):
-        return "Jabber"
+        return _("Jabber")
 
     def delete_user(self, user, notify_user=False):
         logger.debug('Deleting user %s %s account' % (user, self.name))
@@ -74,7 +75,7 @@ def register_service():
 class JabberBroadcast(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
-                              'Jabber Broadcast',
+                              _('Jabber Broadcast'),
                               'fa fa-lock fa-fw fa-bullhorn',
                               'openfire:broadcast')
 
@@ -87,7 +88,7 @@ class JabberBroadcast(MenuItemHook):
 class FleetBroadcastFormatter(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
-                              'Fleet Broadcast Formatter',
+                              _('Fleet Broadcast Formatter'),
                               'fa fa-lock fa-fw fa-space-shuttle',
                               'services:fleet_format_tool')
 

@@ -3,6 +3,7 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.forms import ServicePasswordForm
 from .manager import Ips4Manager
@@ -27,7 +28,7 @@ def activate_ips4(request):
         logger.debug("Updated authserviceinfo for user %s with IPS4 credentials." % request.user)
         # update_ips4_groups.delay(request.user.pk)
         logger.info("Successfully activated IPS4 for user %s" % request.user)
-        messages.success(request, 'Activated IPSuite4 account.')
+        messages.success(request, _('Activated IPSuite4 account.'))
         credentials = {
             'username': result[0],
             'password': result[1],
@@ -36,7 +37,7 @@ def activate_ips4(request):
                       context={'credentials': credentials, 'service': 'IPSuite4'})
     else:
         logger.error("Unsuccessful attempt to activate IPS4 for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your IPSuite4 account.')
+        messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
     return redirect("services:services")
 
 
@@ -49,7 +50,7 @@ def reset_ips4_password(request):
         # false we failed
         if result != "":
             logger.info("Successfully reset IPS4 password for user %s" % request.user)
-            messages.success(request, 'Reset IPSuite4 password.')
+            messages.success(request, _('Reset IPSuite4 password.'))
             credentials = {
                 'username': request.user.ips4.username,
                 'password': result,
@@ -58,7 +59,7 @@ def reset_ips4_password(request):
                           context={'credentials': credentials, 'service': 'IPSuite4'})
 
     logger.error("Unsuccessful attempt to reset IPS4 password for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your IPSuite4 account.')
+    messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
     return redirect("services:services")
 
 
@@ -76,10 +77,10 @@ def set_ips4_password(request):
             result = Ips4Manager.update_custom_password(request.user.ips4.username, plain_password=password)
             if result != "":
                 logger.info("Successfully set IPS4 password for user %s" % request.user)
-                messages.success(request, 'Set IPSuite4 password.')
+                messages.success(request, _('Set IPSuite4 password.'))
             else:
                 logger.error("Failed to install custom IPS4 password for user %s" % request.user)
-                messages.error(request, 'An error occurred while processing your IPSuite4 account.')
+                messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
             return redirect('services:services')
     else:
         logger.debug("Request is not type POST - providing empty form.")
@@ -96,9 +97,9 @@ def deactivate_ips4(request):
     logger.debug("deactivate_ips4 called by user %s" % request.user)
     if Ips4Tasks.delete_user(request.user):
         logger.info("Successfully deactivated IPS4 for user %s" % request.user)
-        messages.success(request, 'Deactivated IPSuite4 account.')
+        messages.success(request, _('Deactivated IPSuite4 account.'))
     else:
         logger.error("Unsuccessful attempt to deactivate IPS4 for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your IPSuite4 account.')
+        messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
     return redirect("services:services")
 

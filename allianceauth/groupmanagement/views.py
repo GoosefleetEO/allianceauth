@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
@@ -10,12 +11,12 @@ from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from .managers import GroupManager
-from .models import GroupRequest, RequestLog
 
 from allianceauth.notifications import notify
 
-from django.conf import settings
+from .managers import GroupManager
+from .models import GroupRequest, RequestLog
+
 
 logger = logging.getLogger(__name__)
 
@@ -235,7 +236,7 @@ def group_reject_request(request, group_request_id):
         raise p
     except:
         messages.error(request, _('An unhandled error occurred while processing the application from %(mainchar)s to %(group)s.') % {"mainchar": group_request.main_char, "group": group_request.group})
-        logger.exception("Unhandled exception occured while user %s attempting to reject group request id %s" % (
+        logger.exception("Unhandled exception occurred while user %s attempting to reject group request id %s" % (
             request.user, group_request_id))
         pass
 
@@ -269,9 +270,9 @@ def group_leave_accept_request(request, group_request_id):
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, _('An unhandled error occured while processing the application from %(mainchar)s to leave %(group)s.') % {
+        messages.error(request, _('An unhandled error occurred while processing the application from %(mainchar)s to leave %(group)s.') % {
             "mainchar": group_request.main_char, "group": group_request.group})
-        logger.exception("Unhandled exception occured while user %s attempting to accept group leave request id %s" % (
+        logger.exception("Unhandled exception occurred while user %s attempting to accept group leave request id %s" % (
             request.user, group_request_id))
         pass
 
@@ -303,9 +304,9 @@ def group_leave_reject_request(request, group_request_id):
                        (request.user, group_request_id))
         raise p
     except:
-        messages.error(request, _('An unhandled error occured while processing the application from %(mainchar)s to leave %(group)s.') % {
+        messages.error(request, _('An unhandled error occurred while processing the application from %(mainchar)s to leave %(group)s.') % {
             "mainchar": group_request.main_char, "group": group_request.group})
-        logger.exception("Unhandled exception occured while user %s attempting to reject group leave request id %s" % (
+        logger.exception("Unhandled exception occurred while user %s attempting to reject group leave request id %s" % (
             request.user, group_request_id))
         pass
 
@@ -349,13 +350,13 @@ def group_request_add(request, group_id):
         # User is already a member of this group.
         logger.warning("User %s attempted to join group id %s but they are already a member." %
                        (request.user, group_id))
-        messages.warning(request, "You are already a member of that group.")
+        messages.warning(request, _("You are already a member of that group."))
         return redirect('groupmanagement:groups')
     if not request.user.has_perm('groupmanagement.request_groups') and not group.authgroup.public:
         # Does not have the required permission, trying to join a non-public group
         logger.warning("User %s attempted to join group id %s but it is not a public group" %
                        (request.user, group_id))
-        messages.warning(request, "You cannot join that group")
+        messages.warning(request, _("You cannot join that group"))
         return redirect('groupmanagement:groups')
     if group.authgroup.open:
         logger.info("%s joining %s as is an open group" % (request.user, group))
@@ -364,7 +365,7 @@ def group_request_add(request, group_id):
     req = GroupRequest.objects.filter(user=request.user, group=group)
     if len(req) > 0:
         logger.info("%s attempted to join %s but already has an open application" % (request.user, group))
-        messages.warning(request, "You already have a pending application for that group.")
+        messages.warning(request, _("You already have a pending application for that group."))
         return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
     grouprequest.status = _('Pending')
@@ -398,7 +399,7 @@ def group_request_leave(request, group_id):
     req = GroupRequest.objects.filter(user=request.user, group=group)
     if len(req) > 0:
         logger.info("%s attempted to leave %s but already has an pending leave request." % (request.user, group))
-        messages.warning(request, "You already have a pending leave request for that group.")
+        messages.warning(request, _("You already have a pending leave request for that group."))
         return redirect("groupmanagement:groups")
     if getattr(settings, 'AUTO_LEAVE', False):
         logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))

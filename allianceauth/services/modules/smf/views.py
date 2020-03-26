@@ -3,8 +3,10 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.forms import ServicePasswordForm
+
 from .manager import SmfManager
 from .models import SmfUser
 from .tasks import SmfTasks
@@ -29,7 +31,7 @@ def activate_smf(request):
         logger.debug("Updated authserviceinfo for user %s with smf credentials. Updating groups." % request.user)
         SmfTasks.update_groups.delay(request.user.pk)
         logger.info("Successfully activated smf for user %s" % request.user)
-        messages.success(request, 'Activated SMF account.')
+        messages.success(request, _('Activated SMF account.'))
         credentials = {
             'username': result[0],
             'password': result[1],
@@ -38,7 +40,7 @@ def activate_smf(request):
                       context={'credentials': credentials, 'service': 'SMF'})
     else:
         logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your SMF account.')
+        messages.error(request, _('An error occurred while processing your SMF account.'))
     return redirect("services:services")
 
 
@@ -50,10 +52,10 @@ def deactivate_smf(request):
     # false we failed
     if result:
         logger.info("Successfully deactivated smf for user %s" % request.user)
-        messages.success(request, 'Deactivated SMF account.')
+        messages.success(request, _('Deactivated SMF account.'))
     else:
         logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
-        messages.error(request, 'An error occurred while processing your SMF account.')
+        messages.error(request, _('An error occurred while processing your SMF account.'))
     return redirect("services:services")
 
 
@@ -67,7 +69,7 @@ def reset_smf_password(request):
         # false we failed
         if result != "":
             logger.info("Successfully reset smf password for user %s" % request.user)
-            messages.success(request, 'Reset SMF password.')
+            messages.success(request, _('Reset SMF password.'))
             credentials = {
                 'username': request.user.smf.username,
                 'password': result,
@@ -75,7 +77,7 @@ def reset_smf_password(request):
             return render(request, 'services/service_credentials.html',
                           context={'credentials': credentials, 'service': 'SMF'})
     logger.error("Unsuccessful attempt to reset smf password for user %s" % request.user)
-    messages.error(request, 'An error occurred while processing your SMF account.')
+    messages.error(request, _('An error occurred while processing your SMF account.'))
     return redirect("services:services")
 
 
@@ -95,10 +97,10 @@ def set_smf_password(request):
                                                      password=password)
             if result != "":
                 logger.info("Successfully set smf password for user %s" % request.user)
-                messages.success(request, 'Set SMF password.')
+                messages.success(request, _('Set SMF password.'))
             else:
                 logger.error("Failed to install custom smf password for user %s" % request.user)
-                messages.error(request, 'An error occurred while processing your SMF account.')
+                messages.error(request, _('An error occurred while processing your SMF account.'))
             return redirect("services:services")
     else:
         logger.debug("Request is not type POST - providing empty form.")

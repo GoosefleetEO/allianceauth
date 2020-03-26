@@ -1,4 +1,6 @@
+from django.utils.translation import gettext_lazy as _
 from allianceauth import hooks
+
 from .hooks import MenuItemHook
 from .hooks import ServicesHook
 
@@ -6,7 +8,7 @@ from .hooks import ServicesHook
 class Services(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
-                              'Services',
+                              _('Services'),
                               'fa fa-cogs fa-fw',
                               'services:services', 100)
 

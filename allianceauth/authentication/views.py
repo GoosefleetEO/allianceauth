@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.core import signing
 from django.urls import reverse
 from django.shortcuts import redirect, render
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.eveonline.models import EveCharacter
 from esi.decorators import token_required
@@ -69,7 +69,10 @@ def main_character_change(request, token):
         if not CharacterOwnership.objects.filter(character__character_id=token.character_id).exists():
             co = CharacterOwnership.objects.create_by_token(token)
         else:
-            messages.error(request, 'Cannot change main character to %(char)s: character owned by a different account.' % ({'char': token.character_name}))
+            messages.error(
+                request, 
+                _('Cannot change main character to %(char)s: character owned by a different account.') % ({'char': token.character_name})
+            )
             co = None
     if co:
         request.user.profile.main_character = co.character
