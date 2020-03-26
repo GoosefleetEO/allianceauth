@@ -7,6 +7,7 @@ from .models import EveCorporationInfo
 
 logger = logging.getLogger(__name__)
 
+TASK_PRIORITY = 7
 
 @shared_task
 def update_corp(corp_id):
@@ -27,11 +28,12 @@ def update_character(character_id):
 def run_model_update():
     # update existing corp models
     for corp in EveCorporationInfo.objects.all().values('corporation_id'):
-        update_corp.delay(corp['corporation_id'])
+        update_corp.apply_async(args=[corp['corporation_id']], priority=TASK_PRIORITY)
 
     # update existing alliance models
     for alliance in EveAllianceInfo.objects.all().values('alliance_id'):
-        update_alliance.delay(alliance['alliance_id'])
+        update_alliance.apply_async(args=[alliance['alliance_id']], priority=TASK_PRIORITY)
 
+    #update existing character models
     for character in EveCharacter.objects.all().values('character_id'):
-        update_character.delay(character['character_id'])
+        update_character.apply_async(args=[character['character_id']], priority=TASK_PRIORITY)

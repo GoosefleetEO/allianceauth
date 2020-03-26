@@ -80,28 +80,28 @@ class TestTasks(TestCase):
             character_name='character.name',
             corporation_id='character.corp.id',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='c.c.t',  # max 5 chars 
             alliance_id='character.alliance.id',
             alliance_name='character.alliance.name',
         )
 
         run_model_update()
 
-        self.assertEqual(mock_update_corp.delay.call_count, 1)
+        self.assertEqual(mock_update_corp.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_corp.delay.call_args[0][0]), 
+            int(mock_update_corp.apply_async.call_args[1]['args'][0]), 
             2345
         )
         
-        self.assertEqual(mock_update_alliance.delay.call_count, 1)
+        self.assertEqual(mock_update_alliance.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_alliance.delay.call_args[0][0]), 
+            int(mock_update_alliance.apply_async.call_args[1]['args'][0]), 
             3456
         )
         
-        self.assertEqual(mock_update_character.delay.call_count, 1)
+        self.assertEqual(mock_update_character.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_character.delay.call_args[0][0]), 
+            int(mock_update_character.apply_async.call_args[1]['args'][0]), 
             1234
         )
 
