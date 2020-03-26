@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 23:04+0000\n"
+"POT-Creation-Date: 2020-03-10 01:32+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: frank1210 <francolopez_16@hotmail.com>, 2020\n"
 "Language-Team: Spanish (https://www.transifex.com/alliance-auth/teams/107430/es/)\n"
@@ -70,10 +70,8 @@ msgid "Change Main"
 msgstr "Cambiar Personaje Principal"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:97
-#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
-msgid "Groups"
-msgstr "Grupos"
+msgid "Group Memberships"
+msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:117
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
@@ -137,45 +135,45 @@ msgstr "Tu equipo de IT"
 msgid "Submit"
 msgstr "Enviar"
 
-#: allianceauth/authentication/views.py:39
+#: allianceauth/authentication/views.py:77
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr "Se ha cambiado tu personaje principal ha %(char)s"
 
-#: allianceauth/authentication/views.py:48
+#: allianceauth/authentication/views.py:86
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr "Se ha agregado a %(name)s a tu cuenta"
 
-#: allianceauth/authentication/views.py:50
+#: allianceauth/authentication/views.py:88
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr ""
 "Se fallo en agregar a %(name)s a tu cuenta: Ya se encuentra registrado en "
 "otra cuenta."
 
-#: allianceauth/authentication/views.py:89
+#: allianceauth/authentication/views.py:127
 msgid "Unable to authenticate as the selected character."
 msgstr "Imposible validar con el personaje seleccionado."
 
-#: allianceauth/authentication/views.py:107
+#: allianceauth/authentication/views.py:145
 msgid "Registration token has expired."
 msgstr "El token de registracion expiro."
 
-#: allianceauth/authentication/views.py:159
+#: allianceauth/authentication/views.py:197
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr ""
 "Confirmacion de mail enviada. Por favor siga el enlace para confirmar "
 
-#: allianceauth/authentication/views.py:164
+#: allianceauth/authentication/views.py:202
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 "Se ha confirmado su direccion de mail. Por favor igrese su token para "
 "continuar."
 
-#: allianceauth/authentication/views.py:169
+#: allianceauth/authentication/views.py:207
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "Registracion de nuevas cuentas no es permitido por el momento."
 
@@ -716,26 +714,26 @@ msgstr "Solicitudes de Grupo"
 msgid "Group Membership"
 msgstr "Membresia de Grupo"
 
-#: allianceauth/groupmanagement/views.py:164
+#: allianceauth/groupmanagement/views.py:165
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "El usuario %(user)s fue removido del grupo %(group)s"
 
-#: allianceauth/groupmanagement/views.py:166
+#: allianceauth/groupmanagement/views.py:167
 msgid "User does not exist in that group"
 msgstr "El usuario no existe en ese grupos"
 
-#: allianceauth/groupmanagement/views.py:169
+#: allianceauth/groupmanagement/views.py:170
 msgid "Group does not exist"
 msgstr "El grupo no existe"
 
-#: allianceauth/groupmanagement/views.py:196
+#: allianceauth/groupmanagement/views.py:197
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "Solicitud aceptada de %(mainchar)s a %(group)s"
 
-#: allianceauth/groupmanagement/views.py:203
-#: allianceauth/groupmanagement/views.py:236
+#: allianceauth/groupmanagement/views.py:204
+#: allianceauth/groupmanagement/views.py:237
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
@@ -744,18 +742,18 @@ msgstr ""
 "Ocurrio un error cuando se intento procesar la informacion de %(mainchar)s "
 "al grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:229
+#: allianceauth/groupmanagement/views.py:230
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "Se rechazo la solicitud de %(mainchar)s al grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:265
+#: allianceauth/groupmanagement/views.py:266
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "Se acepto la solicitud de %(mainchar)s para dejar el grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:271
-#: allianceauth/groupmanagement/views.py:305
+#: allianceauth/groupmanagement/views.py:272
+#: allianceauth/groupmanagement/views.py:306
 #, python-format
 msgid ""
 "An unhandled error occured while processing the application from "
@@ -764,18 +762,18 @@ msgstr ""
 "Ocurrio un error cuando se intento procesar la informacion de %(mainchar)s "
 "para dejar el grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:298
+#: allianceauth/groupmanagement/views.py:299
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr ""
 "Se rechazo la solicitud de %(mainchar)s para dejar el grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:345
+#: allianceauth/groupmanagement/views.py:346
 msgid "You cannot join that group"
 msgstr "No puedes unirte a ese grupo"
 
-#: allianceauth/groupmanagement/views.py:369
-#: allianceauth/groupmanagement/views.py:407
+#: allianceauth/groupmanagement/views.py:370
+#: allianceauth/groupmanagement/views.py:408
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -787,20 +785,20 @@ msgstr "No puedes unirte a ese grupo"
 msgid "Pending"
 msgstr "Pendiente"
 
-#: allianceauth/groupmanagement/views.py:375
+#: allianceauth/groupmanagement/views.py:376
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "Solicitud enviada al grupo %(group)s."
 
-#: allianceauth/groupmanagement/views.py:386
+#: allianceauth/groupmanagement/views.py:387
 msgid "You cannot leave that group"
 msgstr "No puedes dejar el grupos"
 
-#: allianceauth/groupmanagement/views.py:391
+#: allianceauth/groupmanagement/views.py:392
 msgid "You are not a member of that group"
 msgstr "No eres miembro de ese grupo"
 
-#: allianceauth/groupmanagement/views.py:413
+#: allianceauth/groupmanagement/views.py:414
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "Solicitaste dejar el grupo %(group)s."
@@ -1190,6 +1188,11 @@ msgstr "Nombre codigo"
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:37
 msgid "Users"
 msgstr "Usuarios"
+
+#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
+#: allianceauth/templates/allianceauth/side-menu.html:15
+msgid "Groups"
+msgstr "Grupos"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:43
 msgid "States"
