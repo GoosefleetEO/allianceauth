@@ -1,27 +1,53 @@
-from django.contrib.auth.models import Group
-from django.db.models import Q
+import logging
+
+from django.contrib.auth.models import Group, User
+from django.db.models import Q, QuerySet
+
+from allianceauth.authentication.models import State
+
+
+logger = logging.getLogger(__name__)
 
 
 class GroupManager:
-    def __init__(self):
-        pass
+    
+    @classmethod
+    def get_joinable_groups_for_user(
+        cls, user: User, include_hidden = True
+    ) -> QuerySet:
+        """get groups a user could join incl. groups already joined"""
+        groups_qs = cls.get_joinable_groups(user.profile.state)
+
+        if not user.has_perm('groupmanagement.request_groups'):
+            groups_qs = groups_qs.filter(authgroup__public=True)
+        
+        if not include_hidden:
+            groups_qs = groups_qs.filter(authgroup__hidden=False)
+
+        return groups_qs
 
     @staticmethod
-    def get_joinable_groups(state):
-        return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)\
+    def get_joinable_groups(state: State) -> QuerySet:
+        """get groups that can be joined by user with given state"""
+        return Group.objects\
+            .select_related('authgroup')\
+            .exclude(authgroup__internal=True)\
             .filter(Q(authgroup__states=state) | Q(authgroup__states=None))
 
     @staticmethod
-    def get_all_non_internal_groups():
-        return Group.objects.select_related('authgroup').exclude(authgroup__internal=True)
+    def get_all_non_internal_groups() -> QuerySet:
+        """get groups that are not internal"""
+        return Group.objects\
+            .select_related('authgroup')\
+            .exclude(authgroup__internal=True)
 
     @staticmethod
-    def get_group_leaders_groups(user):
+    def get_group_leaders_groups(user: User):
         return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user]) | \
                Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
 
     @staticmethod
-    def joinable_group(group, state):
+    def joinable_group(group: Group, state: State) -> bool:
         """
         Check if a group is a user/state joinable group, i.e.
         not an internal group for Corp, Alliance, Members etc,
@@ -30,12 +56,15 @@ class GroupManager:
         :param state: allianceauth.authentication.State object
         :return: bool True if its joinable, False otherwise
         """
-        if len(group.authgroup.states.all()) != 0 and state not in group.authgroup.states.all():
+        if (len(group.authgroup.states.all()) != 0 
+            and state not in group.authgroup.states.all()
+        ):
             return False
-        return not group.authgroup.internal
+        else:
+            return not group.authgroup.internal
 
     @staticmethod
-    def check_internal_group(group):
+    def check_internal_group(group: Group) -> bool:
         """
         Check if a group is auditable, i.e not an internal group
         :param group: django.contrib.auth.models.Group object
@@ -44,20 +73,11 @@ class GroupManager:
         return not group.authgroup.internal
 
     @staticmethod
-    def check_internal_group(group):
-        """
-        Check if a group is auditable, i.e not an internal group
-        :param group: django.contrib.auth.models.Group object
-        :return: bool True if it is auditable, false otherwise
-        """
-        return not group.authgroup.internal
-
-    @staticmethod
-    def has_management_permission(user):
+    def has_management_permission(user: User) -> bool:
         return user.has_perm('auth.group_management')
 
     @classmethod
-    def can_manage_groups(cls, user):
+    def can_manage_groups(cls, user:User ) -> bool:
         """
         For use with user_passes_test decorator.
         Check if the user can manage groups. Either has the
@@ -71,7 +91,7 @@ class GroupManager:
         return False
 
     @classmethod
-    def can_manage_group(cls, user, group):
+    def can_manage_group(cls, user: User, group: Group) -> bool:
         """
         Check user has permission to manage the given group
         :param user: User object to test permission of

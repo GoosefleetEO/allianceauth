@@ -1,3 +1,4 @@
+from urllib.parse import quote
 from unittest.mock import patch
 
 from django.conf import settings
@@ -6,8 +7,9 @@ from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User as BaseUser, Group
 from django.test import TestCase, RequestFactory, Client
 
-from allianceauth.authentication.models import CharacterOwnership, State, \
-    OwnershipRecord
+from allianceauth.authentication.models import (
+    CharacterOwnership, State, OwnershipRecord
+)
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
@@ -28,7 +30,7 @@ from ..admin import (
     user_username,
     update_main_character_model
 )
-from . import get_admin_change_view_url
+from . import get_admin_change_view_url, get_admin_search_url
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -175,6 +177,17 @@ def create_test_data():
     return user_1, user_2, user_3, group_1, group_2
 
 
+def make_generic_search_request(ModelClass: type, search_term: str):
+    User.objects.create_superuser(
+        username='superuser', password='secret', email='admin@example.com'
+    )
+    c = Client()
+    c.login(username='superuser', password='secret')    
+    return c.get(
+        '%s?q=%s' % (get_admin_search_url(ModelClass), quote(search_term))
+    )    
+
+
 class TestCharacterOwnershipAdmin(TestCase):
     
     @classmethod
@@ -196,6 +209,14 @@ class TestCharacterOwnershipAdmin(TestCase):
         ownership = self.user_1.character_ownerships.first()
         response = c.get(get_admin_change_view_url(ownership))
         self.assertEqual(response.status_code, 200)
+
+    def test_search_works(self):
+        obj = CharacterOwnership.objects\
+            .filter(user=self.user_1)\
+            .first()
+        response = make_generic_search_request(type(obj), obj.user.username)
+        expected = 200
+        self.assertEqual(response.status_code, expected)
 
 
 class TestOwnershipRecordAdmin(TestCase):
@@ -221,6 +242,12 @@ class TestOwnershipRecordAdmin(TestCase):
             .first()
         response = c.get(get_admin_change_view_url(ownership_record))
         self.assertEqual(response.status_code, 200)
+
+    def test_search_works(self):
+        obj = OwnershipRecord.objects.first()
+        response = make_generic_search_request(type(obj), obj.user.username)
+        expected = 200
+        self.assertEqual(response.status_code, expected)
 
 
 class TestStateAdmin(TestCase):
@@ -250,6 +277,11 @@ class TestStateAdmin(TestCase):
         response = c.get(get_admin_change_view_url(member_state))
         self.assertEqual(response.status_code, 200)
 
+    def test_search_works(self):
+        obj = State.objects.first()
+        response = make_generic_search_request(type(obj), obj.name)
+        expected = 200
+        self.assertEqual(response.status_code, expected)
 
 class TestUserAdmin(TestCase):
 
@@ -541,3 +573,9 @@ class TestUserAdmin(TestCase):
         c.login(username='superuser', password='secret')                
         response = c.get(get_admin_change_view_url(self.user_1))
         self.assertEqual(response.status_code, 200)
+
+    def test_search_works(self):
+        obj = User.objects.first()
+        response = make_generic_search_request(type(obj), obj.username)
+        expected = 200
+        self.assertEqual(response.status_code, expected)
