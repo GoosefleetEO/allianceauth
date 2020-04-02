@@ -315,24 +315,23 @@ def group_leave_reject_request(request, group_request_id):
 @login_required
 def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
+    
+    groups_qs = GroupManager.get_joinable_groups_for_user(
+        request.user, include_hidden=False
+    )
+    groups_qs = groups_qs.order_by('name')
     groups = []
+    for group in groups_qs:        
+        group_request = GroupRequest.objects\
+            .filter(user=request.user)\
+            .filter(group=group)
+        groups.append({
+            'group': group, 
+            'request': group_request[0] if group_request else None
+        })
 
-    group_query = GroupManager.get_joinable_groups(request.user.profile.state)
-
-    if not request.user.has_perm('groupmanagement.request_groups'):
-        # Filter down to public groups only for non-members
-        group_query = group_query.filter(authgroup__public=True)
-        logger.debug("Not a member, only public groups will be available")
-
-    for group in group_query:
-        # Exclude hidden
-        if not group.authgroup.hidden:
-            group_request = GroupRequest.objects.filter(user=request.user).filter(group=group)
-
-            groups.append({'group': group, 'request': group_request[0] if group_request else None})
-
-    render_items = {'groups': groups}
-    return render(request, 'groupmanagement/groups.html', context=render_items)
+    context = {'groups': groups}
+    return render(request, 'groupmanagement/groups.html', context=context)
 
 
 @login_required

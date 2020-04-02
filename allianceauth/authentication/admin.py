@@ -506,7 +506,7 @@ class BaseOwnershipAdmin(admin.ModelAdmin):
         'character',
     )
     search_fields = (
-        'user__user', 
+        'user__username', 
         'character__character_name', 
         'character__corporation_name', 
         'character__alliance_name'

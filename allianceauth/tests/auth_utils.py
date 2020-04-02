@@ -1,27 +1,45 @@
-from allianceauth.authentication.models import UserProfile, State, get_guest_state
-from allianceauth.authentication.signals import state_member_alliances_changed, state_member_characters_changed, \
-    state_member_corporations_changed, state_saved
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 from django.db.models.signals import m2m_changed, pre_save, post_save
 from django.test import TestCase
-from esi.models import Token
-from allianceauth.eveonline.models import EveCharacter
 
-from allianceauth.services.signals import m2m_changed_group_permissions, m2m_changed_user_permissions, \
-    m2m_changed_state_permissions
-from allianceauth.services.signals import m2m_changed_user_groups, disable_services_on_inactive
+from esi.models import Token
+
+from allianceauth.authentication.models import (
+    UserProfile, State, get_guest_state
+)
+from allianceauth.eveonline.models import EveCharacter
+from allianceauth.authentication.signals import (
+    state_member_alliances_changed, 
+    state_member_characters_changed, 
+    state_member_corporations_changed, 
+    state_saved,
+    reassess_on_profile_save,
+    assign_state_on_active_change,
+    check_state_on_character_update
+)
+from allianceauth.services.signals import (
+    m2m_changed_group_permissions, 
+    m2m_changed_user_permissions, 
+    m2m_changed_state_permissions,
+    m2m_changed_user_groups, disable_services_on_inactive
+)
 
 
 class AuthUtils:
-    def __init__(self):
-        pass
+    """Utilities for making it easier to create tests for Alliance Auth"""
 
     @staticmethod
-    def _create_user(username):
+    def _create_user(username):        
         return User.objects.create(username=username)
 
     @classmethod
     def create_user(cls, username, disconnect_signals=False):
+        """create a new user
+        
+        username: Name of the user
+
+        disconnect_signals: whether to run process without signals
+        """
         if disconnect_signals:
             cls.disconnect_signals()
         user = cls._create_user(username)
@@ -95,6 +113,11 @@ class AuthUtils:
         m2m_changed.disconnect(state_member_characters_changed, sender=State.member_characters.through)
         m2m_changed.disconnect(state_member_alliances_changed, sender=State.member_alliances.through)
         post_save.disconnect(state_saved, sender=State)
+        post_save.disconnect(reassess_on_profile_save, sender=UserProfile)
+        pre_save.disconnect(assign_state_on_active_change, sender=User)
+        post_save.disconnect(
+            check_state_on_character_update, sender=EveCharacter
+        )
 
     @classmethod
     def connect_signals(cls):
@@ -107,6 +130,9 @@ class AuthUtils:
         m2m_changed.connect(state_member_characters_changed, sender=State.member_characters.through)
         m2m_changed.connect(state_member_alliances_changed, sender=State.member_alliances.through)
         post_save.connect(state_saved, sender=State)
+        post_save.connect(reassess_on_profile_save, sender=UserProfile)
+        pre_save.connect(assign_state_on_active_change, sender=User)
+        post_save.connect(check_state_on_character_update, sender=EveCharacter)
 
     @classmethod
     def add_main_character(cls, user, name, character_id, corp_id='', corp_name='', corp_ticker='', alliance_id='',
@@ -123,6 +149,40 @@ class AuthUtils:
         UserProfile.objects.update_or_create(user=user, defaults={'main_character': char})
 
     @classmethod
+    def add_main_character_2(        
+        cls,
+        user, 
+        name, 
+        character_id, 
+        corp_id='', 
+        corp_name='', 
+        corp_ticker='', 
+        alliance_id='', 
+        alliance_name='',
+        disconnect_signals=False
+    ):
+        """new version that works in all cases"""
+        if disconnect_signals:
+            cls.disconnect_signals()
+
+        char = EveCharacter.objects.create(
+            character_id=character_id,
+            character_name=name,
+            corporation_id=corp_id,
+            corporation_name=corp_name,
+            corporation_ticker=corp_ticker,
+            alliance_id=alliance_id,
+            alliance_name=alliance_name,
+        )
+        user.profile.main_character = char
+        user.profile.save()
+        
+        if disconnect_signals:
+            cls.connect_signals()
+        
+        return char
+
+    @classmethod
     def add_permissions_to_groups(cls, perms, groups, disconnect_signals=True):
         if disconnect_signals:
             cls.disconnect_signals()
@@ -130,14 +190,67 @@ class AuthUtils:
         for group in groups:
             for perm in perms:
                 group.permissions.add(perm)
+            group = Group.objects.get(pk=group.pk)    # reload permission cache
 
         if disconnect_signals:
             cls.connect_signals()
 
     @classmethod
     def add_permissions_to_state(cls, perms, states, disconnect_signals=True):
-        return cls.add_permissions_to_groups(perms, states, disconnect_signals=disconnect_signals)
+        return cls.add_permissions_to_groups(
+            perms, states, disconnect_signals=disconnect_signals
+        )
 
+    @classmethod
+    def add_permissions_to_user(cls, perms, user, disconnect_signals=True):
+        """add list of permissions to user
+        
+        perms: list of Permission objects
+        
+        user: user object
+        
+        disconnect_signals: whether to run process without signals
+        """
+        if disconnect_signals:
+            cls.disconnect_signals()
+        
+        for perm in perms:
+            user.user_permissions.add(perm)
+
+        user = User.objects.get(pk=user.pk)     # reload permission cache
+        if disconnect_signals:
+            cls.connect_signals()
+
+    @classmethod
+    def add_permission_to_user_by_name(
+        cls, perm, user, disconnect_signals=True
+    ):        
+        """returns permission specified by qualified name
+
+        perm: Permission name as 'app_label.codename'
+
+        user: user object
+
+        disconnect_signals: whether to run process without signals
+        """
+        p = cls.get_permission_by_name(perm)
+        cls.add_permissions_to_user([p], user, disconnect_signals)
+
+    @staticmethod
+    def get_permission_by_name(perm: str) -> Permission:
+        """returns permission specified by qualified name
+
+        perm: Permission name as 'app_label.codename'
+
+        Returns: Permission object or throws exception if not found
+        """
+        perm_parts = perm.split('.')
+        if len(perm_parts) != 2:
+            raise ValueError('Invalid format for permission name')
+
+        return Permission.objects.get(
+            content_type__app_label=perm_parts[0], codename=perm_parts[1]
+        )
 
 class BaseViewTestCase(TestCase):
     def setUp(self):
