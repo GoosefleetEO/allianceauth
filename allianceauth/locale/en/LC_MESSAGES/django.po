@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-10 01:32+0000\n"
+"POT-Creation-Date: 2020-04-02 03:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,40 +130,47 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: allianceauth/authentication/views.py:77
+#: allianceauth/authentication/views.py:74
+#, python-format
+msgid ""
+"Cannot change main character to %(char)s: character owned by a different "
+"account."
+msgstr ""
+
+#: allianceauth/authentication/views.py:80
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr ""
 
-#: allianceauth/authentication/views.py:86
+#: allianceauth/authentication/views.py:89
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr ""
 
-#: allianceauth/authentication/views.py:88
+#: allianceauth/authentication/views.py:91
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr ""
 
-#: allianceauth/authentication/views.py:127
+#: allianceauth/authentication/views.py:130
 msgid "Unable to authenticate as the selected character."
 msgstr ""
 
-#: allianceauth/authentication/views.py:145
+#: allianceauth/authentication/views.py:148
 msgid "Registration token has expired."
 msgstr ""
 
-#: allianceauth/authentication/views.py:197
+#: allianceauth/authentication/views.py:200
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr ""
 
-#: allianceauth/authentication/views.py:202
+#: allianceauth/authentication/views.py:205
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 
-#: allianceauth/authentication/views.py:207
+#: allianceauth/authentication/views.py:210
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr ""
 
@@ -525,6 +532,12 @@ msgstr ""
 msgid "Audit Log"
 msgstr ""
 
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:18
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:20
+#: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
+msgid "Back"
+msgstr ""
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:25
 msgid "Date/Time"
 msgstr ""
@@ -582,6 +595,12 @@ msgstr ""
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:5
 msgid "Groups Membership"
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
+#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
+#: allianceauth/templates/allianceauth/side-menu.html:15
+msgid "Groups"
 msgstr ""
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:23
@@ -703,57 +722,66 @@ msgstr ""
 msgid "Group Membership"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:165
+#: allianceauth/groupmanagement/views.py:166
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:167
+#: allianceauth/groupmanagement/views.py:168
 msgid "User does not exist in that group"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:170
+#: allianceauth/groupmanagement/views.py:171
 msgid "Group does not exist"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:197
+#: allianceauth/groupmanagement/views.py:198
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:204
-#: allianceauth/groupmanagement/views.py:237
+#: allianceauth/groupmanagement/views.py:205
+#: allianceauth/groupmanagement/views.py:238
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:230
+#: allianceauth/groupmanagement/views.py:231
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:266
+#: allianceauth/groupmanagement/views.py:267
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:272
-#: allianceauth/groupmanagement/views.py:306
+#: allianceauth/groupmanagement/views.py:273
+#: allianceauth/groupmanagement/views.py:307
 #, python-format
 msgid ""
-"An unhandled error occured while processing the application from "
+"An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:299
+#: allianceauth/groupmanagement/views.py:300
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr ""
 
 #: allianceauth/groupmanagement/views.py:346
+#: allianceauth/groupmanagement/views.py:358
 msgid "You cannot join that group"
+msgstr ""
+
+#: allianceauth/groupmanagement/views.py:352
+msgid "You are already a member of that group."
+msgstr ""
+
+#: allianceauth/groupmanagement/views.py:367
+msgid "You already have a pending application for that group."
 msgstr ""
 
 #: allianceauth/groupmanagement/views.py:370
@@ -780,6 +808,10 @@ msgstr ""
 
 #: allianceauth/groupmanagement/views.py:392
 msgid "You are not a member of that group"
+msgstr ""
+
+#: allianceauth/groupmanagement/views.py:401
+msgid "You already have a pending leave request for that group."
 msgstr ""
 
 #: allianceauth/groupmanagement/views.py:414
@@ -1128,10 +1160,6 @@ msgstr ""
 msgid "Permissions Audit"
 msgstr ""
 
-#: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
-msgid "Back"
-msgstr ""
-
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:22
 msgid "User / Character"
 msgstr ""
@@ -1173,13 +1201,20 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
-msgid "Groups"
-msgstr ""
-
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:43
 msgid "States"
+msgstr ""
+
+#: allianceauth/services/abstract.py:72
+msgid "That service account already exists"
+msgstr ""
+
+#: allianceauth/services/abstract.py:104
+msgid "Successfully set your {} password"
+msgstr ""
+
+#: allianceauth/services/auth_hooks.py:11
+msgid "Services"
 msgstr ""
 
 #: allianceauth/services/forms.py:6
@@ -1246,13 +1281,77 @@ msgstr ""
 msgid "Link Discord Server"
 msgstr ""
 
-#: allianceauth/services/modules/openfire/forms.py:7
-msgid "Message"
+#: allianceauth/services/modules/discord/views.py:26
+msgid "Deactivated Discord account."
 msgstr ""
 
+#: allianceauth/services/modules/discord/views.py:29
+#: allianceauth/services/modules/discord/views.py:41
+#: allianceauth/services/modules/discord/views.py:65
+msgid "An error occurred while processing your Discord account."
+msgstr ""
+
+#: allianceauth/services/modules/discord/views.py:62
+msgid "Activated Discord account."
+msgstr ""
+
+#: allianceauth/services/modules/discourse/views.py:37
+msgid "You are not authorized to access Discourse."
+msgstr ""
+
+#: allianceauth/services/modules/discourse/views.py:42
+msgid "You must have a main character set to access Discourse."
+msgstr ""
+
+#: allianceauth/services/modules/discourse/views.py:52
+msgid ""
+"No SSO payload or signature. Please contact support if this problem persists."
+msgstr ""
+
+#: allianceauth/services/modules/discourse/views.py:62
+#: allianceauth/services/modules/discourse/views.py:70
+msgid "Invalid payload. Please contact support if this problem persists."
+msgstr ""
+
+#: allianceauth/services/modules/ips4/views.py:31
+msgid "Activated IPSuite4 account."
+msgstr ""
+
+#: allianceauth/services/modules/ips4/views.py:40
+#: allianceauth/services/modules/ips4/views.py:62
+#: allianceauth/services/modules/ips4/views.py:83
+#: allianceauth/services/modules/ips4/views.py:103
+msgid "An error occurred while processing your IPSuite4 account."
+msgstr ""
+
+#: allianceauth/services/modules/ips4/views.py:53
+msgid "Reset IPSuite4 password."
+msgstr ""
+
+#: allianceauth/services/modules/ips4/views.py:80
+msgid "Set IPSuite4 password."
+msgstr ""
+
+#: allianceauth/services/modules/ips4/views.py:100
+msgid "Deactivated IPSuite4 account."
+msgstr ""
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:26
+msgid "Jabber"
+msgstr ""
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:78
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:6
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:11
 msgid "Jabber Broadcast"
+msgstr ""
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:91
+msgid "Fleet Broadcast Formatter"
+msgstr ""
+
+#: allianceauth/services/modules/openfire/forms.py:7
+msgid "Message"
 msgstr ""
 
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:17
@@ -1261,6 +1360,76 @@ msgstr ""
 
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:24
 msgid "Broadcast"
+msgstr ""
+
+#: allianceauth/services/modules/openfire/views.py:35
+msgid "Activated jabber account."
+msgstr ""
+
+#: allianceauth/services/modules/openfire/views.py:44
+#: allianceauth/services/modules/openfire/views.py:57
+#: allianceauth/services/modules/openfire/views.py:78
+#: allianceauth/services/modules/openfire/views.py:151
+msgid "An error occurred while processing your jabber account."
+msgstr ""
+
+#: allianceauth/services/modules/openfire/views.py:70
+msgid "Reset jabber password."
+msgstr ""
+
+#: allianceauth/services/modules/openfire/views.py:119
+#, python-format
+msgid "Sent jabber broadcast to %s"
+msgstr ""
+
+#: allianceauth/services/modules/openfire/views.py:148
+msgid "Set jabber password."
+msgstr ""
+
+#: allianceauth/services/modules/phpbb3/views.py:34
+msgid "Activated forum account."
+msgstr ""
+
+#: allianceauth/services/modules/phpbb3/views.py:43
+#: allianceauth/services/modules/phpbb3/views.py:57
+#: allianceauth/services/modules/phpbb3/views.py:80
+#: allianceauth/services/modules/phpbb3/views.py:103
+msgid "An error occurred while processing your forum account."
+msgstr ""
+
+#: allianceauth/services/modules/phpbb3/views.py:54
+msgid "Deactivated forum account."
+msgstr ""
+
+#: allianceauth/services/modules/phpbb3/views.py:71
+msgid "Reset forum password."
+msgstr ""
+
+#: allianceauth/services/modules/phpbb3/views.py:100
+msgid "Set forum password."
+msgstr ""
+
+#: allianceauth/services/modules/smf/views.py:34
+msgid "Activated SMF account."
+msgstr ""
+
+#: allianceauth/services/modules/smf/views.py:43
+#: allianceauth/services/modules/smf/views.py:58
+#: allianceauth/services/modules/smf/views.py:80
+#: allianceauth/services/modules/smf/views.py:103
+msgid "An error occurred while processing your SMF account."
+msgstr ""
+
+#: allianceauth/services/modules/smf/views.py:55
+msgid "Deactivated SMF account."
+msgstr ""
+
+#: allianceauth/services/modules/smf/views.py:72
+msgid "Reset SMF password."
+msgstr ""
+
+#: allianceauth/services/modules/smf/views.py:100
+msgid "Set SMF password."
 msgstr ""
 
 #: allianceauth/services/modules/teamspeak3/forms.py:14
@@ -1284,6 +1453,47 @@ msgstr ""
 #: allianceauth/services/templates/services/service_credentials.html:20
 #: allianceauth/srp/templates/srp/add.html:31
 msgid "Continue"
+msgstr ""
+
+#: allianceauth/services/modules/teamspeak3/views.py:34
+msgid "Activated TeamSpeak3 account."
+msgstr ""
+
+#: allianceauth/services/modules/teamspeak3/views.py:37
+#: allianceauth/services/modules/teamspeak3/views.py:74
+#: allianceauth/services/modules/teamspeak3/views.py:100
+msgid "An error occurred while processing your TeamSpeak3 account."
+msgstr ""
+
+#: allianceauth/services/modules/teamspeak3/views.py:71
+msgid "Deactivated TeamSpeak3 account."
+msgstr ""
+
+#: allianceauth/services/modules/teamspeak3/views.py:97
+msgid "Reset TeamSpeak3 permission key."
+msgstr ""
+
+#: allianceauth/services/modules/xenforo/views.py:30
+msgid "Activated XenForo account."
+msgstr ""
+
+#: allianceauth/services/modules/xenforo/views.py:40
+#: allianceauth/services/modules/xenforo/views.py:52
+#: allianceauth/services/modules/xenforo/views.py:73
+#: allianceauth/services/modules/xenforo/views.py:94
+msgid "An error occurred while processing your XenForo account."
+msgstr ""
+
+#: allianceauth/services/modules/xenforo/views.py:50
+msgid "Deactivated XenForo account."
+msgstr ""
+
+#: allianceauth/services/modules/xenforo/views.py:65
+msgid "Reset XenForo account password."
+msgstr ""
+
+#: allianceauth/services/modules/xenforo/views.py:91
+msgid "Changed XenForo password."
 msgstr ""
 
 #: allianceauth/services/templates/services/fleetformattertool.html:6
