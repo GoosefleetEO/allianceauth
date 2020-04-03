@@ -26,15 +26,7 @@
             {% endif %}
 
             {% menu_items %}
-
-            {% if user.is_superuser %}
-                <li>
-                    <a class="{% navactive request 'authentication:help' %}"
-                       href="{% url 'authentication:help' %}">
-                        <i class="fa fa-question fa-fw"></i> {% trans "Help" %}
-                    </a>
-                </li>
-            {% endif %}
+           
         </ul>
     </div>
 </div>
