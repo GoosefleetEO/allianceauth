@@ -8,4 +8,6 @@
 
     custom/index
     aa_core/index
+    dev_setup/index
+    tech_docu/index
 ```

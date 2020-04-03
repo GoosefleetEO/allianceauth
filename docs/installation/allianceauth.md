@@ -83,7 +83,8 @@ apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev
 CentOS:
 
 ```bash
-yum install gcc gcc-c++ unzip git redis curl bzip2-devel
+yum install gcc gcc-c++ unzip git redis curl
+2-devel
 ```
 
 ```eval_rst
@@ -113,7 +114,7 @@ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
 ```eval_rst
 .. note::
    You may see errors when you add the timezone tables. To make sure that they were correctly added run the following commands and check for the ``time_zone`` tables::
-   
+
      mysql -u root -p
      use mysql;
      show tables;
