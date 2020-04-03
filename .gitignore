@@ -72,3 +72,6 @@ celerybeat-schedule
 
 #transifex
 .tx/
+
+#other
+.flake8

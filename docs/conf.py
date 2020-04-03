@@ -18,7 +18,10 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
+import django
+sys.path.insert(0, os.path.abspath('..'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings_all'
+django.setup()
 
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -38,7 +41,9 @@ from recommonmark.transform import AutoStructify
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',    
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -148,6 +153,9 @@ man_pages = [
      [author], 1)
 ]
 
+# -- Options for autodoc  -------------------------------------------------
+
+add_module_names = False
 
 # -- Options for Texinfo output -------------------------------------------
 
