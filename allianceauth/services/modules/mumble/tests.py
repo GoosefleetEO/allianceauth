@@ -25,6 +25,9 @@ class MumbleHooksTestCase(TestCase):
     def setUp(self):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
+        AuthUtils.add_main_character(member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
+                                     corp_ticker='TESTR')
+        member = User.objects.get(pk=member.pk)
         MumbleUser.objects.create(user=member)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
@@ -122,23 +125,45 @@ class MumbleViewsTestCase(TestCase):
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
                                      corp_ticker='TESTR')
+        self.member = User.objects.get(pk=self.member.pk)
         add_permissions()
 
     def login(self):
         self.client.force_login(self.member)
 
-    def test_activate(self):
+    def test_activate_update(self):
         self.login()
-        expected_username = '[TESTR]auth_member'
+        expected_username = 'auth_member'
+        expected_displayname = '[TESTR]auth_member'
         response = self.client.get(urls.reverse('mumble:activate'), follow=False)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, expected_username)
+        # create
         mumble_user = MumbleUser.objects.get(user=self.member)
         self.assertEqual(mumble_user.username, expected_username)
+        self.assertTrue(MumbleUser.objects.user_exists(expected_username))
+        self.assertEqual(str(mumble_user), expected_username)
+        self.assertEqual(mumble_user.display_name, expected_displayname)
         self.assertTrue(mumble_user.pwhash)
         self.assertIn('Guest', mumble_user.groups)
         self.assertIn('Member', mumble_user.groups)
         self.assertIn(',', mumble_user.groups)
+        # test update
+        self.member.profile.main_character.character_name = "auth_member_updated"
+        self.member.profile.main_character.corporation_ticker = "TESTU"
+        self.member.profile.main_character.save()
+        mumble_user.update_display_name()
+        mumble_user = MumbleUser.objects.get(user=self.member)
+        expected_displayname = '[TESTU]auth_member_updated'
+        self.assertEqual(mumble_user.username, expected_username)
+        self.assertTrue(MumbleUser.objects.user_exists(expected_username))
+        self.assertEqual(str(mumble_user), expected_username)
+        self.assertEqual(mumble_user.display_name, expected_displayname)
+        self.assertTrue(mumble_user.pwhash)
+        self.assertIn('Guest', mumble_user.groups)
+        self.assertIn('Member', mumble_user.groups)
+        self.assertIn(',', mumble_user.groups)
+
 
     def test_deactivate_post(self):
         self.login()
@@ -170,7 +195,6 @@ class MumbleViewsTestCase(TestCase):
         self.assertNotEqual(MumbleUser.objects.get(user=self.member).pwhash, old_pwd)
         self.assertTemplateUsed(response, 'services/service_credentials.html')
         self.assertContains(response, 'auth_member')
-
 
 class MumbleManagerTestCase(TestCase):
     def setUp(self):

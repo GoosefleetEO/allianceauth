@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User, Group, Permission
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models.signals import m2m_changed
 from django.db.models.signals import pre_delete
@@ -11,6 +12,7 @@ from .tasks import disable_user
 
 from allianceauth.authentication.models import State, UserProfile
 from allianceauth.authentication.signals import state_changed
+from allianceauth.eveonline.models import EveCharacter
 
 logger = logging.getLogger(__name__)
 
@@ -157,14 +159,45 @@ def disable_services_on_inactive(sender, instance, *args, **kwargs):
 
 
 @receiver(pre_save, sender=UserProfile)
-def disable_services_on_no_main(sender, instance, *args, **kwargs):
-    if not instance.pk:
+def process_main_character_change(sender, instance, *args, **kwargs):
+
+    if not instance.pk:  # ignore
         # new model being created
         return
     try:
         old_instance = UserProfile.objects.get(pk=instance.pk)
-        if old_instance.main_character and not instance.main_character:
+        if old_instance.main_character and not instance.main_character:  # lost main char disable services
             logger.info("Disabling services due to loss of main character for user {0}".format(instance.user))
             disable_user(instance.user)
+        elif old_instance.main_character is not instance.main_character:  # swapping/changing main character
+            logger.info("Updating Names due to change of main character for user {0}".format(instance.user))
+            for svc in ServicesHook.get_services():
+                try:
+                    svc.validate_user(instance.user)
+                    svc.sync_nickname(instance.user)
+                except:
+                    logger.exception('Exception running sync_nickname for services module %s on user %s' % (svc, instance))
+
     except UserProfile.DoesNotExist:
+        pass
+
+
+@receiver(pre_save, sender=EveCharacter)
+def process_main_character_update(sender, instance, *args, **kwargs):
+    try:
+        if instance.userprofile:
+            old_instance = EveCharacter.objects.get(pk=instance.pk)
+            if not instance.character_name == old_instance.character_name or \
+               not instance.corporation_name == old_instance.corporation_name or \
+               not instance.alliance_name == old_instance.alliance_name:
+                logger.info("syncing service nickname for user {0}".format(instance.userprofile.user))
+
+                for svc in ServicesHook.get_services():
+                    try:
+                        svc.validate_user(instance.userprofile.user)
+                        svc.sync_nickname(instance.userprofile.user)
+                    except:
+                        logger.exception('Exception running sync_nickname for services module %s on user %s' % (svc, instance))
+
+    except ObjectDoesNotExist:  # not a main char ignore
         pass
