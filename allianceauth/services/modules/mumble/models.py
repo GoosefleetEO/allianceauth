@@ -15,10 +15,14 @@ class MumbleManager(models.Manager):
     HASH_FN = 'bcrypt-sha256'
 
     @staticmethod
-    def get_username(user):
+    def get_display_name(user):
         from .auth_hooks import MumbleService
         return NameFormatter(MumbleService(), user).format_name()
-
+    
+    @staticmethod
+    def get_username(user):
+        return user.profile.main_character.character_name  # main character as the user.username may be incorect
+    
     @staticmethod
     def sanitise_username(username):
         return username.replace(" ", "_")
@@ -32,20 +36,26 @@ class MumbleManager(models.Manager):
         return bcrypt_sha256.encrypt(password.encode('utf-8'))
 
     def create(self, user):
-        username = self.get_username(user)
-        logger.debug("Creating mumble user with username {}".format(username))
-        username_clean = self.sanitise_username(username)
-        password = self.generate_random_pass()
-        pwhash = self.gen_pwhash(password)
-        logger.debug("Proceeding with mumble user creation: clean username {}, pwhash starts with {}".format(
-            username_clean, pwhash[0:5]))
-        logger.info("Creating mumble user {}".format(username_clean))
+        try:
+            username = self.get_username(user)
+            logger.debug("Creating mumble user with username {}".format(username))
+            username_clean = self.sanitise_username(username)
+            display_name = self.get_display_name(user)
+            password = self.generate_random_pass()
+            pwhash = self.gen_pwhash(password)
+            logger.debug("Proceeding with mumble user creation: clean username {}, pwhash starts with {}".format(
+                username_clean, pwhash[0:5]))
+            logger.info("Creating mumble user {}".format(username_clean))
 
-        result = super(MumbleManager, self).create(user=user, username=username_clean,
-                                                   pwhash=pwhash, hashfn=self.HASH_FN)
-        result.update_groups()
-        result.credentials.update({'username': result.username, 'password': password})
-        return result
+            result = super(MumbleManager, self).create(user=user, username=username_clean,
+                                                    pwhash=pwhash, hashfn=self.HASH_FN,
+                                                    display_name=display_name)
+            result.update_groups()
+            result.credentials.update({'username': result.username, 'password': password})
+            return result
+        except AttributeError:  # No Main or similar errors
+            return False
+        return False
 
     def user_exists(self, username):
         return self.filter(username=username).exists()
@@ -58,6 +68,8 @@ class MumbleUser(AbstractServiceModel):
     groups = models.TextField(blank=True, null=True)
 
     objects = MumbleManager()
+
+    display_name = models.CharField(max_length=254, unique=True)
 
     def __str__(self):
         return self.username
@@ -88,6 +100,12 @@ class MumbleUser(AbstractServiceModel):
         safe_groups = ','.join(set([g.replace(' ', '-') for g in groups_str]))
         logger.info("Updating mumble user {} groups to {}".format(self.user, safe_groups))
         self.groups = safe_groups
+        self.save()
+        return True
+
+    def update_display_name(self):
+        logger.info("Updating mumble user {} display name".format(self.user))
+        self.display_name = MumbleManager.get_display_name(self.user)
         self.save()
         return True
 

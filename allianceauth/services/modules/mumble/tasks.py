@@ -46,8 +46,36 @@ class MumbleTasks:
         return False
 
     @staticmethod
+    @shared_task(bind=True, name="mumble.update_display_name", base=QueueOnce)
+    def update_display_name(self, pk):
+        user = User.objects.get(pk=pk)
+        logger.debug("Updating mumble groups for user %s" % user)
+        if MumbleTasks.has_account(user):
+            try:
+                if not user.mumble.update_display_name():
+                    raise Exception("Display Name Sync failed")
+                logger.debug("Updated user %s mumble display name." % user)
+                return True
+            except MumbleUser.DoesNotExist:
+                logger.info("Mumble display name sync failed for {}, user does not have a mumble account".format(user))
+            except:
+                logger.exception("Mumble display name sync failed for %s, retrying in 10 mins" % user)
+                raise self.retry(countdown=60 * 10)
+        else:
+            logger.debug("User %s does not have a mumble account, skipping" % user)
+        return False
+
+    @staticmethod
     @shared_task(name="mumble.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL mumble groups")
         for mumble_user in MumbleUser.objects.exclude(username__exact=''):
             MumbleTasks.update_groups.delay(mumble_user.user.pk)
+
+    @staticmethod
+    @shared_task(name="mumble.update_all_display_names")
+    def update_all_display_names():
+        logger.debug("Updating ALL mumble display names")
+        for mumble_user in MumbleUser.objects.exclude(username__exact=''):
+            MumbleTasks.update_display_name.delay(mumble_user.user.pk)
+

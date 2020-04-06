@@ -36,7 +36,7 @@ class DiscordService(ServicesHook):
 
     def sync_nickname(self, user):
         logger.debug('Syncing %s nickname for user %s' % (self.name, user))
-        DiscordTasks.update_nickname.delay(user.pk)
+        DiscordTasks.update_nickname.apply_async(args=[user.pk], countdown=5)
 
     def update_all_groups(self):
         logger.debug('Update all %s groups called' % self.name)
