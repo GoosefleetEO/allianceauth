@@ -27,7 +27,12 @@ class DiscordViewsTestCase(WebTest):
         self.login()
         manager.generate_oauth_redirect_url.return_value = '/example.com/oauth/'
         response = self.app.get('/discord/activate/', auto_follow=False)
-        self.assertRedirects(response, expected_url='/example.com/oauth/', target_status_code=404)
+        self.assertRedirects(
+            response,
+            expected_url="/example.com/oauth/",
+            target_status_code=404,
+            fetch_redirect_response=False,
+        )
 
     @mock.patch(MODULE_PATH + '.tasks.DiscordOAuthManager')
     def test_callback(self, manager):
