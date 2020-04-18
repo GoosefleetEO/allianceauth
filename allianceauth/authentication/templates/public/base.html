@@ -6,6 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
+        <meta property="og:title" content="{{ SITE_NAME }}">
+        <meta property="og:image" content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% static 'icons/apple-touch-icon.png' %}">
+        <meta property="og:description" content="Alliance Auth - An auth system for EVE Online to help in-game organizations manage online service access.">
+
         {% include 'allianceauth/icons.html' %}
 
         <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
