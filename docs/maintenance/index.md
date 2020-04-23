@@ -1,4 +1,4 @@
-# Maintenance & Customizing
+# Maintenance
 
 In the maintenance chapter you find details about where important log files are found, how you can customize your AA installation and how to solve common issues.
 
@@ -7,8 +7,7 @@ In the maintenance chapter you find details about where important log files are 
     :maxdepth: 1
 
     apps
-    customizing
     project
     troubleshooting
-
+    tuning/index
 ```
