@@ -97,10 +97,10 @@ If you unsure which apps you have installed from repos check `INSTALLED_APPS` in
 pip list
 ```
 
-Some AA installations might still be running an older version of django_celery_beat. We would recommend to upgrade to the current version before doing the Python update:
+Some AA installations might still be running an older version of django-celery-beat. We would recommend to upgrade to the current version before doing the Python update:
 
 ```bash
-pip install -U django_celery_beat
+pip install -U 'django-celery-beat<2.00'
 ```
 
 ```bash

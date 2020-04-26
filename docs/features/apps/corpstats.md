@@ -2,7 +2,7 @@
 
 This module is used to check the registration status of Corp members and to determine character relationships, being mains or alts.
 
-![corpstats](https://i.imgur.com/9lZhf5g.png)
+![corpstats](/_static/images/features/apps/corpstats.png)
 
 ## Installation
 

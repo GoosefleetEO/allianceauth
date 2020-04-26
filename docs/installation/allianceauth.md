@@ -9,7 +9,7 @@ This document describes how to install **Alliance Auth** from scratch.
 
 ```eval_rst
 .. note::
-   There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter **Features** for details.
+   There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter :doc:`/features/index` for details.
 ```
 
 ## Dependencies

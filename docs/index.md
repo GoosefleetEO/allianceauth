@@ -15,6 +15,7 @@ Welcome to the official documentation for **Alliance Auth**!
     installation/index
     features/index
     maintenance/index
-    development/index
     support/index
+    customizing/index
+    development/index
 ```
