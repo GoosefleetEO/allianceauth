@@ -53,6 +53,10 @@
                                             <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
                                                 <i class="glyphicon glyphicon-list-alt"></i>
                                             </a>
+                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% trans "Copy Direrct Join Link" %}">
+                                                <i class="glyphicon glyphicon-copy"></i>
+                                            </a>
+
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -68,3 +72,9 @@
         </div>
     </div>
 {% endblock content %}
+{% block extra_javascript %}    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+<script>
+    new ClipboardJS('#clipboard-copy');
+</script>
+{% endblock %}
