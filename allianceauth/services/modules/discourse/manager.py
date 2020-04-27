@@ -168,7 +168,7 @@ class DiscourseManager:
         for arg in kwargs:
             if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], params=params,
+        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], headers=params,
                                                   json=data)
         try:
             if 'errors' in r.json() and not silent:
