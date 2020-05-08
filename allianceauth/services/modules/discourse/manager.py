@@ -185,6 +185,7 @@ class DiscourseManager:
                 r.raise_for_status()
             except requests.exceptions.HTTPError as e:
                 raise DiscourseError(endpoint, e.response.status_code)
+        logger.debug("Discourse API output:\n{}".format(out))  # this is spamy as hell remove before release
         return out
 
     @staticmethod
