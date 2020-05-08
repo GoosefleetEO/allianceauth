@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-02 03:23+0000\n"
+"POT-Creation-Date: 2020-05-08 00:57+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Rounon Dax <rounon.dax@terra-nanotech.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
@@ -657,7 +657,11 @@ msgstr "Mitglieder ansehen"
 msgid "Audit Members"
 msgstr "Mitglieder Protokoll"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:64
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
+msgid "Copy Direrct Join Link"
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
 msgstr "Keine Gruppen vorhanden."
 
@@ -1177,7 +1181,7 @@ msgstr "Änderungen für Operation timer %(opname)s gespeichert."
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:6
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:10
 msgid "Permissions Audit"
-msgstr "Berechtigungsprüfung"
+msgstr "Berechtigungsübersicht"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:22
 msgid "User / Character"
@@ -1911,12 +1915,6 @@ msgid "%(tasks)s task"
 msgid_plural "%(tasks)s tasks"
 msgstr[0] "%(tasks)sAufgabe"
 msgstr[1] "%(tasks)sAufgaben"
-
-#: allianceauth/templates/allianceauth/help.html:4
-#: allianceauth/templates/allianceauth/help.html:9
-#: allianceauth/templates/allianceauth/side-menu.html:34
-msgid "Help"
-msgstr "Hilfe"
 
 #: allianceauth/templates/allianceauth/night-toggle.html:3
 msgid "Night"
