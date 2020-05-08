@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-26 03:07+0000\n"
+"POT-Creation-Date: 2020-05-08 00:57+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Alexander Gess <de.alex.gess@gmail.com>, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/alliance-auth/teams/107430/ru/)\n"
@@ -651,7 +651,11 @@ msgstr "Посмотреть участников"
 msgid "Audit Members"
 msgstr "Проверить участников"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:64
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
+msgid "Copy Direrct Join Link"
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
 msgstr "Нет групп в списке"
 
@@ -782,21 +786,21 @@ msgstr ""
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "Прошение об исключении %(mainchar)s из %(group)s – отклонено. "
 
-#: allianceauth/groupmanagement/views.py:347
-#: allianceauth/groupmanagement/views.py:359
+#: allianceauth/groupmanagement/views.py:346
+#: allianceauth/groupmanagement/views.py:358
 msgid "You cannot join that group"
 msgstr "Вы не можете вступить"
 
-#: allianceauth/groupmanagement/views.py:353
+#: allianceauth/groupmanagement/views.py:352
 msgid "You are already a member of that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:368
+#: allianceauth/groupmanagement/views.py:367
 msgid "You already have a pending application for that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:371
-#: allianceauth/groupmanagement/views.py:409
+#: allianceauth/groupmanagement/views.py:370
+#: allianceauth/groupmanagement/views.py:408
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -808,24 +812,24 @@ msgstr ""
 msgid "Pending"
 msgstr "Ожидание"
 
-#: allianceauth/groupmanagement/views.py:377
+#: allianceauth/groupmanagement/views.py:376
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "Вступить в группу %(group)s."
 
-#: allianceauth/groupmanagement/views.py:388
+#: allianceauth/groupmanagement/views.py:387
 msgid "You cannot leave that group"
 msgstr "Вы не можете покинуть эту группу"
 
-#: allianceauth/groupmanagement/views.py:393
+#: allianceauth/groupmanagement/views.py:392
 msgid "You are not a member of that group"
 msgstr "Вы не участник группыы"
 
-#: allianceauth/groupmanagement/views.py:402
+#: allianceauth/groupmanagement/views.py:401
 msgid "You already have a pending leave request for that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:415
+#: allianceauth/groupmanagement/views.py:414
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "Запрос на выход из группы %(group)s."
@@ -1895,12 +1899,6 @@ msgstr[0] "%(tasks)sзадача"
 msgstr[1] "%(tasks)s задач"
 msgstr[2] "%(tasks)s задач"
 msgstr[3] "%(tasks)s задач"
-
-#: allianceauth/templates/allianceauth/help.html:4
-#: allianceauth/templates/allianceauth/help.html:9
-#: allianceauth/templates/allianceauth/side-menu.html:34
-msgid "Help"
-msgstr "Помощь"
 
 #: allianceauth/templates/allianceauth/night-toggle.html:3
 msgid "Night"
