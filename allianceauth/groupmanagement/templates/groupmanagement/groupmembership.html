@@ -53,7 +53,7 @@
                                             <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
                                                 <i class="glyphicon glyphicon-list-alt"></i>
                                             </a>
-                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% trans "Copy Direrct Join Link" %}">
+                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% trans "Copy Direct Join Link" %}">
                                                 <i class="glyphicon glyphicon-copy"></i>
                                             </a>
 
