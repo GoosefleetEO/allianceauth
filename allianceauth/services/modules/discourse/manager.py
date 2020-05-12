@@ -168,7 +168,7 @@ class DiscourseManager:
         for arg in kwargs:
             if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], params=params,
+        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], headers=params,
                                                   json=data)
         try:
             if 'errors' in r.json() and not silent:
@@ -185,6 +185,7 @@ class DiscourseManager:
                 r.raise_for_status()
             except requests.exceptions.HTTPError as e:
                 raise DiscourseError(endpoint, e.response.status_code)
+        logger.debug("Discourse API output:\n{}".format(out))  # this is spamy as hell remove before release
         return out
 
     @staticmethod
