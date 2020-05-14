@@ -141,19 +141,17 @@
                 </table>
                 <table class="table table-aa visible-xs-block" style="width: 100%">
                     <tbody>
-                        {% for ownership in request.user.character_ownerships.all %}
-                            {% with ownership.character as char %}
-                                <tr>
-                                    <td class="text-center" style="vertical-align: middle">
-                                        <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
-                                    </td>
-                                    <td class="text-center" style="vertical-align: middle; width: 100%">
-                                        <strong>{{ char.character_name }}</strong><br>
-                                        {{ char.corporation_name }}<br>
-                                        {{ char.alliance_name|default:"" }}
-                                    </td> 
-                                </tr>
-                            {% endwith %}
+                        {% for char in characters %}                            
+                            <tr>
+                                <td class="text-center" style="vertical-align: middle">
+                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                </td>
+                                <td class="text-center" style="vertical-align: middle; width: 100%">
+                                    <strong>{{ char.character_name }}</strong><br>
+                                    {{ char.corporation_name }}<br>
+                                    {{ char.alliance_name|default:"" }}
+                                </td> 
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
