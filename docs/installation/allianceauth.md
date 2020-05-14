@@ -83,8 +83,7 @@ apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev
 CentOS:
 
 ```bash
-yum install gcc gcc-c++ unzip git redis curl
-2-devel
+yum install gcc gcc-c++ unzip git redis curl bzip2-devel
 ```
 
 ```eval_rst
