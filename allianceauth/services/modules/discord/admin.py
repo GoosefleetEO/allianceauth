@@ -1,13 +1,22 @@
+import logging
+
 from django.contrib import admin
 
-from .models import DiscordUser
+from . import __title__
 from ...admin import ServicesUserAdmin
+from .models import DiscordUser
+from .utils import LoggerAddTag
+
+
+logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 
 @admin.register(DiscordUser)
 class DiscordUserAdmin(ServicesUserAdmin):            
-    list_display = ServicesUserAdmin.list_display + ('_uid',)
-    search_fields = ServicesUserAdmin.search_fields + ('uid', )
+    search_fields = ServicesUserAdmin.search_fields + ('uid', 'username')
+    list_display = ServicesUserAdmin.list_display + ('activated', '_username', '_uid')
+    list_filter = ServicesUserAdmin.list_filter + ('activated',)
+    ordering = ('-activated',)
    
     def _uid(self, obj):
         return obj.uid
@@ -15,3 +24,11 @@ class DiscordUserAdmin(ServicesUserAdmin):
     _uid.short_description = 'Discord ID (UID)'
     _uid.admin_order_field = 'uid'
 
+    def _username(self, obj):
+        if obj.username and obj.discriminator:
+            return f'{obj.username}#{obj.discriminator}'
+        else:
+            return ''
+    
+    _username.short_description = 'Discord Username'
+    _username.admin_order_field = 'username'

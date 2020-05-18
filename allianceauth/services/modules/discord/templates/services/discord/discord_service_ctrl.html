@@ -3,10 +3,18 @@
 
 <tr>
     <td class="text-center">Discord</td>
-    <td class="text-center"></td>
-    <td class="text-center"><a href="https://discordapp.com/channels/{{ DISCORD_SERVER_ID }}/{{ DISCORD_SERVER_ID}}">https://discordapp.com</a></td>
     <td class="text-center">
-        {% if not discord_uid %}
+        {% if not user_has_account %}
+            (not activated)
+        {% else %}
+            {{discord_username}}
+        {% endif %}
+    </td>
+    <td class="text-center">
+        {{server_name}}
+    </td>
+    <td class="text-center">
+        {% if not user_has_account %}
             <a href="{% url 'discord:activate' %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
@@ -20,7 +28,9 @@
         {% endif %}
         {% if request.user.is_superuser %}
             <div class="text-center" style="padding-top:5px;">
-                <a type="button" class="btn btn-success" href="{% url 'discord:add_bot' %}">{% trans "Link Discord Server" %}</a>
+                <a type="button" class="btn btn-success" href="{% url 'discord:add_bot' %}">
+                    {% trans "Link Discord Server" %}
+                </a>
             </div>
         {% endif %}
     </td>

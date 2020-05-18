@@ -1,148 +1,187 @@
 import logging
 
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
-from allianceauth.notifications import notify
-from celery import shared_task
+from celery import shared_task, chain
 from requests.exceptions import HTTPError
-from allianceauth.services.hooks import NameFormatter
-from .manager import DiscordOAuthManager, DiscordApiBackoff
-from .models import DiscordUser
+
+from django.contrib.auth.models import User
+from django.db.models.query import QuerySet
+
 from allianceauth.services.tasks import QueueOnce
 
-logger = logging.getLogger(__name__)
+from . import __title__
+from .app_settings import (
+    DISCORD_TASKS_MAX_RETRIES, DISCORD_TASKS_RETRY_PAUSE, DISCORD_SYNC_NAMES
+)
+from .discord_client import DiscordApiBackoff
+from .models import DiscordUser
+from .utils import LoggerAddTag
 
 
-class DiscordTasks:
-    def __init__(self):
-        pass
+logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
-    @classmethod
-    def add_user(cls, user, code):
-        groups = DiscordTasks.get_groups(user)
-        nickname = None
-        if settings.DISCORD_SYNC_NAMES:
-            nickname = DiscordTasks.get_nickname(user)
-        user_id = DiscordOAuthManager.add_user(code, groups, nickname=nickname)
-        if user_id:
-            discord_user = DiscordUser()
-            discord_user.user = user
-            discord_user.uid = user_id
-            discord_user.save()
-            return True
-        return False
+# task priority of bulk tasks
+BULK_TASK_PRIORITY = 6
 
-    @classmethod
-    def delete_user(cls, user, notify_user=False):
-        if cls.has_account(user):
-            logger.debug("User %s has discord account %s. Deleting." % (user, user.discord.uid))
-            if DiscordOAuthManager.delete_user(user.discord.uid):
-                user.discord.delete()
-                if notify_user:
-                    notify(user, 'Discord Account Disabled', level='danger')
-                return True
-        return False
 
-    @classmethod
-    def has_account(cls, user):
-        """
-        Check if the user has an account (has a DiscordUser record)
-        :param user: django.contrib.auth.models.User
-        :return: bool
-        """
+@shared_task(
+    bind=True, name='discord.update_groups', base=QueueOnce, max_retries=None
+)
+def update_groups(self, user_pk: int) -> None:
+    """Update roles on Discord for given user according to his current groups
+    
+    Params:
+    - user_pk: PK of given user
+    """
+    _task_perform_user_action(self, user_pk, 'update_groups')
+
+
+@shared_task(
+    bind=True, name='discord.update_nickname', base=QueueOnce, max_retries=None
+)
+def update_nickname(self, user_pk: int) -> None:
+    """Set nickname on Discord for given user to his main character name
+    
+    Params:
+    - user_pk: PK of given user
+    """
+    _task_perform_user_action(self, user_pk, 'update_nickname')
+
+
+@shared_task(
+    bind=True, name='discord.delete_user', base=QueueOnce, max_retries=None
+)
+def delete_user(self, user_pk: int, notify_user: bool = False) -> None:
+    """Delete Discord user
+    
+    Params:
+    - user_pk: PK of given user
+    """
+    _task_perform_user_action(self, user_pk, 'delete_user', notify_user=notify_user)
+
+
+def _task_perform_user_action(self, user_pk: int, method: str, **kwargs) -> None:
+    """perform a user related action incl. managing all exceptions"""
+    logger.debug("Starting %s for user with pk %s", method, user_pk)
+    user = User.objects.get(pk=user_pk)    
+    if DiscordUser.objects.user_has_account(user):
+        logger.info("Running %s for user %s", method, user)
         try:
-            user.discord
-        except ObjectDoesNotExist:
-            return False
+            success = getattr(user.discord, method)(**kwargs)
+        
+        except DiscordApiBackoff as bo:
+            logger.info(
+                "API back off for %s wth user %s due to %r, retrying in %s seconds",
+                method,
+                user,
+                bo,
+                bo.retry_after_seconds
+            )
+            raise self.retry(countdown=bo.retry_after_seconds)     
+        
+        except AttributeError:
+            raise ValueError(f'{method} not a valid method for DiscordUser: %r')
+
+        except (HTTPError, ConnectionError):           
+            logger.warning(
+                '%s failed for user %s, retrying in %d secs', 
+                method,
+                user,                    
+                DISCORD_TASKS_RETRY_PAUSE,
+                exc_info=True
+            )
+            if self.request.retries < DISCORD_TASKS_MAX_RETRIES:
+                raise self.retry(countdown=DISCORD_TASKS_RETRY_PAUSE)
+            else:                                            
+                logger.error(
+                    '%s failed for user %s after max retries',
+                    method,
+                    user,                    
+                    exc_info=True
+                )
+        except Exception:
+            logger.error(
+                '%s for %s failed due to unexpected exception',
+                method,
+                user,
+                exc_info=True
+            )            
+        
         else:
-            return True
+            if success is None and method != 'delete_user':
+                delete_user.delay(user.pk, notify_user=True)
 
-    @staticmethod
-    @shared_task(bind=True, name='discord.update_groups', base=QueueOnce)
-    def update_groups(self, pk):
-        user = User.objects.get(pk=pk)
-        logger.debug("Updating discord groups for user %s" % user)
-        if DiscordTasks.has_account(user):
-            groups = DiscordTasks.get_groups(user)
-            logger.debug("Updating user %s discord groups to %s" % (user, groups))
-            try:
-                DiscordOAuthManager.update_groups(user.discord.uid, groups)
-            except DiscordApiBackoff as bo:
-                logger.info("Discord group sync API back off for %s, "
-                            "retrying in %s seconds" % (user, bo.retry_after_seconds))
-                raise self.retry(countdown=bo.retry_after_seconds)
-            except HTTPError as e:
-                if e.response.status_code == 404:
-                    try:
-                        if e.response.json()['code'] == 10007:
-                            # user has left the server
-                            DiscordTasks.delete_user(user)
-                            return
-                    finally:
-                        raise e
-            except Exception as e:
-                if self:
-                    logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)
-                    raise self.retry(countdown=60 * 10)
-                else:
-                    # Rethrow
-                    raise e
-            logger.debug("Updated user %s discord groups." % user)
-        else:
-            logger.debug("User does not have a discord account, skipping")
+    else:
+        logger.debug(
+            'User %s does not have a discord account, skipping %s', user, method
+        )
 
-    @staticmethod
-    @shared_task(name='discord.update_all_groups')
-    def update_all_groups():
-        logger.debug("Updating ALL discord groups")
-        for discord_user in DiscordUser.objects.exclude(uid__exact=''):
-            DiscordTasks.update_groups.delay(discord_user.user.pk)
 
-    @staticmethod
-    @shared_task(bind=True, name='discord.update_nickname', base=QueueOnce)
-    def update_nickname(self, pk):
-        user = User.objects.get(pk=pk)
-        logger.debug("Updating discord nickname for user %s" % user)
-        if DiscordTasks.has_account(user):
-            if user.profile.main_character:
-                character = user.profile.main_character
-                logger.debug("Updating user %s discord nickname to %s" % (user, character.character_name))
-                try:
-                    DiscordOAuthManager.update_nickname(user.discord.uid, DiscordTasks.get_nickname(user))
-                except DiscordApiBackoff as bo:
-                    logger.info("Discord nickname update API back off for %s, "
-                                "retrying in %s seconds" % (user, bo.retry_after_seconds))
-                    raise self.retry(countdown=bo.retry_after_seconds)
-                except Exception as e:
-                    if self:
-                        logger.exception("Discord nickname sync failed for %s, retrying in 10 mins" % user)
-                        raise self.retry(countdown=60 * 10)
-                    else:
-                        # Rethrow
-                        raise e
-                logger.debug("Updated user %s discord nickname." % user)
-            else:
-                logger.debug("User %s does not have a main character" % user)
-        else:
-            logger.debug("User %s does not have a discord account" % user)
+@shared_task(name='discord.update_all_groups')
+def update_all_groups() -> None:
+    """Update roles for all known users with a Discord account."""    
+    discord_users_qs = DiscordUser.objects.all()
+    _bulk_update_groups_for_users(discord_users_qs)
 
-    @staticmethod
-    @shared_task(name='discord.update_all_nicknames')
-    def update_all_nicknames():
-        logger.debug("Updating ALL discord nicknames")
-        for discord_user in DiscordUser.objects.exclude(uid__exact=''):
-            DiscordTasks.update_nickname.delay(discord_user.user.pk)
 
-    @classmethod
-    def disable(cls):
-        DiscordUser.objects.all().delete()
+@shared_task(name='discord.update_groups_bulk')
+def update_groups_bulk(user_pks: list) -> None:
+    """Update roles for list of users with a Discord account in bulk."""    
+    discord_users_qs = DiscordUser.objects\
+        .filter(user__pk__in=user_pks)\
+        .select_related()
+    _bulk_update_groups_for_users(discord_users_qs)
 
-    @staticmethod
-    def get_nickname(user):
-        from .auth_hooks import DiscordService
-        return NameFormatter(DiscordService(), user).format_name()
 
-    @staticmethod
-    def get_groups(user):
-        return [g.name for g in user.groups.all()] + [user.profile.state.name]
+def _bulk_update_groups_for_users(discord_users_qs: QuerySet) -> None:
+    logger.info(
+        "Starting to bulk update discord roles for %d users", discord_users_qs.count()
+    )
+    update_groups_chain = list()
+    for discord_user in discord_users_qs:
+        update_groups_chain.append(update_groups.si(discord_user.user.pk))
+    
+    chain(update_groups_chain).apply_async(priority=BULK_TASK_PRIORITY)
+
+
+@shared_task(name='discord.update_all_nicknames')
+def update_all_nicknames() -> None:
+    """Update nicknames for all known users with a Discord account."""
+    discord_users_qs = DiscordUser.objects.all()
+    _bulk_update_nicknames_for_users(discord_users_qs)
+    
+
+@shared_task(name='discord.update_nicknames_bulk')
+def update_nicknames_bulk(user_pks: list) -> None:
+    """Update nicknames for list of users with a Discord account in bulk."""    
+    discord_users_qs = DiscordUser.objects\
+        .filter(user__pk__in=user_pks)\
+        .select_related()
+    _bulk_update_nicknames_for_users(discord_users_qs)
+
+
+def _bulk_update_nicknames_for_users(discord_users_qs: QuerySet) -> None:
+    logger.info(
+        "Starting to bulk update discord nicknames for %d users", 
+        discord_users_qs.count()
+    )
+    update_nicknames_chain = list()
+    for discord_user in discord_users_qs:
+        update_nicknames_chain.append(update_nickname.si(discord_user.user.pk))
+    
+    chain(update_nicknames_chain).apply_async(priority=BULK_TASK_PRIORITY)
+
+
+@shared_task(name='discord.update_all')
+def update_all() -> None:
+    """Updates groups and nicknames (when activated) for all users."""
+    discord_users_qs = DiscordUser.objects.all()
+    logger.info(
+        'Starting to bulk update all %s Discord users', discord_users_qs.count()
+    )
+    update_all_chain = list()
+    for discord_user in discord_users_qs:
+        update_all_chain.append(update_groups.si(discord_user.user.pk))
+        if DISCORD_SYNC_NAMES:
+            update_all_chain.append(update_nickname.si(discord_user.user.pk))
+        
+    chain(update_all_chain).apply_async(priority=BULK_TASK_PRIORITY)
