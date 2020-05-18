@@ -150,13 +150,29 @@ class TestUpdateNickname(TestCase):
         update_nickname_inner(mock_task, self.user.pk)
         
 
+@patch(MODULE_PATH + '.DiscordUser.update_username')
+class TestUpdateUsername(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = AuthUtils.create_member(TEST_USER_NAME)
+        cls.discord_user = DiscordUser.objects.create(user=cls.user, uid=TEST_USER_ID)
+
+    def test_can_update_username(self, mock_update_username):
+        mock_update_username.return_value = True
+
+        tasks.update_username(self.user.pk)
+        self.assertTrue(mock_update_username.called)
+
+
 @patch(MODULE_PATH + '.DiscordUser.delete_user')
 class TestDeleteUser(TestCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = AuthUtils.create_member('Peter Parker')    
+        cls.user = AuthUtils.create_member(TEST_USER_NAME)
         cls.discord_user = DiscordUser.objects.create(user=cls.user, uid=TEST_USER_ID)
 
     def test_can_delete_user(self, mock_delete_user):
@@ -270,11 +286,37 @@ class TestBulkTasks(TestCase):
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
+    @patch(MODULE_PATH + '.update_username.si')
+    def test_can_update_username_for_multiple_users(self, mock_update_username):
+        du_1 = DiscordUser.objects.create(user=self.user_1, uid=123)
+        du_2 = DiscordUser.objects.create(user=self.user_2, uid=456)
+        DiscordUser.objects.create(user=self.user_3, uid=789)
+        expected_pks = [du_1.pk, du_2.pk]
+
+        tasks.update_usernames_bulk(expected_pks)
+        self.assertEqual(mock_update_username.call_count, 2)
+        current_pks = [args[0][0] for args in mock_update_username.call_args_list]
+        
+        self.assertSetEqual(set(current_pks), set(expected_pks))
+
+    @patch(MODULE_PATH + '.update_username.si')
+    def test_can_update_all_usernames(self, mock_update_username):
+        du_1 = DiscordUser.objects.create(user=self.user_1, uid=123)
+        du_2 = DiscordUser.objects.create(user=self.user_2, uid=456)
+        du_3 = DiscordUser.objects.create(user=self.user_3, uid=789)
+
+        tasks.update_all_usernames()
+        self.assertEqual(mock_update_username.call_count, 3)
+        current_pks = [args[0][0] for args in mock_update_username.call_args_list]
+        expected_pks = [du_1.pk, du_2.pk, du_3.pk]
+        self.assertSetEqual(set(current_pks), set(expected_pks))
+
     @patch(MODULE_PATH + '.DISCORD_SYNC_NAMES', True)
     @patch(MODULE_PATH + '.update_nickname')
     @patch(MODULE_PATH + '.update_groups')
+    @patch(MODULE_PATH + '.update_username')
     def test_can_update_all_incl_nicknames(
-        self, mock_update_groups, mock_update_nickname
+        self, mock_update_usernames, mock_update_groups, mock_update_nickname
     ):
         du_1 = DiscordUser.objects.create(user=self.user_1, uid=123)
         du_2 = DiscordUser.objects.create(user=self.user_2, uid=456)
@@ -291,11 +333,17 @@ class TestBulkTasks(TestCase):
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
+        self.assertEqual(mock_update_usernames.si.call_count, 3)        
+        current_pks = [args[0][0] for args in mock_update_usernames.si.call_args_list]
+        expected_pks = [du_1.pk, du_2.pk, du_3.pk]
+        self.assertSetEqual(set(current_pks), set(expected_pks))
+
     @patch(MODULE_PATH + '.DISCORD_SYNC_NAMES', False)
     @patch(MODULE_PATH + '.update_nickname')
     @patch(MODULE_PATH + '.update_groups')
+    @patch(MODULE_PATH + '.update_username')
     def test_can_update_all_excl_nicknames(
-        self, mock_update_groups, mock_update_nickname
+        self, mock_update_usernames, mock_update_groups, mock_update_nickname
     ):
         du_1 = DiscordUser.objects.create(user=self.user_1, uid=123)
         du_2 = DiscordUser.objects.create(user=self.user_2, uid=456)
@@ -308,3 +356,8 @@ class TestBulkTasks(TestCase):
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
         self.assertEqual(mock_update_nickname.si.call_count, 0)
+
+        self.assertEqual(mock_update_usernames.si.call_count, 3)        
+        current_pks = [args[0][0] for args in mock_update_usernames.si.call_args_list]
+        expected_pks = [du_1.pk, du_2.pk, du_3.pk]
+        self.assertSetEqual(set(current_pks), set(expected_pks))

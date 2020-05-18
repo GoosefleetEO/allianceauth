@@ -10,19 +10,29 @@ Discord is very popular amongst ad-hoc small groups and larger organizations see
 
 ### Prepare Your Settings File
 
-In your auth project's settings file, do the following:
+Make the following changing in your auth project's settings file (`local.py`):
 
-- Add `'allianceauth.services.modules.discord',` to your `INSTALLED_APPS` list
+- Add `'allianceauth.services.modules.discord',` to `INSTALLED_APPS`
 - Append the following to the bottom of the settings file:
 
 ```python
-    # Discord Configuration
-    DISCORD_GUILD_ID = ''
-    DISCORD_CALLBACK_URL = ''
-    DISCORD_APP_ID = ''
-    DISCORD_APP_SECRET = ''
-    DISCORD_BOT_TOKEN = ''
-    DISCORD_SYNC_NAMES = False
+# Discord Configuration
+DISCORD_GUILD_ID = ''
+DISCORD_CALLBACK_URL = ''
+DISCORD_APP_ID = ''
+DISCORD_APP_SECRET = ''
+DISCORD_BOT_TOKEN = ''
+DISCORD_SYNC_NAMES = False
+
+CELERYBEAT_SCHEDULE['discord.update_all_usernames'] = {
+    'task': 'discord.update_all_usernames',
+    'schedule': crontab(hour='*/12'),
+}
+```
+
+```eval_rst
+.. note::
+   You will have to add most the values for these settings, e.g. your Discord server ID (aka guild ID), later in the setup process.
 ```
 
 ### Creating a Server
@@ -82,21 +92,51 @@ If you want users to have their Discord nickname changed to their in-game charac
 
 Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to groups on every other service. The default permissions should be enough for members to use text and audio communications. Add more permissions to the roles as desired through the server management window.
 
+## Tasks
+
+The Discord service contains a number of tasks that can be run to manually perform updates to all users.
+
+You can run any of these tasks from the command line. Please make sure that you are in your venv and then you can run this command from the same folder that your manage.py is located:
+
+```bash
+celery -A myauth call discord.update_all_groups
+```
+
+```eval_rst
+======================== ====================================================
+Name                     Description
+======================== ====================================================
+`update_all_groups`      Updates groups of all users
+`update_all_nicknames`   Update nicknames of all users (also needs setting)
+`update_all_usernames`   Update locally stored Discord usernames of all users
+`update_all`             Update groups, nicknames, usernames of all users
+======================== ====================================================
+```
+
+```eval_rst
+.. note::
+   Depending on how many users you have, running these tasks can take considerable time to finish. You can calculate roughly 1 sec per user for all tasks, except update_all, which needs roughly 3 secs per user.
+```
+
 ## Settings
 
 You can configure your Discord services with the following settings:
 
-Name | Description | Default
--- | -- | --
-`DISCORD_APP_ID` | Oauth client ID for the Discord Auth app | `''`
-`DISCORD_APP_SECRET` | Oauth client secret for the Discord Auth app | `''`
-`DISCORD_BOT_TOKEN` | Generated bot token for the Discord Auth app | `''`
-`DISCORD_CALLBACK_URL` | Oauth callback URL | `''`
-`DISCORD_GUILD_ID` | Discord ID of your Discord server | `''`
-`DISCORD_ROLES_CACHE_MAX_AGE` | How long roles retrieved from the Discord server are caches locally in milliseconds | `7200000`
-`DISCORD_SYNC_NAMES` | When set to True the nicknames of Discord users will automatically be set to the user's main character name when a new user joins Discord | `False`
-`DISCORD_TASKS_RETRY_PAUSE` | Pause in seconds until next retry for tasks after an error occurred | `60`
-`DISCORD_TASKS_MAX_RETRIES` | max retries of tasks after an error occurred | `3`
+```eval_rst
+============================== ============================================================================================= =======
+Name                           Description                                                                                   Default
+============================== ============================================================================================= =======
+`DISCORD_APP_ID`               Oauth client ID for the Discord Auth app                                                      `''`
+`DISCORD_APP_SECRET`           Oauth client secret for the Discord Auth app                                                  `''`
+`DISCORD_BOT_TOKEN`            Generated bot token for the Discord Auth app                                                  `''`
+`DISCORD_CALLBACK_URL`         Oauth callback URL                                                                            `''`
+`DISCORD_GUILD_ID`             Discord ID of your Discord server                                                             `''`
+`DISCORD_ROLES_CACHE_MAX_AGE`  How long roles retrieved from the Discord server are caches locally in milliseconds           `7200000`
+`DISCORD_SYNC_NAMES`           When set to True the nicknames of Discord users will be set to the user's main character name `False`
+`DISCORD_TASKS_RETRY_PAUSE`    Pause in seconds until next retry for tasks after an error occurred                           `60`
+`DISCORD_TASKS_MAX_RETRIES`    max retries of tasks after an error occurred                                                  `3`
+============================== ============================================================================================= =======
+```
 
 ## Troubleshooting
 
