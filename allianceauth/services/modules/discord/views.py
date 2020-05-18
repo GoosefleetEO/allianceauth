@@ -9,10 +9,12 @@ from django.utils.translation import gettext_lazy as _
 
 from allianceauth.services.views import superuser_test
 
-from .manager import DiscordOAuthManager
-from .tasks import DiscordTasks
+from . import __title__
+from .models import DiscordUser
+from .utils import LoggerAddTag
 
-logger = logging.getLogger(__name__)
+
+logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 ACCESS_PERM = 'discord.access_discord'
 
@@ -20,53 +22,94 @@ ACCESS_PERM = 'discord.access_discord'
 @login_required
 @permission_required(ACCESS_PERM)
 def deactivate_discord(request):
-    logger.debug("deactivate_discord called by user %s" % request.user)
-    if DiscordTasks.delete_user(request.user):
-        logger.info("Successfully deactivated discord for user %s" % request.user)
+    logger.debug("deactivate_discord called by user %s", request.user)
+    if request.user.discord.delete_user(is_rate_limited=False):
+        logger.info("Successfully deactivated discord for user %s", request.user)
         messages.success(request, _('Deactivated Discord account.'))
     else:
-        logger.error("Unsuccessful attempt to deactivate discord for user %s" % request.user)
-        messages.error(request, _('An error occurred while processing your Discord account.'))
+        logger.error(
+            "Unsuccessful attempt to deactivate discord for user %s", request.user
+        )
+        messages.error(
+            request, _('An error occurred while processing your Discord account.')
+        )
     return redirect("services:services")
 
 
 @login_required
 @permission_required(ACCESS_PERM)
 def reset_discord(request):
-    logger.debug("reset_discord called by user %s" % request.user)
-    if DiscordTasks.delete_user(request.user):
-        logger.info("Successfully deleted discord user for user %s - forwarding to discord activation." % request.user)
+    logger.debug("reset_discord called by user %s", request.user)
+    if request.user.discord.delete_user(is_rate_limited=False):
+        logger.info(
+            "Successfully deleted discord user for user %s - "
+            "forwarding to discord activation.", 
+            request.user
+        )
         return redirect("discord:activate")
-    logger.error("Unsuccessful attempt to reset discord for user %s" % request.user)
-    messages.error(request, _('An error occurred while processing your Discord account.'))
+    
+    logger.error(
+        "Unsuccessful attempt to reset discord for user %s", request.user
+    )
+    messages.error(
+        request, _('An error occurred while processing your Discord account.')
+    )
     return redirect("services:services")
 
 
 @login_required
 @permission_required(ACCESS_PERM)
 def activate_discord(request):
-    logger.debug("activate_discord called by user %s" % request.user)
-    return redirect(DiscordOAuthManager.generate_oauth_redirect_url())
+    logger.debug("activate_discord called by user %s", request.user)
+    return redirect(DiscordUser.objects.generate_oauth_redirect_url())
 
 
 @login_required
 @permission_required(ACCESS_PERM)
 def discord_callback(request):
-    logger.debug("Received Discord callback for activation of user %s" % request.user)
-    code = request.GET.get('code', None)
-    if not code:
-        logger.warn("Did not receive OAuth code from callback of user %s" % request.user)
-        return redirect("services:services")
-    if DiscordTasks.add_user(request.user, code):
-        logger.info("Successfully activated Discord for user %s" % request.user)
-        messages.success(request, _('Activated Discord account.'))
+    logger.debug(
+        "Received Discord callback for activation of user %s", request.user
+    )
+    authorization_code = request.GET.get('code', None)    
+    if not authorization_code:
+        logger.warning(
+            "Did not receive OAuth code from callback for user %s", request.user
+        )
+        success = False
     else:
-        logger.error("Failed to activate Discord for user %s" % request.user)
-        messages.error(request, _('An error occurred while processing your Discord account.'))
+        if DiscordUser.objects.add_user(
+            user=request.user, 
+            authorization_code=authorization_code, 
+            is_rate_limited=False
+        ):
+            logger.info(
+                "Successfully activated Discord account for user %s", request.user
+            )
+            success = True
+            
+        else:
+            logger.error(
+                "Failed to activate Discord account for user %s", request.user
+            )
+            success = False
+        
+    if success:
+        messages.success(
+            request, _('Your Discord account has been successfully activated.')
+        )
+    else:
+        messages.error(
+            request, 
+            _(
+                'An error occurred while trying to activate your Discord account. '
+                'Please try again.'
+            )
+        )
+    
     return redirect("services:services")
 
 
 @login_required
 @user_passes_test(superuser_test)
 def discord_add_bot(request):
-    return redirect(DiscordOAuthManager.generate_bot_add_url())
+    return redirect(DiscordUser.objects.generate_bot_add_url())

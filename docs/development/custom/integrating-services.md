@@ -46,12 +46,10 @@ In order to integrate with Alliance Auth service modules must provide a `service
 
 This would register the ExampleService class which would need to be a subclass of `services.hooks.ServiceHook`.
 
-
 ```eval_rst
 .. important::
     The hook **MUST** be registered in ``yourservice.auth_hooks`` along with any other hooks you are registering for Alliance Auth.
 ```
-
 
 A subclassed `ServiceHook` might look like this:
 
@@ -65,7 +63,6 @@ A subclassed `ServiceHook` might look like this:
     Overload base methods here to implement functionality
     """
 
-
 ### The ServiceHook class
 
 The base `ServiceHook` class defines function signatures that Alliance Auth will call under certain conditions in order to trigger some action in the service.
@@ -73,31 +70,37 @@ The base `ServiceHook` class defines function signatures that Alliance Auth will
 You will need to subclass `services.hooks.ServiceHook` in order to provide implementation of the functions so that Alliance Auth can interact with the service correctly. All of the functions are optional, so its up to you to define what you need.
 
 Instance Variables:
+
 - [self.name](#self-name)
 - [self.urlpatterns](#self-url-patterns)
 - [self.service_ctrl_template](#self-service-ctrl-template)
 
 Properties:
+
 - [title](#title)
 
 Functions:
-- [delete_user](#delete-user)
-- [validate_user](#validate-user)
-- [sync_nickname](#sync-nickname)
-- [update_groups](#update-groups)
-- [update_all_groups](#update-all-groups)
-- [service_enabled_members](#service-enabled-members)
-- [service_enabled_blues](#service-enabled-blues)
-- [service_active_for_user](#service-active-for-user)
-- [show_service_ctrl](#show-service-ctrl)
-- [render_service_ctrl](#render-service-ctrl)
 
+- [delete_user](#delete_user)
+- [validate_user](#validate_user)
+- [sync_nickname](#sync_nickname)
+- [sync_nicknames_bulk](#sync_nicknames_bulk)
+- [update_groups](#update_groups)
+- [update_groups_bulk](#update_groups_bulk)
+- [update_all_groups](#update_all_groups)
+- [service_enabled_members](#service_enabled_members)
+- [service_enabled_blues](#service_enabled_blues)
+- [service_active_for_user](#service_active_for_user)
+- [show_service_ctrl](#show_service_ctrl)
+- [render_service_ctrl](#render_service_ctrl)
 
 #### self.name
+
 Internal name of the module, should be unique amongst modules.
 
 #### self.urlpatterns
-You should define all of your service URLs internally, usually in `urls.py`. Then you can import them and set `self.urlpatterns` to your defined urlpatterns. 
+
+You should define all of your service URLs internally, usually in `urls.py`. Then you can import them and set `self.urlpatterns` to your defined urlpatterns.
 
     from . import urls
     ...
@@ -109,12 +112,15 @@ You should define all of your service URLs internally, usually in `urls.py`. The
 All of your apps defined urlpatterns will then be included in the `URLconf` when the core application starts.
 
 #### self.service_ctrl_template
+
 This is provided as a courtesy and defines the default template to be used with [render_service_ctrl](#render-service-ctrl). You are free to redefine or not use this variable at all.
 
 #### title
-This is a property which provides a user friendly display of your service's name. It will usually do a reasonably good job unless your service name has punctuation or odd capitalisation. If this is the case you should override this method and return a string.
+
+This is a property which provides a user friendly display of your service's name. It will usually do a reasonably good job unless your service name has punctuation or odd capitalization. If this is the case you should override this method and return a string.
 
 #### delete_user
+
 `def delete_user(self, user, notify_user=False):`
 
 Delete the users service account, optionally notify them that the service has been disabled. The `user` parameter should be a Django User object. If notify_user is set to `True` a message should be set to the user via the `notifications` module to alert them that their service account has been disabled.
@@ -122,6 +128,7 @@ Delete the users service account, optionally notify them that the service has be
 The function should return a boolean, `True` if successfully disabled, `False` otherwise.
 
 #### validate_user
+
 `def validate_user(self, user):`
 
 Validate the users service account, deleting it if they should no longer have access. The `user` parameter should be a Django User object.
@@ -138,30 +145,54 @@ No return value is expected.
 This function will be called periodically on all users to validate that the given user should have their current service accounts.
 
 #### sync_nickname
+
 `def sync_nickname(self, user):`
 
-Very optional. As of writing only one service defines this. The `user` parameter should be a Django User object. When called, the given users nickname for the service should be updated and synchronised with the service.
+Very optional. As of writing only one service defines this. The `user` parameter should be a Django User object. When called, the given users nickname for the service should be updated and synchronized with the service.
 
 If this function is defined, an admin action will be registered on the Django Users view, allowing admins to manually trigger this action for one or many users. The hook will trigger this action user by user, so you won't have to manage a list of users.
 
+#### sync_nicknames_bulk
+
+`def sync_nicknames_bulk(self, users):`
+
+Updates the nickname for a list of users. The `users` parameter must be a list of Django User objects.
+
+If this method is defined, the admin action for updating service related nicknames for users will call this bulk method instead of sync_nickname. This gives you more control over how mass updates are executed, e.g. ensuring updates do not run in parallel to avoid causing rate limit violations from an external API.
+
+This is an optional method.
+
 #### update_groups
+
 `def update_groups(self, user):`
 
 Update the users group membership. The `user` parameter should be a Django User object.
-When this is called the service should determine the groups the user is a member of and synchronise the group membership with the external service. If you service does not support groups then you are not required to define this.
+When this is called the service should determine the groups the user is a member of and synchronize the group membership with the external service. If you service does not support groups then you are not required to define this.
 
 If this function is defined, an admin action will be registered on the Django Users view, allowing admins to manually trigger this action for one or many users. The hook will trigger this action user by user, so you won't have to manage a list of users.
 
 This action is usually called via a signal when a users group membership changes (joins or leaves a group).
 
+#### update_groups_bulk
+
+`def update_groups_bulk(self, users):`
+
+Updates the group memberships for a list of users. The `users` parameter must be a list of Django User objects.
+
+If this method is defined, the admin action for updating service related groups for users will call this bulk method instead of update_groups. This gives you more control over how mass updates are executed, e.g. ensuring updates do not run in parallel to avoid causing rate limit violations from an external API.
+
+This is an optional method.
+
 #### update_all_groups
+
 `def update_all_groups(self):`
 
 The service should iterate through all of its recorded users and update their groups.
 
-I'm really not sure when this is called, it may have been a hold over from before signals started to be used. Regardless, it can be useful to server admins who may call this from a Django shell to force a synchronisation of all user groups for a specific service.
+I'm really not sure when this is called, it may have been a hold over from before signals started to be used. Regardless, it can be useful to server admins who may call this from a Django shell to force a synchronization of all user groups for a specific service.
 
 #### service_active_for_user
+
 `def service_active_for_user(self, user):`
 
 Is this service active for the given user? The `user` parameter should be a Django User object.
@@ -169,6 +200,7 @@ Is this service active for the given user? The `user` parameter should be a Djan
 Usually you wont need to override this as it calls `service_enabled_members` or `service_enabled_blues` depending on the users state.
 
 #### show_service_ctrl
+
 `def show_service_ctrl(self, user, state):`
 
 Should the service be shown for the given `user` with the given `state`? The `user` parameter should be a Django User object, and the `state` parameter should be a valid state from `authentication.states`.
@@ -178,6 +210,7 @@ Usually you wont need to override this function.
 For more information see the [render_service_ctrl](#render-service-ctrl) section.
 
 #### render_service_ctrl
+
 `def render_services_ctrl(self, request):`
 
 Render the services control row. This will be called for all active services when a user visits the `/services/` page and [show_service_ctrl](#show-service-ctrl) returns `True` for the given user.
@@ -242,7 +275,6 @@ Typically most traditional username/password services define four views.
 
 These views should interact with the service via the Tasks, though in some instances may bypass the Tasks and access the manager directly where necessary, for example OAuth functionality.
 
-
 ### The Tasks
 
 The tasks component is the glue that holds all of the other components of the service module together. It provides the function implementation to handle things like adding and deleting users, updating groups, validating the existence of a users account. Whatever tasks `auth_hooks` and `views` have with interacting with the service will probably live here.
@@ -253,13 +285,12 @@ Its very likely that you'll need to store data about a users remote service acco
 
 If you create models you should create the migrations that go along with these inside of your module/app.
 
-
 ## Examples
 
 There is a bare bones example service included in `services.modules.example`, you may like to use this as the base for your new service.
 
 You should have a look through some of the other service modules before you get started to get an idea of the general structure of one. A lot of them aren't perfect so don't feel like you have to rigidly follow the structure of the existing services if you think its sub-optimal or doesn't suit the external service you're integrating.
 
-
 ## Testing
-You will need to add unit tests for all aspects of your service module before it is accepted. Be mindful that you don't actually want to make external calls to the service so you should mock the appropriate components to prevent this behaviour.
+
+You will need to add unit tests for all aspects of your service module before it is accepted. Be mindful that you don't actually want to make external calls to the service so you should mock the appropriate components to prevent this behavior.

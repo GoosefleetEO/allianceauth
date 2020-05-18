@@ -8,11 +8,6 @@ Discord is very popular amongst ad-hoc small groups and larger organizations see
 
 ## Setup
 
-```eval_rst
-.. warning::
-    Do not run the `discord.update_*` periodic tasks on a regular schedule, doing so can cause your discord service to stop syncing completely. 
-```
-
 ### Prepare Your Settings File
 
 In your auth project's settings file, do the following:
@@ -81,11 +76,27 @@ Instead of the usual account creation procedure, for Discord to work we need to 
 
 ### Syncing Nicknames
 
-If you want users to have their Discord nickname changed to their in-game character name, set `DISCORD_SYNC_NAMES` to `True`
+If you want users to have their Discord nickname changed to their in-game character name, set `DISCORD_SYNC_NAMES` to `True`.
 
 ## Managing Roles
 
-Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to Groups on every other service. The default permissions should be enough for members to use text and audio communications. Add more permissions to the roles as desired through the server management window.
+Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to groups on every other service. The default permissions should be enough for members to use text and audio communications. Add more permissions to the roles as desired through the server management window.
+
+## Settings
+
+You can configure your Discord services with the following settings:
+
+Name | Description | Default
+-- | -- | --
+`DISCORD_APP_ID` | Oauth client ID for the Discord Auth app | `''`
+`DISCORD_APP_SECRET` | Oauth client secret for the Discord Auth app | `''`
+`DISCORD_BOT_TOKEN` | Generated bot token for the Discord Auth app | `''`
+`DISCORD_CALLBACK_URL` | Oauth callback URL | `''`
+`DISCORD_GUILD_ID` | Discord ID of your Discord server | `''`
+`DISCORD_ROLES_CACHE_MAX_AGE` | How long roles retrieved from the Discord server are caches locally in milliseconds | `7200000`
+`DISCORD_SYNC_NAMES` | When set to True the nicknames of Discord users will automatically be set to the user's main character name when a new user joins Discord | `False`
+`DISCORD_TASKS_RETRY_PAUSE` | Pause in seconds until next retry for tasks after an error occurred | `60`
+`DISCORD_TASKS_MAX_RETRIES` | max retries of tasks after an error occurred | `3`
 
 ## Troubleshooting
 

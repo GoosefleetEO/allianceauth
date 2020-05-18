@@ -21,7 +21,9 @@ from allianceauth.services.signals import (
     m2m_changed_group_permissions, 
     m2m_changed_user_permissions, 
     m2m_changed_state_permissions,
-    m2m_changed_user_groups, disable_services_on_inactive
+    m2m_changed_user_groups, disable_services_on_inactive,
+    process_main_character_change,
+    process_main_character_update
 )
 
 
@@ -115,6 +117,8 @@ class AuthUtils:
         post_save.disconnect(state_saved, sender=State)
         post_save.disconnect(reassess_on_profile_save, sender=UserProfile)
         pre_save.disconnect(assign_state_on_active_change, sender=User)
+        pre_save.disconnect(process_main_character_change, sender=UserProfile)
+        pre_save.disconnect(process_main_character_update, sender=EveCharacter)
         post_save.disconnect(
             check_state_on_character_update, sender=EveCharacter
         )
@@ -131,7 +135,9 @@ class AuthUtils:
         m2m_changed.connect(state_member_alliances_changed, sender=State.member_alliances.through)
         post_save.connect(state_saved, sender=State)
         post_save.connect(reassess_on_profile_save, sender=UserProfile)
-        pre_save.connect(assign_state_on_active_change, sender=User)
+        pre_save.connect(assign_state_on_active_change, sender=User)        
+        pre_save.connect(process_main_character_change, sender=UserProfile)
+        pre_save.connect(process_main_character_update, sender=EveCharacter)
         post_save.connect(check_state_on_character_update, sender=EveCharacter)
 
     @classmethod

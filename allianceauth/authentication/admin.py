@@ -37,8 +37,11 @@ def make_service_hooks_update_groups_action(service):
     :return: fn to update services groups for the selected users
     """
     def update_service_groups(modeladmin, request, queryset):
-        for user in queryset:  # queryset filtering doesn't work here?
-            service.update_groups(user)
+        if hasattr(service, 'update_groups_bulk'):
+            service.update_groups_bulk(queryset)
+        else:
+            for user in queryset:  # queryset filtering doesn't work here?
+                service.update_groups(user)
 
     update_service_groups.__name__ = str('update_{}_groups'.format(slugify(service.name)))
     update_service_groups.short_description = "Sync groups for selected {} accounts".format(service.title)
@@ -52,8 +55,11 @@ def make_service_hooks_sync_nickname_action(service):
     :return: fn to sync nickname for the selected users
     """
     def sync_nickname(modeladmin, request, queryset):
-        for user in queryset:  # queryset filtering doesn't work here?
-            service.sync_nickname(user)
+        if hasattr(service, 'sync_nicknames_bulk'):
+            service.sync_nicknames_bulk(queryset)
+        else:
+            for user in queryset:  # queryset filtering doesn't work here?
+                service.sync_nickname(user)
 
     sync_nickname.__name__ = str('sync_{}_nickname'.format(slugify(service.name)))
     sync_nickname.short_description = "Sync nicknames for selected {} accounts".format(service.title)

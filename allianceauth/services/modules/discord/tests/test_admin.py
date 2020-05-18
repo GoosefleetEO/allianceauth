@@ -1,9 +1,7 @@
-from unittest.mock import patch
-
 from django.test import TestCase, RequestFactory
-from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import (
@@ -18,17 +16,21 @@ from ....admin import (
     MainCorporationsFilter,
     MainAllianceFilter
 )
-from ..admin import (        
-    DiscordUser,
-    DiscordUserAdmin    
-)
+from ..admin import DiscordUserAdmin
+from ..models import DiscordUser
 
 
-class TestDiscordUserAdmin(TestCase):
+class TestDataMixin(TestCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        EveCharacter.objects.all().delete()
+        EveCorporationInfo.objects.all().delete()
+        EveAllianceInfo.objects.all().delete()
+        User.objects.all().delete()
+        DiscordUser.objects.all().delete()
         
         # user 1 - corp and alliance, normal user
         cls.character_1 = EveCharacter.objects.create(
@@ -83,7 +85,10 @@ class TestDiscordUserAdmin(TestCase):
         cls.user_1.profile.save()
         DiscordUser.objects.create(
             user=cls.user_1,
-            uid=1001
+            uid=1001,
+            username='Bruce Wayne',
+            discriminator='1234',
+            activated=now()
         )
 
         # user 2 - corp only, staff
@@ -156,18 +161,20 @@ class TestDiscordUserAdmin(TestCase):
             uid=1003
         )
         
-
     def setUp(self):
         self.factory = RequestFactory()
         self.modeladmin = DiscordUserAdmin(
             model=DiscordUser, admin_site=AdminSite()
         )    
     
-    # column rendering
+
+class TestColumnRendering(TestDataMixin, TestCase):
 
     def test_user_profile_pic_u1(self):
-        expected = ('<img src="https://images.evetech.net/characters/1001/'
-            'portrait?size=32" class="img-circle">')        
+        expected = (
+            '<img src="https://images.evetech.net/characters/1001/'
+            'portrait?size=32" class="img-circle">'
+        )
         self.assertEqual(user_profile_pic(self.user_1.discord), expected)
 
     def test_user_profile_pic_u3(self):
@@ -204,9 +211,26 @@ class TestDiscordUserAdmin(TestCase):
         result = user_main_organization(self.user_3.discord)
         self.assertEqual(result, expected)
 
+    def test_uid(self):
+        expected = 1001
+        result = self.modeladmin._uid(self.user_1.discord)
+        self.assertEqual(result, expected)
+
+    def test_username_when_defined(self):
+        expected = 'Bruce Wayne#1234'
+        result = self.modeladmin._username(self.user_1.discord)
+        self.assertEqual(result, expected)
+
+    def test_username_when_not_defined(self):
+        expected = ''
+        result = self.modeladmin._username(self.user_2.discord)
+        self.assertEqual(result, expected)
+
     # actions
 
-    # filters    
+
+class TestFilters(TestDataMixin, TestCase):
+    
     def test_filter_main_corporations(self):
         
         class DiscordUserAdminTest(ServicesUserAdmin): 
@@ -228,8 +252,7 @@ class TestDiscordUserAdmin(TestCase):
 
         # Make sure the correct queryset is returned
         request = self.factory.get(
-            '/', 
-            {'main_corporation_id__exact': self.character_1.corporation_id}
+            '/', {'main_corporation_id__exact': self.character_1.corporation_id}
         )
         request.user = self.user_1                
         changelist = my_modeladmin.get_changelist_instance(request)
@@ -250,19 +273,17 @@ class TestDiscordUserAdmin(TestCase):
         changelist = my_modeladmin.get_changelist_instance(request)
         filters = changelist.get_filters(request)
         filterspec = filters[0][0]
-        expected = [            
-            ('3001', 'Wayne Enterprises'),            
+        expected = [
+            ('3001', 'Wayne Enterprises'),
         ]
         self.assertEqual(filterspec.lookup_choices, expected)
 
         # Make sure the correct queryset is returned
         request = self.factory.get(
-            '/', 
-            {'main_alliance_id__exact': self.character_1.alliance_id}
+            '/', {'main_alliance_id__exact': self.character_1.alliance_id}
         )
         request.user = self.user_1                
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1.discord]
         self.assertSetEqual(set(queryset), set(expected))
-    

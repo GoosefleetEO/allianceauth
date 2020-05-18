@@ -46,7 +46,10 @@ setup(
     version=allianceauth.__version__,
     author='Alliance Auth',
     author_email='adarnof@gmail.com',
-    description='An auth system for EVE Online to help in-game organizations manage online service access.',
+    description=(
+        'An auth system for EVE Online to help in-game organizations '
+        'manage online service access.'
+    ),
     long_description=long_description,
     long_description_content_type='text/markdown',
     install_requires=install_requires,
@@ -56,7 +59,7 @@ setup(
     python_requires='~=3.6',
     license='GPLv2',
     packages=['allianceauth'],
-    url='https://gitlab.com/allianceauth/allianceauth',
+    url=allianceauth.__url__,
     zip_safe=False,
     include_package_data=True,
     entry_points="""
