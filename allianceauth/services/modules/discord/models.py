@@ -117,6 +117,36 @@ class DiscordUser(models.Model):
             logger.warning('Failed to update groups for %s', self.user)
         return success
 
+    def update_username(self) -> bool:
+        """Updates the username incl. the discriminator 
+        from the Discord server and saves it
+                
+        Returns:
+        - True on success
+        - None if user is no longer a member of the Discord server
+        - False on error or raises exception
+        """        
+    
+        client = DiscordUser.objects._bot_client()            
+        user_info = client.guild_member(guild_id=DISCORD_GUILD_ID, user_id=self.uid)
+        if user_info is None:
+            success = None
+        elif (
+            user_info 
+            and 'user' in user_info 
+            and 'username' in user_info['user'] 
+            and 'discriminator' in user_info['user']
+        ):            
+            self.username = user_info['user']['username']
+            self.discriminator = user_info['user']['discriminator']
+            self.save()
+            logger.info('Username for %s has been updated', self.user)
+            success = True
+        else:
+            logger.warning('Failed to update username for %s', self.user)
+            success = False
+        return success
+                
     def delete_user(
         self, notify_user: bool = False, is_rate_limited: bool = True
     ) -> bool:

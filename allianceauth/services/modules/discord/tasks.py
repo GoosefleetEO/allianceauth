@@ -48,6 +48,18 @@ def update_nickname(self, user_pk: int) -> None:
 
 
 @shared_task(
+    bind=True, name='discord.update_username', base=QueueOnce, max_retries=None
+)
+def update_username(self, user_pk: int) -> None:
+    """Update locally stored Discord username from Discord server for given user
+    
+    Params:
+    - user_pk: PK of given user
+    """
+    _task_perform_user_action(self, user_pk, 'update_username')
+
+
+@shared_task(
     bind=True, name='discord.delete_user', base=QueueOnce, max_retries=None
 )
 def delete_user(self, user_pk: int, notify_user: bool = False) -> None:
@@ -171,16 +183,45 @@ def _bulk_update_nicknames_for_users(discord_users_qs: QuerySet) -> None:
     chain(update_nicknames_chain).apply_async(priority=BULK_TASK_PRIORITY)
 
 
+@shared_task(name='discord.update_all_usernames')
+def update_all_usernames() -> None:
+    """Update all usernames for all known users with a Discord account."""
+    discord_users_qs = DiscordUser.objects.all()
+    _bulk_update_usernames_for_users(discord_users_qs)
+    
+
+@shared_task(name='discord.update_usernames_bulk')
+def update_usernames_bulk(user_pks: list) -> None:
+    """Update usernames for list of users with a Discord account in bulk."""    
+    discord_users_qs = DiscordUser.objects\
+        .filter(user__pk__in=user_pks)\
+        .select_related()
+    _bulk_update_usernames_for_users(discord_users_qs)
+
+
+def _bulk_update_usernames_for_users(discord_users_qs: QuerySet) -> None:
+    logger.info(
+        "Starting to bulk update discord usernames for %d users", 
+        discord_users_qs.count()
+    )
+    update_usernames_chain = list()
+    for discord_user in discord_users_qs:
+        update_usernames_chain.append(update_username.si(discord_user.user.pk))
+    
+    chain(update_usernames_chain).apply_async(priority=BULK_TASK_PRIORITY)
+
+
 @shared_task(name='discord.update_all')
 def update_all() -> None:
     """Updates groups and nicknames (when activated) for all users."""
     discord_users_qs = DiscordUser.objects.all()
     logger.info(
-        'Starting to bulk update all %s Discord users', discord_users_qs.count()
+        'Starting to bulk update all for %s Discord users', discord_users_qs.count()
     )
     update_all_chain = list()
     for discord_user in discord_users_qs:
         update_all_chain.append(update_groups.si(discord_user.user.pk))
+        update_all_chain.append(update_username.si(discord_user.user.pk))
         if DISCORD_SYNC_NAMES:
             update_all_chain.append(update_nickname.si(discord_user.user.pk))
         

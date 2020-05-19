@@ -42,22 +42,11 @@ class TestBasicsAndHelpers(TestCase):
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
 class TestUpdateNick(TestCase):
 
-    def setUp(self): 
+    def setUp(self):        
         self.user = AuthUtils.create_user(TEST_USER_NAME)
         self.discord_user = DiscordUser.objects.create(
             user=self.user, uid=TEST_USER_ID
         )
-
-    @staticmethod
-    def user_info(nick):
-        return {
-            'user': {
-                'id': TEST_USER_ID,
-                'username': TEST_USER_NAME
-            },
-            'nick': nick,
-            'roles': [1, 2, 3]
-        }
    
     def test_can_update(self, mock_DiscordClient):
         AuthUtils.add_main_character_2(self.user, TEST_MAIN_NAME, TEST_MAIN_ID)        
@@ -74,9 +63,7 @@ class TestUpdateNick(TestCase):
         self.assertFalse(result)
         self.assertFalse(mock_DiscordClient.return_value.modify_guild_member.called)
     
-    def test_return_none_if_user_no_longer_a_member(
-        self, mock_DiscordClient
-    ):
+    def test_return_none_if_user_no_longer_a_member(self, mock_DiscordClient):
         AuthUtils.add_main_character_2(self.user, TEST_MAIN_NAME, TEST_MAIN_ID)
         mock_DiscordClient.return_value.modify_guild_member.return_value = None
         
@@ -93,12 +80,94 @@ class TestUpdateNick(TestCase):
         self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
 
 
+@patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
+class TestUpdateUsername(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = AuthUtils.create_user(TEST_USER_NAME)
+    
+    def setUp(self):         
+        self.discord_user = DiscordUser.objects.create(
+            user=self.user, 
+            uid=TEST_USER_ID, 
+            username=TEST_MAIN_NAME, 
+            discriminator='1234'
+        )
+    
+    def test_can_update(self, mock_DiscordClient):        
+        new_username = 'New name'
+        new_discriminator = '9876'
+        user_info = {
+            'user': {
+                'id': str(TEST_USER_ID),
+                'username': new_username,
+                'discriminator': new_discriminator,
+            }
+        }
+        mock_DiscordClient.return_value.guild_member.return_value = user_info
+        
+        result = self.discord_user.update_username()
+        self.assertTrue(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+        self.discord_user.refresh_from_db()
+        self.assertEqual(self.discord_user.username, new_username)
+        self.assertEqual(self.discord_user.discriminator, new_discriminator)
+
+    def test_return_none_if_user_no_longer_a_member(self, mock_DiscordClient):
+        mock_DiscordClient.return_value.guild_member.return_value = None
+        result = self.discord_user.update_username()
+        self.assertIsNone(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+
+    def test_return_false_if_api_returns_false(self, mock_DiscordClient):
+        mock_DiscordClient.return_value.guild_member.return_value = False
+        result = self.discord_user.update_username()
+        self.assertFalse(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+
+    def test_return_false_if_api_returns_corrput_data_1(self, mock_DiscordClient):
+        mock_DiscordClient.return_value.guild_member.return_value = {'invalid': True}
+        result = self.discord_user.update_username()
+        self.assertFalse(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+
+    def test_return_false_if_api_returns_corrput_data_2(self, mock_DiscordClient):
+        user_info = {
+            'user': {
+                'id': str(TEST_USER_ID),                
+                'discriminator': '1234',
+            }
+        }
+        mock_DiscordClient.return_value.guild_member.return_value = user_info
+        result = self.discord_user.update_username()
+        self.assertFalse(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+
+    def test_return_false_if_api_returns_corrput_data_3(self, mock_DiscordClient):
+        user_info = {
+            'user': {
+                'id': str(TEST_USER_ID),                
+                'username': TEST_USER_NAME,
+            }
+        }
+        mock_DiscordClient.return_value.guild_member.return_value = user_info
+        result = self.discord_user.update_username()
+        self.assertFalse(result)
+        self.assertTrue(mock_DiscordClient.return_value.guild_member.called)
+
+
 @patch(MODULE_PATH + '.models.notify')
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
 class TestDeleteUser(TestCase):
 
-    def setUp(self): 
-        self.user = AuthUtils.create_user(TEST_USER_NAME)        
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = AuthUtils.create_user(TEST_USER_NAME)
+
+    def setUp(self):         
         self.discord_user = DiscordUser.objects.create(
             user=self.user, uid=TEST_USER_ID
         )
@@ -170,8 +239,12 @@ class TestDeleteUser(TestCase):
 @patch(MODULE_PATH + '.models.DiscordUser.objects.user_group_names')
 class TestUpdateGroups(TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = AuthUtils.create_user(TEST_USER_NAME)
+
     def setUp(self): 
-        self.user = AuthUtils.create_user(TEST_USER_NAME)
         self.discord_user = DiscordUser.objects.create(
             user=self.user, uid=TEST_USER_ID
         )
