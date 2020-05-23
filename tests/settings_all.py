@@ -41,7 +41,15 @@ INSTALLED_APPS += [
 
 ROOT_URLCONF = 'tests.urls'
 
-CACHES['default'] = {'BACKEND': 'django.core.cache.backends.db.DatabaseCache'}
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.RedisCache",
+        "LOCATION": "localhost:6379",
+        "OPTIONS": {
+            "DB": 1,
+        }
+    }
+}
 
 ########################
 # XenForo Configuration

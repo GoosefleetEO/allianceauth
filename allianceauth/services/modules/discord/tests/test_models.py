@@ -6,8 +6,19 @@ from django.test import TestCase
 
 from allianceauth.tests.auth_utils import AuthUtils
 
-from . import TEST_USER_NAME, TEST_USER_ID, TEST_MAIN_NAME, TEST_MAIN_ID, MODULE_PATH
+from . import (
+    TEST_USER_NAME, 
+    TEST_USER_ID, 
+    TEST_MAIN_NAME, 
+    TEST_MAIN_ID, 
+    MODULE_PATH,
+    ROLE_ALPHA, 
+    ROLE_BRAVO, 
+    ROLE_CHARLIE, 
+    ROLE_MIKE    
+)
 from ..discord_client import DiscordClient, DiscordApiBackoff
+from ..discord_client.tests import create_matched_role
 from ..models import DiscordUser
 from ..utils import set_logger_to_file
 
@@ -28,15 +39,6 @@ class TestBasicsAndHelpers(TestCase):
         discord_user = DiscordUser.objects.create(user=user, uid=TEST_USER_ID)
         expected = 'DiscordUser(user=\'Peter Parker\', uid=198765432012345678)'
         self.assertEqual(repr(discord_user), expected)
-    
-    def test_guild_get_or_create_role_ids(self):
-        mock_client = Mock(spec=DiscordClient)
-        mock_client.match_guild_roles_to_names.return_value = \
-            [({'id': 1, 'name': 'alpha'}, True), ({'id': 2, 'name': 'bravo'}, True)]
-        
-        result = DiscordUser._guild_get_or_create_role_ids(mock_client, [])
-        excepted = [1, 2]
-        self.assertEqual(set(result), set(excepted))
 
 
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
@@ -235,61 +237,177 @@ class TestDeleteUser(TestCase):
 
 
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
-@patch(MODULE_PATH + '.models.DiscordUser._guild_get_or_create_role_ids')
 @patch(MODULE_PATH + '.models.DiscordUser.objects.user_group_names')
 class TestUpdateGroups(TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.user = AuthUtils.create_user(TEST_USER_NAME)
-
     def setUp(self): 
+        self.user = AuthUtils.create_user(TEST_USER_NAME)
         self.discord_user = DiscordUser.objects.create(
             user=self.user, uid=TEST_USER_ID
         )
+        self.guild_roles = [ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE]
+        self.roles_requested = [
+            create_matched_role(ROLE_ALPHA), create_matched_role(ROLE_BRAVO)
+        ]  
         
-    def test_can_update(
+    def test_update_if_needed(
         self, 
-        mock_user_group_names, 
-        mock_guild_get_or_create_role_ids, 
+        mock_user_group_names,         
         mock_DiscordClient
-    ):        
-        roles_requested = [1, 2, 3]
+    ):
+        roles_current = [1]        
         mock_user_group_names.return_value = []
-        mock_guild_get_or_create_role_ids.return_value = roles_requested
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
         mock_DiscordClient.return_value.modify_guild_member.return_value = True
         
         result = self.discord_user.update_groups()
         self.assertTrue(result)
         self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
+        self.assertEqual(set(kwargs['role_ids']), {1, 2})
+
+    def test_update_if_needed_and_preserve_managed_roles(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):
+        roles_current = [1, 13]          
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+        
+        result = self.discord_user.update_groups()
+        self.assertTrue(result)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
+        self.assertEqual(set(kwargs['role_ids']), {1, 2, 13})
+
+    def test_dont_update_if_not_needed(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):
+        roles_current = [1, 2, 13]        
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+                
+        result = self.discord_user.update_groups()
+        self.assertTrue(result)
+        self.assertFalse(mock_DiscordClient.return_value.modify_guild_member.called)
+
+    def test_update_if_user_has_no_roles_on_discord(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):
+        roles_current = []        
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+        
+        result = self.discord_user.update_groups()
+        self.assertTrue(result)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
+        self.assertEqual(set(kwargs['role_ids']), {1, 2})
     
     def test_return_none_if_user_no_longer_a_member(
-        self,
-        mock_user_group_names, 
-        mock_guild_get_or_create_role_ids, 
+        self, 
+        mock_user_group_names,         
         mock_DiscordClient
-    ):        
-        roles_requested = [1, 2, 3]
-        mock_user_group_names.return_value = []
-        mock_guild_get_or_create_role_ids.return_value = roles_requested
-        mock_DiscordClient.return_value.modify_guild_member.return_value = None
+    ):                        
+        mock_DiscordClient.return_value.guild_member.return_value = None
                 
         result = self.discord_user.update_groups()
         self.assertIsNone(result)
-        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        self.assertFalse(mock_DiscordClient.return_value.modify_guild_member.called)
 
     def test_return_false_if_api_returns_false(
         self, 
-        mock_user_group_names, 
-        mock_guild_get_or_create_role_ids, 
+        mock_user_group_names,         
         mock_DiscordClient
     ):
-        roles_requested = [1, 2, 3]
+        roles_current = [1]        
         mock_user_group_names.return_value = []
-        mock_guild_get_or_create_role_ids.return_value = roles_requested
-        mock_DiscordClient.return_value.modify_guild_member.return_value = False      
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = False
         
         result = self.discord_user.update_groups()
         self.assertFalse(result)
         self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+
+    def test_raise_exception_if_member_has_unknown_roles(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):
+        roles_current = [99]        
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+        
+        with self.assertRaises(RuntimeError):
+            self.discord_user.update_groups()
+
+    def test_refresh_guild_roles_user_roles_dont_not_match(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):                
+        def my_guild_roles(guild_id, use_cache=True):
+            if use_cache:
+                return [ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE]
+            else:
+                return [ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE]
+        
+        roles_current = [3]
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.side_effect = my_guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'roles': roles_current}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+        result = self.discord_user.update_groups()
+        self.assertTrue(result)
+        self.assertEqual(mock_DiscordClient.return_value.guild_roles.call_count, 2)
+
+    def test_raise_exception_if_member_info_is_invalid(
+        self, 
+        mock_user_group_names,         
+        mock_DiscordClient
+    ):        
+        mock_user_group_names.return_value = []
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = self.roles_requested
+        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
+        mock_DiscordClient.return_value.guild_member.return_value = \
+            {'user': 'dummy'}
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+        
+        with self.assertRaises(RuntimeError):
+            self.discord_user.update_groups()

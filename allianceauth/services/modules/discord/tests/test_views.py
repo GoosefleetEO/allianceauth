@@ -7,7 +7,8 @@ from django.urls import reverse
 from allianceauth.tests.auth_utils import AuthUtils
 
 from . import MODULE_PATH, add_permissions_to_members, TEST_USER_NAME, TEST_USER_ID
-from ..models import DiscordUser, DiscordClient
+from ..discord_client import DiscordClient
+from ..models import DiscordUser
 from ..utils import set_logger_to_file
 from ..views import (
     discord_callback, 

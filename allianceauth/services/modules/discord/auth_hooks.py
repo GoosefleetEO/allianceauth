@@ -102,7 +102,12 @@ class DiscordService(ServicesHook):
     
     @staticmethod
     def user_has_account(user: User) -> bool:
-        return DiscordUser.objects.user_has_account(user)
+        result = DiscordUser.objects.user_has_account(user)
+        if result:
+            logger.debug('User %s has a Discord account', user)
+        else:
+            logger.debug('User %s does not have a Discord account', user)
+        return result
 
     def validate_user(self, user):
         logger.debug('Validating user %s %s account', user, self.name)

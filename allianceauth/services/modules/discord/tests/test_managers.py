@@ -14,8 +14,12 @@ from . import (
     TEST_USER_ID, 
     TEST_MAIN_NAME, 
     TEST_MAIN_ID, 
-    MODULE_PATH
+    MODULE_PATH,
+    ROLE_ALPHA,
+    ROLE_BRAVO,
+    ROLE_CHARLIE
 )
+from ..discord_client.tests import create_matched_role
 from ..app_settings import (
     DISCORD_APP_ID, 
     DISCORD_APP_SECRET,     
@@ -32,7 +36,6 @@ logger = set_logger_to_file(MODULE_PATH + '.managers', __file__)
 @patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
 @patch(MODULE_PATH + '.models.DiscordUser.objects._exchange_auth_code_for_token')
-@patch(MODULE_PATH + '.models.DiscordUser.objects.model._guild_get_or_create_role_ids')
 @patch(MODULE_PATH + '.models.DiscordUser.objects.user_group_names')
 @patch(MODULE_PATH + '.models.DiscordUser.objects.user_formatted_nick')
 class TestAddUser(TestCase):
@@ -50,16 +53,16 @@ class TestAddUser(TestCase):
     def test_can_create_user_no_roles_no_nick(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):
         mock_user_formatted_nick.return_value = None
-        mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = None
+        mock_user_group_names.return_value = []                
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = True
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -79,16 +82,20 @@ class TestAddUser(TestCase):
         self, 
         mock_user_formatted_nick,
         mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):
-        role_ids = [1, 2, 3]
+        roles = [
+            create_matched_role(ROLE_ALPHA), 
+            create_matched_role(ROLE_BRAVO), 
+            create_matched_role(ROLE_CHARLIE)
+        ]
         mock_user_formatted_nick.return_value = None
         mock_user_group_names.return_value = ['a', 'b', 'c']        
-        mock_guild_get_or_create_role_ids.return_value = role_ids
-        mock_exchange_auth_code_for_token.return_value = self.access_token
+        mock_exchange_auth_code_for_token.return_value = self.access_token        
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = roles
         mock_DiscordClient.return_value.add_guild_member.return_value = True
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -101,7 +108,7 @@ class TestAddUser(TestCase):
         self.assertEqual(kwargs['guild_id'], TEST_GUILD_ID)
         self.assertEqual(kwargs['user_id'], TEST_USER_ID)
         self.assertEqual(kwargs['access_token'], self.access_token)
-        self.assertEqual(kwargs['role_ids'], role_ids)
+        self.assertSetEqual(set(kwargs['role_ids']), {1, 2, 3})
         self.assertIsNone(kwargs['nick'])
 
     @patch(MODULE_PATH + '.managers.DISCORD_SYNC_NAMES', True)
@@ -109,15 +116,15 @@ class TestAddUser(TestCase):
         self, 
         mock_user_formatted_nick,
         mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):        
         mock_user_formatted_nick.return_value = TEST_MAIN_NAME
         mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = []
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = True
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -137,16 +144,16 @@ class TestAddUser(TestCase):
     def test_can_create_user_no_roles_and_without_nick_if_turned_off(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):        
         mock_user_formatted_nick.return_value = TEST_MAIN_NAME
         mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = []
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = True
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -165,16 +172,16 @@ class TestAddUser(TestCase):
     def test_can_activate_existing_guild_member(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):
         mock_user_formatted_nick.return_value = None
-        mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = None
+        mock_user_group_names.return_value = []                
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = None
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -187,16 +194,16 @@ class TestAddUser(TestCase):
     def test_return_false_when_user_creation_fails(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):        
         mock_user_formatted_nick.return_value = None
-        mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = None
+        mock_user_group_names.return_value = []                
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = False
         
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
@@ -209,16 +216,16 @@ class TestAddUser(TestCase):
     def test_return_false_when_on_api_backoff(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):        
         mock_user_formatted_nick.return_value = None
         mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = None
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_DiscordClient.return_value.add_guild_member.side_effect = \
             DiscordApiBackoff(999)
         
@@ -232,16 +239,16 @@ class TestAddUser(TestCase):
     def test_return_false_on_http_error(
         self, 
         mock_user_formatted_nick,
-        mock_user_group_names,        
-        mock_guild_get_or_create_role_ids,
+        mock_user_group_names,                
         mock_exchange_auth_code_for_token, 
         mock_DiscordClient
     ):        
         mock_user_formatted_nick.return_value = None
         mock_user_group_names.return_value = []        
-        mock_guild_get_or_create_role_ids.return_value = None
         mock_exchange_auth_code_for_token.return_value = self.access_token
         mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 500

@@ -76,3 +76,4 @@ celerybeat-schedule
 #other
 .flake8
 .pylintrc
+Makefile
