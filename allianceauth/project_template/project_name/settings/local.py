@@ -22,6 +22,10 @@ INSTALLED_APPS += [
     
 ]
 
+# To change the logging level for extensions, uncomment the following line.
+# LOGGING['handlers']['extension_file']['level'] = 'INFO'
+
+
 # Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
