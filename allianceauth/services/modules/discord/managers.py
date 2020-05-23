@@ -20,6 +20,7 @@ from .app_settings import (
     DISCORD_SYNC_NAMES
 )
 from .discord_client import DiscordClient, DiscordApiBackoff
+from .discord_client.helpers import match_or_create_roles_from_names
 from .utils import LoggerAddTag
 
 
@@ -62,10 +63,12 @@ class DiscordUserManager(models.Manager):
             user_id = discord_user['id']
             bot_client = self._bot_client(is_rate_limited=is_rate_limited)
                 
-            if group_names:
-                role_ids = self.model._guild_get_or_create_role_ids(
-                    bot_client, group_names
-                )
+            if group_names:                
+                role_ids = match_or_create_roles_from_names(
+                    client=bot_client, 
+                    guild_id=DISCORD_GUILD_ID, 
+                    role_names=group_names
+                ).ids()
             else:
                 role_ids = None
                         

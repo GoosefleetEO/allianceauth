@@ -50,10 +50,10 @@ class TestDiscordApiLive(TestCase):
         self.client.guild_name(DISCORD_GUILD_ID)
         sleep(RATE_LIMIT_DELAY_SECS)
 
-        self.client.match_guild_role_to_name(DISCORD_GUILD_ID, 'Testrole')
+        self.client.match_or_create_role_from_name(DISCORD_GUILD_ID, 'Testrole')
         sleep(RATE_LIMIT_DELAY_SECS)
 
-        self.client.match_guild_roles_to_names(
+        self.client.match_or_create_roles_from_names(
             DISCORD_GUILD_ID, ['Testrole A', 'Testrole B']
         )
         sleep(RATE_LIMIT_DELAY_SECS)

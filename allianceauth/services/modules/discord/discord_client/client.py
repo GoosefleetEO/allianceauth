@@ -1,4 +1,5 @@
 from hashlib import md5
+import json
 import logging
 from time import sleep
 from urllib.parse import urljoin
@@ -22,6 +23,7 @@ from .app_settings import (
     DISCORD_ROLES_CACHE_MAX_AGE,    
 )
 from .exceptions import DiscordRateLimitExhausted, DiscordTooManyRequestsError
+from .helpers import DiscordRoles
 from ..utils import LoggerAddTag
 
 
@@ -72,8 +74,8 @@ class DiscordClient:
     _KEY_GLOBAL_BACKOFF_UNTIL = 'DISCORD_GLOBAL_BACKOFF_UNTIL'
     _KEY_GLOBAL_RATE_LIMIT_REMAINING = 'DISCORD_GLOBAL_RATE_LIMIT_REMAINING'
     _KEYPREFIX_GUILD_NAME = 'DISCORD_GUILD_NAME'
+    _KEYPREFIX_GUILD_ROLES = 'DISCORD_GUILD_ROLES'
     _KEYPREFIX_ROLE_NAME = 'DISCORD_ROLE_NAME'    
-    _ROLE_NAME_MAX_CHARS = 100
     _NICK_MAX_CHARS = 32
     
     _HTTP_STATUS_CODE_NOT_FOUND = 404
@@ -166,23 +168,7 @@ class DiscordClient:
         )
         return r.json()
    
-    # guild roles
-
-    def create_guild_role(self, guild_id: int, role_name: str, **kwargs) -> dict:
-        """Create a new guild role with the given name. 
-        See official documentation for additional optional parameters.
-
-        Note that Discord allows creating multiple roles with the name name,
-        so it's important to check existing roles before creating new one
-        to avoid duplicates.
-        
-        return a new role object on success
-        """
-        route = f"guilds/{guild_id}/roles"
-        data = {'name': self._sanitize_role_name(role_name)}
-        data.update(kwargs)
-        r = self._api_request(method='post', route=route, data=data)
-        return r.json()
+    # guild
 
     def guild_infos(self, guild_id: int) -> dict:
         """Returns all basic infos about this guild"""
@@ -216,101 +202,131 @@ class DiscordClient:
         gen_key = DiscordClient._generate_hash(f'{guild_id}')
         return f'{cls._KEYPREFIX_GUILD_NAME}__{gen_key}'
 
-    def guild_roles(self, guild_id: int) -> list:        
-        """Returns the list of all roles for this guild"""
+    # guild roles
+
+    def guild_roles(self, guild_id: int, use_cache: bool = True) -> list:
+        """Returns the list of all roles for this guild
+        
+        If use_cache is set to False it will always hit the API to retrieve
+        fresh data and update the cache
+        """
+        cache_key = self._guild_roles_cache_key(guild_id)
+        if use_cache:                        
+            roles_raw = self._redis.get(name=cache_key)
+            if roles_raw:
+                logger.debug('Returning roles for guild %s from cache', guild_id)
+                return json.loads(self._redis_decode(roles_raw))
+            else:
+                logger.debug('No roles for guild %s in cache', guild_id)
+        
         route = f"guilds/{guild_id}/roles"
-        r = self._api_request(method='get', route=route)
-        return r.json()
+        r = self._api_request(method='get', route=route)            
+        roles = r.json()
+        if roles and isinstance(roles, list):
+            self._redis.set(
+                name=cache_key, 
+                value=json.dumps(roles), 
+                px=DISCORD_ROLES_CACHE_MAX_AGE
+            )
+        return roles
+
+    def create_guild_role(self, guild_id: int, role_name: str, **kwargs) -> dict:
+        """Create a new guild role with the given name. 
+        See official documentation for additional optional parameters.
+
+        Note that Discord allows the creation of multiple roles with the same name,
+        so to avoid duplicates it's important to check existing roles 
+        before creating new one
+        
+        returns a new role dict on success
+        """
+        route = f"guilds/{guild_id}/roles"
+        data = {'name': DiscordRoles.sanitize_role_name(role_name)}
+        data.update(kwargs)
+        r = self._api_request(method='post', route=route, data=data)
+        role = r.json()
+        if role:
+            self._invalidate_guild_roles_cache(guild_id)
+        return role
 
     def delete_guild_role(self, guild_id: int, role_id: int) -> bool:
         """Deletes a guild role"""
         route = f"guilds/{guild_id}/roles/{role_id}"
         r = self._api_request(method='delete', route=route)
         if r.status_code == 204:
+            self._invalidate_guild_roles_cache(guild_id)
             return True
         else:
             return False
+        
+    def _invalidate_guild_roles_cache(self, guild_id: int) -> None:        
+        cache_key = self._guild_roles_cache_key(guild_id)        
+        self._redis.delete(cache_key)
+        logger.debug('Guild roles cache invalidated')
 
-    # guild role cache
-
-    def match_guild_roles_to_names(self, guild_id: int, role_names: list) -> list:
+    @classmethod
+    def _guild_roles_cache_key(cls, guild_id: int) -> str:
+        """Returns key for accessing cached roles for a guild"""
+        gen_key = cls._generate_hash(f'{guild_id}')
+        return f'{cls._KEYPREFIX_GUILD_ROLES}__{gen_key}'
+    
+    def match_or_create_roles_from_names(self, guild_id: int, role_names: list) -> list:
         """returns Discord roles matching the given names
         
         Returns as list of tuple of role and created flag
 
         Will try to match with existing roles names
         Non-existing roles will be created, then created flag will be True
-        Roles names are cached to improve performance
+        Params:
+        - guild_id: ID of guild
+        - role_names: list of name strings each defining a role
         """
         roles = list()
+        guild_roles = DiscordRoles(self.guild_roles(guild_id))
         for role_name in role_names:
-            role, created = self.match_guild_role_to_name(
-                guild_id=guild_id, role_name=self._sanitize_role_name(role_name)
+            role, created = self.match_or_create_role_from_name(
+                guild_id=guild_id, 
+                role_name=DiscordRoles.sanitize_role_name(role_name),
+                guild_roles=guild_roles
             )
             if role:
-                roles.append((role, created))            
+                roles.append((role, created))
+            if created:
+                guild_roles = guild_roles.union(DiscordRoles([role]))
         return roles
 
-    def match_guild_role_to_name(self, guild_id: int, role_name: str) -> tuple:
+    def match_or_create_role_from_name(
+        self, guild_id: int, role_name: str, guild_roles: DiscordRoles = None
+    ) -> tuple:
         """returns Discord role matching the given name
 
         Returns as tuple of role and created flag
         
         Will try to match with existing roles names
         Non-existing roles will be created, then created flag will be True
-        Roles names are cached to improve performance    
+        Params:
+        - guild_id: ID of guild
+        - role_name: strings defining name of a role
+        - guild_roles: All known guild roles as DiscordRoles object. 
+        Helps to void redundant lookups of guild roles 
+        when this method is used multiple times.
         """
-        created = False
-        role_name = self._sanitize_role_name(role_name)
-        role_id = self._redis_decode(
-            self._redis.get(name=self._role_cache_key(guild_id, role_name))
-        )
-        if not role_id:
-            role_id = None
-            for role in self.guild_roles(guild_id):
-                self._update_role_cache(guild_id, role)
-                if role['name'] == role_name:
-                    role_id = role['id']
-            
-            if role_id:
-                role = self._create_role(role_id, role_name)
+        if not isinstance(role_name, str):
+            raise TypeError('role_name must be of type string')
 
+        created = False        
+        if guild_roles is None:
+            guild_roles = DiscordRoles(self.guild_roles(guild_id))
+        role = guild_roles.role_by_name(role_name)
+        if not role:
+            if not DISCORD_DISABLE_ROLE_CREATION:
+                logger.debug('Need to create missing role: %s', role_name)
+                role = self.create_guild_role(guild_id, role_name)                
+                created = True
             else:
-                if not DISCORD_DISABLE_ROLE_CREATION:
-                    role_raw = self.create_guild_role(guild_id, role_name)
-                    role = self._create_role(role_raw['id'], role_name)
-                    self._update_role_cache(guild_id, role)                
-                    created = True
-                else:
-                    role = None
-        else:                        
-            role = self._create_role(int(role_id), role_name)
-            
-        return role, created
-
-    @staticmethod
-    def _create_role(role_id: int, role_name: str) -> dict:
-        return {'id': int(role_id), 'name': str(role_name)}
+                role = None
     
-    def _update_role_cache(self, guild_id: int, role: dict) -> bool:
-        """updates role cache with given role
-        
-        Returns True on success, else False or raises exception
-        """
-        if not isinstance(role, dict):
-            raise TypeError('role must be a dict')
-
-        return self._redis.set(
-            name=self._role_cache_key(guild_id=guild_id, role_name=role['name']),
-            value=role['id'],
-            px=DISCORD_ROLES_CACHE_MAX_AGE
-        )
-
-    @classmethod
-    def _role_cache_key(cls, guild_id: int, role_name: str) -> str:        
-        """Returns key for accessing role given by name in the role cache"""
-        gen_key = DiscordClient._generate_hash(f'{guild_id}{role_name}')
-        return f'{cls._KEYPREFIX_ROLE_NAME}__{gen_key}'
+        return role, created
 
     # guild members
 
@@ -524,10 +540,10 @@ class DiscordClient:
             args['json'] = data
         
         logger.info('%s: sending %s request to url \'%s\'', uid, method.upper(), url)
-        logger.debug('%s: request headers:\n%s', uid, headers)
+        logger.debug('%s: request headers: %s', uid, headers)
         r = getattr(requests, method)(**args)
         logger.debug(
-            '%s: returned status code %d with headers:\n%s', 
+            '%s: returned status code %d with headers: %s', 
             uid, 
             r.status_code, 
             r.headers
@@ -589,7 +605,7 @@ class DiscordClient:
             resets_in = self._redis.pttl(self._KEY_GLOBAL_RATE_LIMIT_REMAINING)
             if requests_remaining >= 0:
                 logger.debug(
-                    '%s: Got %d remaining requests until reset in %s ms',                 
+                    '%s: Got one of %d remaining requests until reset in %s ms',
                     uid,                
                     requests_remaining + 1,
                     resets_in
@@ -678,11 +694,6 @@ class DiscordClient:
     def _sanitize_role_ids(role_ids: list) -> list:
         """make sure its a list of integers"""
         return [int(role_id) for role_id in list(role_ids)]
-
-    @classmethod
-    def _sanitize_role_name(cls, role_name: str) -> str:
-        """shortens too long strings if necessary"""
-        return str(role_name)[:cls._ROLE_NAME_MAX_CHARS]
 
     @classmethod
     def _sanitize_nick(cls, nick: str) -> str:

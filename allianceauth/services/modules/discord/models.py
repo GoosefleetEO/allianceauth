@@ -10,7 +10,8 @@ from allianceauth.notifications import notify
 
 from . import __title__
 from .app_settings import DISCORD_GUILD_ID
-from .discord_client import DiscordClient, DiscordApiBackoff
+from .discord_client import DiscordApiBackoff, DiscordRoles
+from .discord_client.helpers import match_or_create_roles_from_names
 from .managers import DiscordUserManager
 from .utils import LoggerAddTag
 
@@ -99,23 +100,58 @@ class DiscordUser(models.Model):
         - True on success
         - None if user is no longer a member of the Discord server
         - False on error or raises exception
-        """
-        role_names = DiscordUser.objects.user_group_names(self.user)        
-        client = DiscordUser.objects._bot_client()
-        requested_role_ids = self._guild_get_or_create_role_ids(client, role_names)
-        logger.debug(
-            'Requested to update groups for user %s: %s', self.user, requested_role_ids
-        )        
-        success = client.modify_guild_member(
-            guild_id=DISCORD_GUILD_ID,
-            user_id=self.uid,
-            role_ids=requested_role_ids
-        )
-        if success:
-            logger.info('Groups for %s have been updated', self.user)
+        """        
+        client = DiscordUser.objects._bot_client()                                
+        member_info = client.guild_member(guild_id=DISCORD_GUILD_ID, user_id=self.uid)
+        if member_info is None:            
+            # User is no longer a member
+            return None
+        
+        guild_roles = DiscordRoles(client.guild_roles(guild_id=DISCORD_GUILD_ID))
+        logger.debug('Current guild roles: %s', guild_roles.ids())
+        if 'roles' in member_info:
+            if not guild_roles.has_roles(member_info['roles']):
+                guild_roles = DiscordRoles(
+                    client.guild_roles(guild_id=DISCORD_GUILD_ID, use_cache=False)
+                )
+                if not guild_roles.has_roles(member_info['roles']):
+                    raise RuntimeError(
+                        'Member %s has unknown roles: %s' % (
+                            self.user, 
+                            set(member_info['roles']).difference(guild_roles.ids())
+                        )
+                    )
+            member_roles = guild_roles.subset(member_info['roles'])
         else:
-            logger.warning('Failed to update groups for %s', self.user)
-        return success
+            raise RuntimeError('member_info from %s is not valid' % self.user)
+                
+        requested_roles = match_or_create_roles_from_names(
+            client=client, 
+            guild_id=DISCORD_GUILD_ID, 
+            role_names=DiscordUser.objects.user_group_names(self.user)
+        )
+        logger.debug(
+            'Requested roles for user %s: %s', self.user, requested_roles.ids()
+        )
+        logger.debug('Current roles user %s: %s', self.user, member_roles.ids())        
+        member_roles_managed = member_roles.subset(managed_only=True)
+        if requested_roles != member_roles.difference(member_roles_managed):
+            logger.debug('Need to update roles for user %s', self.user)
+            new_roles = requested_roles.union(member_roles_managed)
+            success = client.modify_guild_member(
+                guild_id=DISCORD_GUILD_ID,
+                user_id=self.uid,
+                role_ids=list(new_roles.ids())
+            )
+            if success:
+                logger.info('Groups for %s have been updated', self.user)
+            else:
+                logger.warning('Failed to update groups for %s', self.user)
+            return success
+
+        else:
+            logger.info('No need to update groups for user %s', self.user)
+            return True
 
     def update_username(self) -> bool:
         """Updates the username incl. the discriminator 
@@ -196,14 +232,3 @@ class DiscordUser(models.Model):
                 'Failed to remove user %s from Discord server: %s', self.user, ex
             )
             return False        
-
-    @staticmethod
-    def _guild_get_or_create_role_ids(client: DiscordClient, role_names: list) -> list:
-        """wrapper for DiscordClient.match_guild_roles_to_names()
-        that only returns the list of IDs
-        """
-        return [
-            x[0]['id'] for x in client.match_guild_roles_to_names(
-                guild_id=DISCORD_GUILD_ID, role_names=role_names
-            )
-        ]

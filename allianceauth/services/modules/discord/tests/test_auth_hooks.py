@@ -7,7 +7,8 @@ from allianceauth.tests.auth_utils import AuthUtils
 
 from . import TEST_USER_NAME, TEST_USER_ID, add_permissions_to_members, MODULE_PATH
 from ..auth_hooks import DiscordService
-from ..models import DiscordUser, DiscordClient
+from ..discord_client import DiscordClient
+from ..models import DiscordUser
 from ..utils import set_logger_to_file
 
 
