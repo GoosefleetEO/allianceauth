@@ -21,13 +21,12 @@ def get_extension_logger(name):
     :return: an extensions child logger
     """
     import logging
-    from django.conf import settings
+
+    parent_logger = logging.getLogger('extensions')
 
     logger = logging.getLogger('extensions.' + name)
     logger.name = name
-    logger.level = logging.INFO
-    if settings.DEBUG:
-        logger.level = logging.DEBUG
+    logger.level = parent_logger.level
 
     return logger
 
