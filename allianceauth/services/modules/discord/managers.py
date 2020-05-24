@@ -136,7 +136,9 @@ class DiscordUserManager(models.Manager):
         
         only checks locally, does not hit the API
         """
-        return True if hasattr(user, self.model.USER_RELATED_NAME) else False
+        if not isinstance(user, User):
+            return False
+        return self.filter(user=user).select_related('user').exists()
 
     @classmethod
     def generate_bot_add_url(cls):

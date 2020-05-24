@@ -219,20 +219,44 @@ class TestDeleteUser(TestCase):
         )
         self.assertTrue(mock_DiscordClient.return_value.remove_guild_member.called)
         self.assertFalse(mock_notify.called)
-
-    def test_return_false_on_api_backoff(self, mock_DiscordClient, mock_notify):
+    
+    def test_raise_exception_on_api_backoff(
+        self, mock_DiscordClient, mock_notify
+    ):
         mock_DiscordClient.return_value.remove_guild_member.side_effect = \
             DiscordApiBackoff(999)
-        result = self.discord_user.delete_user()
+        with self.assertRaises(DiscordApiBackoff):
+            self.discord_user.delete_user()
+        
+    def test_return_false_on_api_backoff_and_exception_handling_on(
+        self, mock_DiscordClient, mock_notify
+    ):
+        mock_DiscordClient.return_value.remove_guild_member.side_effect = \
+            DiscordApiBackoff(999)
+        result = self.discord_user.delete_user(handle_api_exceptions=True)
         self.assertFalse(result)
 
-    def test_return_false_on_http_error(self, mock_DiscordClient, mock_notify):
+    def test_raise_exception_on_http_error(
+        self, mock_DiscordClient, mock_notify
+    ):
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 500
         mock_DiscordClient.return_value.remove_guild_member.side_effect = \
             mock_exception
-        result = self.discord_user.delete_user()
+        
+        with self.assertRaises(HTTPError):
+            self.discord_user.delete_user()        
+
+    def test_return_false_on_http_error_and_exception_handling_on(
+        self, mock_DiscordClient, mock_notify
+    ):
+        mock_exception = HTTPError('error')
+        mock_exception.response = Mock()
+        mock_exception.response.status_code = 500
+        mock_DiscordClient.return_value.remove_guild_member.side_effect = \
+            mock_exception
+        result = self.discord_user.delete_user(handle_api_exceptions=True)
         self.assertFalse(result)
 
 
