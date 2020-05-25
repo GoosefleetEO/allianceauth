@@ -1,21 +1,28 @@
 import os
 from unittest.mock import Mock, patch
 
-from bravado.exception import HTTPNotFound, HTTPUnprocessableEntity
+from bravado.exception import HTTPNotFound
 from jsonschema.exceptions import RefResolutionError
 
 from django.test import TestCase
 
 from . import set_logger
-from ..models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from ..providers import ObjectNotFound, Entity, Character, Corporation, \
-    Alliance, ItemType, EveProvider, EveSwaggerProvider
+from ..providers import (
+    ObjectNotFound, 
+    Entity, 
+    Character, 
+    Corporation, 
+    Alliance, 
+    ItemType, 
+    EveProvider, 
+    EveSwaggerProvider
+)
 
 
 MODULE_PATH = 'allianceauth.eveonline.providers'
 SWAGGER_OLD_SPEC_PATH = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), 'swagger_old.json'
-    )
+    os.path.abspath(__file__)), 'swagger_old.json'
+)
 set_logger(MODULE_PATH, __file__)
 
 
@@ -51,7 +58,6 @@ class TestEntity(TestCase):
         x = Entity()
         self.assertEqual(repr(x), '<Entity (None): None>')
 
-    
     def test_bool(self):
         x = Entity(1001)
         self.assertTrue(bool(x))
@@ -99,7 +105,6 @@ class TestCorporation(TestCase):
         # should fetch alliance once only
         self.assertEqual(mock_provider_get_alliance.call_count, 1)
 
-
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
     def test_alliance_not_defined(self, mock_provider_get_alliance):        
         mock_provider_get_alliance.return_value = None
@@ -110,7 +115,6 @@ class TestCorporation(TestCase):
             Entity(None, None)
         )
         
-
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_character')
     def test_ceo(self, mock_provider_get_character):        
         my_ceo = Character(
@@ -200,7 +204,6 @@ class TestAlliance(TestCase):
         # should be called once by used corp only
         self.assertEqual(mock_provider_get_corp.call_count, 2)
 
-
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_corps(self, mock_provider_get_corp):
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
@@ -253,7 +256,6 @@ class TestCharacter(TestCase):
 
         # should call the provider one time only
         self.assertEqual(mock_provider_get_corp.call_count, 1)
-
     
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
@@ -282,7 +284,6 @@ class TestCharacter(TestCase):
         # should call the provider one time only
         self.assertEqual(mock_provider_get_corp.call_count, 1)
         self.assertEqual(mock_provider_get_alliance.call_count, 1)
-
 
     def test_alliance_has_none(self):
         self.my_character.alliance_id = None
@@ -343,7 +344,6 @@ class TestEveSwaggerProvider(TestCase):
         else:
             raise HTTPNotFound(Mock())
 
-
     @staticmethod
     def esi_get_alliances_alliance_id_corporations(alliance_id):
         alliances = {
@@ -356,7 +356,6 @@ class TestEveSwaggerProvider(TestCase):
             return mock_result
         else:
             raise HTTPNotFound(Mock())
-
 
     @staticmethod
     def esi_get_corporations_corporation_id(corporation_id):
@@ -382,7 +381,6 @@ class TestEveSwaggerProvider(TestCase):
         else:
             raise HTTPNotFound(Mock())
 
-
     @staticmethod
     def esi_get_characters_character_id(character_id):
         characters = {
@@ -402,7 +400,6 @@ class TestEveSwaggerProvider(TestCase):
             return mock_result
         else:
             raise HTTPNotFound(Mock())
-
 
     @staticmethod
     def esi_post_characters_affiliation(characters):
@@ -428,7 +425,6 @@ class TestEveSwaggerProvider(TestCase):
         else:
             raise TypeError()
     
-
     @staticmethod
     def esi_get_universe_types_type_id(type_id):
         types = {
@@ -446,12 +442,10 @@ class TestEveSwaggerProvider(TestCase):
         else:
             raise HTTPNotFound(Mock())
 
-
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_str(self, mock_esi_client_factory):        
         my_provider = EveSwaggerProvider()
         self.assertEqual(str(my_provider), 'esi')
-
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_alliance(self, mock_esi_client_factory):
@@ -481,7 +475,6 @@ class TestEveSwaggerProvider(TestCase):
         with self.assertRaises(ObjectNotFound):
             my_provider.get_alliance(3999)
 
-
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_corp(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
@@ -508,7 +501,6 @@ class TestEveSwaggerProvider(TestCase):
         with self.assertRaises(ObjectNotFound):
             my_provider.get_corp(2999)
         
-
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_character(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
@@ -535,7 +527,6 @@ class TestEveSwaggerProvider(TestCase):
         # character not found
         with self.assertRaises(ObjectNotFound):
             my_provider.get_character(1999)
-
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_itemtype(self, mock_esi_client_factory):
@@ -601,5 +592,3 @@ class TestEveSwaggerProvider(TestCase):
         self.assertTrue(mock_esi_client_factory.called)
         self.assertIsNotNone(my_provider._client)
         self.assertEqual(my_client, 'my_client')
-        
-

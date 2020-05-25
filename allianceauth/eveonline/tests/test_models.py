@@ -2,102 +2,12 @@ from unittest.mock import Mock, patch
 
 from django.test import TestCase
 
-from ..models import EveCharacter, EveCorporationInfo, \
-    EveAllianceInfo, _eve_entity_image_url
+from ..models import (
+    EveCharacter, EveCorporationInfo, EveAllianceInfo
+)
 from ..providers import Alliance, Corporation, Character
+from ..evelinks import eveimageserver
 
-
-class EveUniverseImageUrlTestCase(TestCase):
-    """unit test for _eve_entity_image_url()"""
-    
-    def test_sizes(self):        
-        self.assertEqual(
-            _eve_entity_image_url('character', 42),  
-            'https://images.evetech.net/characters/42/portrait?size=32'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=32),  
-            'https://images.evetech.net/characters/42/portrait?size=32'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=64),  
-            'https://images.evetech.net/characters/42/portrait?size=64'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=128),  
-            'https://images.evetech.net/characters/42/portrait?size=128'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=256),  
-            'https://images.evetech.net/characters/42/portrait?size=256'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=512),  
-            'https://images.evetech.net/characters/42/portrait?size=512'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, size=1024),  
-            'https://images.evetech.net/characters/42/portrait?size=1024'
-        )
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('corporation', 42, size=-5)
-
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('corporation', 42, size=0)
-        
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('corporation', 42, size=31)
-        
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('corporation', 42, size=1025)
-
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('corporation', 42, size=2048)
-
-
-    def test_variant(self):
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, variant='portrait'),  
-            'https://images.evetech.net/characters/42/portrait?size=32'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('alliance', 42, variant='logo'),  
-            'https://images.evetech.net/alliances/42/logo?size=32'
-        )
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('character', 42, variant='logo')
-    
-
-    def test_alliance(self):
-
-        self.assertEqual(
-            _eve_entity_image_url('alliance', 42),  
-            'https://images.evetech.net/alliances/42/logo?size=32'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('corporation', 42),  
-            'https://images.evetech.net/corporations/42/logo?size=32'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42),  
-            'https://images.evetech.net/characters/42/portrait?size=32'
-        )
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('station', 42)
-
-
-    def test_tenants(self):
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, tenant='tranquility'),  
-            'https://images.evetech.net/characters/42/portrait?size=32&tenant=tranquility'
-        )
-        self.assertEqual(
-            _eve_entity_image_url('character', 42, tenant='singularity'),  
-            'https://images.evetech.net/characters/42/portrait?size=32&tenant=singularity'
-        )
-        with self.assertRaises(ValueError):
-            _eve_entity_image_url('character', 42, tenant='xxx')
-        
 
 class EveCharacterTestCase(TestCase):
     def test_corporation_prop(self):
@@ -109,7 +19,7 @@ class EveCharacterTestCase(TestCase):
             character_name='character.name',
             corporation_id='2345',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='character.alliance.id',
             alliance_name='character.alliance.name',
         )
@@ -117,7 +27,7 @@ class EveCharacterTestCase(TestCase):
         expected = EveCorporationInfo.objects.create(
             corporation_id='2345',
             corporation_name='corp.name',
-            corporation_ticker='corp.ticker',
+            corporation_ticker='abc',
             member_count=10,
             alliance=None,
         )
@@ -125,7 +35,7 @@ class EveCharacterTestCase(TestCase):
         incorrect = EveCorporationInfo.objects.create(
             corporation_id='9999',
             corporation_name='corp.name1',
-            corporation_ticker='corp.ticker1',
+            corporation_ticker='abc1',
             member_count=10,
             alliance=None,
         )
@@ -143,13 +53,13 @@ class EveCharacterTestCase(TestCase):
             character_name='character.name',
             corporation_id='2345',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='character.alliance.id',
             alliance_name='character.alliance.name',
         )
 
         with self.assertRaises(EveCorporationInfo.DoesNotExist):
-            result = character.corporation
+            character.corporation
 
     def test_alliance_prop(self):
         """
@@ -160,7 +70,7 @@ class EveCharacterTestCase(TestCase):
             character_name='character.name',
             corporation_id='2345',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='3456',
             alliance_name='character.alliance.name',
         )
@@ -192,13 +102,13 @@ class EveCharacterTestCase(TestCase):
             character_name='character.name',
             corporation_id='2345',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='3456',
             alliance_name='character.alliance.name',
         )
 
         with self.assertRaises(EveAllianceInfo.DoesNotExist):
-            result = character.alliance
+            character.alliance
 
     def test_alliance_prop_none(self):
         """
@@ -209,7 +119,7 @@ class EveCharacterTestCase(TestCase):
             character_name='character.name',
             corporation_id='2345',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id=None,
             alliance_name=None,
         )
@@ -244,15 +154,14 @@ class EveCharacterTestCase(TestCase):
 
         # todo: add test cases not yet covered, e.g. with alliance
 
-
     def test_image_url(self):
         self.assertEqual(
             EveCharacter.generic_portrait_url(42),
-            _eve_entity_image_url('character', 42)
+            eveimageserver._eve_entity_image_url('character', 42)
         )
         self.assertEqual(
             EveCharacter.generic_portrait_url(42, 256),
-            _eve_entity_image_url('character', 42, 256)
+            eveimageserver._eve_entity_image_url('character', 42, 256)
         )
 
     def test_portrait_urls(self):
@@ -265,29 +174,28 @@ class EveCharacterTestCase(TestCase):
         )
         self.assertEqual(
             x.portrait_url(),
-            _eve_entity_image_url('character', 42)
+            eveimageserver._eve_entity_image_url('character', 42)
         )
         self.assertEqual(
             x.portrait_url(64),
-            _eve_entity_image_url('character', 42, size=64)
+            eveimageserver._eve_entity_image_url('character', 42, size=64)
         )       
         self.assertEqual(
             x.portrait_url_32,
-            _eve_entity_image_url('character', 42, size=32)
+            eveimageserver._eve_entity_image_url('character', 42, size=32)
         )
         self.assertEqual(
             x.portrait_url_64,
-            _eve_entity_image_url('character', 42, size=64)
+            eveimageserver._eve_entity_image_url('character', 42, size=64)
         )
         self.assertEqual(
             x.portrait_url_128,
-            _eve_entity_image_url('character', 42, size=128)
+            eveimageserver._eve_entity_image_url('character', 42, size=128)
         )
         self.assertEqual(
             x.portrait_url_256,
-            _eve_entity_image_url('character', 42, size=256)
+            eveimageserver._eve_entity_image_url('character', 42, size=256)
         )
-
 
     def test_corporation_logo_urls(self):
         x = EveCharacter(
@@ -299,29 +207,28 @@ class EveCharacterTestCase(TestCase):
         )
         self.assertEqual(
             x.corporation_logo_url(),
-            _eve_entity_image_url('corporation', 123)
+            eveimageserver._eve_entity_image_url('corporation', 123)
         )
         self.assertEqual(
             x.corporation_logo_url(256),
-            _eve_entity_image_url('corporation', 123, size=256)
+            eveimageserver._eve_entity_image_url('corporation', 123, size=256)
         )
         self.assertEqual(
             x.corporation_logo_url_32,
-            _eve_entity_image_url('corporation', 123, size=32)
+            eveimageserver._eve_entity_image_url('corporation', 123, size=32)
         )
         self.assertEqual(
             x.corporation_logo_url_64,
-            _eve_entity_image_url('corporation', 123, size=64)
+            eveimageserver._eve_entity_image_url('corporation', 123, size=64)
         )
         self.assertEqual(
             x.corporation_logo_url_128,
-            _eve_entity_image_url('corporation', 123, size=128)
+            eveimageserver._eve_entity_image_url('corporation', 123, size=128)
         )
         self.assertEqual(
             x.corporation_logo_url_256,
-            _eve_entity_image_url('corporation', 123, size=256)
+            eveimageserver._eve_entity_image_url('corporation', 123, size=256)
         )
-
 
     def test_alliance_logo_urls(self):
         x = EveCharacter(
@@ -354,27 +261,27 @@ class EveCharacterTestCase(TestCase):
         x.alliance_id = 987
         self.assertEqual(
             x.alliance_logo_url(),
-            _eve_entity_image_url('alliance', 987)
+            eveimageserver._eve_entity_image_url('alliance', 987)
         )
         self.assertEqual(
             x.alliance_logo_url(128),
-            _eve_entity_image_url('alliance', 987, size=128)
+            eveimageserver._eve_entity_image_url('alliance', 987, size=128)
         )
         self.assertEqual(
             x.alliance_logo_url_32,
-            _eve_entity_image_url('alliance', 987, size=32)
+            eveimageserver._eve_entity_image_url('alliance', 987, size=32)
         )
         self.assertEqual(
             x.alliance_logo_url_64,
-            _eve_entity_image_url('alliance', 987, size=64)
+            eveimageserver._eve_entity_image_url('alliance', 987, size=64)
         )
         self.assertEqual(
             x.alliance_logo_url_128,
-            _eve_entity_image_url('alliance', 987, size=128)
+            eveimageserver._eve_entity_image_url('alliance', 987, size=128)
         )
         self.assertEqual(
             x.alliance_logo_url_256,
-            _eve_entity_image_url('alliance', 987, size=256)
+            eveimageserver._eve_entity_image_url('alliance', 987, size=256)
         )
 
 
@@ -456,7 +363,6 @@ class EveAllianceTestCase(TestCase):
         # potential bug
         # update_alliance() is only updateting executor_corp_id when object is given
 
-
     def test_update_alliance_wo_object(self):
         mock_EveAllianceProviderManager = Mock()
         mock_EveAllianceProviderManager.get_alliance.return_value = \
@@ -475,11 +381,11 @@ class EveAllianceTestCase(TestCase):
         )
         my_alliance.provider = mock_EveAllianceProviderManager
         my_alliance.save()
-        updated_alliance = Alliance(                
-                name='Dummy Alliance 2',
-                corp_ids=[2004],                
-                executor_corp_id=2004
-            )
+        Alliance(                
+            name='Dummy Alliance 2',
+            corp_ids=[2004],                
+            executor_corp_id=2004
+        )
         my_alliance.update_alliance()
         my_alliance.refresh_from_db()
         self.assertEqual(int(my_alliance.executor_corp_id), 2004)
@@ -487,15 +393,14 @@ class EveAllianceTestCase(TestCase):
         # potential bug
         # update_alliance() is only updateting executor_corp_id nothing else ???
 
-
     def test_image_url(self):
         self.assertEqual(
             EveAllianceInfo.generic_logo_url(42),
-            _eve_entity_image_url('alliance', 42)
+            eveimageserver._eve_entity_image_url('alliance', 42)
         )
         self.assertEqual(
             EveAllianceInfo.generic_logo_url(42, 256),
-            _eve_entity_image_url('alliance', 42, 256)
+            eveimageserver._eve_entity_image_url('alliance', 42, 256)
         )
 
     def test_logo_url(self):
@@ -563,9 +468,7 @@ class EveCorporationTestCase(TestCase):
     
     def test_update_corporation_no_object_w_alliance(self):
         mock_provider = Mock()
-        mock_provider.get_corporation.return_value =  Corporation(
-            members=87
-        )
+        mock_provider.get_corporation.return_value = Corporation(members=87)
         self.my_corp.provider = mock_provider
         
         self.my_corp.update_corporation()
@@ -585,15 +488,14 @@ class EveCorporationTestCase(TestCase):
         self.assertEqual(my_corp2.member_count, 8)
         self.assertIsNone(my_corp2.alliance)
 
-
     def test_image_url(self):
         self.assertEqual(
             EveCorporationInfo.generic_logo_url(42),
-            _eve_entity_image_url('corporation', 42)
+            eveimageserver._eve_entity_image_url('corporation', 42)
         )
         self.assertEqual(
             EveCorporationInfo.generic_logo_url(42, 256),
-            _eve_entity_image_url('corporation', 42, 256)
+            eveimageserver._eve_entity_image_url('corporation', 42, 256)
         )
 
     def test_logo_url(self):        
@@ -621,4 +523,3 @@ class EveCorporationTestCase(TestCase):
             self.my_corp.logo_url_256,
             'https://images.evetech.net/corporations/2001/logo?size=256'
         )
-        

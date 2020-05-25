@@ -2,24 +2,30 @@
 
 from urllib.parse import urljoin, quote
 
-from . import *
+from . import (
+    _ESI_CATEGORY_ALLIANCE, 
+    _ESI_CATEGORY_CORPORATION, 
+    _ESI_CATEGORY_REGION, 
+    _ESI_CATEGORY_SOLARSYSTEM
+)
 
-BASE_URL = 'http://evemaps.dotlan.net'
+
+_BASE_URL = 'http://evemaps.dotlan.net'
 
 
 def _build_url(category: str, name: str) -> str:
     """return url to profile page for an eve entity"""
     
-    if category == ESI_CATEGORY_ALLIANCE:        
+    if category == _ESI_CATEGORY_ALLIANCE:        
         partial = 'alliance'
 
-    elif category == ESI_CATEGORY_CORPORATION:        
+    elif category == _ESI_CATEGORY_CORPORATION:        
         partial = 'corp'
 
-    elif category == ESI_CATEGORY_REGION:
+    elif category == _ESI_CATEGORY_REGION:
         partial = 'map'
     
-    elif category == ESI_CATEGORY_SOLARSYSTEM:
+    elif category == _ESI_CATEGORY_SOLARSYSTEM:
         partial = 'system'
     
     else:
@@ -28,7 +34,7 @@ def _build_url(category: str, name: str) -> str:
         )
         
     url = urljoin(
-        BASE_URL,
+        _BASE_URL,
         '{}/{}'.format(partial, quote(str(name).replace(" ", "_")))
         
     )
@@ -37,16 +43,19 @@ def _build_url(category: str, name: str) -> str:
 
 def alliance_url(name: str) -> str:
     """url for page about given alliance on dotlan"""
-    return _build_url(ESI_CATEGORY_ALLIANCE, name)
+    return _build_url(_ESI_CATEGORY_ALLIANCE, name)
+
 
 def corporation_url(name: str) -> str:
     """url for page about given corporation on dotlan"""
-    return _build_url(ESI_CATEGORY_CORPORATION, name)
+    return _build_url(_ESI_CATEGORY_CORPORATION, name)
+
 
 def region_url(name: str) -> str:
     """url for page about given region on dotlan"""
-    return _build_url(ESI_CATEGORY_REGION, name)
+    return _build_url(_ESI_CATEGORY_REGION, name)
+
 
 def solar_system_url(name: str) -> str:
     """url for page about given solar system on dotlan"""
-    return _build_url(ESI_CATEGORY_SOLARSYSTEM, name)
+    return _build_url(_ESI_CATEGORY_SOLARSYSTEM, name)

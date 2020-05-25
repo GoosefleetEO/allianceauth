@@ -58,23 +58,19 @@ class EveCharacterManagerTestCase(TestCase):
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_update_character(self, provider):
         # Also covers Model.update_character
-        existing = EveCharacter.objects.create(
+        EveCharacter.objects.create(
             character_id='1234',
             character_name='character.name',
             corporation_id='character.corp.id',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='character.alliance.id',
             alliance_name='character.alliance.name',
         )
 
         expected = self.TestCharacter(
-            id='1234', 
-            name='Test Character', 
-            corp_id='2345', 
-            alliance_id='3456'
+            id='1234', name='Test Character', corp_id='2345', alliance_id='3456'
         )
-
         provider.get_character.return_value = expected
 
         result = EveCharacter.objects.update_character('1234')
@@ -94,7 +90,7 @@ class EveCharacterManagerTestCase(TestCase):
             character_name='character.name',
             corporation_id='character.corp.id',
             corporation_name='character.corp.name',
-            corporation_ticker='character.corp.ticker',
+            corporation_ticker='abc',
             alliance_id='character.alliance.id',
             alliance_name='character.alliance.name',
         )
@@ -271,7 +267,7 @@ class EveCorporationManagerTestCase(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id='2345',
             corporation_name='corp.name',
-            corporation_ticker='corp.ticker',
+            corporation_ticker='abc',
             member_count=10,
             alliance=None,
         )
