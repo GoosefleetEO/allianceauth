@@ -66,10 +66,17 @@ class MumbleUser(AbstractServiceModel):
     pwhash = models.CharField(max_length=80)
     hashfn = models.CharField(max_length=20, default='sha1')
     groups = models.TextField(blank=True, null=True)
+    certhash = models.CharField(
+        verbose_name="Certificate Hash",
+        max_length=254,
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="Hash of Mumble client certificate as presented when user authenticates"
+    )
+    display_name = models.CharField(max_length=254, unique=True)
 
     objects = MumbleManager()
-
-    display_name = models.CharField(max_length=254, unique=True)
 
     def __str__(self):
         return self.username
