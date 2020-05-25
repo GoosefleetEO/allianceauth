@@ -20,8 +20,22 @@
         {% include 'groupmanagement/menu.html' %}
         
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#add">{% trans "Join Requests" %}</a></li>
-            <li><a data-toggle="tab" href="#leave">{% trans "Leave Requests" %}</a></li>
+            <li class="active">
+                <a data-toggle="tab" href="#add">
+                    {% trans "Join Requests" %} 
+                    {% if acceptrequests %}
+                        <span class="badge">{{ acceptrequests|length }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#leave">
+                    {% trans "Leave Requests" %}
+                    {% if leaverequests %}
+                        <span class="badge">{{ leaverequests|length }}</span>
+                    {% endif %}
+                </a>
+            </li>
         </ul>
         
         <div class="tab-content">
