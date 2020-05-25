@@ -1,10 +1,14 @@
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 from django.test import TestCase
 
 from ..models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from ..tasks import update_alliance, update_corp, update_character, \
+from ..tasks import (
+    update_alliance, 
+    update_corp, 
+    update_character, 
     run_model_update
+)
 
 
 class TestTasks(TestCase):
@@ -13,42 +17,33 @@ class TestTasks(TestCase):
     def test_update_corp(self, mock_EveCorporationInfo):
         update_corp(42)
         self.assertEqual(
-            mock_EveCorporationInfo.objects.update_corporation.call_count,
-            1
+            mock_EveCorporationInfo.objects.update_corporation.call_count, 1
         )
         self.assertEqual(
-            mock_EveCorporationInfo.objects.update_corporation.call_args[0][0], 
-            42
+            mock_EveCorporationInfo.objects.update_corporation.call_args[0][0], 42
         )
-        
-    
+            
     @patch('allianceauth.eveonline.tasks.EveAllianceInfo')
     def test_update_alliance(self, mock_EveAllianceInfo):
         update_alliance(42)
         self.assertEqual(
-            mock_EveAllianceInfo.objects.update_alliance.call_args[0][0], 
-            42
+            mock_EveAllianceInfo.objects.update_alliance.call_args[0][0], 42
         )
         self.assertEqual(
-            mock_EveAllianceInfo.objects\
-                .update_alliance.return_value.populate_alliance.call_count, 
-            1
+            mock_EveAllianceInfo.objects
+            .update_alliance.return_value.populate_alliance.call_count, 1
         )
-
 
     @patch('allianceauth.eveonline.tasks.EveCharacter')
     def test_update_character(self, mock_EveCharacter):
         update_character(42)
         self.assertEqual(
-            mock_EveCharacter.objects.update_character.call_count,
-            1
+            mock_EveCharacter.objects.update_character.call_count, 1
         )
         self.assertEqual(
-            mock_EveCharacter.objects.update_character.call_args[0][0], 
-            42
+            mock_EveCharacter.objects.update_character.call_args[0][0], 42
         )
 
-    
     @patch('allianceauth.eveonline.tasks.update_character')
     @patch('allianceauth.eveonline.tasks.update_alliance')
     @patch('allianceauth.eveonline.tasks.update_corp')
@@ -89,22 +84,15 @@ class TestTasks(TestCase):
 
         self.assertEqual(mock_update_corp.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_corp.apply_async.call_args[1]['args'][0]), 
-            2345
+            int(mock_update_corp.apply_async.call_args[1]['args'][0]), 2345
         )
         
         self.assertEqual(mock_update_alliance.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_alliance.apply_async.call_args[1]['args'][0]), 
-            3456
+            int(mock_update_alliance.apply_async.call_args[1]['args'][0]), 3456
         )
         
         self.assertEqual(mock_update_character.apply_async.call_count, 1)
         self.assertEqual(
-            int(mock_update_character.apply_async.call_args[1]['args'][0]), 
-            1234
+            int(mock_update_character.apply_async.call_args[1]['args'][0]), 1234
         )
-
-
-
-    

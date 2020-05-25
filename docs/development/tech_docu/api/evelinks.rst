@@ -6,6 +6,13 @@ This package generates profile URLs for eve entities on 3rd party websites like 
 
 Location: ``allianceauth.eveonline.evelinks``
 
+eveimageserver
+===============
+
+.. automodule:: allianceauth.eveonline.evelinks.eveimageserver
+    :members:
+    :undoc-members:
+
 dotlan
 ===============
 

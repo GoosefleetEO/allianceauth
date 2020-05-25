@@ -15,7 +15,7 @@
 from django import template
 
 from ..models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from ..evelinks import evewho, dotlan, zkillboard
+from ..evelinks import eveimageserver, evewho, dotlan, zkillboard
 
 register = template.Library()
 
@@ -163,7 +163,7 @@ def dotlan_solar_system_url(eve_obj: object) -> str:
     return _generic_evelinks_url(dotlan, 'solar_system_url', eve_obj)
 
 
-#zkillboard
+# zkillboard
 
 @register.filter
 def zkillboard_character_url(eve_obj: EveCharacter) -> str:    
@@ -211,7 +211,6 @@ def zkillboard_solar_system_url(eve_obj: object) -> str:
 
 
 # image urls
-
 
 @register.filter
 def character_portrait_url(
@@ -284,3 +283,30 @@ def alliance_logo_url(
         except ValueError:
             return ''
 
+
+@register.filter
+def type_icon_url(
+    type_id: int, 
+    size: int = _DEFAULT_IMAGE_SIZE
+) -> str:
+    """generates a icon image URL for the given type ID    
+    Returns URL or empty string
+    """
+    try:
+        return eveimageserver.type_icon_url(type_id, size)
+    except ValueError:
+        return ''
+
+
+@register.filter
+def type_render_url(
+    type_id: int, 
+    size: int = _DEFAULT_IMAGE_SIZE
+) -> str:
+    """generates a render image URL for the given type ID    
+    Returns URL or empty string
+    """
+    try:
+        return eveimageserver.type_render_url(type_id, size)
+    except ValueError:
+        return ''

@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from ...models import EveCharacter, EveCorporationInfo, EveAllianceInfo
-from .. import dotlan, zkillboard, evewho
+from .. import eveimageserver, evewho, dotlan, zkillboard
 from ...templatetags import evelinks
 
 
@@ -332,3 +332,28 @@ class TestTemplateTags(TestCase):
             ''
         )
 
+    def test_type_icon_url(self):
+        expected = eveimageserver.type_icon_url(123)
+        self.assertEqual(evelinks.type_icon_url(123), expected)
+
+        expected = eveimageserver.type_icon_url(123, 128)
+        self.assertEqual(evelinks.type_icon_url(123, 128), expected)
+        
+        expected = ''
+        self.assertEqual(evelinks.type_icon_url(123, 99), expected)
+        
+        expected = ''
+        self.assertEqual(evelinks.type_icon_url(None), expected)
+
+    def test_type_render_url(self):
+        expected = eveimageserver.type_render_url(123)
+        self.assertEqual(evelinks.type_render_url(123), expected)
+
+        expected = eveimageserver.type_render_url(123, 128)
+        self.assertEqual(evelinks.type_render_url(123, 128), expected)
+        
+        expected = ''
+        self.assertEqual(evelinks.type_render_url(123, 99), expected)
+        
+        expected = ''
+        self.assertEqual(evelinks.type_render_url(None), expected)
