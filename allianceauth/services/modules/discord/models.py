@@ -184,7 +184,10 @@ class DiscordUser(models.Model):
         return success
                 
     def delete_user(
-        self, notify_user: bool = False, is_rate_limited: bool = True
+        self, 
+        notify_user: bool = False, 
+        is_rate_limited: bool = True,
+        handle_api_exceptions: bool = False
     ) -> bool:
         """Deletes the Discount user both on the server and locally
 
@@ -192,6 +195,8 @@ class DiscordUser(models.Model):
         - notify_user: When True will sent a notification to the user 
         informing him about the deleting of his account
         - is_rate_limited: When False will disable default rate limiting (use with care)
+        - handle_api_exceptions: When True method will return False 
+        when an API exception occurs
         
         Returns True when successful, otherwise False or raises exceptions
         Return None if user does no longer exist
@@ -228,7 +233,10 @@ class DiscordUser(models.Model):
                 return False
         
         except (HTTPError, ConnectionError, DiscordApiBackoff) as ex:
-            logger.exception(
-                'Failed to remove user %s from Discord server: %s', self.user, ex
-            )
-            return False        
+            if handle_api_exceptions:
+                logger.exception(
+                    'Failed to remove user %s from Discord server: %s', self.user, ex
+                )
+                return False        
+            else:
+                raise ex

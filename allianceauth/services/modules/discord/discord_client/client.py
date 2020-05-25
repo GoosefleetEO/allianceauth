@@ -283,7 +283,10 @@ class DiscordClient:
         """
         roles = list()
         guild_roles = DiscordRoles(self.guild_roles(guild_id))
-        for role_name in role_names:
+        role_names_cleaned = {
+            DiscordRoles.sanitize_role_name(name) for name in role_names
+        }
+        for role_name in role_names_cleaned:
             role, created = self.match_or_create_role_from_name(
                 guild_id=guild_id, 
                 role_name=DiscordRoles.sanitize_role_name(role_name),

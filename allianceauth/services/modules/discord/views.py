@@ -23,7 +23,9 @@ ACCESS_PERM = 'discord.access_discord'
 @permission_required(ACCESS_PERM)
 def deactivate_discord(request):
     logger.debug("deactivate_discord called by user %s", request.user)
-    if request.user.discord.delete_user(is_rate_limited=False):
+    if request.user.discord.delete_user(
+        is_rate_limited=False, handle_api_exceptions=True
+    ):
         logger.info("Successfully deactivated discord for user %s", request.user)
         messages.success(request, _('Deactivated Discord account.'))
     else:
@@ -40,7 +42,9 @@ def deactivate_discord(request):
 @permission_required(ACCESS_PERM)
 def reset_discord(request):
     logger.debug("reset_discord called by user %s", request.user)
-    if request.user.discord.delete_user(is_rate_limited=False):
+    if request.user.discord.delete_user(
+        is_rate_limited=False, handle_api_exceptions=True
+    ):
         logger.info(
             "Successfully deleted discord user for user %s - "
             "forwarding to discord activation.", 
