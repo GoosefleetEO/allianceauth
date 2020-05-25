@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -76,7 +75,6 @@ def group_membership_audit(request, group_id):
     logger.debug("group_management_audit called by user %s" % request.user)
     group = get_object_or_404(Group, id=group_id)
     try:
-
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
         if not GroupManager.check_internal_group(group) or not GroupManager.can_manage_group(request.user, group):
@@ -91,8 +89,6 @@ def group_membership_audit(request, group_id):
     render_items['entries'] = entries
 
     return render(request, 'groupmanagement/audit.html', context=render_items)
-
-
 
 
 @login_required
