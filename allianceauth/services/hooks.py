@@ -19,6 +19,10 @@ def get_extension_logger(name):
     :param: name: the name of the extension doing the logging
     :return: an extensions child logger
     """
+    if not isinstance(name, str):
+        raise TypeError(f"get_extension_logger takes an argument of type string."
+                        f"Instead received argument of type {type(name).__name__}.")
+
     import logging
 
     parent_logger = logging.getLogger('extensions')
