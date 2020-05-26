@@ -14,8 +14,7 @@ def get_extension_logger(name):
     Takes the name of a plugin/extension and generates a child logger of the extensions logger
     to be used by the extension to log events to the extensions logger.
 
-    The logging level is decided by whether or not DEBUG is set to true in the project settings. If
-    DEBUG is set to false, then the logging level is set to INFO.
+    The logging level is determined by the level defined for the parent logger.
 
     :param: name: the name of the extension doing the logging
     :return: an extensions child logger
