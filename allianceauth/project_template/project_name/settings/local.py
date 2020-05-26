@@ -23,7 +23,7 @@ INSTALLED_APPS += [
 ]
 
 # To change the logging level for extensions, uncomment the following line.
-# LOGGING['handlers']['extension_file']['level'] = 'INFO'
+# LOGGING['handlers']['extension_file']['level'] = 'DEBUG'
 
 
 # Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
