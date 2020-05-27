@@ -36,7 +36,7 @@
                                 {{ current_version }}
                             </p>
                         </li>
-                        <li class="list-group-item list-group-item-{% if latest_major %}success{% else %}warning{% endif %}">
+                        <li class="list-group-item list-group-item-{% if latest_major %}success{% else %}danger{% endif %}">
                             <h5 class="list-group-item-heading">{% trans "Latest Major" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
@@ -46,7 +46,7 @@
                                 {% if not latest_major %}<br>{% trans "Update available" %}{% endif %}
                             </p>
                         </li>
-                        <li class="list-group-item list-group-item-{% if latest_minor %}success{% else %}warning{% endif %}">
+                        <li class="list-group-item list-group-item-{% if latest_minor %}success{% else %}danger{% endif %}">
                             <h5 class="list-group-item-heading">{% trans "Latest Minor" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
@@ -56,7 +56,7 @@
                                 {% if not latest_minor %}<br>{% trans "Update available" %}{% endif %}
                             </p>
                         </li>
-                        <li class="list-group-item list-group-item-{% if latest_patch %}success{% else %}danger{% endif %}">
+                        <li class="list-group-item list-group-item-{% if latest_patch %}success{% else %}warning{% endif %}">
                             <h5 class="list-group-item-heading">{% trans "Latest Patch" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
