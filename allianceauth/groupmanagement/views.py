@@ -27,7 +27,7 @@ def group_management(request):
     acceptrequests = []
     leaverequests = []
 
-    base_group_query = GroupRequest.objects.select_related('user', 'group')
+    base_group_query = GroupRequest.objects.select_related('user', 'group', 'user__profile__main_character')
     if GroupManager.has_management_permission(request.user):
         # Full access
         group_requests = base_group_query.all()
@@ -120,7 +120,7 @@ def group_membership_list(request, group_id):
     for member in \
         group.user_set\
             .all()\
-            .select_related('profile')\
+            .select_related('profile', 'profile__main_character')\
             .order_by('profile__main_character__character_name'):
 
         members.append({
