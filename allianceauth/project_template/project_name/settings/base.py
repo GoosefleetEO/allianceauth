@@ -221,7 +221,7 @@ LOGGING = {
             'backupCount': 5,  # edit this line to change number of log backups
         },
         'extension_file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'log/extensions.log'),
             'formatter': 'verbose',
