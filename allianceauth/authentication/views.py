@@ -6,11 +6,13 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
-from django.urls import reverse
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from allianceauth.eveonline.models import EveCharacter
+
 from esi.decorators import token_required
 from esi.models import Token
 
@@ -57,6 +59,14 @@ def dashboard(request):
         'characters': characters
     }
     return render(request, 'authentication/dashboard.html', context)
+
+
+@login_required
+def notifications_render(request):
+    """returns html to render the notifications item in the top menu"""
+    unread_count = request.user.notification_set.filter(viewed=False).count()
+    context = {'notifications': unread_count}
+    return render(request, 'allianceauth/notifications_menu_item.html', context)
 
 
 @login_required
