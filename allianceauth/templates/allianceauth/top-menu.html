@@ -20,11 +20,17 @@
                     <li>
                         {% include 'allianceauth/night-toggle.html' %}
                     </li>
-                    <li 
-                        class="{% navactive request 'notifications:' %}" id="menu_item_notifications"
-                    >
-                        {% include 'allianceauth/notifications_menu_item.html' %}
+                {% if notifications %}
+                    <li class="{% navactive request 'notifications:' %}">
+                        <a href="{% url 'notifications:list' %}">Notifications
+                            <span class="badge">{{ notifications }}</span>
+                        </a>
                     </li>
+                {% else %}
+                    <li><a href="{% url 'notifications:list' %}">
+                        <i class="fa fa-bell-o"></i></a>
+                    </li>
+                {% endif %}
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
@@ -58,9 +64,3 @@
         </div>
     </div>
 </nav>
-<!-- share data with JS part -->
-<div 
-    id="dataExport"     
-    data-notificationsRenderUrl="{% url 'authentication:notifications_render' %}"
->
-</div>

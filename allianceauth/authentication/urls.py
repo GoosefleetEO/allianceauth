@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 
 from . import views
@@ -23,9 +24,4 @@ urlpatterns = [
         name='add_character'
     ),   
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
-    url(
-        r'^notifications_render/$', 
-        views.notifications_render, 
-        name='notifications_render'
-    ),
 ]

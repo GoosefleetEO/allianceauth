@@ -1,9 +1,0 @@
-{% if notifications %}
-    <a href="{% url 'notifications:list' %}">Notifications
-        <span class="badge">{{ notifications }}</span>
-    </a>    
-{% else %}
-    <a href="{% url 'notifications:list' %}">
-        <i class="fa fa-bell-o"></i>
-    </a>    
-{% endif %}
