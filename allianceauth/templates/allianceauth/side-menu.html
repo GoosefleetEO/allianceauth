@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load navactive %}
 {% load menu_items %}
+{% load groupmanagement %}
+    
 <div class="col-sm-2 auth-side-navbar" role="navigation">
     <div class="collapse navbar-collapse auth-menus-collapse auth-side-navbar-collapse">
         <ul class="nav nav-pills nav-stacked gray-icon-color" id="side-menu">
@@ -16,7 +18,7 @@
                 </a>
             </li>
 
-            {% if can_manage_groups %}
+            {% if request.user|can_manage_groups %}
                 <li>
                     <a class="{% navactive request 'groupmanagement:management groupmanagement:membership groupmanagement:membership_list' %}"
                        href="{% url 'groupmanagement:management' %}">

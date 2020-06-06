@@ -11,11 +11,7 @@ from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
 
-from ..admin import (   
-   HasLeaderFilter,
-   GroupAdmin,   
-   Group
-)
+from ..admin import HasLeaderFilter, GroupAdmin, Group
 from . import get_admin_change_view_url
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
@@ -219,8 +215,8 @@ class TestGroupAdmin(TestCase):
         """create autogroups for corps and alliances"""
         if _has_auto_groups:
             autogroups_config = AutogroupsConfig(
-                corp_groups = True,
-                alliance_groups = True
+                corp_groups=True,
+                alliance_groups=True
             )
             autogroups_config.save()
             for state in State.objects.all():
@@ -277,7 +273,7 @@ class TestGroupAdmin(TestCase):
 
     if _has_auto_groups:
         @patch(MODULE_PATH + '._has_auto_groups', True)
-        def test_properties_6(self):
+        def test_properties_7(self):
             self._create_autogroups()
             expected = ['Auto Group']
             my_group = Group.objects\
@@ -337,8 +333,8 @@ class TestGroupAdmin(TestCase):
             changelist = my_modeladmin.get_changelist_instance(request)
             queryset = changelist.get_queryset(request)
             expected = Group.objects.exclude(
-                        managedalliancegroup__isnull=True, 
-                        managedcorpgroup__isnull=True
+                managedalliancegroup__isnull=True, 
+                managedcorpgroup__isnull=True
             )
             self.assertSetEqual(set(queryset), set(expected))
          
