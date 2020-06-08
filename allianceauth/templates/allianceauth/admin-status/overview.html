@@ -46,20 +46,18 @@
                                 {% if not latest_patch %}<br>{% trans "Update available" %}{% endif %}
                             </p>
                         </li>
-                        <li class="list-group-item {% if latest_beta %}list-group-item-info{% endif %}">
+                        {% if latest_beta %}
+                        <li class="list-group-item list-group-item-info">
                             <h5 class="list-group-item-heading">{% trans "Latest Pre-Release" %}</h5>
                             <p class="list-group-item-text">
-                                {% if latest_beta %}
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
                                     <i class="fa fa-gitlab hidden-xs" aria-hidden="true"></i>
                                     {{ latest_beta_version }}
                                 </a>
-                                {% if not latest_patch %}<br>{% trans "Pre-Release available" %}{% endif %}
-                                {% else %}
-                                {% trans "No Current Pre-Release" %}
-                                {% endif %}
+                                <br>{% trans "Pre-Release available" %}
                             </p>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
