@@ -50,6 +50,12 @@ mock_redis = MagicMock(**{
 })
 
 
+# default mock function to simulate sleep
+def my_sleep(value):
+    if value < 0:
+        raise ValueError('sleep length must be non-negative')
+
+
 class DiscordClient2(DiscordClient):
     """Variant that overwrites lua wrappers with dummies for easier testing"""
 
@@ -1034,6 +1040,42 @@ class TestRateLimitMechanic(TestCase):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
         )        
+        mock_sleep.side_effect = my_sleep
+        my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
+        mock_redis_decr_or_set.side_effect = my_redis_decr_or_set        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
+        
+        result = client.create_guild_role(
+            guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
+        )
+        self.assertDictEqual(result, self.my_role)
+        self.assertTrue(mock_sleep.called)
+
+    @patch(MODULE_PATH + '.sleep')
+    def test_wait_if_reset_happens_soon_and_sleep_must_not_be_negative(
+        self, requests_mocker, mock_sleep, mock_redis_decr_or_set
+    ):        
+        counter = 0
+                
+        def my_redis_pttl_2(name: str):
+            if name == DiscordClient._KEY_GLOBAL_BACKOFF_UNTIL:
+                return -1
+            else:
+                return -1
+        
+        def my_redis_decr_or_set(**kwargs):
+            nonlocal counter
+            counter += 1
+
+            if counter < 2:
+                return -1
+            else:
+                return 5
+
+        requests_mocker.post(
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
+        )        
+        mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
         mock_redis_decr_or_set.side_effect = my_redis_decr_or_set
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
@@ -1075,6 +1117,7 @@ class TestRateLimitMechanic(TestCase):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
         )        
+        mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
         mock_redis_decr_or_set.return_value = -1
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
@@ -1208,7 +1251,8 @@ class TestBackoffHandling(TestCase):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
         )
-        retry_after = 50        
+        retry_after = 50
+        mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.return_value': retry_after})
         mock_redis_decr_or_set.return_value = 5
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
