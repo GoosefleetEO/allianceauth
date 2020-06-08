@@ -95,7 +95,7 @@ def _current_version_summary() -> dict:
         logger.exception('Error while getting gitlab release tags')
         return {}
         
-    latest_major_version, latest_minor_version, latest_patch_version = \
+    latest_major_version, latest_minor_version, latest_patch_version, latest_beta_version = \
         _latests_versions(tags)    
     current_version = Pep440Version(__version__)
 
@@ -105,15 +105,21 @@ def _current_version_summary() -> dict:
         current_version >= latest_minor_version if latest_minor_version else False
     has_latest_patch = \
         current_version >= latest_patch_version if latest_patch_version else False
+    has_current_beta = \
+        current_version.base_version <= latest_beta_version.base_version \
+            and latest_major_version.base_version <= latest_beta_version.base_version \
+                if latest_beta_version else False
 
     response = {        
         'latest_major': has_latest_major,
         'latest_minor': has_latest_minor,
         'latest_patch': has_latest_patch,
+        'latest_beta': has_current_beta,
         'current_version': str(current_version),
         'latest_major_version': str(latest_major_version),
         'latest_minor_version': str(latest_minor_version),
-        'latest_patch_version': str(latest_patch_version)
+        'latest_patch_version': str(latest_patch_version),
+        'latest_beta_version': str(latest_beta_version)
     }        
     return response
 
@@ -128,14 +134,18 @@ def _latests_versions(tags: list) -> tuple:
     Non-compliant tags will be ignored
     """
     versions = list()
+    betas = list()
     for tag in tags:
         try:
             version = Pep440Version(tag.get('name'))            
         except InvalidVersion:
             pass
         else:
-            if not version.is_prerelease:
+            if version.is_prerelease or version.is_devrelease:
+                betas.append(version)
+            else:
                 versions.append(version)
+
     
     latest_version = latest_patch_version = max(versions)
     latest_major_version = min([
@@ -145,8 +155,8 @@ def _latests_versions(tags: list) -> tuple:
         v for v in versions 
         if v.major == latest_version.major and v.minor == latest_version.minor
     ])
-    
-    return latest_major_version, latest_minor_version, latest_patch_version
+    latest_beta_version = max(betas)
+    return latest_major_version, latest_minor_version, latest_patch_version, latest_beta_version
 
 
 def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES):

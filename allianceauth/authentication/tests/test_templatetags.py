@@ -70,15 +70,16 @@ class TestStatusOverviewTag(TestCase):
             'notifications': GITHUB_NOTIFICATION_ISSUES[:5]
         }
         mock_current_notifications.return_value = notifications
-            
         version_info = {
             'latest_major': True,
             'latest_minor': True,
             'latest_patch': True,
+            'latest_beta': False,
             'current_version': TEST_VERSION,
-            'latest_major_version': '2.0.0',
+            'latest_major_version': '2.4.5',
             'latest_minor_version': '2.4.0',
             'latest_patch_version': '2.4.5',
+            'latest_beta_version': '2.4.4a1',
         }
         mock_current_version_info.return_value = version_info
         mock_fetch_celery_queue_length.return_value = 3
@@ -90,10 +91,12 @@ class TestStatusOverviewTag(TestCase):
             'latest_major': True,
             'latest_minor': True,
             'latest_patch': True,
+            'latest_beta': False,
             'current_version': TEST_VERSION,
-            'latest_major_version': '2.0.0',
+            'latest_major_version': '2.4.5',
             'latest_minor_version': '2.4.0',
             'latest_patch_version': '2.4.5',
+            'latest_beta_version': '2.4.4a1',
             'task_queue_length': 3,
         }
         self.assertEqual(result, expected)
@@ -146,6 +149,7 @@ class TestVersionTags(TestCase):
         self.assertEqual(result['latest_major_version'], '2.0.0')
         self.assertEqual(result['latest_minor_version'], '2.4.0')
         self.assertEqual(result['latest_patch_version'], '2.4.5')
+        self.assertEqual(result['latest_beta_version'], '2.4.6a1')
 
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status.cache')
@@ -174,30 +178,33 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch = _latests_versions(tags)
+        major, minor, patch, beta = _latests_versions(tags)
         self.assertEqual(major, Pep440Version('2.0.0'))
         self.assertEqual(minor, Pep440Version('2.1.0'))
         self.assertEqual(patch, Pep440Version('2.1.1'))
+        self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
     def test_major_and_minor_not_defined_with_zero(self):
         
         tags = create_tags_list(
             ['2.1.2', '2.1.1', '2.0.1', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch = _latests_versions(tags)
+        major, minor, patch, beta = _latests_versions(tags)
         self.assertEqual(major, Pep440Version('2.0.1'))
         self.assertEqual(minor, Pep440Version('2.1.1'))
         self.assertEqual(patch, Pep440Version('2.1.2'))
+        self.assertEqual(beta, Pep440Version('2.1.1a1'))
         
     def test_can_ignore_invalid_versions(self):
         
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', 'invalid']
         )
-        major, minor, patch = _latests_versions(tags)
+        major, minor, patch, beta = _latests_versions(tags)
         self.assertEqual(major, Pep440Version('2.0.0'))
         self.assertEqual(minor, Pep440Version('2.1.0'))
         self.assertEqual(patch, Pep440Version('2.1.1'))
+        self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
 
 class TestFetchListFromGitlab(TestCase):
