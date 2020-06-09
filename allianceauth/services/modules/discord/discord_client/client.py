@@ -46,6 +46,9 @@ DURATION_CONTINGENCY = 500
 # time until next reset is below this threshold
 WAIT_THRESHOLD = 250
 
+# Minimum wait duration when doing a blocking wait
+MINIMUM_BLOCKING_WAIT = 50
+
 # If the rate limit resets soon we will wait it out and then retry to
 # either get a remaining request from our cached counter 
 # or again wait out a short reset time and retry again.
@@ -604,8 +607,11 @@ class DiscordClient:
                 name=self._KEY_GLOBAL_RATE_LIMIT_REMAINING, 
                 value=RATE_LIMIT_MAX_REQUESTS, 
                 px=RATE_LIMIT_RESETS_AFTER + DURATION_CONTINGENCY
-            )            
-            resets_in = self._redis.pttl(self._KEY_GLOBAL_RATE_LIMIT_REMAINING)
+            )                        
+            resets_in = max(
+                MINIMUM_BLOCKING_WAIT, 
+                self._redis.pttl(self._KEY_GLOBAL_RATE_LIMIT_REMAINING)
+            )
             if requests_remaining >= 0:
                 logger.debug(
                     '%s: Got one of %d remaining requests until reset in %s ms',
@@ -615,7 +621,7 @@ class DiscordClient:
                 )
                 return requests_remaining
 
-            elif resets_in < WAIT_THRESHOLD:
+            elif resets_in < WAIT_THRESHOLD:                
                 sleep(resets_in / 1000)
                 logger.debug(
                     '%s: No requests remaining until reset in %d ms. '
