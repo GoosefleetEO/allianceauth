@@ -15,27 +15,27 @@ class EveCharacterTestCase(TestCase):
         Test that the correct corporation is returned by the corporation property
         """
         character = EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='character.alliance.id',
+            corporation_ticker='cc1',
+            alliance_id=12345,
             alliance_name='character.alliance.name',
         )
 
         expected = EveCorporationInfo.objects.create(
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='corp.name',
-            corporation_ticker='abc',
+            corporation_ticker='cc1',
             member_count=10,
             alliance=None,
         )
 
         incorrect = EveCorporationInfo.objects.create(
-            corporation_id='9999',
+            corporation_id=9999,
             corporation_name='corp.name1',
-            corporation_ticker='abc1',
+            corporation_ticker='cc11',
             member_count=10,
             alliance=None,
         )
@@ -49,12 +49,12 @@ class EveCharacterTestCase(TestCase):
         object is not in the database
         """
         character = EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='character.alliance.id',
+            corporation_ticker='cc1',
+            alliance_id=123456,
             alliance_name='character.alliance.name',
         )
 
@@ -66,27 +66,27 @@ class EveCharacterTestCase(TestCase):
         Test that the correct alliance is returned by the alliance property
         """
         character = EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='3456',
+            corporation_ticker='cc1',
+            alliance_id=3456,
             alliance_name='character.alliance.name',
         )
 
         expected = EveAllianceInfo.objects.create(
-            alliance_id='3456',
+            alliance_id=3456,
             alliance_name='alliance.name',
-            alliance_ticker='alliance.ticker',
-            executor_corp_id='alliance.executor_corp_id',
+            alliance_ticker='ac2',
+            executor_corp_id=2345,
         )
 
         incorrect = EveAllianceInfo.objects.create(
-            alliance_id='9001',
+            alliance_id=9001,
             alliance_name='alliance.name1',
-            alliance_ticker='alliance.ticker1',
-            executor_corp_id='alliance.executor_corp_id1',
+            alliance_ticker='ac1',
+            executor_corp_id=2654,
         )
 
         self.assertEqual(character.alliance, expected)
@@ -98,12 +98,12 @@ class EveCharacterTestCase(TestCase):
         object is not in the database
         """
         character = EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='3456',
+            corporation_ticker='cc1',
+            alliance_id=3456,
             alliance_name='character.alliance.name',
         )
 
@@ -115,11 +115,11 @@ class EveCharacterTestCase(TestCase):
         Check that None is returned when the character has no alliance
         """
         character = EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
+            corporation_ticker='cc1',
             alliance_id=None,
             alliance_name=None,
         )
@@ -137,12 +137,12 @@ class EveCharacterTestCase(TestCase):
         )
         
         my_character = EveCharacter.objects.create(
-            character_id='1001',
+            character_id=1001,
             character_name='Bruce Wayne',
-            corporation_id='2001',
+            corporation_id=2001,
             corporation_name='Dummy Corp 1',
             corporation_ticker='DC1',
-            alliance_id='3001',
+            alliance_id=3001,
             alliance_name='Dummy Alliance 1',
         )        
         my_updated_character = Character(
@@ -166,9 +166,9 @@ class EveCharacterTestCase(TestCase):
 
     def test_portrait_urls(self):
         x = EveCharacter(
-            character_id='42',
+            character_id=42,
             character_name='character.name',
-            corporation_id='123',
+            corporation_id=123,
             corporation_name='corporation.name',            
             corporation_ticker='ABC',            
         )
@@ -199,9 +199,9 @@ class EveCharacterTestCase(TestCase):
 
     def test_corporation_logo_urls(self):
         x = EveCharacter(
-            character_id='42',
+            character_id=42,
             character_name='character.name',
-            corporation_id='123',
+            corporation_id=123,
             corporation_name='corporation.name',            
             corporation_ticker='ABC',            
         )
@@ -232,9 +232,9 @@ class EveCharacterTestCase(TestCase):
 
     def test_alliance_logo_urls(self):
         x = EveCharacter(
-            character_id='42',
+            character_id=42,
             character_name='character.name',
-            corporation_id='123',
+            corporation_id=123,
             corporation_name='corporation.name',            
             corporation_ticker='ABC',            
         )        
@@ -405,10 +405,10 @@ class EveAllianceTestCase(TestCase):
 
     def test_logo_url(self):
         x = EveAllianceInfo(
-            alliance_id='42',
+            alliance_id=42,
             alliance_name='alliance.name',
             alliance_ticker='ABC',
-            executor_corp_id='123'
+            executor_corp_id=123
         )
         self.assertEqual(
             x.logo_url(),

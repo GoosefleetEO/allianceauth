@@ -343,10 +343,10 @@ class CharacterOwnershipCheckTestCase(TestCase):
         cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
         AuthUtils.add_main_character(cls.user, 'Test Character', '1', corp_id='1', alliance_id='1',
                                      corp_name='Test Corp', alliance_name='Test Alliance')
-        cls.character = EveCharacter.objects.get(character_id='1')
+        cls.character = EveCharacter.objects.get(character_id=1)
         cls.token = Token.objects.create(
             user=cls.user,
-            character_id='1',
+            character_id=1,
             character_name='Test',
             character_owner_hash='1',
         )

@@ -11,13 +11,16 @@ _DEFAULT_IMAGE_SIZE = 32
 
 
 class EveAllianceInfo(models.Model):
-    alliance_id = models.CharField(max_length=254, unique=True)
+    alliance_id = models.PositiveIntegerField(unique=True)
     alliance_name = models.CharField(max_length=254, unique=True)
     alliance_ticker = models.CharField(max_length=254)
-    executor_corp_id = models.CharField(max_length=254)
+    executor_corp_id = models.PositiveIntegerField()
 
     objects = EveAllianceManager()
     provider = EveAllianceProviderManager()
+
+    class Meta:
+        indexes = [models.Index(fields=['executor_corp_id',])]
 
     def populate_alliance(self):
         alliance = self.provider.get_alliance(self.alliance_id)
@@ -75,7 +78,7 @@ class EveAllianceInfo(models.Model):
 
 
 class EveCorporationInfo(models.Model):
-    corporation_id = models.CharField(max_length=254, unique=True)
+    corporation_id = models.PositiveIntegerField(unique=True)
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
@@ -133,17 +136,25 @@ class EveCorporationInfo(models.Model):
 
 
 class EveCharacter(models.Model):
-    character_id = models.CharField(max_length=254, unique=True)
+    character_id = models.PositiveIntegerField(unique=True)
     character_name = models.CharField(max_length=254, unique=True)
-    corporation_id = models.CharField(max_length=254)
+    corporation_id = models.PositiveIntegerField()
     corporation_name = models.CharField(max_length=254)
     corporation_ticker = models.CharField(max_length=5)
-    alliance_id = models.CharField(max_length=254, blank=True, null=True, default='')
+    alliance_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
     alliance_ticker = models.CharField(max_length=5, blank=True, null=True, default='')
 
     objects = EveCharacterManager()
     provider = EveCharacterProviderManager()
+
+    class Meta:
+        indexes = [
+                    models.Index(fields=['corporation_id',]),
+                    models.Index(fields=['alliance_id',]),
+                    models.Index(fields=['corporation_name',]),
+                    models.Index(fields=['alliance_name',]),
+                  ]
 
     @property
     def alliance(self) -> Union[EveAllianceInfo, None]:

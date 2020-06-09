@@ -58,25 +58,25 @@ class TestTasks(TestCase):
         EveCharacter.objects.all().delete()
 
         EveCorporationInfo.objects.create(
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='corp.name',
             corporation_ticker='corp.ticker',
             member_count=10,
             alliance=None,
         )
         EveAllianceInfo.objects.create(
-            alliance_id='3456',
+            alliance_id=3456,
             alliance_name='alliance.name',
             alliance_ticker='alliance.ticker',
-            executor_corp_id='alliance.executor_corp_id',
+            executor_corp_id='78910',
         )
         EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='character.corp.id',
+            corporation_id=2345,
             corporation_name='character.corp.name',
             corporation_ticker='c.c.t',  # max 5 chars 
-            alliance_id='character.alliance.id',
+            alliance_id=3456,
             alliance_name='character.alliance.name',
         )
 

@@ -141,12 +141,18 @@ class AuthUtils:
         post_save.connect(check_state_on_character_update, sender=EveCharacter)
 
     @classmethod
-    def add_main_character(cls, user, name, character_id, corp_id='', corp_name='', corp_ticker='', alliance_id='',
+    def add_main_character(cls, user, name, character_id, corp_id=2345, corp_name='', corp_ticker='', alliance_id=None,
                            alliance_name=''):
+        if alliance_id:
+            try:
+                alliance_id = int(alliance_id)
+            except:
+                alliance_id = None
+
         char = EveCharacter.objects.create(
-            character_id=character_id,
+            character_id=int(character_id),
             character_name=name,
-            corporation_id=corp_id,
+            corporation_id=int(corp_id),
             corporation_name=corp_name,
             corporation_ticker=corp_ticker,
             alliance_id=alliance_id,
@@ -160,10 +166,10 @@ class AuthUtils:
         user, 
         name, 
         character_id, 
-        corp_id='', 
+        corp_id=2345, 
         corp_name='', 
         corp_ticker='', 
-        alliance_id='', 
+        alliance_id=None, 
         alliance_name='',
         disconnect_signals=False
     ):
@@ -171,10 +177,16 @@ class AuthUtils:
         if disconnect_signals:
             cls.disconnect_signals()
 
+        if alliance_id:
+            try:
+                alliance_id = int(alliance_id)
+            except:
+                alliance_id = None
+
         char = EveCharacter.objects.create(
-            character_id=character_id,
+            character_id=int(character_id),
             character_name=name,
-            corporation_id=corp_id,
+            corporation_id=int(corp_id),
             corporation_name=corp_name,
             corporation_ticker=corp_ticker,
             alliance_id=alliance_id,

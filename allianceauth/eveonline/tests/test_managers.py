@@ -12,7 +12,7 @@ class EveCharacterProviderManagerTestCase(TestCase):
         expected = Character()
         provider.get_character.return_value = expected
 
-        result = EveCharacter.provider.get_character('1234')
+        result = EveCharacter.provider.get_character(1234)
 
         self.assertEqual(expected, result)
 
@@ -22,30 +22,30 @@ class EveCharacterManagerTestCase(TestCase):
     class TestCharacter(Character):
         @property
         def alliance(self):
-            return Alliance(id='3456', name='Test Alliance')
+            return Alliance(id=3456, name='Test Alliance')
 
         @property
         def corp(self):
             return Corporation(
-                id='2345', 
+                id=2345, 
                 name='Test Corp', 
-                alliance_id='3456', 
-                ticker='0BUGS'
+                alliance_id=3456, 
+                ticker='0BUGS' #lies, blatant lies!
             )
 
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_create_character(self, provider):
         # Also covers create_character_obj
         expected = self.TestCharacter(
-            id='1234', 
+            id=1234, 
             name='Test Character', 
-            corp_id='2345', 
-            alliance_id='3456'
+            corp_id=2345, 
+            alliance_id=3456
         )
 
         provider.get_character.return_value = expected
 
-        result = EveCharacter.objects.create_character('1234')
+        result = EveCharacter.objects.create_character(1234)
 
         self.assertEqual(result.character_id, expected.id)
         self.assertEqual(result.character_name, expected.name)
@@ -58,22 +58,25 @@ class EveCharacterManagerTestCase(TestCase):
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_update_character(self, provider):
         # Also covers Model.update_character
-        EveCharacter.objects.create(
-            character_id='1234',
+        existing = EveCharacter.objects.create(
+            character_id=1234,
             character_name='character.name',
-            corporation_id='character.corp.id',
+            corporation_id=23457,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='character.alliance.id',
+            corporation_ticker='cc1',
+            alliance_id=34567,
             alliance_name='character.alliance.name',
         )
 
         expected = self.TestCharacter(
-            id='1234', name='Test Character', corp_id='2345', alliance_id='3456'
+            id=1234, 
+            name='Test Character', 
+            corp_id=2345, 
+            alliance_id=3456
         )
         provider.get_character.return_value = expected
 
-        result = EveCharacter.objects.update_character('1234')
+        result = EveCharacter.objects.update_character(1234)
 
         self.assertEqual(result.character_id, expected.id)
         self.assertEqual(result.character_name, expected.name)
@@ -86,23 +89,23 @@ class EveCharacterManagerTestCase(TestCase):
     def test_get_character_by_id(self):
         EveCharacter.objects.all().delete()
         EveCharacter.objects.create(
-            character_id='1234',
+            character_id=1234,
             character_name='character.name',
-            corporation_id='character.corp.id',
+            corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='abc',
-            alliance_id='character.alliance.id',
+            corporation_ticker='cc1',
+            alliance_id=3456,
             alliance_name='character.alliance.name',
         )
 
         # try to get existing character
-        result = EveCharacter.objects.get_character_by_id('1234')
+        result = EveCharacter.objects.get_character_by_id(1234)
 
-        self.assertEqual(result.character_id, '1234')
+        self.assertEqual(result.character_id, 1234)
         self.assertEqual(result.character_name, 'character.name')
 
         # try to get non existing character        
-        self.assertIsNone(EveCharacter.objects.get_character_by_id('9999'))
+        self.assertIsNone(EveCharacter.objects.get_character_by_id(9999))
 
 
 class EveAllianceProviderManagerTestCase(TestCase):
@@ -111,7 +114,7 @@ class EveAllianceProviderManagerTestCase(TestCase):
         expected = Alliance()
         provider.get_alliance.return_value = expected
 
-        result = EveAllianceInfo.provider.get_alliance('1234')
+        result = EveAllianceInfo.provider.get_alliance(1234)
 
         self.assertEqual(expected, result)
 
@@ -127,16 +130,16 @@ class EveAllianceManagerTestCase(TestCase):
     def test_create_alliance(self, provider, populate_alliance):
         # Also covers create_alliance_obj
         expected = self.TestAlliance(
-            id='3456', 
+            id=3456, 
             name='Test Alliance', 
             ticker='TEST',
-            corp_ids=['2345'], 
-            executor_corp_id='2345'
+            corp_ids=[2345], 
+            executor_corp_id=2345
         )
 
         provider.get_alliance.return_value = expected
 
-        result = EveAllianceInfo.objects.create_alliance('3456')
+        result = EveAllianceInfo.objects.create_alliance(3456)
 
         self.assertEqual(result.alliance_id, expected.id)
         self.assertEqual(result.alliance_name, expected.name)
@@ -148,22 +151,22 @@ class EveAllianceManagerTestCase(TestCase):
     def test_update_alliance(self, provider):
         # Also covers Model.update_alliance
         EveAllianceInfo.objects.create(
-            alliance_id='3456',
+            alliance_id=3456,
             alliance_name='alliance.name',
-            alliance_ticker='alliance.ticker',
-            executor_corp_id='alliance.executor_corp_id',
+            alliance_ticker='at1',
+            executor_corp_id=2345,
         )
         expected = self.TestAlliance(
-            id='3456', 
+            id=3456, 
             name='Test Alliance', 
             ticker='TEST',
-            corp_ids=['2345'], 
-            executor_corp_id='2345'
+            corp_ids=[2345], 
+            executor_corp_id=2345
         )
 
         provider.get_alliance.return_value = expected
 
-        result = EveAllianceInfo.objects.update_alliance('3456')
+        result = EveAllianceInfo.objects.update_alliance(3456)
 
         # This is the only thing ever updated in code
         self.assertEqual(result.executor_corp_id, expected.executor_corp_id)
@@ -175,7 +178,7 @@ class EveCorporationProviderManagerTestCase(TestCase):
         expected = Corporation()
         provider.get_corp.return_value = expected
 
-        result = EveCorporationInfo.provider.get_corporation('2345')
+        result = EveCorporationInfo.provider.get_corporation(2345)
 
         self.assertEqual(expected, result)
 
@@ -186,39 +189,39 @@ class EveCorporationManagerTestCase(TestCase):
         @property
         def alliance(self):
             return EveAllianceManagerTestCase.TestAlliance(
-                id='3456', 
+                id=3456, 
                 name='Test Alliance', 
                 ticker='TEST',
-                corp_ids=['2345'], 
-                executor_corp_id='2345'
+                corp_ids=[2345], 
+                executor_corp_id=2345
             )
 
         @property
         def ceo(self):
             return EveCharacterManagerTestCase.TestCharacter(
-                id='1234', 
+                id=1234, 
                 name='Test Character',
-                corp_id='2345', 
-                alliance_id='3456'
+                corp_id=2345, 
+                alliance_id=3456
             )
 
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_create_corporation(self, provider):
         # Also covers create_corp_obj
         exp_alliance = EveAllianceInfo.objects.create(
-            alliance_id='3456',
+            alliance_id=3456,
             alliance_name='alliance.name',
-            alliance_ticker='alliance.ticker',
-            executor_corp_id='alliance.executor_corp_id',
+            alliance_ticker='99bug',
+            executor_corp_id=2345,
         )
 
         expected = self.TestCorporation(
-            id='2345', 
+            id=2345, 
             name='Test Corp', 
             ticker='0BUGS',
-            ceo_id='1234', 
+            ceo_id=1234, 
             members=1, 
-            alliance_id='3456'
+            alliance_id=3456
         )
 
         provider.get_corp.return_value = expected
@@ -236,17 +239,17 @@ class EveCorporationManagerTestCase(TestCase):
         # variant to test no alliance case
         # Also covers create_corp_obj        
         expected = self.TestCorporation(
-            id='2345', 
+            id=2345, 
             name='Test Corp', 
             ticker='0BUGS',
-            ceo_id='1234', 
+            ceo_id=1234, 
             members=1, 
-            alliance_id='3456'
+            alliance_id=3456
         )
 
         provider.get_corp.return_value = expected
 
-        result = EveCorporationInfo.objects.create_corporation('2345')
+        result = EveCorporationInfo.objects.create_corporation(2345)
 
         self.assertEqual(result.corporation_id, expected.id)
         self.assertEqual(result.corporation_name, expected.name)
@@ -258,27 +261,27 @@ class EveCorporationManagerTestCase(TestCase):
     def test_update_corporation(self, provider):
         # Also covers Model.update_corporation
         exp_alliance = EveAllianceInfo.objects.create(
-            alliance_id='3456',
+            alliance_id=3456,
             alliance_name='alliance.name',
-            alliance_ticker='alliance.ticker',
-            executor_corp_id='alliance.executor_corp_id',
+            alliance_ticker='at1',
+            executor_corp_id=2345,
         )
 
         EveCorporationInfo.objects.create(
-            corporation_id='2345',
+            corporation_id=2345,
             corporation_name='corp.name',
-            corporation_ticker='abc',
+            corporation_ticker='cc1',
             member_count=10,
             alliance=None,
         )
 
         expected = self.TestCorporation(
-            id='2345', 
+            id=2345, 
             name='Test Corp', 
             ticker='0BUGS',
-            ceo_id='1234', 
+            ceo_id=1234, 
             members=1, 
-            alliance_id='3456'
+            alliance_id=3456
         )
 
         provider.get_corp.return_value = expected

@@ -17,9 +17,9 @@ class CorpStatsManagerTestCase(TestCase):
         cls.user = AuthUtils.create_user('test')
         AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id='2', corp_name='test_corp', corp_ticker='TEST', alliance_id='3', alliance_name='TEST')
         cls.user.profile.refresh_from_db()
-        cls.alliance = EveAllianceInfo.objects.create(alliance_id='3', alliance_name='test alliance', alliance_ticker='TEST', executor_corp_id='2')
-        cls.corp = EveCorporationInfo.objects.create(corporation_id='2', corporation_name='test corp', corporation_ticker='TEST', alliance=cls.alliance, member_count=1)
-        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id='1', character_name='test character', character_owner_hash='z')
+        cls.alliance = EveAllianceInfo.objects.create(alliance_id=3, alliance_name='test alliance', alliance_ticker='TEST', executor_corp_id=2)
+        cls.corp = EveCorporationInfo.objects.create(corporation_id=2, corporation_name='test corp', corporation_ticker='TEST', alliance=cls.alliance, member_count=1)
+        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id=1, character_name='test character', character_owner_hash='z')
         cls.corpstats = CorpStats.objects.create(corp=cls.corp, token=cls.token)
         cls.view_corp_permission = Permission.objects.get_by_natural_key('view_corp_corpstats', 'corputils', 'corpstats')
         cls.view_alliance_permission = Permission.objects.get_by_natural_key('view_alliance_corpstats', 'corputils', 'corpstats')
@@ -66,9 +66,9 @@ class CorpStatsUpdateTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = AuthUtils.create_user('test')
-        AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id='2', corp_name='test_corp', corp_ticker='TEST', alliance_id='3', alliance_name='TEST')
-        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id='1', character_name='test character', character_owner_hash='z')
-        cls.corp = EveCorporationInfo.objects.create(corporation_id='2', corporation_name='test corp', corporation_ticker='TEST', member_count=1)
+        AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id=2, corp_name='test_corp', corp_ticker='TEST', alliance_id=3, alliance_name='TEST')
+        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id=1, character_name='test character', character_owner_hash='z')
+        cls.corp = EveCorporationInfo.objects.create(corporation_id=2, corporation_name='test corp', corporation_ticker='TEST', member_count=1)
 
     def setUp(self):
         self.corpstats = CorpStats.objects.get_or_create(token=self.token, corp=self.corp)[0]
@@ -88,11 +88,11 @@ class CorpStatsUpdateTestCase(TestCase):
         SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [1]
         SwaggerClient.from_spec.return_value.Universe.post_universe_names.return_value.result.return_value = [{'id': 1, 'name': 'test character'}]
         self.corpstats.update()
-        self.assertTrue(CorpMember.objects.filter(character_id='1', character_name='test character', corpstats=self.corpstats).exists())
+        self.assertTrue(CorpMember.objects.filter(character_id=1, character_name='test character', corpstats=self.corpstats).exists())
 
     @mock.patch('esi.clients.SwaggerClient')
     def test_update_remove_member(self, SwaggerClient):
-        CorpMember.objects.create(character_id='2', character_name='old test character', corpstats=self.corpstats)
+        CorpMember.objects.create(character_id=2, character_name='old test character', corpstats=self.corpstats)
         SwaggerClient.from_spec.return_value.Character.get_characters_character_id.return_value.result.return_value = {'corporation_id': 2}
         SwaggerClient.from_spec.return_value.Corporation.get_corporations_corporation_id_members.return_value.result.return_value = [1]
         SwaggerClient.from_spec.return_value.Universe.post_universe_names.return_value.result.return_value = [{'id': 1, 'name': 'test character'}]
@@ -130,15 +130,15 @@ class CorpStatsPropertiesTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = AuthUtils.create_user('test')
-        AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id='2', corp_name='test_corp', corp_ticker='TEST', alliance_id='3', alliance_name='TEST')
+        AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id=2, corp_name='test_corp', corp_ticker='TEST', alliance_id=3, alliance_name='TEST')
         cls.user.profile.refresh_from_db()
-        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id='1', character_name='test character', character_owner_hash='z')
-        cls.corp = EveCorporationInfo.objects.create(corporation_id='2', corporation_name='test corp', corporation_ticker='TEST', member_count=1)
+        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id=1, character_name='test character', character_owner_hash='z')
+        cls.corp = EveCorporationInfo.objects.create(corporation_id=2, corporation_name='test corp', corporation_ticker='TEST', member_count=1)
         cls.corpstats = CorpStats.objects.create(token=cls.token, corp=cls.corp)
-        cls.character = EveCharacter.objects.create(character_name='another test character', character_id='4', corporation_id='2', corporation_name='test corp', corporation_ticker='TEST')
+        cls.character = EveCharacter.objects.create(character_name='another test character', character_id=4, corporation_id=2, corporation_name='test corp', corporation_ticker='TEST')
 
     def test_member_count(self):
-        member = CorpMember.objects.create(corpstats=self.corpstats, character_id='1', character_name='test character')
+        member = CorpMember.objects.create(corpstats=self.corpstats, character_id=2, character_name='test character')
         self.assertEqual(self.corpstats.member_count, 1)
         member.delete()
         self.assertEqual(self.corpstats.member_count, 0)
@@ -147,7 +147,7 @@ class CorpStatsPropertiesTestCase(TestCase):
         AuthUtils.disconnect_signals()
         co = CharacterOwnership.objects.create(character=self.character, user=self.user, owner_hash='a')
         AuthUtils.connect_signals()
-        CorpMember.objects.create(corpstats=self.corpstats, character_id='4', character_name='test character')
+        CorpMember.objects.create(corpstats=self.corpstats, character_id=4, character_name='test character')
         self.assertEqual(self.corpstats.user_count, 1)
         co.delete()
         self.assertEqual(self.corpstats.user_count, 0)
@@ -156,7 +156,8 @@ class CorpStatsPropertiesTestCase(TestCase):
         AuthUtils.disconnect_signals()
         co = CharacterOwnership.objects.create(character=self.character, user=self.user, owner_hash='a')
         AuthUtils.connect_signals()
-        member = CorpMember.objects.create(corpstats=self.corpstats, character_id='4', character_name='test character')
+        member = CorpMember.objects.create(corpstats=self.corpstats, character_id=4, character_name='test character')
+        self.corpstats.refresh_from_db()
         self.assertIn(member, self.corpstats.registered_members)
         self.assertEqual(self.corpstats.registered_member_count, 1)
 
@@ -165,7 +166,7 @@ class CorpStatsPropertiesTestCase(TestCase):
         self.assertEqual(self.corpstats.registered_member_count, 0)
 
     def test_unregistered_members(self):
-        member = CorpMember.objects.create(corpstats=self.corpstats, character_id='4', character_name='test character')
+        member = CorpMember.objects.create(corpstats=self.corpstats, character_id=4, character_name='test character')
         self.corpstats.refresh_from_db()
         self.assertIn(member, self.corpstats.unregistered_members)
         self.assertEqual(self.corpstats.unregistered_member_count, 1)
@@ -178,13 +179,13 @@ class CorpStatsPropertiesTestCase(TestCase):
 
     def test_mains(self):
         # test when is a main
-        member = CorpMember.objects.create(corpstats=self.corpstats, character_id='1', character_name='test character')
+        member = CorpMember.objects.create(corpstats=self.corpstats, character_id=1, character_name='test character')
         self.assertIn(member, self.corpstats.mains)
         self.assertEqual(self.corpstats.main_count, 1)
 
         # test when is an alt
         old_main = self.user.profile.main_character
-        character = EveCharacter.objects.create(character_name='other character', character_id=10, corporation_name='test corp', corporation_id='2', corporation_ticker='TEST')
+        character = EveCharacter.objects.create(character_name='other character', character_id=10, corporation_name='test corp', corporation_id=2, corporation_ticker='TEST')
         AuthUtils.disconnect_signals()
         co = CharacterOwnership.objects.create(character=character, user=self.user, owner_hash='b')
         self.user.profile.main_character = character
@@ -208,7 +209,7 @@ class CorpStatsPropertiesTestCase(TestCase):
         self.assertEqual(self.corpstats.corp_logo(size=128), 'https://images.evetech.net/corporations/2/logo?size=128')
         self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://images.evetech.net/alliances/1/logo?size=128')
 
-        alliance = EveAllianceInfo.objects.create(alliance_name='test alliance', alliance_id='3', alliance_ticker='TEST', executor_corp_id='2')
+        alliance = EveAllianceInfo.objects.create(alliance_name='test alliance', alliance_id=3, alliance_ticker='TEST', executor_corp_id=2)
         self.corp.alliance = alliance
         self.corp.save()
         self.assertEqual(self.corpstats.alliance_logo(size=128), 'https://images.evetech.net/alliances/3/logo?size=128')
@@ -221,14 +222,14 @@ class CorpMemberTestCase(TestCase):
         cls.user = AuthUtils.create_user('test')
         AuthUtils.add_main_character(cls.user, 'test character', '1', corp_id='2', corp_name='test_corp', corp_ticker='TEST', alliance_id='3', alliance_name='TEST')
         cls.user.profile.refresh_from_db()
-        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id='1', character_name='test character', character_owner_hash='a')
-        cls.corp = EveCorporationInfo.objects.create(corporation_id='2', corporation_name='test corp', corporation_ticker='TEST', member_count=1)
+        cls.token = Token.objects.create(user=cls.user, access_token='a', character_id=1, character_name='test character', character_owner_hash='a')
+        cls.corp = EveCorporationInfo.objects.create(corporation_id=2, corporation_name='test corp', corporation_ticker='TEST', member_count=1)
         cls.corpstats = CorpStats.objects.create(token=cls.token, corp=cls.corp)
-        cls.member = CorpMember.objects.create(corpstats=cls.corpstats, character_id='2', character_name='other test character')
+        cls.member = CorpMember.objects.create(corpstats=cls.corpstats, character_id=2, character_name='other test character')
 
     def test_character(self):
         self.assertIsNone(self.member.character)
-        character = EveCharacter.objects.create(character_id='2', character_name='other test character', corporation_id='2', corporation_name='test corp', corporation_ticker='TEST')
+        character = EveCharacter.objects.create(character_id=2, character_name='other test character', corporation_id=2, corporation_name='test corp', corporation_ticker='TEST')
         self.assertEqual(self.member.character, character)
 
     def test_main_character(self):
@@ -238,7 +239,7 @@ class CorpMemberTestCase(TestCase):
         self.assertIsNone(self.member.main_character)
 
         # test when member.character is not None but also not a main
-        character = EveCharacter.objects.create(character_id='2', character_name='other test character', corporation_id='2', corporation_name='test corp', corporation_ticker='TEST')
+        character = EveCharacter.objects.create(character_id=2, character_name='other test character', corporation_id=2, corporation_name='test corp', corporation_ticker='TEST')
         CharacterOwnership.objects.create(character=character, user=self.user, owner_hash='b')
         self.member.refresh_from_db()
         self.assertNotEqual(self.member.main_character, self.member.character)
@@ -260,14 +261,14 @@ class CorpMemberTestCase(TestCase):
     def test_alts(self):
         self.assertListEqual(self.member.alts, [])
 
-        character = EveCharacter.objects.create(character_id='2', character_name='other test character', corporation_id='2', corporation_name='test corp', corporation_ticker='TEST')
+        character = EveCharacter.objects.create(character_id=2, character_name='other test character', corporation_id=2, corporation_name='test corp', corporation_ticker='TEST')
         CharacterOwnership.objects.create(character=character, user=self.user, owner_hash='b')
         self.assertIn(character, self.member.alts)
 
     def test_registered(self):
         self.assertFalse(self.member.registered)
         AuthUtils.disconnect_signals()
-        character = EveCharacter.objects.create(character_id='2', character_name='other test character', corporation_id='2', corporation_name='test corp', corporation_ticker='TEST')
+        character = EveCharacter.objects.create(character_id=2, character_name='other test character', corporation_id=2, corporation_name='test corp', corporation_ticker='TEST')
         CharacterOwnership.objects.create(character=character, user=self.user, owner_hash='b')
         self.assertTrue(self.member.registered)
         AuthUtils.connect_signals()

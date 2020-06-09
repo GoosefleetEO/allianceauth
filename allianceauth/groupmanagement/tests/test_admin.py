@@ -88,33 +88,33 @@ class TestGroupAdmin(TestCase):
         
         # user 1 - corp and alliance, normal user
         cls.character_1 = EveCharacter.objects.create(
-            character_id='1001',
+            character_id=1001,
             character_name='Bruce Wayne',
-            corporation_id='2001',
+            corporation_id=2001,
             corporation_name='Wayne Technologies',
             corporation_ticker='WT',
-            alliance_id='3001',
+            alliance_id=3001,
             alliance_name='Wayne Enterprises',
             alliance_ticker='WE',
         )
         cls.character_1a = EveCharacter.objects.create(
-            character_id='1002',
+            character_id=1002,
             character_name='Batman',
-            corporation_id='2001',
+            corporation_id=2001,
             corporation_name='Wayne Technologies',
             corporation_ticker='WT',
-            alliance_id='3001',
+            alliance_id=3001,
             alliance_name='Wayne Enterprises',
             alliance_ticker='WE',
         )
         alliance = EveAllianceInfo.objects.create(
-            alliance_id='3001',
+            alliance_id=3001,
             alliance_name='Wayne Enterprises',
             alliance_ticker='WE',            
-            executor_corp_id='2001'
+            executor_corp_id=2001
         )
         EveCorporationInfo.objects.create(
-            corporation_id='2001',
+            corporation_id=2001,
             corporation_name='Wayne Technologies',
             corporation_ticker='WT',            
             member_count=42,
@@ -189,10 +189,10 @@ class TestGroupAdmin(TestCase):
             alliance=None
         )
         EveAllianceInfo.objects.create(
-            alliance_id='3101',
+            alliance_id=3101,
             alliance_name='Lex World Domination',
             alliance_ticker='LWD',
-            executor_corp_id=''
+            executor_corp_id=2101
         )
         cls.user_3 = User.objects.create_user(
             cls.character_3.character_name.replace(' ', '_'),
