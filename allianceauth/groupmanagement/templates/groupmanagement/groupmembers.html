@@ -36,7 +36,7 @@
                                     <tr>                                                                
                                         <td class="text-right">
                                             {% if member.is_leader %}
-                                                <i class="fa fa-star"></i>&nbsp;
+                                                <i class="fas fa-star"></i>&nbsp;
                                             {% endif %}
                                             <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle">                                            
                                         </td>
@@ -69,7 +69,7 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <p class="text-muted"><i class="fa fa-star"></i>: Group leader</p>
+                        <p class="text-muted"><i class="fas fa-star"></i>: Group leader</p>
                     </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
