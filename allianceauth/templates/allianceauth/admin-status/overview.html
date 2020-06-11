@@ -36,28 +36,8 @@
                                 {{ current_version }}
                             </p>
                         </li>
-                        <li class="list-group-item list-group-item-{% if latest_major %}success{% else %}danger{% endif %}">
-                            <h5 class="list-group-item-heading">{% trans "Latest Major" %}</h5>
-                            <p class="list-group-item-text">
-                                <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
-                                    <i class="fa fa-gitlab hidden-xs" aria-hidden="true"></i>
-                                    {{ latest_major_version }}
-                                </a>
-                                {% if not latest_major %}<br>{% trans "Update available" %}{% endif %}
-                            </p>
-                        </li>
-                        <li class="list-group-item list-group-item-{% if latest_minor %}success{% else %}danger{% endif %}">
-                            <h5 class="list-group-item-heading">{% trans "Latest Minor" %}</h5>
-                            <p class="list-group-item-text">
-                                <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
-                                    <i class="fa fa-gitlab hidden-xs" aria-hidden="true"></i>
-                                    {{ latest_minor_version }}
-                                </a>
-                                {% if not latest_minor %}<br>{% trans "Update available" %}{% endif %}
-                            </p>
-                        </li>
-                        <li class="list-group-item list-group-item-{% if latest_patch %}success{% else %}warning{% endif %}">
-                            <h5 class="list-group-item-heading">{% trans "Latest Patch" %}</h5>
+                        <li class="list-group-item list-group-item-{% if latest_patch %}success{% elif latest_minor %}warning{% else %}danger{% endif %}">
+                            <h5 class="list-group-item-heading">{% trans "Latest Stable" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
                                     <i class="fa fa-gitlab hidden-xs" aria-hidden="true"></i>
@@ -66,6 +46,18 @@
                                 {% if not latest_patch %}<br>{% trans "Update available" %}{% endif %}
                             </p>
                         </li>
+                        {% if latest_beta %}
+                        <li class="list-group-item list-group-item-info">
+                            <h5 class="list-group-item-heading">{% trans "Latest Pre-Release" %}</h5>
+                            <p class="list-group-item-text">
+                                <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
+                                    <i class="fa fa-gitlab hidden-xs" aria-hidden="true"></i>
+                                    {{ latest_beta_version }}
+                                </a>
+                                <br>{% trans "Pre-Release available" %}
+                            </p>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
