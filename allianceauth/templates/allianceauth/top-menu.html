@@ -28,7 +28,7 @@
                     </li>
                 {% else %}
                     <li><a href="{% url 'notifications:list' %}">
-                        <i class="fa fa-bell-o"></i></a>
+                        <i class="far fa-bell"></i></a>
                     </li>
                 {% endif %}
                 {% if user.is_authenticated %}
@@ -42,7 +42,7 @@
                 {% if user.is_superuser %}
                     <li>
                         <a class="navbar-brand" style="margin-left: -4px;" href="https://allianceauth.readthedocs.io/" target="_blank">
-                            <i class="fa fa-question-circle fa-fw"></i>
+                            <i class="fas fa-question-circle fa-fw"></i>
                         </a>
                     </li>
                 {% endif %}

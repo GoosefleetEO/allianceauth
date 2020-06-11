@@ -76,7 +76,7 @@ class JabberBroadcast(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               _('Jabber Broadcast'),
-                              'fa fa-lock fa-fw fa-bullhorn',
+                              'fas fa-bullhorn fa-fw',
                               'openfire:broadcast')
 
     def render(self, request):
@@ -89,7 +89,7 @@ class FleetBroadcastFormatter(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               _('Fleet Broadcast Formatter'),
-                              'fa fa-lock fa-fw fa-space-shuttle',
+                              'fas fa-space-shuttle fa-fw',
                               'services:fleet_format_tool')
 
     def render(self, request):

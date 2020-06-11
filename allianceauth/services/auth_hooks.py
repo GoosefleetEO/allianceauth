@@ -9,7 +9,7 @@ class Services(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self,
                               _('Services'),
-                              'fa fa-cogs fa-fw',
+                              'fas fa-cogs fa-fw',
                               'services:services', 100)
 
     def render(self, request):

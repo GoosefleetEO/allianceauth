@@ -7,7 +7,7 @@ from . import urls
 class SrpMenu(MenuItemHook):
     def __init__(self):
         MenuItemHook.__init__(self, _('Ship Replacement'),
-                              'fa fa-money fa-fw',
+                              'far fa-money-bill-alt fa-fw',
                               'srp:management',
                               navactive=['srp:'])
 
