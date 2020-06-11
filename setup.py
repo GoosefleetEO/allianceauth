@@ -18,9 +18,8 @@ install_requires = [
     'semantic_version',
     'packaging>=20.1,<21',
 
-    'future',
     'redis>=3.3.1,<4.0.0',
-    'celery>=4.3.0,<5.0.0',
+    'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once',
 
     'django>=2.2.1,<3.0',
