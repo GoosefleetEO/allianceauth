@@ -144,3 +144,11 @@ Name                                Description                                 
 ### "Unknown Error" on Discord site when activating service
 
 This indicates your callback URL doesn't match. Ensure the `DISCORD_CALLBACK_URL` setting exactly matches the URL entered on the Discord developers site. This includes http(s), trailing slash, etc.
+
+### "Add/Remove" Errors in Discord Service
+
+If you are recieving errors in your Notifications after verifying that your settings are all correct try the following:
+
+- Ensure that the bot's role in Discord is at the top of the roles list. Each time you add it to your server you will need to do this again.
+- Make sure that the bot is not trying to modify the Owner of the discord, as it will fail. A holding discord account added with invite link will mitigate this.
+- Make sure that the bot role on discord has all needed permissions, Admin etc., remembering that these will need to be set every time you add the bot to the Discord server.
