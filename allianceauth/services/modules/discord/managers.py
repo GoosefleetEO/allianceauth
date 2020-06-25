@@ -171,8 +171,15 @@ class DiscordUserManager(models.Manager):
     
     @classmethod
     def server_name(cls):
-        """returns the name of the Discord server"""        
-        return cls._bot_client().guild_name(DISCORD_GUILD_ID)
+        """returns the name of the current Discord server 
+        or an empty string if the name could not be retrieved
+        """
+        try:
+            server_name = cls._bot_client().guild_name(DISCORD_GUILD_ID)
+        except HTTPError:
+            server_name = ""
+
+        return server_name
 
     @staticmethod
     def _bot_client(is_rate_limited: bool = True):
