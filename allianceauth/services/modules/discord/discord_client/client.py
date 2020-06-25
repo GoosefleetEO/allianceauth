@@ -15,7 +15,8 @@ from allianceauth import __title__ as AUTH_TITLE, __url__, __version__
 from .. import __title__
 from .app_settings import (
     DISCORD_API_BASE_URL,
-    DISCORD_API_TIMEOUT, 
+    DISCORD_API_TIMEOUT_CONNECT,
+    DISCORD_API_TIMEOUT_READ,
     DISCORD_DISABLE_ROLE_CREATION,
     DISCORD_GUILD_NAME_CACHE_MAX_AGE,
     DISCORD_OAUTH_BASE_URL, 
@@ -540,7 +541,7 @@ class DiscordClient:
         args = {
             'url': url,
             'headers': headers,
-            'timeout': DISCORD_API_TIMEOUT / 1000
+            'timeout': (DISCORD_API_TIMEOUT_CONNECT, DISCORD_API_TIMEOUT_READ)
         }
         if data:
             args['json'] = data
