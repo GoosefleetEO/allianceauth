@@ -483,15 +483,16 @@ class TestUserFeatures(WebTest):
         mock_exception.response.status_code = 440
         requests_mocker.get(guild_infos_request.url, exc=mock_exception)
         
-        # login
-        superuser = User.objects.create_superuser(
-            "admin", "admin@example.com", "admin123"
-        )
-        AuthUtils.add_main_character_2(superuser, "my_main", 1099)
-        self.app.set_user(superuser)
+        # login        
+        self.member.is_superuser = True
+        self.member.is_staff = True
+        self.member.save()
+        self.app.set_user(self.member)
         
         # click deactivate on the service page
         response = self.app.get(reverse('services:services'))
         
-        # check we got can see the page
+        # check we got can see the page and the "link server" button
         self.assertEqual(response.status_int, 200)
+        self.assertIsNotNone(response.html.find(id='btnLinkDiscordServer'))
+ 
