@@ -165,6 +165,9 @@ def process_main_character_change(sender, instance, *args, **kwargs):
         # new model being created
         return
     try:
+        logger.debug(
+            "Received pre_save from %s for process_main_character_change", instance
+        )
         old_instance = UserProfile.objects.get(pk=instance.pk)
         if old_instance.main_character and not instance.main_character:  # lost main char disable services
             logger.info("Disabling services due to loss of main character for user {0}".format(instance.user))
@@ -184,8 +187,12 @@ def process_main_character_change(sender, instance, *args, **kwargs):
 
 @receiver(pre_save, sender=EveCharacter)
 def process_main_character_update(sender, instance, *args, **kwargs):
-    try:
+    try:        
         if instance.userprofile:
+            logger.debug(
+                "Received pre_save from %s for process_main_character_update", 
+                instance
+            )
             old_instance = EveCharacter.objects.get(pk=instance.pk)
             if not instance.character_name == old_instance.character_name or \
                not instance.corporation_name == old_instance.corporation_name or \

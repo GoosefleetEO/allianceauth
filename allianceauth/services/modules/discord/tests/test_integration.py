@@ -19,6 +19,8 @@ from django.shortcuts import reverse
 from django.test import TransactionTestCase
 from django.test.utils import override_settings
 
+from allianceauth.authentication.models import State
+from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
 
 from . import (
@@ -96,16 +98,29 @@ class TestServiceFeatures(TransactionTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.maxDiff = None
+                
         
     def setUp(self):
+        """All tests: Given a user with member state, service permission and active Discord account"""
         clear_cache()
         AuthUtils.disconnect_signals()
         Group.objects.all().delete()
         User.objects.all().delete()
+        State.objects.all().delete()
+        EveCharacter.objects.all().delete()
         AuthUtils.connect_signals()
         self.group_3 = Group.objects.create(name='charlie')        
+        
+        # States
+        self.member_state = AuthUtils.get_member_state()
+        self.guest_state = AuthUtils.get_guest_state()
+        self.blue_state = AuthUtils.create_state("Blue", 50)
+        permission = AuthUtils.get_permission_by_name('discord.access_discord')
+        self.member_state.permissions.add(permission)
+
+        # Test user
         self.user = AuthUtils.create_member(TEST_USER_NAME)
-        AuthUtils.add_main_character_2(
+        self.main = AuthUtils.add_main_character_2(
             self.user, 
             TEST_MAIN_NAME, 
             TEST_MAIN_ID, 
@@ -113,9 +128,14 @@ class TestServiceFeatures(TransactionTestCase):
             corp_name='test_corp', 
             corp_ticker='TEST',
             disconnect_signals=True
-        )
+        )                
+        self.member_state.member_characters.add(self.main)
         self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
-        add_permissions_to_members()
+        
+        # verify user is a member and has an account
+        self.user = User.objects.get(pk=self.user.pk)
+        self.assertEqual(self.user.profile.state, self.member_state)
+        self.assertTrue(DiscordUser.objects.user_has_account(self.user))
         
     def test_name_of_main_changes(self, requests_mocker):      
         # modify_guild_member()        
@@ -133,7 +153,7 @@ class TestServiceFeatures(TransactionTestCase):
         for r in requests_mocker.request_history:            
             requests_made.append(DiscordRequest(r.method, r.url))
 
-        expected = [modify_guild_member_request, modify_guild_member_request]        
+        expected = [modify_guild_member_request]        
         self.assertListEqual(requests_made, expected)
 
     def test_name_of_main_changes_but_user_deleted(self, requests_mocker):      
@@ -190,18 +210,63 @@ class TestServiceFeatures(TransactionTestCase):
         expected = list()  
         self.assertListEqual(requests_made, expected)
 
-    def test_user_demoted_to_guest(self, requests_mocker):        
-        # remove_guild_member()        
+    """
+    def test_when_member_is_demoted_to_guest_then_his_account_is_deleted(
+        self, requests_mocker
+    ):        
+        requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
-        self.user.groups.clear()
-
-        requests_made = list()
-        for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
+                
+        # our user is a member and has an account        
+        self.assertTrue(self.user.has_perm('discord.access_discord'))
+                
+        # now we demote him to guest        
+        self.member_state.member_characters.remove(self.main)
         
-        # compare the list of made requests with expected
-        expected = [remove_guild_member_request]
-        self.assertListEqual(requests_made, expected)
+        # verify user is now guest
+        self.user = User.objects.get(pk=self.user.pk)        
+        self.assertEqual(self.user.profile.state, AuthUtils.get_guest_state())
+        
+        # verify user has no longer access to Discord and no account
+        self.assertFalse(self.user.has_perm('discord.access_discord'))
+        self.assertFalse(DiscordUser.objects.user_has_account(self.user))        
+        
+        # verify account was actually deleted from Discord server
+        requests_made = [
+            DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
+        ]                                
+        self.assertIn(remove_guild_member_request, requests_made)     
+
+    def test_when_member_is_demoted_to_blue_state_then_roles_are_updated_accordingly(
+        self, requests_mocker
+    ):         
+        # request mocks
+        requests_mocker.get(
+            guild_member_request.url,
+            json={'user': create_user_info(),'roles': ['1', '13', '99']}
+        )     
+        requests_mocker.get(
+            guild_roles_request.url,
+            json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER, ROLE_BLUE]
+        )                
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
+        requests_mocker.patch(modify_guild_member_request.url, status_code=204)
+        
+        # demote user to blue state
+        self.blue_state.member_characters.add(self.main)
+        self.member_state.member_characters.remove(self.main)
+
+        # verify roles for user where updated
+        requests_made = [
+            DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
+        ]                                
+        expected = [
+            guild_member_request,
+            guild_roles_request,            
+            modify_guild_member_request
+        ]        
+        self.assertListEqual(requests_made, expected)  
+    """
 
     def test_adding_group_to_user_role_exists(self, requests_mocker):
         # guild_member()                
