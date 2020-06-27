@@ -173,7 +173,7 @@ class ServicesSignalsTestCase(TestCase):
         self.assertEqual(self.member, args[0])
 
     @mock.patch('allianceauth.services.signals.ServicesHook')
-    def test_state_changed_services_valudation(self, services_hook):
+    def test_state_changed_services_validation(self, services_hook):
         """
         Test a user changing state has service accounts validated
         """
@@ -193,3 +193,4 @@ class ServicesSignalsTestCase(TestCase):
         self.assertTrue(svc.validate_user.called)
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
+        

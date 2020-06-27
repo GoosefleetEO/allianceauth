@@ -60,7 +60,9 @@ class DiscordService(ServicesHook):
         )
 
     def service_active_for_user(self, user):
-        return user.has_perm(self.access_perm)
+        has_perms = user.has_perm(self.access_perm)
+        logger.debug("User %s has service permission: %s", user, has_perms)
+        return has_perms
 
     def sync_nickname(self, user):
         logger.debug('Syncing %s nickname for user %s', self.name, user)

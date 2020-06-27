@@ -125,15 +125,10 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
 
 @receiver(state_changed, sender=UserProfile)
 def check_service_accounts_state_changed(sender, user, state, **kwargs):
-    logger.debug("Received state_changed from %s to state %s" % (user, state))
-    service_perms = [svc.access_perm for svc in ServicesHook.get_services()]
-    state_perms = ["{}.{}".format(perm.natural_key()[1], perm.natural_key()[0]) for perm in state.permissions.all()]
-    for perm in service_perms:
-        if perm not in state_perms:
-            for svc in ServicesHook.get_services():
-                if svc.access_perm == perm:
-                    logger.debug("User %s new state %s does not have service %s permission. Checking account." % (user, state, svc))
-                    svc.validate_user(user)
+    logger.debug("Received state_changed from %s to state %s" % (user, state))    
+    for svc in ServicesHook.get_services():
+        svc.validate_user(user)
+        svc.update_groups(user)
 
 
 @receiver(pre_delete, sender=User)

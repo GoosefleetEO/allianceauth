@@ -118,6 +118,7 @@ class TestServiceFeatures(TransactionTestCase):
         self.blue_state = AuthUtils.create_state("Blue", 50)
         permission = AuthUtils.get_permission_by_name('discord.access_discord')
         self.member_state.permissions.add(permission)
+        self.blue_state.permissions.add(permission)
 
         # Test user
         self.user = AuthUtils.create_user(TEST_USER_NAME)
@@ -237,38 +238,35 @@ class TestServiceFeatures(TransactionTestCase):
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]                                
         self.assertIn(remove_guild_member_request, requests_made)     
-    
-    """
+        
     def test_when_member_changes_to_blue_state_then_roles_are_updated_accordingly(
         self, requests_mocker
-    ):         
+    ):        
         # request mocks
         requests_mocker.get(
             guild_member_request.url,
-            json={'user': create_user_info(),'roles': ['1', '13', '99']}
+            json={'user': create_user_info(),'roles': ['13', '99']}
         )     
         requests_mocker.get(
             guild_roles_request.url,
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER, ROLE_BLUE]
         )                
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE) 
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         
         # demote user to blue state
         self.blue_state.member_characters.add(self.main)
         self.member_state.member_characters.remove(self.main)
 
-        # verify roles for user where updated
-        requests_made = [
-            DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
-        ]                                
-        expected = [
-            guild_member_request,
-            guild_roles_request,            
-            modify_guild_member_request
-        ]        
-        self.assertListEqual(requests_made, expected)  
-    """
+        # verify roles for user where updated        
+        roles_updated = False
+        for r in requests_mocker.request_history:            
+            my_request = DiscordRequest(r.method, r.url)                        
+            if my_request == modify_guild_member_request and "roles" in r.json():
+                roles_updated = True
+                self.assertSetEqual(set(r.json()["roles"]), {13, 98})
+        
+        self.assertTrue(roles_updated)
 
     def test_adding_group_to_user_role_exists(self, requests_mocker):
         # guild_member()                
