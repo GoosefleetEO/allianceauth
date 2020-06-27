@@ -11,9 +11,16 @@ logger = logging.getLogger(__name__)
 class StateBackend(ModelBackend):
     @staticmethod
     def _get_state_permissions(user_obj):
+        """returns permissions for state of given user object"""
+        """
         profile_state_field = UserProfile._meta.get_field('state')
         user_state_query = 'state__%s__user' % profile_state_field.related_query_name()
         return Permission.objects.filter(**{user_state_query: user_obj})
+        """
+        if hasattr(user_obj, "profile") and user_obj.profile:
+            return Permission.objects.filter(state=user_obj.profile.state)
+        else:
+            return []
 
     def get_state_permissions(self, user_obj, obj=None):
         return self._get_permissions(user_obj, obj, 'state')

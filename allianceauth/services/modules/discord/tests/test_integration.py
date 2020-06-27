@@ -45,6 +45,7 @@ from ..models import DiscordUser
 logger = logging.getLogger('allianceauth')
 
 ROLE_MEMBER = create_role(99, 'Member')
+ROLE_BLUE = create_role(98, 'Blue')
 
 # Putting all requests to Discord into objects so we can compare them better
 DiscordRequest = namedtuple('DiscordRequest', ['method', 'url'])
@@ -119,7 +120,7 @@ class TestServiceFeatures(TransactionTestCase):
         self.member_state.permissions.add(permission)
 
         # Test user
-        self.user = AuthUtils.create_member(TEST_USER_NAME)
+        self.user = AuthUtils.create_user(TEST_USER_NAME)
         self.main = AuthUtils.add_main_character_2(
             self.user, 
             TEST_MAIN_NAME, 
@@ -130,11 +131,12 @@ class TestServiceFeatures(TransactionTestCase):
             disconnect_signals=True
         )                
         self.member_state.member_characters.add(self.main)
-        self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         
         # verify user is a member and has an account
         self.user = User.objects.get(pk=self.user.pk)
         self.assertEqual(self.user.profile.state, self.member_state)
+        
+        self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
         
     def test_name_of_main_changes(self, requests_mocker):      
@@ -209,8 +211,7 @@ class TestServiceFeatures(TransactionTestCase):
         
         expected = list()  
         self.assertListEqual(requests_made, expected)
-
-    """
+        
     def test_when_member_is_demoted_to_guest_then_his_account_is_deleted(
         self, requests_mocker
     ):        
@@ -236,8 +237,9 @@ class TestServiceFeatures(TransactionTestCase):
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]                                
         self.assertIn(remove_guild_member_request, requests_made)     
-
-    def test_when_member_is_demoted_to_blue_state_then_roles_are_updated_accordingly(
+    
+    """
+    def test_when_member_changes_to_blue_state_then_roles_are_updated_accordingly(
         self, requests_mocker
     ):         
         # request mocks
