@@ -16,7 +16,7 @@ import requests_mock
 from django.contrib.auth.models import Group, User
 from django.core.cache import caches
 from django.shortcuts import reverse
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, TestCase
 from django.test.utils import override_settings
 
 from allianceauth.authentication.models import State
@@ -90,6 +90,15 @@ def clear_cache():
     logger.info('Cache flushed')
 
 
+def reset_testdata():    
+    AuthUtils.disconnect_signals()
+    Group.objects.all().delete()
+    User.objects.all().delete()
+    State.objects.all().delete()
+    EveCharacter.objects.all().delete()
+    AuthUtils.connect_signals()
+
+
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @requests_mock.Mocker()
@@ -104,12 +113,7 @@ class TestServiceFeatures(TransactionTestCase):
     def setUp(self):
         """All tests: Given a user with member state, service permission and active Discord account"""
         clear_cache()
-        AuthUtils.disconnect_signals()
-        Group.objects.all().delete()
-        User.objects.all().delete()
-        State.objects.all().delete()
-        EveCharacter.objects.all().delete()
-        AuthUtils.connect_signals()
+        reset_testdata()
         self.group_3 = Group.objects.create(name='charlie')        
         
         # States
@@ -340,6 +344,80 @@ class TestServiceFeatures(TransactionTestCase):
         self.assertListEqual(requests_made, expected)
     
 
+@override_settings(CELERY_ALWAYS_EAGER=True)
+@patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
+@patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
+@requests_mock.Mocker()
+class StateTestCase(TestCase):
+    
+    def setUp(self):        
+        clear_cache()
+        reset_testdata()
+        
+        self.user = AuthUtils.create_user('test_user', disconnect_signals=True)
+        AuthUtils.add_main_character(self.user, 'Perm Test Character', '99', corp_id='100', alliance_id='200',
+                                     corp_name='Perm Test Corp', alliance_name='Perm Test Alliance')
+        self.test_character = EveCharacter.objects.get(character_id='99')
+        self.member_state = State.objects.create(
+            name='Test Member',
+            priority=150,
+        )
+        self.access_discord = AuthUtils.get_permission_by_name('discord.access_discord')
+        self.member_state.permissions.add(self.access_discord)
+        self.member_state.member_characters.add(self.test_character)
+    
+    def _add_discord_user(self):
+        self.discord_user = DiscordUser.objects.create(user=self.user, uid="12345678910")
+
+    def _refresh_user(self):
+        self.user = User.objects.get(pk=self.user.pk)
+
+    def test_perm_changes_to_higher_priority_state_creation(self, requests_mocker):
+        mock_url = DiscordRequest(method='DELETE',url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910')
+        requests_mocker.delete(mock_url.url, status_code=204)
+        self._add_discord_user()
+        self._refresh_user()
+        higher_state = State.objects.create(
+            name='Higher State',
+            priority=200,
+        )
+        self.assertIsNotNone(self.user.discord)
+        higher_state.member_characters.add(self.test_character)
+        self._refresh_user()
+        self.assertEquals(higher_state, self.user.profile.state)
+        with self.assertRaises(DiscordUser.DoesNotExist):
+            self.user.discord
+        higher_state.member_characters.clear()
+        self._refresh_user()
+        self.assertEquals(self.member_state, self.user.profile.state)
+        with self.assertRaises(DiscordUser.DoesNotExist):
+            self.user.discord
+
+    def test_perm_changes_to_lower_priority_state_creation(self, requests_mocker):
+        mock_url = DiscordRequest(method='DELETE',url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910')
+        requests_mocker.delete(mock_url.url, status_code=204)
+        self._add_discord_user()
+        self._refresh_user()
+        lower_state = State.objects.create(
+            name='Lower State',
+            priority=125,
+        )
+        self.assertIsNotNone(self.user.discord)
+        lower_state.member_characters.add(self.test_character)
+        self._refresh_user()
+        self.assertEquals(self.member_state, self.user.profile.state)
+        self.member_state.member_characters.clear()
+        self._refresh_user()
+        self.assertEquals(lower_state, self.user.profile.state)
+        with self.assertRaises(DiscordUser.DoesNotExist):
+            self.user.discord
+        self.member_state.member_characters.add(self.test_character)
+        self._refresh_user()
+        self.assertEquals(self.member_state, self.user.profile.state)
+        with self.assertRaises(DiscordUser.DoesNotExist):
+            self.user.discord
+
+
 @patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
@@ -347,6 +425,7 @@ class TestUserFeatures(WebTest):
     
     def setUp(self):
         clear_cache()
+        reset_testdata()
         self.member = AuthUtils.create_member(TEST_USER_NAME)
         AuthUtils.add_main_character_2(
             self.member, 
