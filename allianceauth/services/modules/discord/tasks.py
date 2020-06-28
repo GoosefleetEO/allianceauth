@@ -38,13 +38,14 @@ def update_groups(self, user_pk: int) -> None:
 @shared_task(
     bind=True, name='discord.update_nickname', base=QueueOnce, max_retries=None
 )
-def update_nickname(self, user_pk: int) -> None:
+def update_nickname(self, user_pk: int, nickname: str = None) -> None:
     """Set nickname on Discord for given user to his main character name
     
     Params:
     - user_pk: PK of given user
+    - nickname: optional nickname to be used instead of user's main
     """
-    _task_perform_user_action(self, user_pk, 'update_nickname')
+    _task_perform_user_action(self, user_pk, 'update_nickname', nickname=nickname)
 
 
 @shared_task(

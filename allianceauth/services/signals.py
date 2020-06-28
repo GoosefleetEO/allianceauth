@@ -167,7 +167,7 @@ def process_main_character_change(sender, instance, *args, **kwargs):
         if old_instance.main_character and not instance.main_character:  # lost main char disable services
             logger.info("Disabling services due to loss of main character for user {0}".format(instance.user))
             disable_user(instance.user)
-        elif old_instance.main_character is not instance.main_character:  # swapping/changing main character
+        elif old_instance.main_character != instance.main_character:  # swapping/changing main character
             logger.info("Updating Names due to change of main character for user {0}".format(instance.user))
             for svc in ServicesHook.get_services():
                 try:

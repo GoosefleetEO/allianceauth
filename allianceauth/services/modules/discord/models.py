@@ -67,21 +67,25 @@ class DiscordUser(models.Model):
     def __repr__(self):
         return f'{type(self).__name__}(user=\'{self.user}\', uid={self.uid})'
 
-    def update_nickname(self) -> bool:
+    def update_nickname(self, nickname: str = None) -> bool:
         """Update nickname with formatted name of main character
-                
+
+        Params:
+        - nickname: optional nickname to be used instead of user's main
+
         Returns:
         - True on success
         - None if user is no longer a member of the Discord server
         - False on error or raises exception
         """        
-        requested_nick = DiscordUser.objects.user_formatted_nick(self.user)
-        if requested_nick:            
+        if not nickname:
+            nickname = DiscordUser.objects.user_formatted_nick(self.user)
+        if nickname:            
             client = DiscordUser.objects._bot_client()            
             success = client.modify_guild_member(
                 guild_id=DISCORD_GUILD_ID,
                 user_id=self.uid,
-                nick=requested_nick
+                nick=nickname
             )
             if success:
                 logger.info('Nickname for %s has been updated', self.user)

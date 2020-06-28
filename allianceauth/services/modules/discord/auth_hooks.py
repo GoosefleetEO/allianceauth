@@ -68,7 +68,11 @@ class DiscordService(ServicesHook):
         logger.debug('Syncing %s nickname for user %s', self.name, user)
         if self.user_has_account(user):
             tasks.update_nickname.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={
+                    'user_pk': user.pk,
+                    'nickname': DiscordUser.objects.user_formatted_nick(user)
+                }, 
+                priority=SINGLE_TASK_PRIORITY
             )
 
     def sync_nicknames_bulk(self, users: list):

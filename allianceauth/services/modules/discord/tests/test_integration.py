@@ -114,7 +114,7 @@ class TestServiceFeatures(TransactionTestCase):
         """All tests: Given a user with member state, service permission and active Discord account"""
         clear_cache()
         reset_testdata()
-        self.group_3 = Group.objects.create(name='charlie')        
+        self.group_charlie = Group.objects.create(name='charlie')        
         
         # States
         self.member_state = AuthUtils.get_member_state()
@@ -144,56 +144,45 @@ class TestServiceFeatures(TransactionTestCase):
         self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
         
-    def test_name_of_main_changes(self, requests_mocker):      
-        # modify_guild_member()        
+    def test_when_name_of_main_changes_then_discord_nick_is_updated(
+        self, requests_mocker
+    ):        
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         
         # changing nick to trigger signals
         new_nick = f'Testnick {uuid1().hex}'[:32]
         self.user.profile.main_character.character_name = new_nick
         self.user.profile.main_character.save()
-
-        # Need to have called modify_guild_member two times only
-        # Once for sync nickname
-        # Once for change of main character        
-        requests_made = list()
+        
+        # verify Discord nick was updates
+        nick_updated = False
         for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
+            my_request = DiscordRequest(r.method, r.url)                        
+            if my_request == modify_guild_member_request and "nick" in r.json():
+                nick_updated = True
+                self.assertEqual(r.json()["nick"], new_nick)
+        
+        self.assertTrue(nick_updated)
+        self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
-        expected = [modify_guild_member_request]        
-        self.assertListEqual(requests_made, expected)
-
-    def test_name_of_main_changes_but_user_deleted(self, requests_mocker):      
-        # modify_guild_member()        
+    def test_when_name_of_main_changes_and_user_deleted_then_account_is_deleted(
+        self, requests_mocker
+    ):        
         requests_mocker.patch(
             modify_guild_member_request.url, status_code=404, json={'code': 10007}
-        )
-        # remove_guild_member()
+        )        
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
         
         # changing nick to trigger signals
         new_nick = f'Testnick {uuid1().hex}'[:32]
         self.user.profile.main_character.character_name = new_nick
         self.user.profile.main_character.save()
+        
+        self.assertFalse(DiscordUser.objects.user_has_account(self.user))
 
-        # Need to have called modify_guild_member two times only
-        # Once for sync nickname
-        # Once for change of main character        
-        requests_made = list()
-        for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
-
-        expected = [
-            modify_guild_member_request, 
-            remove_guild_member_request,            
-        ]            
-        self.assertListEqual(requests_made, expected)
-        # self.assertFalse(DiscordUser.objects.user_has_account(self.user))
-
-    def test_name_of_main_changes_but_user_rate_limited(
+    def test_when_name_of_main_changes_and_and_rate_limited_then_dont_call_api(
         self, requests_mocker
-    ):
-        # modify_guild_member()        
+    ):        
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         
         # exhausting rate limit
@@ -210,12 +199,12 @@ class TestServiceFeatures(TransactionTestCase):
         self.user.profile.main_character.save()
 
         # should not have called the API
-        requests_made = list()
-        for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
-        
-        expected = list()  
-        self.assertListEqual(requests_made, expected)
+        requests_made = [
+            requests_made.append(DiscordRequest(r.method, r.url)) 
+            for r in requests_mocker.request_history
+        ]
+                
+        self.assertListEqual(requests_made, list())
         
     def test_when_member_is_demoted_to_guest_then_his_account_is_deleted(
         self, requests_mocker
@@ -269,79 +258,75 @@ class TestServiceFeatures(TransactionTestCase):
             if my_request == modify_guild_member_request and "roles" in r.json():
                 roles_updated = True
                 self.assertSetEqual(set(r.json()["roles"]), {13, 98})
+                break
         
         self.assertTrue(roles_updated)
+        self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
-    def test_adding_group_to_user_role_exists(self, requests_mocker):
-        # guild_member()                
+    def test_when_group_added_to_member_and_role_known_then_his_roles_are_updated(
+        self, requests_mocker
+    ):        
         requests_mocker.get(
             guild_member_request.url,
             json={
                 'user': create_user_info(),
-                'roles': ['1', '13', '99']
+                'roles': ['13', '99']
             }
-        )        
-        # guild_roles()        
+        )              
         requests_mocker.get(
             guild_roles_request.url, 
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_MEMBER]
-        )        
-        # create_guild_role()        
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)
-        # modify_guild_member()                
+        )                
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
                 
         # adding new group to trigger signals
-        self.user.groups.add(self.group_3)        
-        self.user.refresh_from_db()
-        
-        # compare the list of made requests with expected
-        requests_made = list()
+        self.user.groups.add(self.group_charlie)
+                
+        # verify roles for user where updated
+        roles_updated = False
         for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
+            my_request = DiscordRequest(r.method, r.url)                        
+            if my_request == modify_guild_member_request and "roles" in r.json():
+                roles_updated = True
+                self.assertSetEqual(set(r.json()["roles"]), {3, 13, 99})
+                break
+        
+        self.assertTrue(roles_updated)
+        self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
-        expected = [
-            guild_member_request,
-            guild_roles_request,            
-            modify_guild_member_request
-        ]        
-        self.assertListEqual(requests_made, expected)
-
-    def test_adding_group_to_user_role_does_not_exist(self, requests_mocker):    
-        # guild_member()                
+    def test_when_group_added_to_member_and_role_unknown_then_his_roles_are_updated(
+        self, requests_mocker
+    ):        
         requests_mocker.get(
             guild_member_request.url,
             json={
                 'user': {'id': str(TEST_USER_ID), 'username': TEST_MAIN_NAME},
-                'roles': ['1', '13', '99']
+                'roles': ['13', '99']
             }
-        )        
-        # guild_roles()        
+        )              
         requests_mocker.get(
             guild_roles_request.url, 
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
-        )        
-        # create_guild_role()        
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)
-        # modify_guild_member()                
+        )                
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
                 
         # adding new group to trigger signals
-        self.user.groups.add(self.group_3)        
+        self.user.groups.add(self.group_charlie)
         self.user.refresh_from_db()
         
-        # compare the list of made requests with expected
-        requests_made = list()
+       # verify roles for user where updated
+        roles_updated = False
         for r in requests_mocker.request_history:            
-            requests_made.append(DiscordRequest(r.method, r.url))
-
-        expected = [
-            guild_member_request,
-            guild_roles_request,
-            create_guild_role_request,
-            modify_guild_member_request
-        ]        
-        self.assertListEqual(requests_made, expected)
+            my_request = DiscordRequest(r.method, r.url)                        
+            if my_request == modify_guild_member_request and "roles" in r.json():
+                roles_updated = True
+                self.assertSetEqual(set(r.json()["roles"]), {3, 13, 99})
+                break
+        
+        self.assertTrue(roles_updated)
+        self.assertTrue(DiscordUser.objects.user_has_account(self.user))
     
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
@@ -373,7 +358,10 @@ class StateTestCase(TestCase):
         self.user = User.objects.get(pk=self.user.pk)
 
     def test_perm_changes_to_higher_priority_state_creation(self, requests_mocker):
-        mock_url = DiscordRequest(method='DELETE',url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910')
+        mock_url = DiscordRequest(
+            method='DELETE',
+            url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910'
+        )
         requests_mocker.delete(mock_url.url, status_code=204)
         self._add_discord_user()
         self._refresh_user()
@@ -394,7 +382,10 @@ class StateTestCase(TestCase):
             self.user.discord
 
     def test_perm_changes_to_lower_priority_state_creation(self, requests_mocker):
-        mock_url = DiscordRequest(method='DELETE',url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910')
+        mock_url = DiscordRequest(
+            method='DELETE',
+            url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/12345678910'
+        )
         requests_mocker.delete(mock_url.url, status_code=204)
         self._add_discord_user()
         self._refresh_user()
