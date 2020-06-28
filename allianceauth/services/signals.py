@@ -123,7 +123,7 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
             logger.debug("Permission change for state {} was not service permission, ignoring".format(instance))
 
 
-@receiver(state_changed, sender=UserProfile)
+@receiver(state_changed)
 def check_service_accounts_state_changed(sender, user, state, **kwargs):
     logger.debug("Received state_changed from %s to state %s" % (user, state))    
     for svc in ServicesHook.get_services():
