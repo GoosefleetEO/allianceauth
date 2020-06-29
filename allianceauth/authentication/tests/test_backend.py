@@ -25,7 +25,7 @@ class TestStatePermissions(TestCase):
 
         # state
         self.state_1 = AuthUtils.get_member_state()        
-        self.state_2 = AuthUtils.create_state("Blue", 50)
+        self.state_2 = AuthUtils.create_state("Other State", 75)
         
         # user
         self.user = AuthUtils.create_user("Bruce Wayne")
