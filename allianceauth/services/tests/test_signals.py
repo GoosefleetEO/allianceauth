@@ -1,15 +1,20 @@
+from copy import deepcopy
 from unittest import mock
 
 from django.test import TestCase
 from django.contrib.auth.models import Group, Permission
-from allianceauth.tests.auth_utils import AuthUtils
+
 from allianceauth.authentication.models import State
+from allianceauth.eveonline.models import EveCharacter
+from allianceauth.tests.auth_utils import AuthUtils
 
 
 class ServicesSignalsTestCase(TestCase):
     def setUp(self):
         self.member = AuthUtils.create_user('auth_member', disconnect_signals=True)
-        AuthUtils.add_main_character(self.member, 'Test', '1', '2', 'Test Corp', 'TEST')
+        AuthUtils.add_main_character_2(
+            self.member, 'Test', 1, 2, 'Test Corp', 'TEST'
+        )
         self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)
 
     @mock.patch('allianceauth.services.signals.transaction')
@@ -46,7 +51,6 @@ class ServicesSignalsTestCase(TestCase):
 
     @mock.patch('allianceauth.services.signals.disable_user')
     def test_pre_delete_user(self, disable_user):
-
         """
         Test that disable_member is called when a user is deleted
         """
@@ -126,7 +130,9 @@ class ServicesSignalsTestCase(TestCase):
         transaction.on_commit = lambda fn: fn()
 
         ct = ContentType.objects.get(app_label='auth', model='permission')
-        perm = Permission.objects.create(name="Test perm", codename="access_testsvc", content_type=ct)
+        perm = Permission.objects.create(
+            name="Test perm", codename="access_testsvc", content_type=ct
+        )
         self.member.user_permissions.add(perm)
 
         # Act, should trigger m2m change
@@ -159,7 +165,9 @@ class ServicesSignalsTestCase(TestCase):
         AuthUtils.connect_signals()
 
         ct = ContentType.objects.get(app_label='auth', model='permission')
-        perm = Permission.objects.create(name="Test perm", codename="access_testsvc", content_type=ct)
+        perm = Permission.objects.create(
+            name="Test perm", codename="access_testsvc", content_type=ct
+        )
         test_state.permissions.add(perm)
 
         # Act, should trigger m2m change
@@ -173,12 +181,12 @@ class ServicesSignalsTestCase(TestCase):
         self.assertEqual(self.member, args[0])
 
     @mock.patch('allianceauth.services.signals.ServicesHook')
-    def test_state_changed_services_validation(self, services_hook):
-        """
-        Test a user changing state has service accounts validated
+    def test_state_changed_services_validation_and_groups_update(self, services_hook):
+        """Test a user changing state has service accounts validated and groups updated
         """
         svc = mock.Mock()
         svc.validate_user.return_value = None
+        svc.update_groups.return_value = None
         svc.access_perm = 'auth.access_testsvc'
 
         services_hook.get_services.return_value = [svc]
@@ -190,7 +198,65 @@ class ServicesSignalsTestCase(TestCase):
         # Assert
         self.assertTrue(services_hook.get_services.called)
 
-        self.assertTrue(svc.validate_user.called)
+        self.assertTrue(svc.validate_user.called)        
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
         
+        self.assertTrue(svc.update_groups.called)
+        args, kwargs = svc.update_groups.call_args
+        self.assertEqual(self.member, args[0])
+
+
+    @mock.patch('allianceauth.services.signals.ServicesHook')
+    def test_state_changed_services_validation_and_groups_update_1(self, services_hook):
+        """Test a user changing main has service accounts validated and sync updated
+        """
+        svc = mock.Mock()
+        svc.validate_user.return_value = None
+        svc.sync_nickname.return_value = None
+        svc.access_perm = 'auth.access_testsvc'
+
+        services_hook.get_services.return_value = [svc]
+        
+        new_main = EveCharacter.objects.create(
+            character_id=123, 
+            character_name="Alter Ego", 
+            corporation_id=987, 
+            corporation_name="ABC"
+        )
+        self.member.profile.main_character = new_main
+        self.member.profile.save()
+
+        # Assert
+        self.assertTrue(services_hook.get_services.called)
+
+        self.assertTrue(svc.validate_user.called)        
+        args, kwargs = svc.validate_user.call_args
+        self.assertEqual(self.member, args[0])
+        
+        self.assertTrue(svc.sync_nickname.called)
+        args, kwargs = svc.sync_nickname.call_args
+        self.assertEqual(self.member, args[0])
+
+    @mock.patch('allianceauth.services.signals.ServicesHook')
+    def test_state_changed_services_validation_and_groups_update_2(self, services_hook):
+        """Test a user changing main has service does not have accounts validated 
+        and sync updated if the new main is equal to the old main
+        """
+        svc = mock.Mock()
+        svc.validate_user.return_value = None
+        svc.sync_nickname.return_value = None
+        svc.access_perm = 'auth.access_testsvc'
+
+        services_hook.get_services.return_value = [svc]
+        
+        # this creates a clone of the Django object
+        new_main = deepcopy(self.member.profile.main_character)
+        self.assertIsNot(new_main, self.member.profile.main_character)
+        self.member.profile.main_character = new_main
+        self.member.profile.save()
+
+        # Assert
+        self.assertFalse(services_hook.get_services.called)
+        self.assertFalse(svc.validate_user.called)                
+        self.assertFalse(svc.sync_nickname.called)

@@ -154,27 +154,37 @@ def disable_services_on_inactive(sender, instance, *args, **kwargs):
 
 
 @receiver(pre_save, sender=UserProfile)
-def process_main_character_change(sender, instance, *args, **kwargs):
-
-    if not instance.pk:  # ignore
-        # new model being created
+def process_main_character_change(sender, instance, *args, **kwargs):    
+    if not instance.pk:
+        # ignore new model being created
         return
     try:
         logger.debug(
             "Received pre_save from %s for process_main_character_change", instance
         )
         old_instance = UserProfile.objects.get(pk=instance.pk)
-        if old_instance.main_character and not instance.main_character:  # lost main char disable services
-            logger.info("Disabling services due to loss of main character for user {0}".format(instance.user))
+        if old_instance.main_character and not instance.main_character:
+            logger.info(
+                "Disabling services due to loss of main character for user %s",
+                instance.user
+            )
             disable_user(instance.user)
-        elif old_instance.main_character != instance.main_character:  # swapping/changing main character
-            logger.info("Updating Names due to change of main character for user {0}".format(instance.user))
+        elif old_instance.main_character != instance.main_character:              
+            logger.info(
+                "Updating Names due to change of main character for user %s", 
+                instance.user
+            )
             for svc in ServicesHook.get_services():
                 try:
                     svc.validate_user(instance.user)
                     svc.sync_nickname(instance.user)
                 except:
-                    logger.exception('Exception running sync_nickname for services module %s on user %s' % (svc, instance))
+                    logger.exception(
+                        "Exception running sync_nickname for services module %s "
+                        "on user %s", 
+                        svc, 
+                        instance
+                    )
 
     except UserProfile.DoesNotExist:
         pass
