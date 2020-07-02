@@ -238,15 +238,21 @@ class TestServiceFeatures(TransactionTestCase):
         # request mocks
         requests_mocker.get(
             guild_member_request.url,
-            json={'user': create_user_info(),'roles': ['13', '99']}
+            json={'user': create_user_info(),'roles': ['3', '13', '99']}
         )     
         requests_mocker.get(
             guild_roles_request.url,
-            json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER, ROLE_BLUE]
+            json=[
+                ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_MEMBER, ROLE_BLUE
+            ]
         )                
         requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE) 
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         
+        AuthUtils.disconnect_signals()
+        self.user.groups.add(self.group_charlie)
+        AuthUtils.connect_signals()
+
         # demote user to blue state
         self.blue_state.member_characters.add(self.main)
         self.member_state.member_characters.remove(self.main)
@@ -257,7 +263,7 @@ class TestServiceFeatures(TransactionTestCase):
             my_request = DiscordRequest(r.method, r.url)                        
             if my_request == modify_guild_member_request and "roles" in r.json():
                 roles_updated = True
-                self.assertSetEqual(set(r.json()["roles"]), {13, 98})
+                self.assertSetEqual(set(r.json()["roles"]), {3, 13, 98})
                 break
         
         self.assertTrue(roles_updated)

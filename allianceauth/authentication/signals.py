@@ -23,9 +23,7 @@ def trigger_state_check(state):
     check_states = State.objects.filter(priority__lt=state.priority)
     for profile in UserProfile.objects.filter(state__in=check_states):
         if state.available_to_user(profile.user):
-            profile.state = state
-            profile.save(update_fields=['state'])
-            state_changed.send(sender=state.__class__, user=profile.user, state=state)
+            profile.assign_state(state)
 
 
 @receiver(m2m_changed, sender=State.member_characters.through)

@@ -70,6 +70,8 @@ class DiscordService(ServicesHook):
             tasks.update_nickname.apply_async(
                 kwargs={
                     'user_pk': user.pk,
+                    # since the new nickname is not yet in the DB we need to 
+                    # provide it manually to the task
                     'nickname': DiscordUser.objects.user_formatted_nick(user)
                 }, 
                 priority=SINGLE_TASK_PRIORITY
@@ -90,10 +92,16 @@ class DiscordService(ServicesHook):
         tasks.update_all_groups.delay()
 
     def update_groups(self, user):        
-        logger.debug('Processing %s groups for %s', self.name, user)
-        if self.user_has_account(user):            
+        logger.debug('Processing %s groups for %s', self.name, user)        
+        if self.user_has_account(user):
             tasks.update_groups.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={
+                    'user_pk': user.pk,
+                    # since state changes may not yet be in the DB we need to 
+                    # provide the new state name manually to the task
+                    'state_name': user.profile.state.name
+                }, 
+                priority=SINGLE_TASK_PRIORITY
             )
 
     def update_groups_bulk(self, users: list):
