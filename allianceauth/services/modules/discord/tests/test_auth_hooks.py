@@ -3,6 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase, RequestFactory
 from django.test.utils import override_settings
 
+from allianceauth.notifications.models import Notification
 from allianceauth.tests.auth_utils import AuthUtils
 
 from . import TEST_USER_NAME, TEST_USER_ID, add_permissions_to_members, MODULE_PATH
@@ -30,6 +31,7 @@ class TestDiscordService(TestCase):
         self.service = DiscordService
         add_permissions_to_members()
         self.factory = RequestFactory()
+        Notification.objects.all().delete()
 
     def test_service_enabled(self):
         service = self.service()        
@@ -89,16 +91,17 @@ class TestDiscordService(TestCase):
         service = self.service()        
         service.sync_nicknames_bulk([self.member])        
         self.assertTrue(mock_update_nicknames_bulk.delay.called)
-        
+            
     @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
-    def test_delete_user_is_member(self, mock_DiscordClient):        
+    def test_delete_user_is_member(self, mock_DiscordClient): 
         mock_DiscordClient.return_value.remove_guild_member.return_value = True
 
-        service = self.service()        
-        service.delete_user(self.member)
+        service = self.service()
+        service.delete_user(self.member, notify_user=True)
         
         self.assertTrue(mock_DiscordClient.return_value.remove_guild_member.called)
-        self.assertFalse(DiscordUser.objects.filter(user=self.member).exists())
+        self.assertFalse(DiscordUser.objects.filter(user=self.member).exists())        
+        self.assertTrue(Notification.objects.filter(user=self.member).exists())
 
     @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
     def test_delete_user_is_not_member(self, mock_DiscordClient):

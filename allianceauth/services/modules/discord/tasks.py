@@ -6,7 +6,6 @@ from requests.exceptions import HTTPError
 from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
 
-from allianceauth.authentication.models import UserProfile
 from allianceauth.services.tasks import QueueOnce
 
 from . import __title__

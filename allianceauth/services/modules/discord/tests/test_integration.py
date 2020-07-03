@@ -21,6 +21,7 @@ from django.test.utils import override_settings
 
 from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCharacter
+from allianceauth.notifications.models import Notification
 from allianceauth.tests.auth_utils import AuthUtils
 
 from . import (
@@ -97,6 +98,7 @@ def reset_testdata():
     State.objects.all().delete()
     EveCharacter.objects.all().delete()
     AuthUtils.connect_signals()
+    Notification.objects.all().delete()
 
 
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
@@ -109,9 +111,10 @@ class TestServiceFeatures(TransactionTestCase):
         super().setUpClass()
         cls.maxDiff = None
                 
-        
     def setUp(self):
-        """All tests: Given a user with member state, service permission and active Discord account"""
+        """All tests: Given a user with member state, 
+        service permission and active Discord account
+        """
         clear_cache()
         reset_testdata()
         self.group_charlie = Group.objects.create(name='charlie')        
@@ -200,8 +203,7 @@ class TestServiceFeatures(TransactionTestCase):
 
         # should not have called the API
         requests_made = [
-            requests_made.append(DiscordRequest(r.method, r.url)) 
-            for r in requests_mocker.request_history
+            DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]
                 
         self.assertListEqual(requests_made, list())
@@ -230,7 +232,10 @@ class TestServiceFeatures(TransactionTestCase):
         requests_made = [
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]                                
-        self.assertIn(remove_guild_member_request, requests_made)     
+        self.assertIn(remove_guild_member_request, requests_made)
+        
+        # verify user has been notified
+        self.assertTrue(Notification.objects.filter(user=self.user).exists())
         
     def test_when_member_changes_to_blue_state_then_roles_are_updated_accordingly(
         self, requests_mocker
@@ -238,7 +243,7 @@ class TestServiceFeatures(TransactionTestCase):
         # request mocks
         requests_mocker.get(
             guild_member_request.url,
-            json={'user': create_user_info(),'roles': ['3', '13', '99']}
+            json={'user': create_user_info(), 'roles': ['3', '13', '99']}
         )     
         requests_mocker.get(
             guild_roles_request.url,
@@ -322,7 +327,7 @@ class TestServiceFeatures(TransactionTestCase):
         self.user.groups.add(self.group_charlie)
         self.user.refresh_from_db()
         
-       # verify roles for user where updated
+        # verify roles for user where updated
         roles_updated = False
         for r in requests_mocker.request_history:            
             my_request = DiscordRequest(r.method, r.url)                        
@@ -346,8 +351,14 @@ class StateTestCase(TestCase):
         reset_testdata()
         
         self.user = AuthUtils.create_user('test_user', disconnect_signals=True)
-        AuthUtils.add_main_character(self.user, 'Perm Test Character', '99', corp_id='100', alliance_id='200',
-                                     corp_name='Perm Test Corp', alliance_name='Perm Test Alliance')
+        AuthUtils.add_main_character(
+            self.user, 
+            'Perm Test Character', '99', 
+            corp_id='100', 
+            alliance_id='200',
+            corp_name='Perm Test Corp', 
+            alliance_name='Perm Test Alliance'
+        )
         self.test_character = EveCharacter.objects.get(character_id='99')
         self.member_state = State.objects.create(
             name='Test Member',
@@ -358,7 +369,9 @@ class StateTestCase(TestCase):
         self.member_state.member_characters.add(self.test_character)
     
     def _add_discord_user(self):
-        self.discord_user = DiscordUser.objects.create(user=self.user, uid="12345678910")
+        self.discord_user = DiscordUser.objects.create(
+            user=self.user, uid="12345678910"
+        )
 
     def _refresh_user(self):
         self.user = User.objects.get(pk=self.user.pk)
@@ -636,4 +649,3 @@ class TestUserFeatures(WebTest):
         # check we got can see the page and the "link server" button
         self.assertEqual(response.status_int, 200)
         self.assertIsNotNone(response.html.find(id='btnLinkDiscordServer'))
- 

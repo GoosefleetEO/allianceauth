@@ -1,10 +1,13 @@
-from unittest.mock import Mock, patch
-
 from django.contrib.auth.models import User, Group
 from django.test import TestCase
+
+from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
 
+from esi.models import Token
+
 from ..backends import StateBackend
+from ..models import CharacterOwnership, UserProfile, OwnershipRecord
 
 MODULE_PATH = 'allianceauth.authentication'
 
@@ -76,10 +79,71 @@ class TestStatePermissions(TestCase):
         self.assertTrue(user.has_perm(PERMISSION_2))
     
 
+class TestAuthenticate(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.main_character = EveCharacter.objects.create(
+            character_id=1,
+            character_name='Main Character',
+            corporation_id=1,
+            corporation_name='Corp',
+            corporation_ticker='CORP',
+        )
+        cls.alt_character = EveCharacter.objects.create(
+            character_id=2,
+            character_name='Alt Character',
+            corporation_id=1,
+            corporation_name='Corp',
+            corporation_ticker='CORP',
+        )
+        cls.unclaimed_character = EveCharacter.objects.create(
+            character_id=3,
+            character_name='Unclaimed Character',
+            corporation_id=1,
+            corporation_name='Corp',
+            corporation_ticker='CORP',
+        )
+        cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
+        cls.old_user = AuthUtils.create_user('old_user', disconnect_signals=True)
+        AuthUtils.disconnect_signals()
+        CharacterOwnership.objects.create(user=cls.user, character=cls.main_character, owner_hash='1')
+        CharacterOwnership.objects.create(user=cls.user, character=cls.alt_character, owner_hash='2')
+        UserProfile.objects.update_or_create(user=cls.user, defaults={'main_character': cls.main_character})
+        AuthUtils.connect_signals()
 
+    def test_authenticate_main_character(self):
+        t = Token(character_id=self.main_character.character_id, character_owner_hash='1')
+        user = StateBackend().authenticate(token=t)
+        self.assertEquals(user, self.user)
 
+    def test_authenticate_alt_character(self):
+        t = Token(character_id=self.alt_character.character_id, character_owner_hash='2')
+        user = StateBackend().authenticate(token=t)
+        self.assertEquals(user, self.user)
 
+    def test_authenticate_unclaimed_character(self):
+        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='3')
+        user = StateBackend().authenticate(token=t)
+        self.assertNotEqual(user, self.user)
+        self.assertEqual(user.username, 'Unclaimed_Character')
+        self.assertEqual(user.profile.main_character, self.unclaimed_character)
 
-    
+    def test_authenticate_character_record(self):
+        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
+        OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
+        user = StateBackend().authenticate(token=t)
+        self.assertEqual(user, self.old_user)
+        self.assertTrue(CharacterOwnership.objects.filter(owner_hash='4', user=self.old_user).exists())
+        self.assertTrue(user.profile.main_character)
 
-    
+    def test_iterate_username(self):
+        t = Token(character_id=self.unclaimed_character.character_id,
+                  character_name=self.unclaimed_character.character_name, character_owner_hash='3')
+        username = StateBackend().authenticate(token=t).username
+        t.character_owner_hash = '4'
+        username_1 = StateBackend().authenticate(token=t).username
+        t.character_owner_hash = '5'
+        username_2 = StateBackend().authenticate(token=t).username
+        self.assertNotEqual(username, username_1, username_2)
+        self.assertTrue(username_1.endswith('_1'))
+        self.assertTrue(username_2.endswith('_2'))

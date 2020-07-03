@@ -75,8 +75,8 @@ class UserProfile(models.Model):
                 self.save(update_fields=['state'])
                 notify(
                     self.user, 
-                    _('State Changed'),
-                    _('Your user state has been changed to %(state)s') 
+                    _('State changed to: %s' % state),
+                    _('Your user\'s state is now: %(state)s')
                     % ({'state': state}),
                     'info'
                 )

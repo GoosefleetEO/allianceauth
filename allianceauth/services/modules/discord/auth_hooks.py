@@ -33,7 +33,8 @@ class DiscordService(ServicesHook):
         if self.user_has_account(user):
             logger.debug('Deleting user %s %s account', user, self.name)
             tasks.delete_user.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={'user_pk': user.pk, 'notify_user': notify_user}, 
+                priority=SINGLE_TASK_PRIORITY
             )        
     
     def render_services_ctrl(self, request):                
