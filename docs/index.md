@@ -18,4 +18,5 @@ Welcome to the official documentation for **Alliance Auth**!
     support/index
     customizing/index
     development/index
+    contributing/index
 ```
