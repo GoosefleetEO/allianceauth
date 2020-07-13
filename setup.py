@@ -32,7 +32,7 @@ install_requires = [
     'openfire-restapi',
     'sleekxmpp',
 
-    'django-esi>=1.5.0,<2.0'
+    'django-esi>=1.5,<3.0'
 ]
 
 testing_extras = [
