@@ -67,21 +67,25 @@ class DiscordUser(models.Model):
     def __repr__(self):
         return f'{type(self).__name__}(user=\'{self.user}\', uid={self.uid})'
 
-    def update_nickname(self) -> bool:
+    def update_nickname(self, nickname: str = None) -> bool:
         """Update nickname with formatted name of main character
-                
+
+        Params:
+        - nickname: optional nickname to be used instead of user's main
+
         Returns:
         - True on success
         - None if user is no longer a member of the Discord server
         - False on error or raises exception
         """        
-        requested_nick = DiscordUser.objects.user_formatted_nick(self.user)
-        if requested_nick:            
+        if not nickname:
+            nickname = DiscordUser.objects.user_formatted_nick(self.user)
+        if nickname:            
             client = DiscordUser.objects._bot_client()            
             success = client.modify_guild_member(
                 guild_id=DISCORD_GUILD_ID,
                 user_id=self.uid,
-                nick=requested_nick
+                nick=nickname
             )
             if success:
                 logger.info('Nickname for %s has been updated', self.user)
@@ -92,10 +96,13 @@ class DiscordUser(models.Model):
         else:
             return False
 
-    def update_groups(self) -> bool:
+    def update_groups(self, state_name: str = None) -> bool:
         """update groups for a user based on his current group memberships. 
         Will add or remove roles of a user as needed.
         
+        Params:
+        - state_name: optional state name to be used
+
         Returns:
         - True on success
         - None if user is no longer a member of the Discord server
@@ -128,7 +135,9 @@ class DiscordUser(models.Model):
         requested_roles = match_or_create_roles_from_names(
             client=client, 
             guild_id=DISCORD_GUILD_ID, 
-            role_names=DiscordUser.objects.user_group_names(self.user)
+            role_names=DiscordUser.objects.user_group_names(
+                user=self.user, state_name=state_name
+            )
         )
         logger.debug(
             'Requested roles for user %s: %s', self.user, requested_roles.ids()
@@ -144,13 +153,13 @@ class DiscordUser(models.Model):
                 role_ids=list(new_roles.ids())
             )
             if success:
-                logger.info('Groups for %s have been updated', self.user)
+                logger.info('Roles for %s have been updated', self.user)
             else:
-                logger.warning('Failed to update groups for %s', self.user)
+                logger.warning('Failed to update roles for %s', self.user)
             return success
 
         else:
-            logger.info('No need to update groups for user %s', self.user)
+            logger.info('No need to update roles for user %s', self.user)
             return True
 
     def update_username(self) -> bool:

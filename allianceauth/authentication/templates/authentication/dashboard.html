@@ -14,7 +14,11 @@
             <div class="col-sm-6 text-center">
                 <div class="panel panel-primary" style="height:100%">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{% trans "Main Character" %}</h3>
+                        <h3 class="panel-title">
+                            {% blocktrans with state=request.user.profile.state %}
+                                Main Character (State: {{ state }})
+                            {% endblocktrans %}
+                        </h3>
                     </div>
                     <div class="panel-body">
                         {% if request.user.profile.main_character %}

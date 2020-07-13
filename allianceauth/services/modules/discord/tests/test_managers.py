@@ -361,3 +361,26 @@ class TestUserHasAccount(TestCase):
 
     def test_return_false_if_not_called_with_user_object(self):                
         self.assertFalse(DiscordUser.objects.user_has_account('abc'))
+
+
+@patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
+class TestServerName(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = AuthUtils.create_user(TEST_USER_NAME)
+    
+    def test_returns_name_when_api_returns_it(self, mock_DiscordClient):
+        server_name = "El Dorado"
+        mock_DiscordClient.return_value.guild_name.return_value = server_name
+
+        self.assertEqual(DiscordUser.objects.server_name(), server_name)
+
+    def test_returns_empty_string_when_api_throws_http_error(self, mock_DiscordClient):
+        mock_exception = HTTPError('Test exception')
+        mock_exception.response = Mock(**{"status_code": 440})        
+        mock_DiscordClient.return_value.guild_name.side_effect = mock_exception
+
+        self.assertEqual(DiscordUser.objects.server_name(), "")
+

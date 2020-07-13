@@ -6,9 +6,14 @@ DISCORD_API_BASE_URL = clean_setting(
     'DISCORD_API_BASE_URL', 'https://discordapp.com/api/'
 )
 
-# Low level timeout for requests to the Discord API in ms
-DISCORD_API_TIMEOUT = clean_setting(
-    'DISCORD_API_TIMEOUT', 5000
+# Low level connecttimeout for requests to the Discord API in seconds
+DISCORD_API_TIMEOUT_CONNECT = clean_setting(
+    'DISCORD_API_TIMEOUT', 5
+)
+
+# Low level read timeout for requests to the Discord API in seconds
+DISCORD_API_TIMEOUT_READ = clean_setting(
+    'DISCORD_API_TIMEOUT', 30
 )
 
 # Base authorization URL for Discord Oauth

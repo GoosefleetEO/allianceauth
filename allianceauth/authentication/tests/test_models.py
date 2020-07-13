@@ -1,145 +1,18 @@
 from unittest import mock
-from io import StringIO
-from urllib import parse
 
-from django.conf import settings
-from django.contrib.auth.models import AnonymousUser, User
-from django.core.management import call_command
-from django.http.response import HttpResponse
-from django.shortcuts import reverse
+from django.contrib.auth.models import User
 from django.test import TestCase
-from django.test.client import RequestFactory
 
-
-from allianceauth.authentication.decorators import main_character_required
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
     EveAllianceInfo
 from allianceauth.tests.auth_utils import AuthUtils
 from esi.errors import IncompleteResponseError
 from esi.models import Token
 
-from ..backends import StateBackend
-from ..models import CharacterOwnership, UserProfile, State, get_guest_state,\
-    OwnershipRecord
+from ..models import CharacterOwnership, State, get_guest_state
 from ..tasks import check_character_ownership
 
 MODULE_PATH = 'allianceauth.authentication'
-
-
-class DecoratorTestCase(TestCase):
-    @staticmethod
-    @main_character_required
-    def dummy_view(*args, **kwargs):
-        return HttpResponse(status=200)
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.main_user = AuthUtils.create_user('main_user', disconnect_signals=True)
-        cls.no_main_user = AuthUtils.create_user('no_main_user', disconnect_signals=True)
-        main_character = EveCharacter.objects.create(
-            character_id=1,
-            character_name='Main Character',
-            corporation_id=1,
-            corporation_name='Corp',
-            corporation_ticker='CORP',
-        )
-        CharacterOwnership.objects.create(user=cls.main_user, character=main_character, owner_hash='1')
-        cls.main_user.profile.main_character = main_character
-
-    def setUp(self):
-        self.request = RequestFactory().get('/test/')
-
-    @mock.patch(MODULE_PATH + '.decorators.messages')
-    def test_login_redirect(self, m):
-        setattr(self.request, 'user', AnonymousUser())
-        response = self.dummy_view(self.request)
-        self.assertEqual(response.status_code, 302)
-        url = getattr(response, 'url', None)
-        self.assertEqual(parse.urlparse(url).path,  reverse(settings.LOGIN_URL))
-
-    @mock.patch(MODULE_PATH + '.decorators.messages')
-    def test_main_character_redirect(self, m):
-        setattr(self.request, 'user', self.no_main_user)
-        response = self.dummy_view(self.request)
-        self.assertEqual(response.status_code, 302)
-        url = getattr(response, 'url', None)
-        self.assertEqual(url, reverse('authentication:dashboard'))
-
-    @mock.patch(MODULE_PATH + '.decorators.messages')
-    def test_successful_request(self, m):
-        setattr(self.request, 'user', self.main_user)
-        response = self.dummy_view(self.request)
-        self.assertEqual(response.status_code, 200)
-
-
-class BackendTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.main_character = EveCharacter.objects.create(
-            character_id=1,
-            character_name='Main Character',
-            corporation_id=1,
-            corporation_name='Corp',
-            corporation_ticker='CORP',
-        )
-        cls.alt_character = EveCharacter.objects.create(
-            character_id=2,
-            character_name='Alt Character',
-            corporation_id=1,
-            corporation_name='Corp',
-            corporation_ticker='CORP',
-        )
-        cls.unclaimed_character = EveCharacter.objects.create(
-            character_id=3,
-            character_name='Unclaimed Character',
-            corporation_id=1,
-            corporation_name='Corp',
-            corporation_ticker='CORP',
-        )
-        cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
-        cls.old_user = AuthUtils.create_user('old_user', disconnect_signals=True)
-        AuthUtils.disconnect_signals()
-        CharacterOwnership.objects.create(user=cls.user, character=cls.main_character, owner_hash='1')
-        CharacterOwnership.objects.create(user=cls.user, character=cls.alt_character, owner_hash='2')
-        UserProfile.objects.update_or_create(user=cls.user, defaults={'main_character': cls.main_character})
-        AuthUtils.connect_signals()
-
-    def test_authenticate_main_character(self):
-        t = Token(character_id=self.main_character.character_id, character_owner_hash='1')
-        user = StateBackend().authenticate(token=t)
-        self.assertEquals(user, self.user)
-
-    def test_authenticate_alt_character(self):
-        t = Token(character_id=self.alt_character.character_id, character_owner_hash='2')
-        user = StateBackend().authenticate(token=t)
-        self.assertEquals(user, self.user)
-
-    def test_authenticate_unclaimed_character(self):
-        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='3')
-        user = StateBackend().authenticate(token=t)
-        self.assertNotEqual(user, self.user)
-        self.assertEqual(user.username, 'Unclaimed_Character')
-        self.assertEqual(user.profile.main_character, self.unclaimed_character)
-
-    def test_authenticate_character_record(self):
-        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
-        record = OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
-        user = StateBackend().authenticate(token=t)
-        self.assertEqual(user, self.old_user)
-        self.assertTrue(CharacterOwnership.objects.filter(owner_hash='4', user=self.old_user).exists())
-        self.assertTrue(user.profile.main_character)
-
-    def test_iterate_username(self):
-        t = Token(character_id=self.unclaimed_character.character_id,
-                  character_name=self.unclaimed_character.character_name, character_owner_hash='3')
-        username = StateBackend().authenticate(token=t).username
-        t.character_owner_hash = '4'
-        username_1 = StateBackend().authenticate(token=t).username
-        t.character_owner_hash = '5'
-        username_2 = StateBackend().authenticate(token=t).username
-        self.assertNotEqual(username, username_1, username_2)
-        self.assertTrue(username_1.endswith('_1'))
-        self.assertTrue(username_2.endswith('_2'))
 
 
 class CharacterOwnershipTestCase(TestCase):
@@ -378,30 +251,3 @@ class CharacterOwnershipCheckTestCase(TestCase):
         filter.return_value.exists.return_value = False
         check_character_ownership(self.ownership)
         self.assertTrue(filter.return_value.delete.called)
-
-
-class ManagementCommandTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = AuthUtils.create_user('test user', disconnect_signals=True)
-        AuthUtils.add_main_character(cls.user, 'test character', '1', '2', 'test corp', 'test')
-        character = UserProfile.objects.get(user=cls.user).main_character
-        CharacterOwnership.objects.create(user=cls.user, character=character, owner_hash='test')
-
-    def setUp(self):
-        self.stdout = StringIO()
-
-    def test_ownership(self):
-        call_command('checkmains', stdout=self.stdout)
-        self.assertFalse(UserProfile.objects.filter(main_character__isnull=True).count())
-        self.assertNotIn(self.user.username, self.stdout.getvalue())
-        self.assertIn('All main characters', self.stdout.getvalue())
-
-    def test_no_ownership(self):
-        user = AuthUtils.create_user('v1 user', disconnect_signals=True)
-        AuthUtils.add_main_character(user, 'v1 character', '10', '20', 'test corp', 'test')
-        self.assertFalse(UserProfile.objects.filter(main_character__isnull=True).count())
-
-        call_command('checkmains', stdout=self.stdout)
-        self.assertEqual(UserProfile.objects.filter(main_character__isnull=True).count(), 1)
-        self.assertIn(user.username, self.stdout.getvalue())

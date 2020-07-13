@@ -33,7 +33,8 @@ class DiscordService(ServicesHook):
         if self.user_has_account(user):
             logger.debug('Deleting user %s %s account', user, self.name)
             tasks.delete_user.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={'user_pk': user.pk, 'notify_user': notify_user}, 
+                priority=SINGLE_TASK_PRIORITY
             )        
     
     def render_services_ctrl(self, request):                
@@ -60,13 +61,21 @@ class DiscordService(ServicesHook):
         )
 
     def service_active_for_user(self, user):
-        return user.has_perm(self.access_perm)
+        has_perms = user.has_perm(self.access_perm)
+        logger.debug("User %s has service permission: %s", user, has_perms)
+        return has_perms
 
     def sync_nickname(self, user):
         logger.debug('Syncing %s nickname for user %s', self.name, user)
         if self.user_has_account(user):
             tasks.update_nickname.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={
+                    'user_pk': user.pk,
+                    # since the new nickname is not yet in the DB we need to 
+                    # provide it manually to the task
+                    'nickname': DiscordUser.objects.user_formatted_nick(user)
+                }, 
+                priority=SINGLE_TASK_PRIORITY
             )
 
     def sync_nicknames_bulk(self, users: list):
@@ -84,10 +93,16 @@ class DiscordService(ServicesHook):
         tasks.update_all_groups.delay()
 
     def update_groups(self, user):        
-        logger.debug('Processing %s groups for %s', self.name, user)
-        if self.user_has_account(user):            
+        logger.debug('Processing %s groups for %s', self.name, user)        
+        if self.user_has_account(user):
             tasks.update_groups.apply_async(
-                kwargs={'user_pk': user.pk}, priority=SINGLE_TASK_PRIORITY
+                kwargs={
+                    'user_pk': user.pk,
+                    # since state changes may not yet be in the DB we need to 
+                    # provide the new state name manually to the task
+                    'state_name': user.profile.state.name
+                }, 
+                priority=SINGLE_TASK_PRIORITY
             )
 
     def update_groups_bulk(self, users: list):

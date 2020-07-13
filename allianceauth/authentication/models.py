@@ -73,11 +73,17 @@ class UserProfile(models.Model):
             if commit:
                 logger.info('Updating {} state to {}'.format(self.user, self.state))
                 self.save(update_fields=['state'])
-                notify(self.user, _('State Changed'),
-                       _('Your user state has been changed to %(state)s') % ({'state': state}),
-                       'info')
+                notify(
+                    self.user, 
+                    _('State changed to: %s' % state),
+                    _('Your user\'s state is now: %(state)s')
+                    % ({'state': state}),
+                    'info'
+                )
                 from allianceauth.authentication.signals import state_changed
-                state_changed.send(sender=self.__class__, user=self.user, state=self.state)
+                state_changed.send(
+                    sender=self.__class__, user=self.user, state=self.state
+                )
 
     def __str__(self):
         return str(self.user)

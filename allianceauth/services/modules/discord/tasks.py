@@ -26,25 +26,27 @@ BULK_TASK_PRIORITY = 6
 @shared_task(
     bind=True, name='discord.update_groups', base=QueueOnce, max_retries=None
 )
-def update_groups(self, user_pk: int) -> None:
+def update_groups(self, user_pk: int, state_name: str = None) -> None:
     """Update roles on Discord for given user according to his current groups
     
     Params:
     - user_pk: PK of given user
-    """
-    _task_perform_user_action(self, user_pk, 'update_groups')
+    - state_name: optional state name to be used
+    """    
+    _task_perform_user_action(self, user_pk, 'update_groups', state_name=state_name)
 
 
 @shared_task(
     bind=True, name='discord.update_nickname', base=QueueOnce, max_retries=None
 )
-def update_nickname(self, user_pk: int) -> None:
+def update_nickname(self, user_pk: int, nickname: str = None) -> None:
     """Set nickname on Discord for given user to his main character name
     
     Params:
     - user_pk: PK of given user
+    - nickname: optional nickname to be used instead of user's main
     """
-    _task_perform_user_action(self, user_pk, 'update_nickname')
+    _task_perform_user_action(self, user_pk, 'update_nickname', nickname=nickname)
 
 
 @shared_task(
@@ -75,6 +77,7 @@ def _task_perform_user_action(self, user_pk: int, method: str, **kwargs) -> None
     """perform a user related action incl. managing all exceptions"""
     logger.debug("Starting %s for user with pk %s", method, user_pk)
     user = User.objects.get(pk=user_pk)    
+    # logger.debug("user %s has state %s", user, user.profile.state)
     if DiscordUser.objects.user_has_account(user):
         logger.info("Running %s for user %s", method, user)
         try:

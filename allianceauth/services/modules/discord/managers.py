@@ -127,9 +127,17 @@ class DiscordUserManager(models.Manager):
             return None
 
     @staticmethod
-    def user_group_names(user: User) -> list:
+    def user_group_names(user: User, state_name: str = None) -> list:
         """returns list of group names plus state the given user is a member of"""
-        return [group.name for group in user.groups.all()] + [user.profile.state.name]
+        if not state_name:
+            state_name = user.profile.state.name
+        group_names = (
+            [group.name for group in user.groups.all()] + [state_name]
+        )
+        logger.debug(
+            "Group names for roles updates of user %s are: %s", user, group_names
+        )
+        return group_names
     
     def user_has_account(self, user: User) -> bool:
         """Returns True if the user has an Discord account, else False
@@ -171,8 +179,15 @@ class DiscordUserManager(models.Manager):
     
     @classmethod
     def server_name(cls):
-        """returns the name of the Discord server"""        
-        return cls._bot_client().guild_name(DISCORD_GUILD_ID)
+        """returns the name of the current Discord server 
+        or an empty string if the name could not be retrieved
+        """
+        try:
+            server_name = cls._bot_client().guild_name(DISCORD_GUILD_ID)
+        except HTTPError:
+            server_name = ""
+
+        return server_name
 
     @staticmethod
     def _bot_client(is_rate_limited: bool = True):

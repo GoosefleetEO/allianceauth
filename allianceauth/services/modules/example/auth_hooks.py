@@ -25,10 +25,10 @@ class ExampleService(ServicesHook):
         :return:
         """
         urls = self.Urls()
-        urls.auth_activate = 'auth_example_activate'
-        urls.auth_deactivate = 'auth_example_deactivate'
-        urls.auth_reset_password = 'auth_example_reset_password'
-        urls.auth_set_password = 'auth_example_set_password'
+        # urls.auth_activate = 'auth_example_activate'
+        # urls.auth_deactivate = 'auth_example_deactivate'
+        # urls.auth_reset_password = 'auth_example_reset_password'        
+        # urls.auth_set_password = 'auth_example_set_password'
         return render_to_string(self.service_ctrl_template, {
             'service_name': self.title,
             'urls': urls,
