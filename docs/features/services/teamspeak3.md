@@ -101,7 +101,7 @@ The method which populates these runs every 30 minutes. To populate manually, st
 
 And execute the update:
 
-    from services.modules.teamspeak3.tasks import Teamspeak3Tasks
+    from allianceauth.services.modules.teamspeak3.tasks import Teamspeak3Tasks
     Teamspeak3Tasks.run_ts3_group_update()
 
 Ensure that command does not return an error.
