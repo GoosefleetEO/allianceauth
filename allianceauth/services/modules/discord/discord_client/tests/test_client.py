@@ -280,6 +280,8 @@ class TestGuildGetName(TestCase):
         client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_name(TEST_GUILD_ID)
         self.assertEqual(result, guild_name)
+        self.assertTrue(my_mock_redis.get.called)
+        self.assertFalse(my_mock_redis.set.called)
 
     @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
     def test_fetches_from_server_if_not_found_in_cache_and_stores_in_cache(
@@ -290,6 +292,20 @@ class TestGuildGetName(TestCase):
         mock_guild_get_infos.return_value = {'id': TEST_GUILD_ID, 'name': guild_name}
         client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_name(TEST_GUILD_ID)
+        self.assertEqual(result, guild_name)
+        self.assertTrue(my_mock_redis.get.called)
+        self.assertTrue(my_mock_redis.set.called)
+
+    @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
+    def test_fetches_from_server_if_asked_to_ignore_cache_and_stores_in_cache(
+        self, mock_guild_get_infos
+    ):
+        guild_name = 'Omega'
+        my_mock_redis = MagicMock(**{'get.return_value': False})
+        mock_guild_get_infos.return_value = {'id': TEST_GUILD_ID, 'name': guild_name}
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
+        result = client.guild_name(TEST_GUILD_ID, use_cache=False)
+        self.assertFalse(my_mock_redis.get.called)
         self.assertEqual(result, guild_name)
         self.assertTrue(my_mock_redis.set.called)
 
@@ -302,6 +318,7 @@ class TestGuildGetName(TestCase):
         client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_name(TEST_GUILD_ID)
         self.assertEqual(result, '')
+        self.assertTrue(my_mock_redis.get.called)
         self.assertFalse(my_mock_redis.set.called)
 
 
@@ -844,9 +861,45 @@ class TestGuildMemberRemoveRole(TestCase):
         self.assertFalse(result)
 
 
+class TestMatchGuildRolesToName(TestCase):
+
+    def setUp(self):
+        self.url = f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles'
+        
+    @requests_mock.Mocker()
+    def test_return_role_if_known(self, requests_mocker):
+        my_mock_redis = MagicMock(**{
+            'get.return_value': None,
+            'pttl.return_value': -1,
+        })
+        requests_mocker.get(     
+            url=self.url,
+            request_headers=DEFAULT_REQUEST_HEADERS,
+            json=ALL_ROLES
+        )
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
+        result = client.match_role_from_name(TEST_GUILD_ID, "alpha")
+        self.assertDictEqual(result, ROLE_ALPHA)
+
+    @requests_mock.Mocker()
+    def test_return_empty_dict_if_not_known(self, requests_mocker):
+        my_mock_redis = MagicMock(**{
+            'get.return_value': None,
+            'pttl.return_value': -1,
+        })
+        requests_mocker.get(     
+            url=self.url,
+            request_headers=DEFAULT_REQUEST_HEADERS,
+            json=ALL_ROLES
+        )
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
+        result = client.match_role_from_name(TEST_GUILD_ID, "unknown")
+        self.assertDictEqual(result, dict())
+
+
 @patch(MODULE_PATH + '.DiscordClient.create_guild_role')
 @patch(MODULE_PATH + '.DiscordClient.guild_roles')
-class TestMatchGuildRolesToName(TestCase):
+class TestMatchOrCreateGuildRolesToName(TestCase):
             
     def test_return_role_if_known(
         self, mock_guild_get_roles, mock_guild_create_role,
@@ -896,7 +949,7 @@ class TestMatchGuildRolesToName(TestCase):
 
 @patch(MODULE_PATH + '.DiscordClient.create_guild_role')
 @patch(MODULE_PATH + '.DiscordClient.guild_roles')
-class TestMatchGuildRolesToNames(TestCase):
+class TestMatchOrCreateGuildRolesToNames(TestCase):
 
     def test_return_roles_if_known(
         self, mock_guild_get_roles, mock_guild_create_role,

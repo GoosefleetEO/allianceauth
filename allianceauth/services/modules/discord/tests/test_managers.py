@@ -17,7 +17,7 @@ from . import (
     MODULE_PATH,
     ROLE_ALPHA,
     ROLE_BRAVO,
-    ROLE_CHARLIE
+    ROLE_CHARLIE, 
 )
 from ..discord_client.tests import create_matched_role
 from ..app_settings import (
@@ -364,6 +364,7 @@ class TestUserHasAccount(TestCase):
 
 
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
+@patch(MODULE_PATH + '.managers.logger')
 class TestServerName(TestCase):
 
     @classmethod
@@ -371,16 +372,50 @@ class TestServerName(TestCase):
         super().setUpClass()
         cls.user = AuthUtils.create_user(TEST_USER_NAME)
     
-    def test_returns_name_when_api_returns_it(self, mock_DiscordClient):
+    def test_returns_name_when_api_returns_it(self, mock_logger, mock_DiscordClient):
         server_name = "El Dorado"
         mock_DiscordClient.return_value.guild_name.return_value = server_name
 
         self.assertEqual(DiscordUser.objects.server_name(), server_name)
+        self.assertFalse(mock_logger.warning.called)
 
-    def test_returns_empty_string_when_api_throws_http_error(self, mock_DiscordClient):
+    def test_returns_empty_string_when_api_throws_http_error(
+        self, mock_logger, mock_DiscordClient
+    ):
         mock_exception = HTTPError('Test exception')
         mock_exception.response = Mock(**{"status_code": 440})        
         mock_DiscordClient.return_value.guild_name.side_effect = mock_exception
 
         self.assertEqual(DiscordUser.objects.server_name(), "")
+        self.assertFalse(mock_logger.warning.called)
 
+    def test_returns_empty_string_when_api_throws_service_error(
+        self, mock_logger, mock_DiscordClient
+    ):
+        mock_DiscordClient.return_value.guild_name.side_effect = DiscordApiBackoff(1000)
+
+        self.assertEqual(DiscordUser.objects.server_name(), "")
+        self.assertFalse(mock_logger.warning.called)
+
+    def test_returns_empty_string_when_api_throws_unexpected_error(
+        self, mock_logger, mock_DiscordClient
+    ):
+        mock_DiscordClient.return_value.guild_name.side_effect = RuntimeError
+
+        self.assertEqual(DiscordUser.objects.server_name(), "")
+        self.assertTrue(mock_logger.warning.called)
+
+
+@patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
+class TestRoleForGroup(TestCase):    
+    def test_return_role_if_found(self, mock_DiscordClient):
+        mock_DiscordClient.return_value.match_role_from_name.return_value = ROLE_ALPHA
+
+        group = Group.objects.create(name='alpha')
+        self.assertEqual(DiscordUser.objects.group_to_role(group), ROLE_ALPHA)
+
+    def test_return_empty_dict_if_not_found(self, mock_DiscordClient):
+        mock_DiscordClient.return_value.match_role_from_name.return_value = dict()
+
+        group = Group.objects.create(name='unknown')
+        self.assertEqual(DiscordUser.objects.group_to_role(group), dict())

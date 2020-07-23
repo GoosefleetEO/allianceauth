@@ -10,6 +10,7 @@ from ..discord_client.tests import (    # noqa
     ROLE_BRAVO, 
     ROLE_CHARLIE, 
     ROLE_MIKE, 
+    ALL_ROLES,
     create_user_info
 )   
 

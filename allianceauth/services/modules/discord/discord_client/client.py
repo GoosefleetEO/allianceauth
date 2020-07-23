@@ -180,12 +180,19 @@ class DiscordClient:
         r = self._api_request(method='get', route=route)
         return r.json()
 
-    def guild_name(self, guild_id: int) -> str:
+    def guild_name(self, guild_id: int, use_cache: bool = True) -> str:
         """returns the name of this guild (cached) 
         or an empty string if something went wrong
+
+        Params:
+        - guild_id: ID of current guild
+        - use_cache: When set to False will force an API call to get the server name
         """
         key_name = self._guild_name_cache_key(guild_id)
-        guild_name = self._redis_decode(self._redis.get(key_name))
+        if use_cache:
+            guild_name = self._redis_decode(self._redis.get(key_name))
+        else:
+            guild_name = None
         if not guild_name:
             guild_infos = self.guild_infos(guild_id)
             if 'name' in guild_infos:
@@ -193,7 +200,7 @@ class DiscordClient:
                 self._redis.set(
                     name=key_name, 
                     value=guild_name, 
-                    px=DISCORD_GUILD_NAME_CACHE_MAX_AGE
+                    ex=DISCORD_GUILD_NAME_CACHE_MAX_AGE
                 )
             else:
                 guild_name = ''
@@ -230,7 +237,7 @@ class DiscordClient:
             self._redis.set(
                 name=cache_key, 
                 value=json.dumps(roles), 
-                px=DISCORD_ROLES_CACHE_MAX_AGE
+                ex=DISCORD_ROLES_CACHE_MAX_AGE
             )
         return roles
 
@@ -274,6 +281,11 @@ class DiscordClient:
         gen_key = cls._generate_hash(f'{guild_id}')
         return f'{cls._KEYPREFIX_GUILD_ROLES}__{gen_key}'
     
+    def match_role_from_name(self, guild_id: int, role_name: str) -> dict:
+        """returns Discord role matching the given name or an empty dict"""
+        guild_roles = DiscordRoles(self.guild_roles(guild_id))
+        return guild_roles.role_by_name(role_name)
+
     def match_or_create_roles_from_names(self, guild_id: int, role_names: list) -> list:
         """returns Discord roles matching the given names
         
@@ -281,6 +293,7 @@ class DiscordClient:
 
         Will try to match with existing roles names
         Non-existing roles will be created, then created flag will be True
+        
         Params:
         - guild_id: ID of guild
         - role_names: list of name strings each defining a role
@@ -311,6 +324,7 @@ class DiscordClient:
         
         Will try to match with existing roles names
         Non-existing roles will be created, then created flag will be True
+        
         Params:
         - guild_id: ID of guild
         - role_name: strings defining name of a role
