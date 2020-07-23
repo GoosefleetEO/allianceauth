@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from celery import shared_task, chain
 from requests.exceptions import HTTPError
@@ -94,7 +95,7 @@ def _task_perform_user_action(self, user_pk: int, method: str, **kwargs) -> None
             raise self.retry(countdown=bo.retry_after_seconds)     
         
         except AttributeError:
-            raise ValueError(f'{method} not a valid method for DiscordUser: %r')
+            raise ValueError(f'{method} not a valid method for DiscordUser')
 
         except (HTTPError, ConnectionError):           
             logger.warning(
@@ -115,7 +116,7 @@ def _task_perform_user_action(self, user_pk: int, method: str, **kwargs) -> None
                 )
         except Exception:
             logger.error(
-                '%s for %s failed due to unexpected exception',
+                '%s for user %s failed due to unexpected exception',
                 method,
                 user,
                 exc_info=True
@@ -186,9 +187,58 @@ def _bulk_update_nicknames_for_users(discord_users_qs: QuerySet) -> None:
     chain(update_nicknames_chain).apply_async(priority=BULK_TASK_PRIORITY)
 
 
+def _task_perform_users_action(self, method: str, **kwargs) -> Any:   
+    """Perform an action that concerns a group of users or the whole server 
+    and that hits the API
+    """     
+    result = None
+    try:
+        result = getattr(DiscordUser.objects, method)(**kwargs)
+    
+    except AttributeError:
+        raise ValueError(f'{method} not a valid method for DiscordUser.objects')
+    
+    except DiscordApiBackoff as bo:
+        logger.info(
+            "API back off for %s due to %r, retrying in %s seconds",
+            method,
+            bo,
+            bo.retry_after_seconds
+        )
+        raise self.retry(countdown=bo.retry_after_seconds)     
+        
+    except (HTTPError, ConnectionError):           
+        logger.warning(
+            '%s failed, retrying in %d secs',             
+            method,
+            DISCORD_TASKS_RETRY_PAUSE,
+            exc_info=True
+        )
+        if self.request.retries < DISCORD_TASKS_MAX_RETRIES:
+            raise self.retry(countdown=DISCORD_TASKS_RETRY_PAUSE)
+        else:                                            
+            logger.error('%s failed after max retries', method, exc_info=True)
+    
+    except Exception:
+        logger.error('%s failed due to unexpected exception', method, exc_info=True)
+    
+    return result
+
+
+@shared_task(
+    bind=True, name='discord.update_servername', base=QueueOnce, max_retries=None
+)
+def update_servername(self) -> None:
+    """Updates the Discord server name"""
+    _task_perform_users_action(self, method="server_name", use_cache=False)
+
+
 @shared_task(name='discord.update_all_usernames')
 def update_all_usernames() -> None:
-    """Update all usernames for all known users with a Discord account."""
+    """Update all usernames for all known users with a Discord account. 
+    Also updates the server name
+    """
+    update_servername.delay()
     discord_users_qs = DiscordUser.objects.all()
     _bulk_update_usernames_for_users(discord_users_qs)
     

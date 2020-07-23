@@ -27,14 +27,14 @@ DISCORD_OAUTH_TOKEN_URL = clean_setting(
 )
 
 # How long the Discord guild names retrieved from the server are 
-# caches locally in milliseconds.
+# caches locally in seconds.
 DISCORD_GUILD_NAME_CACHE_MAX_AGE = clean_setting(
-    'DISCORD_GUILD_NAME_CACHE_MAX_AGE', 3600 * 1 * 1000
+    'DISCORD_GUILD_NAME_CACHE_MAX_AGE', 3600 * 24
 )
 
-# How long Discord roles retrieved from the server are caches locally in milliseconds.
+# How long Discord roles retrieved from the server are caches locally in seconds.
 DISCORD_ROLES_CACHE_MAX_AGE = clean_setting(
-    'DISCORD_ROLES_CACHE_MAX_AGE', 3600 * 1 * 1000
+    'DISCORD_ROLES_CACHE_MAX_AGE', 3600 * 1
 )
 
 # Turns off creation of new roles. In case the rate limit for creating roles is

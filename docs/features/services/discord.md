@@ -131,8 +131,8 @@ Name                                Description                                 
 `DISCORD_BOT_TOKEN`                 Generated bot token for the Discord Auth app                                                  `''`
 `DISCORD_CALLBACK_URL`              Oauth callback URL                                                                            `''`
 `DISCORD_GUILD_ID`                  Discord ID of your Discord server                                                             `''`
-`DISCORD_GUILD_NAME_CACHE_MAX_AGE`  How long the Discord server name is cached locally in milliseconds                            `3600000`
-`DISCORD_ROLES_CACHE_MAX_AGE`       How long roles retrieved from the Discord server are cached locally in milliseconds           `3600000`
+`DISCORD_GUILD_NAME_CACHE_MAX_AGE`  How long the Discord server name is cached locally in seconds                                 `86400`
+`DISCORD_ROLES_CACHE_MAX_AGE`       How long roles retrieved from the Discord server are cached locally in seconds                `3600`
 `DISCORD_SYNC_NAMES`                When set to True the nicknames of Discord users will be set to the user's main character name `False`
 `DISCORD_TASKS_RETRY_PAUSE`         Pause in seconds until next retry for tasks after an error occurred                           `60`
 `DISCORD_TASKS_MAX_RETRIES`         max retries of tasks after an error occurred                                                  `3`

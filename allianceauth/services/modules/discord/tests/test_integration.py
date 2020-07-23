@@ -41,7 +41,9 @@ from . import (
     create_user_info
 )
 from ..discord_client.app_settings import DISCORD_API_BASE_URL
+from ..discord_client.exceptions import DiscordApiBackoff
 from ..models import DiscordUser
+from .. import tasks
 
 logger = logging.getLogger('allianceauth')
 
@@ -444,25 +446,26 @@ class TestUserFeatures(WebTest):
             disconnect_signals=True
         )
         add_permissions_to_members()
-        
+
     @patch(MODULE_PATH + '.views.messages')    
     @patch(MODULE_PATH + '.managers.OAuth2Session')
     def test_user_activation_normal(
         self, requests_mocker, mock_OAuth2Session, mock_messages
     ): 
-        # user_get_current()
+        # setup
+        requests_mocker.get(
+            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+        )                
         requests_mocker.get(
             user_get_current_request.url, 
             json=create_user_info(
                 TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
             )
-        )        
-        # guild_roles()        
+        )                
         requests_mocker.get(
             guild_roles_request.url, 
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
-        )        
-        # add_guild_member()
+        )                
         requests_mocker.put(add_guild_member_request.url, status_code=201)
         
         authentication_code = 'auth_code'        
@@ -474,8 +477,12 @@ class TestUserFeatures(WebTest):
         # login
         self.app.set_user(self.member)
         
-        # click activate on the service page
-        response = self.app.get(reverse('discord:activate'))
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+
+        # user clicks Discord service activation link on page        
+        response = services_page.click(href=reverse('discord:activate'))
         
         # check we got a redirect to Discord OAuth        
         self.assertRedirects(
@@ -497,7 +504,10 @@ class TestUserFeatures(WebTest):
             requests_made.append(obj)
                 
         expected = [
-            user_get_current_request, guild_roles_request, add_guild_member_request
+            guild_infos_request, 
+            user_get_current_request, 
+            guild_roles_request, 
+            add_guild_member_request
         ]
         self.assertListEqual(requests_made, expected)
 
@@ -506,19 +516,21 @@ class TestUserFeatures(WebTest):
     def test_user_activation_failed(
         self, requests_mocker, mock_OAuth2Session, mock_messages
     ): 
-        # user_get_current()
+        # setup
+        requests_mocker.get(
+            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+        )
         requests_mocker.get(
             user_get_current_request.url, 
             json=create_user_info(
                 TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
             )
-        )        
-        # guild_roles()        
+        )                
         requests_mocker.get(
             guild_roles_request.url, 
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
         )        
-        # add_guild_member()
+        
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 503
@@ -532,9 +544,13 @@ class TestUserFeatures(WebTest):
         
         # login
         self.app.set_user(self.member)
+
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
         
         # click activate on the service page
-        response = self.app.get(reverse('discord:activate'))
+        response = services_page.click(href=reverse('discord:activate'))
         
         # check we got a redirect to Discord OAuth        
         self.assertRedirects(
@@ -556,27 +572,31 @@ class TestUserFeatures(WebTest):
             requests_made.append(obj)
                 
         expected = [
-            user_get_current_request, guild_roles_request, add_guild_member_request
+            guild_infos_request,
+            user_get_current_request, 
+            guild_roles_request, 
+            add_guild_member_request
         ]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
     def test_user_deactivation_normal(self, requests_mocker, mock_messages): 
-        # guild_infos()
+        # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'})
-
-        # remove_guild_member()
+            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+        )        
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
-        
-        # user needs have an account
         DiscordUser.objects.create(user=self.member, uid=TEST_USER_ID)
         
         # login
         self.app.set_user(self.member)
         
-        # click deactivate on the service page
-        response = self.app.get(reverse('discord:deactivate'))
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+
+        # click deactivate on the service page        
+        response = services_page.click(href=reverse('discord:deactivate'))
         
         # check we got a redirect to service page
         self.assertRedirects(response, expected_url=reverse('services:services'))
@@ -590,29 +610,31 @@ class TestUserFeatures(WebTest):
             obj = DiscordRequest(r.method, r.url)            
             requests_made.append(obj)
                 
-        expected = [remove_guild_member_request, guild_infos_request]
+        expected = [guild_infos_request, remove_guild_member_request]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
     def test_user_deactivation_fails(self, requests_mocker, mock_messages): 
-        # guild_infos()
+        # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'})
-
-        # remove_guild_member()        
+            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+        )        
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 503
         requests_mocker.delete(remove_guild_member_request.url, exc=mock_exception)
-        
-        # user needs have an account
+                
         DiscordUser.objects.create(user=self.member, uid=TEST_USER_ID)
         
         # login
         self.app.set_user(self.member)
         
-        # click deactivate on the service page
-        response = self.app.get(reverse('discord:deactivate'))
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+
+        # click deactivate on the service page        
+        response = services_page.click(href=reverse('discord:deactivate'))
         
         # check we got a redirect to service page
         self.assertRedirects(response, expected_url=reverse('services:services'))
@@ -626,15 +648,13 @@ class TestUserFeatures(WebTest):
             obj = DiscordRequest(r.method, r.url)            
             requests_made.append(obj)
                 
-        expected = [remove_guild_member_request, guild_infos_request]
+        expected = [guild_infos_request, remove_guild_member_request]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
     def test_user_add_new_server(self, requests_mocker, mock_messages): 
-        # guild_infos()
-        mock_exception = HTTPError('can not get guild info from Discord API')
-        mock_exception.response = Mock()
-        mock_exception.response.status_code = 440
+        # setup                
+        mock_exception = HTTPError(Mock(**{"response.status_code": 400}))
         requests_mocker.get(guild_infos_request.url, exc=mock_exception)
         
         # login        
@@ -649,3 +669,39 @@ class TestUserFeatures(WebTest):
         # check we got can see the page and the "link server" button
         self.assertEqual(response.status_int, 200)
         self.assertIsNotNone(response.html.find(id='btnLinkDiscordServer'))
+    
+    def test_when_server_name_fails_user_can_still_see_service_page(
+        self, requests_mocker
+    ): 
+        # setup
+        requests_mocker.get(guild_infos_request.url, exc=DiscordApiBackoff(1000))
+                
+        # login
+        self.app.set_user(self.member)
+        
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+
+    @override_settings(CELERY_ALWAYS_EAGER=True)
+    def test_server_name_is_updated_by_task(
+        self, requests_mocker
+    ): 
+        # setup
+        requests_mocker.get(
+            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+        )
+        # run task to update usernames
+        tasks.update_all_usernames()
+
+        # login
+        self.app.set_user(self.member)
+        
+        # disable API call to make sure server name is not retrieved from API
+        mock_exception = HTTPError(Mock(**{"response.status_code": 400}))
+        requests_mocker.get(guild_infos_request.url, exc=mock_exception)
+        
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+        self.assertIn("Test Guild", services_page.text)

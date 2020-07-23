@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from requests_oauthlib import OAuth2Session
 from requests.exceptions import HTTPError
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.utils.timezone import now
 
@@ -19,7 +19,8 @@ from .app_settings import (
     DISCORD_GUILD_ID,    
     DISCORD_SYNC_NAMES
 )
-from .discord_client import DiscordClient, DiscordApiBackoff
+from .discord_client import DiscordClient
+from .discord_client.exceptions import DiscordClientException, DiscordApiBackoff
 from .discord_client.helpers import match_or_create_roles_from_names
 from .utils import LoggerAddTag
 
@@ -149,7 +150,7 @@ class DiscordUserManager(models.Manager):
         return self.filter(user=user).select_related('user').exists()
 
     @classmethod
-    def generate_bot_add_url(cls):
+    def generate_bot_add_url(cls) -> str:
         params = urlencode({
             'client_id': DISCORD_APP_ID,
             'scope': 'bot',
@@ -159,7 +160,7 @@ class DiscordUserManager(models.Manager):
         return f'{DiscordClient.OAUTH_BASE_URL}?{params}'        
 
     @classmethod
-    def generate_oauth_redirect_url(cls):
+    def generate_oauth_redirect_url(cls) -> str:
         oauth = OAuth2Session(
             DISCORD_APP_ID, redirect_uri=DISCORD_CALLBACK_URL, scope=cls.SCOPES
         )
@@ -178,18 +179,38 @@ class DiscordUserManager(models.Manager):
         return token['access_token']
     
     @classmethod
-    def server_name(cls):
+    def server_name(cls, use_cache: bool = True) -> str:
         """returns the name of the current Discord server 
         or an empty string if the name could not be retrieved
+
+        Params:
+        - use_cache: When set False will force an API call to get the server name
         """
         try:
-            server_name = cls._bot_client().guild_name(DISCORD_GUILD_ID)
-        except HTTPError:
+            server_name = cls._bot_client().guild_name(
+                guild_id=DISCORD_GUILD_ID, use_cache=use_cache
+            )
+        except (HTTPError, DiscordClientException):
+            server_name = ""
+        except Exception:
+            logger.warning(
+                "Unexpected error when trying to retrieve the server name from Discord", 
+                exc_info=True
+            )
             server_name = ""
 
         return server_name
 
+    @classmethod
+    def group_to_role(cls, group: Group) -> dict:
+        """returns the Discord role matching the given Django group by name
+        or an empty dict() if no matching role exist
+        """
+        return cls._bot_client().match_role_from_name(
+            guild_id=DISCORD_GUILD_ID, role_name=group.name
+        )
+
     @staticmethod
-    def _bot_client(is_rate_limited: bool = True):
+    def _bot_client(is_rate_limited: bool = True) -> DiscordClient:
         """returns a bot client for access to the Discord API"""
         return DiscordClient(DISCORD_BOT_TOKEN, is_rate_limited=is_rate_limited)
