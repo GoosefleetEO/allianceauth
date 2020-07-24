@@ -215,3 +215,29 @@ On a freshly installed mumble server only your superuser has the right to config
 
 - user: `SuperUser`
 - password: *what you defined when configuring your mumble server*
+
+## General notes
+
+### Setting a server password
+
+With the default configuration your mumble server is public. Meaning that everyone who has the address can at least connect to it and might also be able join all channels that don't have any permissions set (Depending on your ACL configured for the root channel). If you want only registered member being able to join your mumble, you have to set a server password. To do so open your mumble server configuration which is by default located at `/etc/mumble-server.ini`.
+
+```bash
+nano /etc/mumble-server.ini
+```
+
+Now search for `serverpassword=` and set your password here. If there is no such line, simply add it.
+
+```text
+serverpassword=YourSuperSecretServerPassword
+```
+
+Save the file and restart your mumble server afterwards.
+
+```bash
+service mumble-server restart
+```
+
+From now on, only registerd member can join your mumble server. Now if you still want to allow guests to join you have 2 options.
+- Allow the "Guest" state to activate the Mumble service in your Auth instance
+- Use [Mumble temporary links](https://github.com/pvyParts/allianceauth-mumble-temp)
