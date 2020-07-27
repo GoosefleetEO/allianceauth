@@ -33,8 +33,8 @@ GITLAB_AUTH_ANNOUNCEMENT_ISSUES_URL = (
 logger = logging.getLogger(__name__)
 
 
-@register.inclusion_tag('allianceauth/admin-status/overview.html', takes_context=True)
-def status_overview(context):
+@register.inclusion_tag('allianceauth/admin-status/overview.html')
+def status_overview() -> dict:
     response = {
         'notifications': list(),        
         'current_version': __version__,
@@ -46,7 +46,7 @@ def status_overview(context):
     return response
 
 
-def _fetch_celery_queue_length():
+def _fetch_celery_queue_length() -> int:
     try:
         app = app_or_default(None)
         with app.connection_or_acquire() as conn:
@@ -69,11 +69,15 @@ def _current_notifications() -> dict:
             'gitlab_notification_issues', 
             _fetch_notification_issues_from_gitlab,
             NOTIFICATION_CACHE_TIME
-        )        
-        top_notifications = notifications[:5]
+        )                
     except requests.RequestException:
         logger.exception('Error while getting gitlab notifications')
         top_notifications = []
+    else:
+        if notifications:
+            top_notifications = notifications[:5]
+        else:
+            top_notifications = []
     
     response = {
         'notifications': top_notifications,
@@ -95,8 +99,15 @@ def _current_version_summary() -> dict:
         logger.exception('Error while getting gitlab release tags')
         return {}
         
-    latest_major_version, latest_minor_version, latest_patch_version, latest_beta_version = \
-        _latests_versions(tags)    
+    if not tags:
+        return {}
+        
+    (
+        latest_major_version, 
+        latest_minor_version, 
+        latest_patch_version, 
+        latest_beta_version
+    ) = _latests_versions(tags)    
     current_version = Pep440Version(__version__)
 
     has_latest_major = \
@@ -107,8 +118,8 @@ def _current_version_summary() -> dict:
         current_version >= latest_patch_version if latest_patch_version else False
     has_current_beta = \
         current_version.base_version <= latest_beta_version.base_version \
-            and latest_major_version.base_version <= latest_beta_version.base_version \
-                if latest_beta_version else False
+        and latest_major_version.base_version <= latest_beta_version.base_version \
+        if latest_beta_version else False
 
     response = {        
         'latest_major': has_latest_major,
@@ -146,7 +157,6 @@ def _latests_versions(tags: list) -> tuple:
             else:
                 versions.append(version)
 
-    
     latest_version = latest_patch_version = max(versions)
     latest_major_version = min([
         v for v in versions if v.major == latest_version.major
@@ -156,10 +166,15 @@ def _latests_versions(tags: list) -> tuple:
         if v.major == latest_version.major and v.minor == latest_version.minor
     ])
     latest_beta_version = max(betas)
-    return latest_major_version, latest_minor_version, latest_patch_version, latest_beta_version
+    return (
+        latest_major_version, 
+        latest_minor_version, 
+        latest_patch_version, 
+        latest_beta_version
+    )
 
 
-def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES):
+def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES) -> list:
     """returns a list from the GitLab API. Supports pageing"""
     result = list()    
     for page in range(1, max_pages + 1):
