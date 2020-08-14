@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 00:57+0000\n"
+"POT-Creation-Date: 2020-07-29 04:56+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Alexander Gess <de.alex.gess@gmail.com>, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/alliance-auth/teams/107430/ru/)\n"
@@ -29,55 +29,56 @@ msgstr "Необходимо указать основного персонаж�
 msgid "Email"
 msgstr "Email"
 
-#: allianceauth/authentication/models.py:76
-msgid "State Changed"
-msgstr "Состояние заменено. "
-
-#: allianceauth/authentication/models.py:77
+#: allianceauth/authentication/models.py:78
 #, python-format
-msgid "Your user state has been changed to %(state)s"
-msgstr "Статус вашего пользователя сменен на %(state)s"
+msgid "State changed to: %s"
+msgstr "Статус изменен: %s"
+
+#: allianceauth/authentication/models.py:79
+#, python-format
+msgid "Your user's state is now: %(state)s"
+msgstr "Статус пилота: %(state)s"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:10
+#: allianceauth/templates/allianceauth/side-menu.html:12
 msgid "Dashboard"
 msgstr "Панель показателей"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:17
-#: allianceauth/corputils/templates/corputils/corpstats.html:116
-#: allianceauth/corputils/templates/corputils/search.html:16
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
-#: allianceauth/hrapplications/templates/hrapplications/management.html:83
-#: allianceauth/hrapplications/templates/hrapplications/management.html:128
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
-#: allianceauth/hrapplications/templates/hrapplications/view.html:32
-msgid "Main Character"
-msgstr "Основной персонаж"
+#: allianceauth/authentication/templates/authentication/dashboard.html:18
+#, python-format
+msgid ""
+"\n"
+"                                Main Character (State: %(state)s)\n"
+"                            "
+msgstr ""
+"\n"
+"                                Основной персонаж (статус: %(state)s)\n"
+"                            "
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:77
+#: allianceauth/authentication/templates/authentication/dashboard.html:81
 msgid "No main character set."
 msgstr "Основной персонаж не установлен."
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:84
+#: allianceauth/authentication/templates/authentication/dashboard.html:88
 msgid "Add Character"
 msgstr "Добавить Персонажа"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:92
 msgid "Change Main"
 msgstr "Сменить основного персонажа"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:97
+#: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "Group Memberships"
 msgstr "Групповое участие"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:117
+#: allianceauth/authentication/templates/authentication/dashboard.html:121
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr "Персонажи"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:125
+#: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -86,13 +87,13 @@ msgstr "Персонажи"
 msgid "Name"
 msgstr "Имя"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:126
+#: allianceauth/authentication/templates/authentication/dashboard.html:130
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr "Корпорация"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:127
+#: allianceauth/authentication/templates/authentication/dashboard.html:131
 #: allianceauth/corputils/templates/corputils/corpstats.html:77
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
@@ -141,6 +142,7 @@ msgid ""
 "Cannot change main character to %(char)s: character owned by a different "
 "account."
 msgstr ""
+"Нельзя сменить основного персонажа на %(char)s: похоже, что Владелец не Вы. "
 
 #: allianceauth/authentication/views.py:80
 #, python-format
@@ -226,8 +228,8 @@ msgstr "Последнее обновление: "
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:37
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:96
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 msgid "Character"
 msgstr "Персонаж"
 
@@ -248,6 +250,16 @@ msgstr "Корпорация"
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
 msgstr "zKillBoard"
+
+#: allianceauth/corputils/templates/corputils/corpstats.html:116
+#: allianceauth/corputils/templates/corputils/search.html:16
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
+#: allianceauth/hrapplications/templates/hrapplications/management.html:83
+#: allianceauth/hrapplications/templates/hrapplications/management.html:128
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
+#: allianceauth/hrapplications/templates/hrapplications/view.html:32
+msgid "Main Character"
+msgstr "Основной персонаж"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:117
 #: allianceauth/corputils/templates/corputils/search.html:17
@@ -588,8 +600,8 @@ msgid "Portrait"
 msgstr "Портрет"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:38
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "Корпорация"
@@ -608,7 +620,7 @@ msgstr "Участники группы"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
+#: allianceauth/templates/allianceauth/side-menu.html:17
 msgid "Groups"
 msgstr "Группы"
 
@@ -652,8 +664,8 @@ msgid "Audit Members"
 msgstr "Проверить участников"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
-msgid "Copy Direrct Join Link"
-msgstr ""
+msgid "Copy Direct Join Link"
+msgstr "Скопировать ссылку подключения"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
@@ -684,37 +696,37 @@ msgstr "Нет доступных групп."
 msgid "Groups Management"
 msgstr "Управление Группами"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:25
 msgid "Join Requests"
 msgstr "Запрос на присоединение"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
 msgid "Leave Requests"
 msgstr "Запрос на Выход"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:39
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:98
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "Группа"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:71
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:130
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
 msgid "Accept"
 msgstr "Принять"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:74
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:133
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "Сбросить"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:83
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
 msgid "No group add requests."
 msgstr "Нет групповых запросов на вступление"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
 msgid "No group leave requests."
 msgstr "Нет групповых запросов на выход"
 
@@ -723,7 +735,7 @@ msgid "Toggle navigation"
 msgstr "Проложить маршрут"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:23
+#: allianceauth/templates/allianceauth/side-menu.html:25
 msgid "Group Management"
 msgstr "Управление Группой"
 
@@ -735,26 +747,26 @@ msgstr "Групповой запрос"
 msgid "Group Membership"
 msgstr "Групповое участие"
 
-#: allianceauth/groupmanagement/views.py:166
+#: allianceauth/groupmanagement/views.py:162
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "Пользователь %(user)s исключен из %(group)s."
 
-#: allianceauth/groupmanagement/views.py:168
+#: allianceauth/groupmanagement/views.py:164
 msgid "User does not exist in that group"
 msgstr "Пользователь не существует в этой группе."
 
-#: allianceauth/groupmanagement/views.py:171
+#: allianceauth/groupmanagement/views.py:167
 msgid "Group does not exist"
 msgstr "Группа не существует."
 
-#: allianceauth/groupmanagement/views.py:198
+#: allianceauth/groupmanagement/views.py:194
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "Запрос от %(mainchar)sв %(group)s принят."
 
-#: allianceauth/groupmanagement/views.py:205
-#: allianceauth/groupmanagement/views.py:238
+#: allianceauth/groupmanagement/views.py:201
+#: allianceauth/groupmanagement/views.py:234
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
@@ -763,44 +775,46 @@ msgstr ""
 "Персонаж %(mainchar)s не может быть добавлен %(group)s, из-за непредвиденной"
 " ошибки. "
 
-#: allianceauth/groupmanagement/views.py:231
+#: allianceauth/groupmanagement/views.py:227
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "%(mainchar)s исключен из %(group)s."
 
-#: allianceauth/groupmanagement/views.py:267
+#: allianceauth/groupmanagement/views.py:263
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "Утвержден выход %(mainchar)s из %(group)s.  "
 
-#: allianceauth/groupmanagement/views.py:273
-#: allianceauth/groupmanagement/views.py:307
+#: allianceauth/groupmanagement/views.py:269
+#: allianceauth/groupmanagement/views.py:303
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr ""
+"Возникла ошибка во время обработки %(mainchar)s на выход из группы "
+"%(group)s. Повторите позже."
 
-#: allianceauth/groupmanagement/views.py:300
+#: allianceauth/groupmanagement/views.py:296
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "Прошение об исключении %(mainchar)s из %(group)s – отклонено. "
 
-#: allianceauth/groupmanagement/views.py:346
-#: allianceauth/groupmanagement/views.py:358
+#: allianceauth/groupmanagement/views.py:342
+#: allianceauth/groupmanagement/views.py:354
 msgid "You cannot join that group"
 msgstr "Вы не можете вступить"
 
-#: allianceauth/groupmanagement/views.py:352
+#: allianceauth/groupmanagement/views.py:348
 msgid "You are already a member of that group."
-msgstr ""
+msgstr "Вы уже участник этой группы."
 
-#: allianceauth/groupmanagement/views.py:367
+#: allianceauth/groupmanagement/views.py:363
 msgid "You already have a pending application for that group."
-msgstr ""
+msgstr "Вы уже подали заявку на вступление этой группы."
 
-#: allianceauth/groupmanagement/views.py:370
-#: allianceauth/groupmanagement/views.py:408
+#: allianceauth/groupmanagement/views.py:366
+#: allianceauth/groupmanagement/views.py:404
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -812,24 +826,24 @@ msgstr ""
 msgid "Pending"
 msgstr "Ожидание"
 
-#: allianceauth/groupmanagement/views.py:376
+#: allianceauth/groupmanagement/views.py:372
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "Вступить в группу %(group)s."
 
-#: allianceauth/groupmanagement/views.py:387
+#: allianceauth/groupmanagement/views.py:383
 msgid "You cannot leave that group"
 msgstr "Вы не можете покинуть эту группу"
 
-#: allianceauth/groupmanagement/views.py:392
+#: allianceauth/groupmanagement/views.py:388
 msgid "You are not a member of that group"
 msgstr "Вы не участник группыы"
 
-#: allianceauth/groupmanagement/views.py:401
+#: allianceauth/groupmanagement/views.py:397
 msgid "You already have a pending leave request for that group."
-msgstr ""
+msgstr "Ваш запрос находится на рассмотрении"
 
-#: allianceauth/groupmanagement/views.py:414
+#: allianceauth/groupmanagement/views.py:410
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "Запрос на выход из группы %(group)s."
@@ -1222,15 +1236,15 @@ msgstr "Состояния"
 
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
-msgstr ""
+msgstr "Этот сервис уже активирован"
 
 #: allianceauth/services/abstract.py:104
 msgid "Successfully set your {} password"
-msgstr ""
+msgstr "{} Пароль успешно обновлен."
 
 #: allianceauth/services/auth_hooks.py:11
 msgid "Services"
-msgstr ""
+msgstr "Сервисные услуги"
 
 #: allianceauth/services/forms.py:6
 msgid "Name of Fleet:"
@@ -1292,37 +1306,74 @@ msgstr "Пароль"
 msgid "Password must be at least 8 characters long."
 msgstr "Пароль должен быть не менее 8 символов."
 
-#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:23
+#: allianceauth/services/modules/discord/models.py:224
+msgid "Discord Account Disabled"
+msgstr "Discord персонаж отключен"
+
+#: allianceauth/services/modules/discord/models.py:226
+msgid ""
+"Your Discord account was disabeled automatically by Auth. If you think this "
+"was a mistake, please contact an admin."
+msgstr ""
+"Ваш доступ на сервер Discord был отменен. Если Вы считаете что по ошибке, "
+"пожалуйста, свяжитесь с СЕО."
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
+msgid "Join the Discord server"
+msgstr "Подключиться к серверу Discord"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
+msgid "Leave- and rejoin the Discord Server (Reset)"
+msgstr "Переподключиться к серверу Discord. "
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
+msgid "Leave the Discord server"
+msgstr "Покинуть Discord сервер"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:32
 msgid "Link Discord Server"
 msgstr "Ссылка на сервер Discord"
 
-#: allianceauth/services/modules/discord/views.py:26
+#: allianceauth/services/modules/discord/views.py:30
 msgid "Deactivated Discord account."
-msgstr ""
+msgstr "Отменить доступ на Discord сервер."
 
-#: allianceauth/services/modules/discord/views.py:29
-#: allianceauth/services/modules/discord/views.py:41
-#: allianceauth/services/modules/discord/views.py:65
+#: allianceauth/services/modules/discord/views.py:36
+#: allianceauth/services/modules/discord/views.py:59
 msgid "An error occurred while processing your Discord account."
 msgstr ""
+"Во время обработки Discord аккаунта возникла ошибка. Попробуйте чуточку "
+"позднее. "
 
-#: allianceauth/services/modules/discord/views.py:62
-msgid "Activated Discord account."
+#: allianceauth/services/modules/discord/views.py:102
+msgid "Your Discord account has been successfully activated."
+msgstr "Доступ на сервер Discord успешно получен."
+
+#: allianceauth/services/modules/discord/views.py:108
+msgid ""
+"An error occurred while trying to activate your Discord account. Please try "
+"again."
 msgstr ""
+"Во время активации Discord аккаунта возникла ошибка. Попробуйте чуточку "
+"позднее. "
 
 #: allianceauth/services/modules/discourse/views.py:37
 msgid "You are not authorized to access Discourse."
-msgstr ""
+msgstr "Вы не авторизованы в Discourse."
 
 #: allianceauth/services/modules/discourse/views.py:42
 msgid "You must have a main character set to access Discourse."
 msgstr ""
+"Для авторизации Discourse, необходимо получить авторизацию Вашим основным "
+"аккаунтом."
 
 #: allianceauth/services/modules/discourse/views.py:52
 msgid ""
 "No SSO payload or signature. Please contact support if this problem "
 "persists."
 msgstr ""
+"Отсуствует связь SSO. Если ошибка повторяется - свяжитесь с тех. поддержкой."
+" "
 
 #: allianceauth/services/modules/discourse/views.py:62
 #: allianceauth/services/modules/discourse/views.py:70
@@ -1354,7 +1405,7 @@ msgstr ""
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:26
 msgid "Jabber"
-msgstr ""
+msgstr "Jabber"
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:78
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:6
@@ -1380,50 +1431,50 @@ msgstr "Бродкаст"
 
 #: allianceauth/services/modules/openfire/views.py:35
 msgid "Activated jabber account."
-msgstr ""
+msgstr "Активировать доступ в jabber."
 
 #: allianceauth/services/modules/openfire/views.py:44
 #: allianceauth/services/modules/openfire/views.py:57
 #: allianceauth/services/modules/openfire/views.py:78
 #: allianceauth/services/modules/openfire/views.py:151
 msgid "An error occurred while processing your jabber account."
-msgstr ""
+msgstr "Возникла ошибка во время активации jabber'а ."
 
 #: allianceauth/services/modules/openfire/views.py:70
 msgid "Reset jabber password."
-msgstr ""
+msgstr "Сбросить jabber пароль."
 
 #: allianceauth/services/modules/openfire/views.py:119
 #, python-format
 msgid "Sent jabber broadcast to %s"
-msgstr ""
+msgstr "Отправить Бродкаст %s"
 
 #: allianceauth/services/modules/openfire/views.py:148
 msgid "Set jabber password."
-msgstr ""
+msgstr "Установить jabber пароль."
 
 #: allianceauth/services/modules/phpbb3/views.py:34
 msgid "Activated forum account."
-msgstr ""
+msgstr "Допустить на Форум."
 
 #: allianceauth/services/modules/phpbb3/views.py:43
 #: allianceauth/services/modules/phpbb3/views.py:57
 #: allianceauth/services/modules/phpbb3/views.py:80
 #: allianceauth/services/modules/phpbb3/views.py:103
 msgid "An error occurred while processing your forum account."
-msgstr ""
+msgstr "Во время обработки Форумного аккаунта, возникла ошибка."
 
 #: allianceauth/services/modules/phpbb3/views.py:54
 msgid "Deactivated forum account."
-msgstr ""
+msgstr "Отменить доступ на Форум. "
 
 #: allianceauth/services/modules/phpbb3/views.py:71
 msgid "Reset forum password."
-msgstr ""
+msgstr "Сбросить пароль на Форум."
 
 #: allianceauth/services/modules/phpbb3/views.py:100
 msgid "Set forum password."
-msgstr ""
+msgstr "Установить пароль на Форум."
 
 #: allianceauth/services/modules/smf/views.py:34
 msgid "Activated SMF account."
@@ -1473,21 +1524,21 @@ msgstr "Продолжить"
 
 #: allianceauth/services/modules/teamspeak3/views.py:34
 msgid "Activated TeamSpeak3 account."
-msgstr ""
+msgstr "Активировать аккаунт TeamSpeak3."
 
 #: allianceauth/services/modules/teamspeak3/views.py:37
 #: allianceauth/services/modules/teamspeak3/views.py:74
 #: allianceauth/services/modules/teamspeak3/views.py:100
 msgid "An error occurred while processing your TeamSpeak3 account."
-msgstr ""
+msgstr "Во время активации TeamSpeak3 возникла ошибка, попробуйте позже."
 
 #: allianceauth/services/modules/teamspeak3/views.py:71
 msgid "Deactivated TeamSpeak3 account."
-msgstr ""
+msgstr "Отключить TeamSpeak3 аккаунт."
 
 #: allianceauth/services/modules/teamspeak3/views.py:97
 msgid "Reset TeamSpeak3 permission key."
-msgstr ""
+msgstr "Сбросить TeamSpeak3 ключ доступа."
 
 #: allianceauth/services/modules/xenforo/views.py:30
 msgid "Activated XenForo account."
@@ -1866,32 +1917,30 @@ msgid "Current"
 msgstr "Текущий"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:40
-msgid "Latest Major"
-msgstr "Последняя версия"
+msgid "Latest Stable"
+msgstr "Стабильная Версия"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:46
-#: allianceauth/templates/allianceauth/admin-status/overview.html:56
-#: allianceauth/templates/allianceauth/admin-status/overview.html:66
 msgid "Update available"
 msgstr "Доступно обновление"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:50
-msgid "Latest Minor"
-msgstr "Последняя версия"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:51
+msgid "Latest Pre-Release"
+msgstr "Предрелизная Версия"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:60
-msgid "Latest Patch"
-msgstr "Последние исправления"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:57
+msgid "Pre-Release available"
+msgstr "Предрелизная Версия"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:73
+#: allianceauth/templates/allianceauth/admin-status/overview.html:65
 msgid "Task Queue"
 msgstr "Список задач"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:90
+#: allianceauth/templates/allianceauth/admin-status/overview.html:82
 msgid "Error retrieving task queue length"
 msgstr "Ошибка при получении списка задач. "
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:92
+#: allianceauth/templates/allianceauth/admin-status/overview.html:84
 #, python-format
 msgid "%(tasks)s task"
 msgid_plural "%(tasks)s tasks"

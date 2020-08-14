@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 00:57+0000\n"
+"POT-Creation-Date: 2020-07-29 04:56+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Rounon Dax <rounon.dax@terra-nanotech.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
@@ -32,55 +32,55 @@ msgstr ""
 msgid "Email"
 msgstr "E-Mail"
 
-#: allianceauth/authentication/models.py:76
-msgid "State Changed"
-msgstr "Status geändert"
-
-#: allianceauth/authentication/models.py:77
+#: allianceauth/authentication/models.py:78
 #, python-format
-msgid "Your user state has been changed to %(state)s"
-msgstr "Dein Nutzerstatus hat sich geändert zu %(state)s"
+msgid "State changed to: %s"
+msgstr "Status geändert zu %s"
+
+#: allianceauth/authentication/models.py:79
+#, python-format
+msgid "Your user's state is now: %(state)s"
+msgstr "Dein Nutzerstatus ist nun %(state)s"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:10
+#: allianceauth/templates/allianceauth/side-menu.html:12
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:17
-#: allianceauth/corputils/templates/corputils/corpstats.html:116
-#: allianceauth/corputils/templates/corputils/search.html:16
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
-#: allianceauth/hrapplications/templates/hrapplications/management.html:83
-#: allianceauth/hrapplications/templates/hrapplications/management.html:128
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
-#: allianceauth/hrapplications/templates/hrapplications/view.html:32
-msgid "Main Character"
-msgstr "Hauptcharakter"
+#: allianceauth/authentication/templates/authentication/dashboard.html:18
+#, python-format
+msgid ""
+"\n"
+"                                Main Character (State: %(state)s)\n"
+"                            "
+msgstr ""
+"\n"
+"Hauptcharakter (Status: %(state)s)"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:77
+#: allianceauth/authentication/templates/authentication/dashboard.html:81
 msgid "No main character set."
 msgstr "Kein Hauptcharakter gesetzt."
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:84
+#: allianceauth/authentication/templates/authentication/dashboard.html:88
 msgid "Add Character"
 msgstr "Charakter hinzufügen"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:92
 msgid "Change Main"
 msgstr "Hauptcharakter ändern"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:97
+#: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "Group Memberships"
 msgstr "Gruppen"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:117
+#: allianceauth/authentication/templates/authentication/dashboard.html:121
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr "Charaktere"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:125
+#: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -89,13 +89,13 @@ msgstr "Charaktere"
 msgid "Name"
 msgstr "Name"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:126
+#: allianceauth/authentication/templates/authentication/dashboard.html:130
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr "Corp"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:127
+#: allianceauth/authentication/templates/authentication/dashboard.html:131
 #: allianceauth/corputils/templates/corputils/corpstats.html:77
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
@@ -236,8 +236,8 @@ msgstr "Letzes Update:"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:37
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:96
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 msgid "Character"
 msgstr "Charakter"
 
@@ -258,6 +258,16 @@ msgstr "Corporation"
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
 msgstr "Killboard"
+
+#: allianceauth/corputils/templates/corputils/corpstats.html:116
+#: allianceauth/corputils/templates/corputils/search.html:16
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
+#: allianceauth/hrapplications/templates/hrapplications/management.html:83
+#: allianceauth/hrapplications/templates/hrapplications/management.html:128
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
+#: allianceauth/hrapplications/templates/hrapplications/view.html:32
+msgid "Main Character"
+msgstr "Hauptcharakter"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:117
 #: allianceauth/corputils/templates/corputils/search.html:17
@@ -594,8 +604,8 @@ msgid "Portrait"
 msgstr "Portrait"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:38
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "Organization"
@@ -614,7 +624,7 @@ msgstr "Gruppenmitgliedschaft"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
+#: allianceauth/templates/allianceauth/side-menu.html:17
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -658,8 +668,8 @@ msgid "Audit Members"
 msgstr "Mitglieder Protokoll"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
-msgid "Copy Direrct Join Link"
-msgstr ""
+msgid "Copy Direct Join Link"
+msgstr "Direktlink kopieren"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
@@ -690,37 +700,37 @@ msgstr "Keine Gruppen verfügbar"
 msgid "Groups Management"
 msgstr "Gruppenverwaltung"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:25
 msgid "Join Requests"
 msgstr "Beitrittsgesuche"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
 msgid "Leave Requests"
 msgstr "Austrittsgesuche"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:39
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:98
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "Gruppen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:71
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:130
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
 msgid "Accept"
 msgstr "Akzeptieren"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:74
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:133
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "Ablehnen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:83
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
 msgid "No group add requests."
 msgstr "Keine Gruppenbeitrittsanfragen."
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
 msgid "No group leave requests."
 msgstr "Keine Gruppenaustrittsanfragen"
 
@@ -729,7 +739,7 @@ msgid "Toggle navigation"
 msgstr "Toggle Navigation"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:23
+#: allianceauth/templates/allianceauth/side-menu.html:25
 msgid "Group Management"
 msgstr "Gruppenverwaltung"
 
@@ -741,26 +751,26 @@ msgstr "Gruppenanfragen"
 msgid "Group Membership"
 msgstr "Gruppenmitgliedschaft"
 
-#: allianceauth/groupmanagement/views.py:166
+#: allianceauth/groupmanagement/views.py:162
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "Benutzer %(user)s von Gruppe %(group)s entfernt."
 
-#: allianceauth/groupmanagement/views.py:168
+#: allianceauth/groupmanagement/views.py:164
 msgid "User does not exist in that group"
 msgstr "Benutzer existiert nicht in dieser Gruppe"
 
-#: allianceauth/groupmanagement/views.py:171
+#: allianceauth/groupmanagement/views.py:167
 msgid "Group does not exist"
 msgstr "Gruppe existiert nicht"
 
-#: allianceauth/groupmanagement/views.py:198
+#: allianceauth/groupmanagement/views.py:194
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "Beitrittsgesuch von %(mainchar)s zur Gruppe %(group)s zugestimmt."
 
-#: allianceauth/groupmanagement/views.py:205
-#: allianceauth/groupmanagement/views.py:238
+#: allianceauth/groupmanagement/views.py:201
+#: allianceauth/groupmanagement/views.py:234
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
@@ -769,18 +779,18 @@ msgstr ""
 "Bei der Bearbeitung des Beitrittsgesuchs von %(mainchar)s zur Gruppe "
 "%(group)s ist ein unbehandelter Fehler aufgetreten."
 
-#: allianceauth/groupmanagement/views.py:231
+#: allianceauth/groupmanagement/views.py:227
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "Beitrittsgesuch von %(mainchar)s zur Gruppe %(group)s abgelehnt."
 
-#: allianceauth/groupmanagement/views.py:267
+#: allianceauth/groupmanagement/views.py:263
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "Austrittsgesuch von %(mainchar)s für Gruppe %(group)s akzeptiert."
 
-#: allianceauth/groupmanagement/views.py:273
-#: allianceauth/groupmanagement/views.py:307
+#: allianceauth/groupmanagement/views.py:269
+#: allianceauth/groupmanagement/views.py:303
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
@@ -789,26 +799,26 @@ msgstr ""
 "Bei der Bearbeitung des Austrittsgesuchs von %(mainchar)s für Gruppe "
 "%(group)s ist ein unbehandelter Fehler aufgetreten."
 
-#: allianceauth/groupmanagement/views.py:300
+#: allianceauth/groupmanagement/views.py:296
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "Austrittsgesuch von %(mainchar)s für Gruppe %(group)s abgelehnt."
 
-#: allianceauth/groupmanagement/views.py:346
-#: allianceauth/groupmanagement/views.py:358
+#: allianceauth/groupmanagement/views.py:342
+#: allianceauth/groupmanagement/views.py:354
 msgid "You cannot join that group"
 msgstr "Du kannst dieser Gruppe nicht beitreten"
 
-#: allianceauth/groupmanagement/views.py:352
+#: allianceauth/groupmanagement/views.py:348
 msgid "You are already a member of that group."
 msgstr "Du bist bereits Mitglied dieser Gruppe."
 
-#: allianceauth/groupmanagement/views.py:367
+#: allianceauth/groupmanagement/views.py:363
 msgid "You already have a pending application for that group."
 msgstr "Du hast Dich bereits für diese Gruppe beworben."
 
-#: allianceauth/groupmanagement/views.py:370
-#: allianceauth/groupmanagement/views.py:408
+#: allianceauth/groupmanagement/views.py:366
+#: allianceauth/groupmanagement/views.py:404
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -820,24 +830,24 @@ msgstr "Du hast Dich bereits für diese Gruppe beworben."
 msgid "Pending"
 msgstr "Beantragt"
 
-#: allianceauth/groupmanagement/views.py:376
+#: allianceauth/groupmanagement/views.py:372
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "Beitritt zur Gruppe %(group)s beantragt."
 
-#: allianceauth/groupmanagement/views.py:387
+#: allianceauth/groupmanagement/views.py:383
 msgid "You cannot leave that group"
 msgstr "Du kannst diese Gruppe nicht verlassen"
 
-#: allianceauth/groupmanagement/views.py:392
+#: allianceauth/groupmanagement/views.py:388
 msgid "You are not a member of that group"
 msgstr "Du bist kein Mitglied dieser Gruppe"
 
-#: allianceauth/groupmanagement/views.py:401
+#: allianceauth/groupmanagement/views.py:397
 msgid "You already have a pending leave request for that group."
 msgstr "Du hast bereits ein ausstehendes Austrittsgesuch für diese Gruppe."
 
-#: allianceauth/groupmanagement/views.py:414
+#: allianceauth/groupmanagement/views.py:410
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "Austrittsgesuch für Gruppe %(group)s gesendet."
@@ -1300,23 +1310,54 @@ msgstr "Passwort"
 msgid "Password must be at least 8 characters long."
 msgstr "Passwort muss mindestens 8 Zeichen lang sein"
 
-#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:23
+#: allianceauth/services/modules/discord/models.py:224
+msgid "Discord Account Disabled"
+msgstr "Discord Konto deaktiviert"
+
+#: allianceauth/services/modules/discord/models.py:226
+msgid ""
+"Your Discord account was disabeled automatically by Auth. If you think this "
+"was a mistake, please contact an admin."
+msgstr ""
+"Dein Discord Konto wurde automatisch durch Auth deaktiviert. Wenn Du glaubst"
+" dies war ein Fehler, kontaktiere bitte einen Administrator."
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
+msgid "Join the Discord server"
+msgstr "Discord Server beitreten"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
+msgid "Leave- and rejoin the Discord Server (Reset)"
+msgstr "Discord Server verlassen und wieder beitreten (Zurücksetzen)"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
+msgid "Leave the Discord server"
+msgstr "Discord Server verlassen"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:32
 msgid "Link Discord Server"
 msgstr "Verbinde Discord Server"
 
-#: allianceauth/services/modules/discord/views.py:26
+#: allianceauth/services/modules/discord/views.py:30
 msgid "Deactivated Discord account."
 msgstr "Discord Konto deaktiviert."
 
-#: allianceauth/services/modules/discord/views.py:29
-#: allianceauth/services/modules/discord/views.py:41
-#: allianceauth/services/modules/discord/views.py:65
+#: allianceauth/services/modules/discord/views.py:36
+#: allianceauth/services/modules/discord/views.py:59
 msgid "An error occurred while processing your Discord account."
 msgstr "Es gab einen Fehler bei der Verarbeitung Deines Discord Kontos."
 
-#: allianceauth/services/modules/discord/views.py:62
-msgid "Activated Discord account."
-msgstr "Discord Konto aktiviert."
+#: allianceauth/services/modules/discord/views.py:102
+msgid "Your Discord account has been successfully activated."
+msgstr "Dein Discord Konto wurde erfolgreich aktiviert."
+
+#: allianceauth/services/modules/discord/views.py:108
+msgid ""
+"An error occurred while trying to activate your Discord account. Please try "
+"again."
+msgstr ""
+"Es gab einen Fehler während der Aktivierung Deines Discord Kontos. Bitte "
+"versuche es noch einmal."
 
 #: allianceauth/services/modules/discourse/views.py:37
 msgid "You are not authorized to access Discourse."
@@ -1884,32 +1925,30 @@ msgid "Current"
 msgstr "Aktuell"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:40
-msgid "Latest Major"
-msgstr "Aktuellste Hauptversion"
+msgid "Latest Stable"
+msgstr "Aktuellste stabile Version"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:46
-#: allianceauth/templates/allianceauth/admin-status/overview.html:56
-#: allianceauth/templates/allianceauth/admin-status/overview.html:66
 msgid "Update available"
 msgstr "Update verfügbar"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:50
-msgid "Latest Minor"
-msgstr "Aktuellste Unterversion"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:51
+msgid "Latest Pre-Release"
+msgstr "Aktuellste Testversion"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:60
-msgid "Latest Patch"
-msgstr "Aktuellste Patchversion"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:57
+msgid "Pre-Release available"
+msgstr "Testversion verfügbar"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:73
+#: allianceauth/templates/allianceauth/admin-status/overview.html:65
 msgid "Task Queue"
 msgstr "Warteschlange"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:90
+#: allianceauth/templates/allianceauth/admin-status/overview.html:82
 msgid "Error retrieving task queue length"
 msgstr "Fehler beim Ermitteln der Warteschlange."
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:92
+#: allianceauth/templates/allianceauth/admin-status/overview.html:84
 #, python-format
 msgid "%(tasks)s task"
 msgid_plural "%(tasks)s tasks"
