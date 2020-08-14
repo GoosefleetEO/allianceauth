@@ -83,9 +83,8 @@ class TestStatusOverviewTag(TestCase):
         }
         mock_current_version_info.return_value = version_info
         mock_fetch_celery_queue_length.return_value = 3
-        
-        context = {}
-        result = status_overview(context)
+                
+        result = status_overview()
         expected = {
             'notifications': GITHUB_NOTIFICATION_ISSUES[:5],
             'latest_major': True,
@@ -124,6 +123,13 @@ class TestNotifications(TestCase):
     @patch(MODULE_PATH + '.admin_status.cache')
     def test_current_notifications_failed(self, mock_cache):
         mock_cache.get_or_set.side_effect = RequestException
+
+        result = _current_notifications()
+        self.assertEqual(result['notifications'], list())
+
+    @patch(MODULE_PATH + '.admin_status.cache')
+    def test_current_notifications_is_none(self, mock_cache):
+        mock_cache.get_or_set.return_value = None
 
         result = _current_notifications()
         self.assertEqual(result['notifications'], list())
@@ -169,6 +175,15 @@ class TestVersionTags(TestCase):
         requests_mocker.get(url, json=GITHUB_TAGS)
         result = _fetch_tags_from_gitlab()
         self.assertEqual(result, GITHUB_TAGS)
+
+    @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
+    @patch(MODULE_PATH + '.admin_status.cache')
+    def test_current_version_info_return_no_data(self, mock_cache):
+        mock_cache.get_or_set.return_value = None
+        
+        expected = {}
+        result = _current_version_summary()
+        self.assertEqual(result, expected)
 
 
 class TestLatestsVersion(TestCase):
