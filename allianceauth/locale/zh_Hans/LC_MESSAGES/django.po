@@ -6,15 +6,16 @@
 # Translators:
 # Joel Falknau <ozirascal@gmail.com>, 2020
 # Jesse . <sgeine@hotmail.com>, 2020
+# Aaron BuBu <351793078@qq.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-10 01:32+0000\n"
+"POT-Creation-Date: 2020-07-29 03:24+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Jesse . <sgeine@hotmail.com>, 2020\n"
+"Last-Translator: Aaron BuBu <351793078@qq.com>, 2020\n"
 "Language-Team: Chinese Simplified (https://www.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,55 +31,53 @@ msgstr "只有主要角色才能执行这个操作。在下面添加一个"
 msgid "Email"
 msgstr "电子邮箱"
 
-#: allianceauth/authentication/models.py:76
-msgid "State Changed"
-msgstr "状态已经更改"
-
-#: allianceauth/authentication/models.py:77
+#: allianceauth/authentication/models.py:78
 #, python-format
-msgid "Your user state has been changed to %(state)s"
-msgstr "您的用户状态已经更改为%(state)s"
+msgid "State changed to: %s"
+msgstr ""
+
+#: allianceauth/authentication/models.py:79
+#, python-format
+msgid "Your user's state is now: %(state)s"
+msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:10
+#: allianceauth/templates/allianceauth/side-menu.html:12
 msgid "Dashboard"
 msgstr "账户总览"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:17
-#: allianceauth/corputils/templates/corputils/corpstats.html:116
-#: allianceauth/corputils/templates/corputils/search.html:16
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
-#: allianceauth/hrapplications/templates/hrapplications/management.html:83
-#: allianceauth/hrapplications/templates/hrapplications/management.html:128
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
-#: allianceauth/hrapplications/templates/hrapplications/view.html:32
-msgid "Main Character"
-msgstr "主要角色"
+#: allianceauth/authentication/templates/authentication/dashboard.html:18
+#, python-format
+msgid ""
+"\n"
+"                                Main Character (State: %(state)s)\n"
+"                            "
+msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:77
+#: allianceauth/authentication/templates/authentication/dashboard.html:81
 msgid "No main character set."
 msgstr "没有主要角色组"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:84
+#: allianceauth/authentication/templates/authentication/dashboard.html:88
 msgid "Add Character"
 msgstr "添加角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:92
 msgid "Change Main"
 msgstr "修改主要角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:97
+#: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "Group Memberships"
 msgstr "用户组成员"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:117
+#: allianceauth/authentication/templates/authentication/dashboard.html:121
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr "角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:125
+#: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -87,13 +86,13 @@ msgstr "角色"
 msgid "Name"
 msgstr "角色名"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:126
+#: allianceauth/authentication/templates/authentication/dashboard.html:130
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr "所在公司"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:127
+#: allianceauth/authentication/templates/authentication/dashboard.html:131
 #: allianceauth/corputils/templates/corputils/corpstats.html:77
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
@@ -134,40 +133,47 @@ msgstr "您的IT团队"
 msgid "Submit"
 msgstr "提交"
 
-#: allianceauth/authentication/views.py:77
+#: allianceauth/authentication/views.py:74
+#, python-format
+msgid ""
+"Cannot change main character to %(char)s: character owned by a different "
+"account."
+msgstr "不能修改主角色为%(char)s：这个角色被另一个账户所拥有"
+
+#: allianceauth/authentication/views.py:80
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr "修改主要角色为%(char)s"
 
-#: allianceauth/authentication/views.py:86
+#: allianceauth/authentication/views.py:89
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr "添加%(name)s到您的账户"
 
-#: allianceauth/authentication/views.py:88
+#: allianceauth/authentication/views.py:91
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr "添加%(name)s到您的账户失败：他们已经在一个账户中了"
 
-#: allianceauth/authentication/views.py:127
+#: allianceauth/authentication/views.py:130
 msgid "Unable to authenticate as the selected character."
 msgstr "无法作为选定的角色进行身份验证"
 
-#: allianceauth/authentication/views.py:145
+#: allianceauth/authentication/views.py:148
 msgid "Registration token has expired."
 msgstr "注册令牌过期。"
 
-#: allianceauth/authentication/views.py:197
+#: allianceauth/authentication/views.py:200
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "已经发送了确认邮件。请按照链接确定您的电邮地址"
 
-#: allianceauth/authentication/views.py:202
+#: allianceauth/authentication/views.py:205
 msgid "Confirmed your email address. Please login to continue."
 msgstr "已确认您的电邮地址。请登录以继续"
 
-#: allianceauth/authentication/views.py:207
+#: allianceauth/authentication/views.py:210
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "现在不允许注册新账户。"
 
@@ -218,8 +224,8 @@ msgstr "最后一次更新"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:37
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:96
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 msgid "Character"
 msgstr "角色"
 
@@ -240,6 +246,16 @@ msgstr "公司"
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
 msgstr "KB板"
+
+#: allianceauth/corputils/templates/corputils/corpstats.html:116
+#: allianceauth/corputils/templates/corputils/search.html:16
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
+#: allianceauth/hrapplications/templates/hrapplications/management.html:83
+#: allianceauth/hrapplications/templates/hrapplications/management.html:128
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
+#: allianceauth/hrapplications/templates/hrapplications/view.html:32
+msgid "Main Character"
+msgstr "主要角色"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:117
 #: allianceauth/corputils/templates/corputils/search.html:17
@@ -527,6 +543,12 @@ msgstr "PAP链接已过期"
 msgid "Audit Log"
 msgstr "审计日志"
 
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:18
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:20
+#: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
+msgid "Back"
+msgstr "返回"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:25
 msgid "Date/Time"
 msgstr "日期/时间"
@@ -568,8 +590,8 @@ msgid "Portrait"
 msgstr "人物头像"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:38
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "组织"
@@ -585,6 +607,12 @@ msgstr "用户组里没人呀，你叫我怎么列"
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:5
 msgid "Groups Membership"
 msgstr "用户组成员"
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
+#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
+#: allianceauth/templates/allianceauth/side-menu.html:17
+msgid "Groups"
+msgstr "群组"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:23
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:16
@@ -625,7 +653,11 @@ msgstr "查看成员"
 msgid "Audit Members"
 msgstr "编辑成员"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:64
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
+msgid "Copy Direct Join Link"
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
 msgstr "无可用组"
 
@@ -654,37 +686,37 @@ msgstr "没有可用用户组"
 msgid "Groups Management"
 msgstr "用户组管理"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:25
 msgid "Join Requests"
 msgstr "入组的请求"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
 msgid "Leave Requests"
 msgstr "离组的请求"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:39
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:98
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "用户组"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:71
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:130
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
 msgid "Accept"
 msgstr "接受"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:74
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:133
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "拒绝"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:83
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
 msgid "No group add requests."
 msgstr "没有加入用户组的请求，小老弟你是不是摇不到人"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
 msgid "No group leave requests."
 msgstr "没有离开用户组的请求，小老弟你人缘可以啊？"
 
@@ -693,7 +725,7 @@ msgid "Toggle navigation"
 msgstr "打开导航栏"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:23
+#: allianceauth/templates/allianceauth/side-menu.html:25
 msgid "Group Management"
 msgstr "用户组管理"
 
@@ -705,61 +737,70 @@ msgstr "用户组请求"
 msgid "Group Membership"
 msgstr "用户组成员"
 
-#: allianceauth/groupmanagement/views.py:165
+#: allianceauth/groupmanagement/views.py:162
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "已将用户%(user)s从用户组%(group)s中移除"
 
-#: allianceauth/groupmanagement/views.py:167
+#: allianceauth/groupmanagement/views.py:164
 msgid "User does not exist in that group"
 msgstr "那个用户组中不存在这个用户"
 
-#: allianceauth/groupmanagement/views.py:170
+#: allianceauth/groupmanagement/views.py:167
 msgid "Group does not exist"
 msgstr "用户组不存在"
 
-#: allianceauth/groupmanagement/views.py:197
+#: allianceauth/groupmanagement/views.py:194
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "已接受用户%(mainchar)s加入%(group)s的申请"
 
-#: allianceauth/groupmanagement/views.py:204
-#: allianceauth/groupmanagement/views.py:237
+#: allianceauth/groupmanagement/views.py:201
+#: allianceauth/groupmanagement/views.py:234
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to %(group)s."
 msgstr "在处理用户%(mainchar)s加入%(group)s的申请的过程中出现了一个搞不定的错误"
 
-#: allianceauth/groupmanagement/views.py:230
+#: allianceauth/groupmanagement/views.py:227
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "%(mainchar)s加入%(group)s的申请已拒绝"
 
-#: allianceauth/groupmanagement/views.py:266
+#: allianceauth/groupmanagement/views.py:263
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s加入%(group)s的申请已通过"
 
-#: allianceauth/groupmanagement/views.py:272
-#: allianceauth/groupmanagement/views.py:306
+#: allianceauth/groupmanagement/views.py:269
+#: allianceauth/groupmanagement/views.py:303
 #, python-format
 msgid ""
-"An unhandled error occured while processing the application from "
+"An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
-msgstr "在处理%(mainchar)s离开%(group)s的请求时发生了搞不定的错误"
+msgstr "在处理%(mainchar)s离开%(group)s的程序时发生了未知的错误"
 
-#: allianceauth/groupmanagement/views.py:299
+#: allianceauth/groupmanagement/views.py:296
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s离开%(group)s的请求已被拒绝"
 
-#: allianceauth/groupmanagement/views.py:346
+#: allianceauth/groupmanagement/views.py:342
+#: allianceauth/groupmanagement/views.py:354
 msgid "You cannot join that group"
 msgstr "你无法加入那个用户组"
 
-#: allianceauth/groupmanagement/views.py:370
-#: allianceauth/groupmanagement/views.py:408
+#: allianceauth/groupmanagement/views.py:348
+msgid "You are already a member of that group."
+msgstr "你已经是那个群组的一员了。"
+
+#: allianceauth/groupmanagement/views.py:363
+msgid "You already have a pending application for that group."
+msgstr "你已经有了该组的未决申请"
+
+#: allianceauth/groupmanagement/views.py:366
+#: allianceauth/groupmanagement/views.py:404
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
@@ -771,20 +812,24 @@ msgstr "你无法加入那个用户组"
 msgid "Pending"
 msgstr "待定"
 
-#: allianceauth/groupmanagement/views.py:376
+#: allianceauth/groupmanagement/views.py:372
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "修改已经应用到%(group)s啦"
 
-#: allianceauth/groupmanagement/views.py:387
+#: allianceauth/groupmanagement/views.py:383
 msgid "You cannot leave that group"
 msgstr "你无法离开那个用户组"
 
-#: allianceauth/groupmanagement/views.py:392
+#: allianceauth/groupmanagement/views.py:388
 msgid "You are not a member of that group"
 msgstr "你不是那个用户组的成员"
 
-#: allianceauth/groupmanagement/views.py:414
+#: allianceauth/groupmanagement/views.py:397
+msgid "You already have a pending leave request for that group."
+msgstr "你已经有了该组的未决离开请求"
+
+#: allianceauth/groupmanagement/views.py:410
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "已经离开群组%(group)s"
@@ -1130,10 +1175,6 @@ msgstr "对搞事时间节点%(opname)s的修改保存了，朝令夕改你是�
 msgid "Permissions Audit"
 msgstr "放行记录审计"
 
-#: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
-msgid "Back"
-msgstr "返回"
-
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:22
 msgid "User / Character"
 msgstr "用户/角色"
@@ -1175,14 +1216,21 @@ msgstr "操作类型"
 msgid "Users"
 msgstr "用户"
 
-#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
-msgid "Groups"
-msgstr "群组"
-
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:43
 msgid "States"
 msgstr "声望"
+
+#: allianceauth/services/abstract.py:72
+msgid "That service account already exists"
+msgstr "该服务账户仍然存在"
+
+#: allianceauth/services/abstract.py:104
+msgid "Successfully set your {} password"
+msgstr "成功修改了你的[]密码"
+
+#: allianceauth/services/auth_hooks.py:11
+msgid "Services"
+msgstr "服务"
 
 #: allianceauth/services/forms.py:6
 msgid "Name of Fleet:"
@@ -1244,18 +1292,110 @@ msgstr "密码"
 msgid "Password must be at least 8 characters long."
 msgstr "密码至少要有8个字符啊，你也太不注重安全啦"
 
-#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:23
+#: allianceauth/services/modules/discord/models.py:224
+msgid "Discord Account Disabled"
+msgstr ""
+
+#: allianceauth/services/modules/discord/models.py:226
+msgid ""
+"Your Discord account was disabeled automatically by Auth. If you think this "
+"was a mistake, please contact an admin."
+msgstr ""
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
+msgid "Join the Discord server"
+msgstr ""
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
+msgid "Leave- and rejoin the Discord Server (Reset)"
+msgstr ""
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
+msgid "Leave the Discord server"
+msgstr ""
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:32
 msgid "Link Discord Server"
 msgstr "链接到Discord服务器"
 
-#: allianceauth/services/modules/openfire/forms.py:7
-msgid "Message"
-msgstr "消息"
+#: allianceauth/services/modules/discord/views.py:30
+msgid "Deactivated Discord account."
+msgstr "停用Discord账户"
 
+#: allianceauth/services/modules/discord/views.py:36
+#: allianceauth/services/modules/discord/views.py:59
+msgid "An error occurred while processing your Discord account."
+msgstr "在处理你的Discord账户时出错。"
+
+#: allianceauth/services/modules/discord/views.py:102
+msgid "Your Discord account has been successfully activated."
+msgstr ""
+
+#: allianceauth/services/modules/discord/views.py:108
+msgid ""
+"An error occurred while trying to activate your Discord account. Please try "
+"again."
+msgstr ""
+
+#: allianceauth/services/modules/discourse/views.py:37
+msgid "You are not authorized to access Discourse."
+msgstr "你无权访问Discourse"
+
+#: allianceauth/services/modules/discourse/views.py:42
+msgid "You must have a main character set to access Discourse."
+msgstr "你必须得有一个主要角色来访问Discourse"
+
+#: allianceauth/services/modules/discourse/views.py:52
+msgid ""
+"No SSO payload or signature. Please contact support if this problem "
+"persists."
+msgstr "没有在Seat上检测到SSO。如果该问题依然存在，请联系技术支持"
+
+#: allianceauth/services/modules/discourse/views.py:62
+#: allianceauth/services/modules/discourse/views.py:70
+msgid "Invalid payload. Please contact support if this problem persists."
+msgstr "无效的SSO验证。如果该问题依然存在请联系技术支持。"
+
+#: allianceauth/services/modules/ips4/views.py:31
+msgid "Activated IPSuite4 account."
+msgstr "完成激活IPSuite4账户"
+
+#: allianceauth/services/modules/ips4/views.py:40
+#: allianceauth/services/modules/ips4/views.py:62
+#: allianceauth/services/modules/ips4/views.py:83
+#: allianceauth/services/modules/ips4/views.py:103
+msgid "An error occurred while processing your IPSuite4 account."
+msgstr "在处理你的IPSuite4账户时出错"
+
+#: allianceauth/services/modules/ips4/views.py:53
+msgid "Reset IPSuite4 password."
+msgstr "重置IPSuite4密码"
+
+#: allianceauth/services/modules/ips4/views.py:80
+msgid "Set IPSuite4 password."
+msgstr "修改IPSuite4密码"
+
+#: allianceauth/services/modules/ips4/views.py:100
+msgid "Deactivated IPSuite4 account."
+msgstr "停用IPSuite4账户"
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:26
+msgid "Jabber"
+msgstr "Jabber"
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:78
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:6
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:11
 msgid "Jabber Broadcast"
 msgstr "Jabber广播"
+
+#: allianceauth/services/modules/openfire/auth_hooks.py:91
+msgid "Fleet Broadcast Formatter"
+msgstr "舰队广播设置"
+
+#: allianceauth/services/modules/openfire/forms.py:7
+msgid "Message"
+msgstr "消息"
 
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:17
 msgid "Broadcast Sent!!"
@@ -1264,6 +1404,76 @@ msgstr "广播出去了！"
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:24
 msgid "Broadcast"
 msgstr "广播"
+
+#: allianceauth/services/modules/openfire/views.py:35
+msgid "Activated jabber account."
+msgstr "成功激活jabber账户"
+
+#: allianceauth/services/modules/openfire/views.py:44
+#: allianceauth/services/modules/openfire/views.py:57
+#: allianceauth/services/modules/openfire/views.py:78
+#: allianceauth/services/modules/openfire/views.py:151
+msgid "An error occurred while processing your jabber account."
+msgstr "在处理你的jabber账户时出错"
+
+#: allianceauth/services/modules/openfire/views.py:70
+msgid "Reset jabber password."
+msgstr "重置jabber密码"
+
+#: allianceauth/services/modules/openfire/views.py:119
+#, python-format
+msgid "Sent jabber broadcast to %s"
+msgstr "已经将jabber广播送到了%s"
+
+#: allianceauth/services/modules/openfire/views.py:148
+msgid "Set jabber password."
+msgstr "修改jabber密码"
+
+#: allianceauth/services/modules/phpbb3/views.py:34
+msgid "Activated forum account."
+msgstr "成功激活论坛账户"
+
+#: allianceauth/services/modules/phpbb3/views.py:43
+#: allianceauth/services/modules/phpbb3/views.py:57
+#: allianceauth/services/modules/phpbb3/views.py:80
+#: allianceauth/services/modules/phpbb3/views.py:103
+msgid "An error occurred while processing your forum account."
+msgstr "在处理你的论坛账户时发生了一个错误"
+
+#: allianceauth/services/modules/phpbb3/views.py:54
+msgid "Deactivated forum account."
+msgstr "停用论坛账户"
+
+#: allianceauth/services/modules/phpbb3/views.py:71
+msgid "Reset forum password."
+msgstr "重置论坛密码"
+
+#: allianceauth/services/modules/phpbb3/views.py:100
+msgid "Set forum password."
+msgstr "修改论坛密码"
+
+#: allianceauth/services/modules/smf/views.py:34
+msgid "Activated SMF account."
+msgstr "成功激活SMF论坛账户"
+
+#: allianceauth/services/modules/smf/views.py:43
+#: allianceauth/services/modules/smf/views.py:58
+#: allianceauth/services/modules/smf/views.py:80
+#: allianceauth/services/modules/smf/views.py:103
+msgid "An error occurred while processing your SMF account."
+msgstr "在处理你的SMF论坛账户时发生了一个错误"
+
+#: allianceauth/services/modules/smf/views.py:55
+msgid "Deactivated SMF account."
+msgstr "停用SMF论坛账户"
+
+#: allianceauth/services/modules/smf/views.py:72
+msgid "Reset SMF password."
+msgstr "重置SMF密码"
+
+#: allianceauth/services/modules/smf/views.py:100
+msgid "Set SMF password."
+msgstr "修改SMF论坛密码"
 
 #: allianceauth/services/modules/teamspeak3/forms.py:14
 #, python-format
@@ -1287,6 +1497,47 @@ msgstr "加入服务器"
 #: allianceauth/srp/templates/srp/add.html:31
 msgid "Continue"
 msgstr "下一个"
+
+#: allianceauth/services/modules/teamspeak3/views.py:34
+msgid "Activated TeamSpeak3 account."
+msgstr "成功激活TeamSpeak3账户"
+
+#: allianceauth/services/modules/teamspeak3/views.py:37
+#: allianceauth/services/modules/teamspeak3/views.py:74
+#: allianceauth/services/modules/teamspeak3/views.py:100
+msgid "An error occurred while processing your TeamSpeak3 account."
+msgstr "在处理你的TeamSpeak3账户时发生了错误"
+
+#: allianceauth/services/modules/teamspeak3/views.py:71
+msgid "Deactivated TeamSpeak3 account."
+msgstr "停用TeamSpeak3账户"
+
+#: allianceauth/services/modules/teamspeak3/views.py:97
+msgid "Reset TeamSpeak3 permission key."
+msgstr "重置TeamSpeak3授权秘钥"
+
+#: allianceauth/services/modules/xenforo/views.py:30
+msgid "Activated XenForo account."
+msgstr "成功激活XenForo账户"
+
+#: allianceauth/services/modules/xenforo/views.py:40
+#: allianceauth/services/modules/xenforo/views.py:52
+#: allianceauth/services/modules/xenforo/views.py:73
+#: allianceauth/services/modules/xenforo/views.py:94
+msgid "An error occurred while processing your XenForo account."
+msgstr "在处理你的XenForo账户时发生了一个错误"
+
+#: allianceauth/services/modules/xenforo/views.py:50
+msgid "Deactivated XenForo account."
+msgstr "停用XenForo论坛账户"
+
+#: allianceauth/services/modules/xenforo/views.py:65
+msgid "Reset XenForo account password."
+msgstr "重置XenForo密码"
+
+#: allianceauth/services/modules/xenforo/views.py:91
+msgid "Changed XenForo password."
+msgstr "修改XenForo密码"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:6
 msgid "Fleet Formatter Tool"
@@ -1638,42 +1889,34 @@ msgid "Current"
 msgstr "当前版本"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:40
-msgid "Latest Major"
-msgstr "最新主版本号"
+msgid "Latest Stable"
+msgstr ""
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:46
-#: allianceauth/templates/allianceauth/admin-status/overview.html:56
-#: allianceauth/templates/allianceauth/admin-status/overview.html:66
 msgid "Update available"
 msgstr "有更新！"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:50
-msgid "Latest Minor"
-msgstr "最新小版本号"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:51
+msgid "Latest Pre-Release"
+msgstr ""
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:60
-msgid "Latest Patch"
-msgstr "最新补丁版本"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:57
+msgid "Pre-Release available"
+msgstr ""
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:73
+#: allianceauth/templates/allianceauth/admin-status/overview.html:65
 msgid "Task Queue"
 msgstr "任务队列"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:90
+#: allianceauth/templates/allianceauth/admin-status/overview.html:82
 msgid "Error retrieving task queue length"
 msgstr "获取任务队列长度的时候出错啦！"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:92
+#: allianceauth/templates/allianceauth/admin-status/overview.html:84
 #, python-format
 msgid "%(tasks)s task"
 msgid_plural "%(tasks)s tasks"
 msgstr[0] "%(tasks)s个任务"
-
-#: allianceauth/templates/allianceauth/help.html:4
-#: allianceauth/templates/allianceauth/help.html:9
-#: allianceauth/templates/allianceauth/side-menu.html:34
-msgid "Help"
-msgstr "帮助"
 
 #: allianceauth/templates/allianceauth/night-toggle.html:3
 msgid "Night"
