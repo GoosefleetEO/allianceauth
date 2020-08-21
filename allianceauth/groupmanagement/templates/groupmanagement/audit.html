@@ -33,7 +33,7 @@
                             <tbody>
                                 {% for entry in entries %}
                                     <tr>
-                                        <td class="text-center">{{ entry.date|date:"Y-m-d H:i" }}</td>
+                                        <td class="text-center">{{ entry.date|date:"Y-M-d, H:i" }}</td>
                                         <td class="text-center">{{ entry.requestor }}</td>
                                         <td class="text-center">{{ entry.req_char }}</td>
                                         <td class="text-center">{{ entry.req_char.corporation_name }}</td>
@@ -66,6 +66,7 @@
 
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
+    {% include 'bundles/moment-js.html' %}
     <script type="text/javascript" src="{% static 'js/filterDropDown/filterDropDown.min.js' %}"></script>
 {% endblock %}
 
@@ -74,9 +75,28 @@
 {% endblock %}
 
 {% block extra_script %}
+
+    $.fn.dataTable.moment = function ( format, locale ) {
+        var types = $.fn.dataTable.ext.type;
+    
+        // Add type detection
+        types.detect.unshift( function ( d ) {
+            return moment( d, format, locale, true ).isValid() ?
+                'moment-'+format :
+                null;
+        } );
+    
+        // Add sorting method - use an integer for the sorting
+        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
+            return moment( d, format, locale, true ).unix();
+        };
+    };
+
     $(document).ready(function(){
+        $.fn.dataTable.moment( 'YYYY-MMM-D, HH:mm' );
+
         $('#log-entries').DataTable({
-            order: [[ 0, 'desc' ], [ 1, 'asc' ] ],
+            order: [[ 0, 'desc' ]],
             filterDropDown:
             {
                 columns: [                                       
