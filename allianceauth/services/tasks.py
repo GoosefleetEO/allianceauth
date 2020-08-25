@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from .hooks import ServicesHook
 from celery_once import QueueOnce as BaseTask, AlreadyQueued
 from django.core.cache import cache
-from time import time
 
 
 logger = logging.getLogger(__name__)
@@ -22,14 +21,9 @@ class DjangoBackend:
 
     @staticmethod
     def raise_or_lock(key, timeout):
-        now = int(time())
-        result = cache.get(key)
-        if result:
-            remaining = int(result) - now
-            if remaining > 0:
-                raise AlreadyQueued(remaining)
-        else:
-            cache.set(key, now + timeout, timeout)
+        acquired = cache.add(key=key, value="lock", timeout=timeout)
+        if not acquired:            
+            raise AlreadyQueued(int(cache.ttl(key)))
 
     @staticmethod
     def clear_lock(key):
