@@ -3,7 +3,7 @@ from ..utils import clean_setting
 
 # Base URL for all API calls. Must end with /.
 DISCORD_API_BASE_URL = clean_setting(
-    'DISCORD_API_BASE_URL', 'https://discordapp.com/api/'
+    'DISCORD_API_BASE_URL', 'https://discord.com/api/'
 )
 
 # Low level connecttimeout for requests to the Discord API in seconds
@@ -18,12 +18,12 @@ DISCORD_API_TIMEOUT_READ = clean_setting(
 
 # Base authorization URL for Discord Oauth
 DISCORD_OAUTH_BASE_URL = clean_setting(
-    'DISCORD_OAUTH_BASE_URL', 'https://discordapp.com/api/oauth2/authorize'
+    'DISCORD_OAUTH_BASE_URL', 'https://discord.com/api/oauth2/authorize'
 )
 
 # Base authorization URL for Discord Oauth
 DISCORD_OAUTH_TOKEN_URL = clean_setting(
-    'DISCORD_OAUTH_TOKEN_URL', 'https://discordapp.com/api/oauth2/token'
+    'DISCORD_OAUTH_TOKEN_URL', 'https://discord.com/api/oauth2/token'
 )
 
 # How long the Discord guild names retrieved from the server are 
