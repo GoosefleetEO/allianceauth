@@ -216,6 +216,48 @@ On a freshly installed mumble server only your superuser has the right to config
 - user: `SuperUser`
 - password: *what you defined when configuring your mumble server*
 
+## Optimizing a Mumble Server
+
+The needs and available resources will vary between Alliance Auth installations. Consider yours when applying these settings.
+
+### Bandwidth
+
+<https://wiki.mumble.info/wiki/Murmur.ini#bandwidth>
+This is likely the most important setting for scaling a Mumble install, The default maximum Bandwidth is 72000bps Per User. Reducing this value will cause your clients to automatically scale back their bandwidth transmitted, while causing a reduction in voice quality. A value thats still high may cause robotic voices or users with bad connections to drop due entirely due to network load.
+
+Please tune this value to your individual needs, the below scale may provide a rough starting point.
+72000 - Superior voice quality - Less than 50 users.
+54000 - No noticeable reduction in quality - 50+ Users or many channels with active audio.
+36000 - Mild reduction in quality - 100+ Users
+30000 - Noticeable reduction in quality but not function - 250+ Users
+
+### Forcing Opus
+
+<https://wiki.mumble.info/wiki/Murmur.ini#opusthreshold>
+A Mumble server by default, will fall back to the older CELT codec as soon as a single user connects with an old client. This will significantly reduce your audio quality and likely place higher load on your server. We _highly_ reccommend setting this to Zero, to force OPUS to be used at all times. Be aware any users with Mumble clients prior to 1.2.4 (From 2013...) Will not hear any audio.
+
+`opusthreshold=0`
+
+### AutoBan and Rate Limiting
+
+<https://wiki.mumble.info/wiki/Murmur.ini#autobanAttempts.2C_autobanTimeframe_and_autobanTime>
+The AutoBan feature has some sensible settings by default, You may wish to tune these if your users keep locking themselves out by opening two clients by mistake, or if you are receiving unwanted attention
+
+<https://wiki.mumble.info/wiki/Murmur.ini#messagelimit_and_messageburst>
+This too, is set to a sensible configuration by default. Take note on upgrading older installs, as this may actually be set too restrictively and will rate-limit your admins accidentally, take note of the configuration in <https://github.com/mumble-voip/mumble/blob/master/scripts/murmur.ini#L156>
+
+### "Suggest" Options
+
+There is no way to force your users to update their clients or use Push to Talk, but these options will throw an error into their Mumble Client.
+
+<https://wiki.mumble.info/wiki/Murmur.ini#Miscellany>
+
+We suggest using Mumble 1.3.0+ for your server and Clients, you can tune this to the latest Patch version.
+`suggestVersion=1.3.0`
+
+If Push to Talk is to your tastes, configure the suggestion as follows
+`suggestPushToTalk=true`
+
 ## General notes
 
 ### Setting a server password
@@ -238,6 +280,7 @@ Save the file and restart your mumble server afterwards.
 service mumble-server restart
 ```
 
-From now on, only registerd member can join your mumble server. Now if you still want to allow guests to join you have 2 options.
+From now on, only registered member can join your mumble server. Now if you still want to allow guests to join you have 2 options.
+
 - Allow the "Guest" state to activate the Mumble service in your Auth instance
 - Use [Mumble temporary links](https://github.com/pvyParts/allianceauth-mumble-temp)
