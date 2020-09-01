@@ -33,7 +33,7 @@ logger = set_logger_to_file(
 )
 
 MODULE_PATH = 'allianceauth.services.modules.discord.discord_client.client'
-API_BASE_URL = 'https://discordapp.com/api/'
+API_BASE_URL = 'https://discord.com/api/'
 
 TEST_RETRY_AFTER = 3000
 

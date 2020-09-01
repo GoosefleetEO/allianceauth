@@ -37,11 +37,11 @@ CELERYBEAT_SCHEDULE['discord.update_all_usernames'] = {
 
 ### Creating a Server
 
-Navigate to the [Discord site](https://discordapp.com/) and register an account, or log in if you have one already.
+Navigate to the [Discord site](https://discord.com/) and register an account, or log in if you have one already.
 
 On the left side of the screen you’ll see a circle with a plus sign. This is the button to create a new server. Go ahead and do that, naming it something obvious.
 
-Now retrieve the server ID [following this procedure.](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+Now retrieve the server ID [following this procedure.](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
 
 Update your auth project's settings file, inputting the server ID as `DISCORD_GUILD_ID`
 
@@ -52,7 +52,7 @@ Update your auth project's settings file, inputting the server ID as `DISCORD_GU
 
 ### Registering an Application
 
-Navigate to the [Discord Developers site.](https://discordapp.com/developers/applications/me) Press the plus sign to create a new application.
+Navigate to the [Discord Developers site.](https://discord.com/developers/applications/me) Press the plus sign to create a new application.
 
 Give it a name and description relating to your auth site. Add a redirect to `https://example.com/discord/callback/`, substituting your domain. Press Create Application.
 
@@ -76,7 +76,7 @@ Once created, navigate to the services page of your Alliance Auth install as the
 
 This adds a new user to your Discord server with a `BOT` tag, and a new role with the same name as your Discord application. Don't touch either of these. If for some reason the bot loses permissions or is removed from the server, click this button again.
 
-To manage roles, this bot role must be at the top of the hierarchy. Edit your Discord server, roles, and click and drag the role with the same name as your application to the top of the list. This role must stay at the top of the list for the bot to work.  Finally, the owner of the bot account must enable 2 Factor Authentication (this is required from Discord for kicking and modifying member roles).  If you are unsure what 2FA is or how to set it up, refer to [this support page](https://support.discordapp.com/hc/en-us/articles/219576828).  It is also recommended to force 2FA on your server (this forces any admins or moderators to have 2fa enabled to perform similar functions on discord).
+To manage roles, this bot role must be at the top of the hierarchy. Edit your Discord server, roles, and click and drag the role with the same name as your application to the top of the list. This role must stay at the top of the list for the bot to work.  Finally, the owner of the bot account must enable 2 Factor Authentication (this is required from Discord for kicking and modifying member roles).  If you are unsure what 2FA is or how to set it up, refer to [this support page](https://support.discord.com/hc/en-us/articles/219576828).  It is also recommended to force 2FA on your server (this forces any admins or moderators to have 2fa enabled to perform similar functions on discord).
 
 Note that the bot will never appear online as it does not participate in chat channels.
 
