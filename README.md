@@ -36,7 +36,7 @@ Main features:
 
 - Can be easily extended with additional services and apps. Many are provided by the community and can be found here: [Community Creations](https://gitlab.com/allianceauth/community-creations)
 
-- Chinese :cn:, English :us:, German :de: and Spanish :es: localization
+- English :flag_gb:, Chinese :flag_cn:, German :flag_de:, Spanish :flag_es:, Korean :flag_kr: and Russian :flag_ru: localization
 
 For further details about AA - including an installation guide and a full list of included services and plugin apps - please see the [official documentation](http://allianceauth.rtfd.io).
 
