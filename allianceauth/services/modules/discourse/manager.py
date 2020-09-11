@@ -4,7 +4,7 @@ import re
 from django.conf import settings
 from django.core.cache import cache
 from hashlib import md5
-
+from . import providers
 logger = logging.getLogger(__name__)
 
 GROUP_CACHE_MAX_AGE = getattr(settings, 'DISCOURSE_GROUP_CACHE_MAX_AGE', 2 * 60 * 60)  # default 2 hours
@@ -19,128 +19,8 @@ class DiscourseError(Exception):
         return "API execution failed.\nErrors: %s\nEndpoint: %s" % (self.errors, self.endpoint)
 
 
-# not exhaustive, only the ones we need
-ENDPOINTS = {
-    'groups': {
-        'list': {
-            'path': "/groups/search.json",
-            'method': 'get',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-        'create': {
-            'path': "/admin/groups",
-            'method': 'post',
-            'args': {
-                'required': ['name'],
-                'optional': ['visible'],
-            }
-        },
-        'add_user': {
-            'path': "/admin/groups/%s/members.json",
-            'method': 'put',
-            'args': {
-                'required': ['usernames'],
-                'optional': [],
-            },
-        },
-        'remove_user': {
-            'path': "/admin/groups/%s/members.json",
-            'method': 'delete',
-            'args': {
-                'required': ['username'],
-                'optional': [],
-            },
-        },
-        'delete': {
-            'path': "/admin/groups/%s.json",
-            'method': 'delete',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-    },
-    'users': {
-        'create': {
-            'path': "/users",
-            'method': 'post',
-            'args': {
-                'required': ['name', 'email', 'password', 'username'],
-                'optional': ['active'],
-            },
-        },
-        'update': {
-            'path': "/users/%s.json",
-            'method': 'put',
-            'args': {
-                'required': ['params'],
-                'optional': [],
-            }
-        },
-        'get': {
-            'path': "/users/%s.json",
-            'method': 'get',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-        'activate': {
-            'path': "/admin/users/%s/activate",
-            'method': 'put',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-        'set_email': {
-            'path': "/users/%s/preferences/email",
-            'method': 'put',
-            'args': {
-                'required': ['email'],
-                'optional': [],
-            },
-        },
-        'suspend': {
-            'path': "/admin/users/%s/suspend",
-            'method': 'put',
-            'args': {
-                'required': ['duration', 'reason'],
-                'optional': [],
-            },
-        },
-        'unsuspend': {
-            'path': "/admin/users/%s/unsuspend",
-            'method': 'put',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-        'logout': {
-            'path': "/admin/users/%s/log_out",
-            'method': 'post',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-        'external': {
-            'path': "/users/by-external/%s.json",
-            'method': 'get',
-            'args': {
-                'required': [],
-                'optional': [],
-            },
-        },
-    },
-}
-
-
 class DiscourseManager:
+
     def __init__(self):
         pass
 
@@ -149,54 +29,13 @@ class DiscourseManager:
     SUSPEND_REASON = "Disabled by auth."
 
     @staticmethod
-    def __exc(endpoint, *args, **kwargs):
-        params = {
-            'api_key': settings.DISCOURSE_API_KEY,
-            'api_username': settings.DISCOURSE_API_USERNAME,
-        }
-        silent = kwargs.pop('silent', False)
-        if args:
-            endpoint['parsed_url'] = endpoint['path'] % args
-        else:
-            endpoint['parsed_url'] = endpoint['path']
-        data = {}
-        for arg in endpoint['args']['required']:
-            data[arg] = kwargs[arg]
-        for arg in endpoint['args']['optional']:
-            if arg in kwargs:
-                data[arg] = kwargs[arg]
-        for arg in kwargs:
-            if arg not in endpoint['args']['required'] and arg not in endpoint['args']['optional'] and not silent:
-                logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
-        r = getattr(requests, endpoint['method'])(settings.DISCOURSE_URL + endpoint['parsed_url'], headers=params,
-                                                  json=data)
-        try:
-            if 'errors' in r.json() and not silent:
-                logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))
-                raise DiscourseError(endpoint, r.json()['errors'])
-            if 'success' in r.json():
-                if not r.json()['success'] and not silent:
-                    raise DiscourseError(endpoint, None)
-            out = r.json()
-        except ValueError:
-            out = r.text
-        finally:
-            try:
-                r.raise_for_status()
-            except requests.exceptions.HTTPError as e:
-                raise DiscourseError(endpoint, e.response.status_code)
-        return out
-
-    @staticmethod
     def _get_groups():
-        endpoint = ENDPOINTS['groups']['list']
-        data = DiscourseManager.__exc(endpoint)
+        data = providers.discourse.client.groups()
         return [g for g in data if not g['automatic']]
 
     @staticmethod
     def _create_group(name):
-        endpoint = ENDPOINTS['groups']['create']
-        return DiscourseManager.__exc(endpoint, name=name[:20], visible=True)['basic_group']
+        return providers.discourse.client.create_group(name=name[:20], visible=True)['basic_group']
 
     @staticmethod
     def _generate_cache_group_name_key(name):
@@ -234,13 +73,11 @@ class DiscourseManager:
 
     @staticmethod
     def __add_user_to_group(g_id, username):
-        endpoint = ENDPOINTS['groups']['add_user']
-        DiscourseManager.__exc(endpoint, g_id, usernames=username)
+        providers.discourse.client.add_group_member(g_id, username)
 
     @staticmethod
-    def __remove_user_from_group(g_id, username):
-        endpoint = ENDPOINTS['groups']['remove_user']
-        DiscourseManager.__exc(endpoint, g_id, username=username)
+    def __remove_user_from_group(g_id, uid):
+        providers.discourse.client.delete_group_member(g_id, uid)
 
     @staticmethod
     def __generate_group_dict(names):
@@ -252,39 +89,35 @@ class DiscourseManager:
     @staticmethod
     def __get_user_groups(username):
         data = DiscourseManager.__get_user(username)
-        return [g['id'] for g in data['user']['groups'] if not g['automatic']]
+        return [g['id'] for g in data['groups'] if not g['automatic']]
 
     @staticmethod
     def __user_name_to_id(name, silent=False):
-        data = DiscourseManager.__get_user(name, silent=silent)
+        data = DiscourseManager.__get_user(name)
         return data['user']['id']
 
     @staticmethod
     def __get_user(username, silent=False):
-        endpoint = ENDPOINTS['users']['get']
-        return DiscourseManager.__exc(endpoint, username, silent=silent)
+        return providers.discourse.client.user(username)
 
     @staticmethod
     def __activate_user(username):
-        endpoint = ENDPOINTS['users']['activate']
         u_id = DiscourseManager.__user_name_to_id(username)
-        DiscourseManager.__exc(endpoint, u_id)
+        providers.discourse.client.activate(u_id)
 
     @staticmethod
     def __update_user(username, **kwargs):
-        endpoint = ENDPOINTS['users']['update']
         u_id = DiscourseManager.__user_name_to_id(username)
-        DiscourseManager.__exc(endpoint, u_id, params=kwargs)
+        providers.discourse.client.update_user(endpoint, u_id, **kwargs)
 
     @staticmethod
     def __create_user(username, email, password):
-        endpoint = ENDPOINTS['users']['create']
-        DiscourseManager.__exc(endpoint, name=username, username=username, email=email, password=password, active=True)
+        providers.discourse.client.create_user(username, username, email, password)
 
     @staticmethod
     def __check_if_user_exists(username):
         try:
-            DiscourseManager.__user_name_to_id(username, silent=True)
+            DiscourseManager.__user_name_to_id(username)
             return True
         except DiscourseError:
             return False
@@ -292,30 +125,26 @@ class DiscourseManager:
     @staticmethod
     def __suspend_user(username):
         u_id = DiscourseManager.__user_name_to_id(username)
-        endpoint = ENDPOINTS['users']['suspend']
-        return DiscourseManager.__exc(endpoint, u_id, duration=DiscourseManager.SUSPEND_DAYS,
-                                      reason=DiscourseManager.SUSPEND_REASON)
+        return providers.discourse.client.suspend(u_id, DiscourseManager.SUSPEND_DAYS,
+                                      DiscourseManager.SUSPEND_REASON)
 
     @staticmethod
     def __unsuspend(username):
         u_id = DiscourseManager.__user_name_to_id(username)
-        endpoint = ENDPOINTS['users']['unsuspend']
-        return DiscourseManager.__exc(endpoint, u_id)
+        return providers.discourse.client.unsuspend(u_id)
 
     @staticmethod
     def __set_email(username, email):
-        endpoint = ENDPOINTS['users']['set_email']
-        return DiscourseManager.__exc(endpoint, username, email=email)
+        return providers.discourse.client.update_email(username, email)
 
     @staticmethod
     def __logout(u_id):
-        endpoint = ENDPOINTS['users']['logout']
-        return DiscourseManager.__exc(endpoint, u_id)
+        return providers.discourse.client.log_out(u_id)
 
     @staticmethod
     def __get_user_by_external(u_id):
-        endpoint = ENDPOINTS['users']['external']
-        return DiscourseManager.__exc(endpoint, u_id)
+        data = providers.discourse.client.user_by_external_id(u_id)
+        return data
 
     @staticmethod
     def __user_id_by_external_id(u_id):
@@ -351,7 +180,9 @@ class DiscourseManager:
         logger.debug("Updating discourse user %s groups to %s" % (user, groups))
         group_dict = DiscourseManager.__generate_group_dict(groups)
         inv_group_dict = {v: k for k, v in group_dict.items()}
-        username = DiscourseManager.__get_user_by_external(user.pk)['user']['username']
+        discord_user = DiscourseManager.__get_user_by_external(user.pk)
+        username = discord_user['username']
+        uid = discord_user['id']
         user_groups = DiscourseManager.__get_user_groups(username)
         add_groups = [group_dict[x] for x in group_dict if not group_dict[x] in user_groups]
         rem_groups = [x for x in user_groups if x not in inv_group_dict]
@@ -364,7 +195,7 @@ class DiscourseManager:
             logger.info(
                 "Updating discourse user %s groups: removing %s" % (username, rem_groups))
             for g in rem_groups:
-                DiscourseManager.__remove_user_from_group(g, username)
+                DiscourseManager.__remove_user_from_group(g, uid)
 
     @staticmethod
     def disable_user(user):

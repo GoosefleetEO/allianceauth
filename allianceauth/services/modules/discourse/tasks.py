@@ -47,7 +47,8 @@ class DiscourseTasks:
         logger.debug("Updating discourse groups for user %s" % user)
         try:
             DiscourseManager.update_groups(user)
-        except:
+        except Exception as e:
+            logger.exception(e)
             logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user)
             raise self.retry(countdown=60 * 10)
         logger.debug("Updated user %s discourse groups." % user)
@@ -63,3 +64,4 @@ class DiscourseTasks:
     def get_username(user):
         from .auth_hooks import DiscourseService
         return NameFormatter(DiscourseService(), user).format_name()
+
