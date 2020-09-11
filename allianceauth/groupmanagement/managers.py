@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, User
 from django.db.models import Q, QuerySet
 
 from allianceauth.authentication.models import State
+from .models import GroupRequest
 
 
 logger = logging.getLogger(__name__)
@@ -101,3 +102,18 @@ class GroupManager:
         if user.is_authenticated:
             return cls.has_management_permission(user) or cls.get_group_leaders_groups(user).filter(pk=group.pk).exists()
         return False
+
+    @classmethod
+    def pending_requests_count_for_user(cls, user: User) -> int:
+        """Returns the number of pending group requests for the given user"""
+        
+        if cls.has_management_permission(user):
+            return GroupRequest.objects.filter(status="pending").count()
+        else:
+            return (
+                GroupRequest.objects
+                .filter(status="pending")
+                .filter(group__authgroup__group_leaders__exact=user)
+                .select_related("group__authgroup__group_leaders")
+                .count()
+            )

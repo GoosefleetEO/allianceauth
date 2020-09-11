@@ -2,8 +2,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from sortedm2m.fields import SortedManyToManyField
 
-from allianceauth.eveonline.models import EveCharacter
-from allianceauth.eveonline.models import EveCorporationInfo
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
+
+from .managers import ApplicationManager
 
 
 class ApplicationQuestion(models.Model):
@@ -22,6 +23,7 @@ class ApplicationChoice(models.Model):
     def __str__(self):
         return self.choice_text
 
+
 class ApplicationForm(models.Model):
     questions = SortedManyToManyField(ApplicationQuestion)
     corp = models.OneToOneField(EveCorporationInfo, on_delete=models.CASCADE)
@@ -37,6 +39,8 @@ class Application(models.Model):
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     reviewer_character = models.ForeignKey(EveCharacter, on_delete=models.SET_NULL, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = ApplicationManager()
 
     def __str__(self):
         return str(self.user) + " Application To " + str(self.form)

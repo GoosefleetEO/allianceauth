@@ -1,11 +1,13 @@
 import logging
-import os
 
 import requests
+
+from django.contrib.auth.models import User
 
 from allianceauth import NAME
 from allianceauth.eveonline.providers import provider
 
+from .models import SrpUserRequest
 
 logger = logging.getLogger(__name__)
 
@@ -50,3 +52,12 @@ class SRPManager:
             return ship_type, ship_value, victim_id
         else:
             raise ValueError("Invalid Kill ID or Hash.")
+
+    @staticmethod
+    def pending_requests_count_for_user(user: User):
+        """returns the number of open SRP requests for given user 
+        or None if user has no permission"""
+        if user.has_perm("auth.srp_management"):
+            return SrpUserRequest.objects.filter(srp_status="pending").count()
+        else:
+            return None

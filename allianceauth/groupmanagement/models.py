@@ -4,7 +4,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from allianceauth.authentication.models import State
-from datetime import datetime
 
 
 class GroupRequest(models.Model):
