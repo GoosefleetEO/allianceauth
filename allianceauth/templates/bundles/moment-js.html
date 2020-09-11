@@ -1,4 +1,7 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/moment.min.js"></script>
+<!-- Start Moment.js from cdnjs -->
+<script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 {% if locale and LANGUAGE_CODE != 'en' %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.1/locale/{{ LANGUAGE_CODE }}.js"></script>
+    <!-- Moment.JS Not EN-en  -->
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/{{ LANGUAGE_CODE }}.js"></script>
 {% endif %}
+<!-- End Moment JS from cdnjs -->

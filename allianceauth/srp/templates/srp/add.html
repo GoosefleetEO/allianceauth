@@ -45,8 +45,15 @@
 {% block extra_script %}
 
     $('#id_fleet_time').datetimepicker({
-    maskInput: true,
-    format: 'Y-m-d H:i'
+    setlocale: '{{ LANGUAGE_CODE }}',
+    {% if NIGHT_MODE %}
+        theme: 'dark',
+    {% else %}
+        theme: 'default',
+    {% endif %}
+    mask: true,
+    format: 'Y-m-d H:i',
+    minDate: 0
     });
 
 {% endblock extra_script %}

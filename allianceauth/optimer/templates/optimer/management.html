@@ -41,7 +41,7 @@
 
     {% include 'bundles/moment-js.html' with locale=True %}
     <script src="{% static 'js/timers.js' %}"></script>
-    <script type="text/javascript">
+    <script type="application/javascript">
         // Data
         var timers = [
         {% for op in optimer %}
@@ -53,7 +53,7 @@
         {% endfor %}
         ];
     </script>
-    <script type="text/javascript">
+    <script type="application/javascript">
 
         timedUpdate();
         setAllLocalTimes();
