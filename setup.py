@@ -31,6 +31,7 @@ install_requires = [
 
     'openfire-restapi',
     'sleekxmpp',
+    'pydiscourse',
 
     'django-esi>=1.5,<3.0'
 ]
