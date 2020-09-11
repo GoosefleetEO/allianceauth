@@ -1,17 +1,23 @@
 import inspect
 import json
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
+from django.contrib.auth.models import User
+from django.utils.timezone import now
 from django.test import TestCase
 
+from allianceauth.tests.auth_utils import AuthUtils
+
 from ..managers import SRPManager
+from ..models import SrpUserRequest, SrpFleetMain
 
 MODULE_PATH = 'allianceauth.srp.managers'
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(
     inspect.currentframe()
 )))
+
 
 def load_data(filename):    
     """loads given JSON file from `testdata` sub folder and returns content"""
@@ -52,7 +58,7 @@ class TestSrpManager(TestCase):
         mock_get.return_value.json.return_value = ['']
         
         with self.assertRaises(ValueError):
-            ship_type, ship_value, victim_id = SRPManager.get_kill_data(81973979)
+            SRPManager.get_kill_data(81973979)
 
     @patch(MODULE_PATH + '.provider')
     @patch(MODULE_PATH + '.requests.get')
@@ -67,6 +73,34 @@ class TestSrpManager(TestCase):
             result.return_value = None
 
         with self.assertRaises(ValueError):
-            ship_type, ship_value, victim_id = SRPManager.get_kill_data(81973979)
+            SRPManager.get_kill_data(81973979)
 
-    
+    def test_pending_requests_count_for_user(self):
+        user = AuthUtils.create_member("Bruce Wayne")
+        
+        # when no permission to approve SRP requests
+        # then return None
+        self.assertIsNone(SRPManager.pending_requests_count_for_user(user))
+
+        # given permission to approve SRP requests
+        # when no open requests
+        # then return 0
+        AuthUtils.add_permission_to_user_by_name("auth.srp_management", user)
+        user = User.objects.get(pk=user.pk)
+        self.assertEqual(SRPManager.pending_requests_count_for_user(user), 0)
+        
+        # given permission to approve SRP requests
+        # when 1 pending request
+        # then return 1
+        fleet = SrpFleetMain.objects.create(fleet_time=now())
+        SrpUserRequest.objects.create(
+            killboard_link="https://zkillboard.com/kill/79111612/",
+            srp_status="Pending",
+            srp_fleet_main=fleet,
+        )
+        SrpUserRequest.objects.create(
+            killboard_link="https://zkillboard.com/kill/79111612/",
+            srp_status="Approved",
+            srp_fleet_main=fleet,
+        )
+        self.assertEqual(SRPManager.pending_requests_count_for_user(user), 1)

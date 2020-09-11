@@ -1,7 +1,10 @@
-from allianceauth.services.hooks import MenuItemHook, UrlHook
 from django.utils.translation import ugettext_lazy as _
+
 from allianceauth import hooks
+from allianceauth.services.hooks import MenuItemHook, UrlHook
+
 from . import urls
+from .managers import SRPManager
 
 
 class SrpMenu(MenuItemHook):
@@ -13,6 +16,8 @@ class SrpMenu(MenuItemHook):
 
     def render(self, request):
         if request.user.has_perm('srp.access_srp'):
+            app_count = SRPManager.pending_requests_count_for_user(request.user)
+            self.count = app_count if app_count and app_count > 0 else None            
             return MenuItemHook.render(self, request)
         return ''
 

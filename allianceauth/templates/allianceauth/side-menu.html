@@ -1,7 +1,6 @@
 {% load i18n %}
 {% load navactive %}
 {% load menu_items %}
-{% load groupmanagement %}
     
 <div class="col-sm-2 auth-side-navbar" role="navigation">
     <div class="collapse navbar-collapse auth-menus-collapse auth-side-navbar-collapse">
@@ -14,18 +13,9 @@
             </li>
             <li>
                 <a class="{% navactive request 'groupmanagement:groups' %}" href="{% url 'groupmanagement:groups' %}">
-                    <i class="fas fa-sitemap fa-fw"></i> {% trans "Groups" %}
+                    <i class="fas fa-users fa-fw"></i> {% trans "Groups" %}
                 </a>
-            </li>
-
-            {% if request.user|can_manage_groups %}
-                <li>
-                    <a class="{% navactive request 'groupmanagement:management groupmanagement:membership groupmanagement:membership_list' %}"
-                       href="{% url 'groupmanagement:management' %}">
-                        <i class="fas fa-sitemap fa-fw"></i> {% trans "Group Management" %}
-                    </a>
-                </li>
-            {% endif %}
+            </li>           
 
             {% menu_items %}
            
