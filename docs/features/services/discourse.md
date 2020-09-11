@@ -8,11 +8,11 @@ In your auth project's settings file, do the following:
 - Append the following to your local.py settings file:
 
 ```python
-    # Discourse Configuration
-    DISCOURSE_URL = ''
-    DISCOURSE_API_USERNAME = ''
-    DISCOURSE_API_KEY = ''
-    DISCOURSE_SSO_SECRET = ''
+# Discourse Configuration
+DISCOURSE_URL = ''
+DISCOURSE_API_USERNAME = ''
+DISCOURSE_API_KEY = ''
+DISCOURSE_SSO_SECRET = ''
 ```
 
 ## Install Docker

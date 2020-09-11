@@ -12,16 +12,16 @@ In your auth project's settings file, do the following:
  - Append the following to the bottom of the settings file:
 
 ```python
-    # SMF Configuration
-    SMF_URL = ''
-    DATABASES['smf'] = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alliance_smf',
-        'USER': 'allianceserver-smf',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+# SMF Configuration
+SMF_URL = ''
+DATABASES['smf'] = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'alliance_smf',
+    'USER': 'allianceserver-smf',
+    'PASSWORD': 'password',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+}
 ```
 
 ## Setup
