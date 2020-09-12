@@ -9,10 +9,10 @@ In your auth project's settings file, do the following:
  - Append the following to your local.py settings file:
 
 ```python
-    # XenForo Configuration
-    XENFORO_ENDPOINT = 'example.com/api.php'
-    XENFORO_DEFAULT_GROUP = 0
-    XENFORO_APIKEY   = 'yourapikey'
+# XenForo Configuration
+XENFORO_ENDPOINT = 'example.com/api.php'
+XENFORO_DEFAULT_GROUP = 0
+XENFORO_APIKEY   = 'yourapikey'
 ```
 
 ## XenAPI

@@ -12,16 +12,16 @@ In your auth project's settings file, do the following:
  - Append the following to the bottom of the settings file:
 
 ```python
-    # PHPBB3 Configuration
-    PHPBB3_URL = ''
-    DATABASES['phpbb3'] = {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'alliance_forum',
-        'USER': 'allianceserver-phpbb3',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-    }
+# PHPBB3 Configuration
+PHPBB3_URL = ''
+DATABASES['phpbb3'] = {
+    'ENGINE': 'django.db.backends.mysql',
+    'NAME': 'alliance_forum',
+    'USER': 'allianceserver-phpbb3',
+    'PASSWORD': 'password',
+    'HOST': '127.0.0.1',
+    'PORT': '3306',
+}
 ```
 
 ## Setup

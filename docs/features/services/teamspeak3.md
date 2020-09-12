@@ -14,18 +14,18 @@ In your auth project's settings file, do the following:
  - Append the following to the bottom of the settings file:
 
 ```python
-    # Teamspeak3 Configuration
-    TEAMSPEAK3_SERVER_IP = '127.0.0.1'
-    TEAMSPEAK3_SERVER_PORT = 10011
-    TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
-    TEAMSPEAK3_SERVERQUERY_PASSWORD = ''
-    TEAMSPEAK3_VIRTUAL_SERVER = 1
-    TEAMSPEAK3_PUBLIC_URL = ''
+# Teamspeak3 Configuration
+TEAMSPEAK3_SERVER_IP = '127.0.0.1'
+TEAMSPEAK3_SERVER_PORT = 10011
+TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
+TEAMSPEAK3_SERVERQUERY_PASSWORD = ''
+TEAMSPEAK3_VIRTUAL_SERVER = 1
+TEAMSPEAK3_PUBLIC_URL = ''
 
-    CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
-        'task': 'allianceauth.services.modules.teamspeak3.tasks.run_ts3_group_update',
-        'schedule': crontab(minute='*/30'),
-    }
+CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
+    'task': 'allianceauth.services.modules.teamspeak3.tasks.run_ts3_group_update',
+    'schedule': crontab(minute='*/30'),
+}
 ```
 
 ### Download Installer

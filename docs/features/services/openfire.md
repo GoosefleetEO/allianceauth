@@ -8,15 +8,15 @@
 - Append the following to your auth project's settings file:
 
 ```python
-    # Jabber Configuration
-    JABBER_URL = ""
-    JABBER_PORT = 5223
-    JABBER_SERVER = ""
-    OPENFIRE_ADDRESS = ""
-    OPENFIRE_SECRET_KEY = ""
-    BROADCAST_USER = ""
-    BROADCAST_USER_PASSWORD = ""
-    BROADCAST_SERVICE_NAME = "broadcast"
+# Jabber Configuration
+JABBER_URL = ""
+JABBER_PORT = 5223
+JABBER_SERVER = ""
+OPENFIRE_ADDRESS = ""
+OPENFIRE_SECRET_KEY = ""
+BROADCAST_USER = ""
+BROADCAST_USER_PASSWORD = ""
+BROADCAST_SERVICE_NAME = "broadcast"
 ```
 
 ## Dependencies
