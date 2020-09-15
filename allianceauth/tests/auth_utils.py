@@ -146,7 +146,7 @@ class AuthUtils:
         if alliance_id:
             try:
                 alliance_id = int(alliance_id)
-            except:
+            except Exception:
                 alliance_id = None
 
         char = EveCharacter.objects.create(
@@ -180,7 +180,7 @@ class AuthUtils:
         if alliance_id:
             try:
                 alliance_id = int(alliance_id)
-            except:
+            except Exception:
                 alliance_id = None
 
         char = EveCharacter.objects.create(
@@ -220,7 +220,7 @@ class AuthUtils:
         )
 
     @classmethod
-    def add_permissions_to_user(cls, perms, user, disconnect_signals=True):
+    def add_permissions_to_user(cls, perms, user, disconnect_signals=True) -> User:
         """add list of permissions to user
         
         perms: list of Permission objects
@@ -239,10 +239,12 @@ class AuthUtils:
         if disconnect_signals:
             cls.connect_signals()
 
+        return user
+
     @classmethod
     def add_permission_to_user_by_name(
         cls, perm, user, disconnect_signals=True
-    ):        
+    ) -> User:        
         """returns permission specified by qualified name
 
         perm: Permission name as 'app_label.codename'
@@ -252,7 +254,7 @@ class AuthUtils:
         disconnect_signals: whether to run process without signals
         """
         p = cls.get_permission_by_name(perm)
-        cls.add_permissions_to_user([p], user, disconnect_signals)
+        return cls.add_permissions_to_user([p], user, disconnect_signals)
 
     @staticmethod
     def get_permission_by_name(perm: str) -> Permission:
@@ -269,6 +271,7 @@ class AuthUtils:
         return Permission.objects.get(
             content_type__app_label=perm_parts[0], codename=perm_parts[1]
         )
+
 
 class BaseViewTestCase(TestCase):
     def setUp(self):
