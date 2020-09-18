@@ -14,12 +14,12 @@ from allianceauth.eveonline.models import EveCharacter
 from esi.decorators import token_required
 from esi.models import Token
 
-from registration.backends.hmac.views import (
+from django_registration.backends.activation.views import (
     RegistrationView as BaseRegistrationView, 
     ActivationView as BaseActivationView, 
     REGISTRATION_SALT
 )
-from registration.signals import user_registered
+from django_registration.signals import user_registered
 
 from .models import CharacterOwnership
 from .forms import RegistrationForm
@@ -134,12 +134,12 @@ def sso_login(request, token):
 # Step 2
 class RegistrationView(BaseRegistrationView):
     form_class = RegistrationForm
-    success_url = 'authentication:dashboard'
+    template_name = "public/register.html"
+    email_body_template = "registration/activation_email.txt"
+    email_subject_template = "registration/activation_email_subject.txt"
 
     def get_success_url(self, user):
-        if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
-            return 'authentication:dashboard', (), {}
-        return super().get_success_url(user)
+        return reverse('registration_complete')
 
     def dispatch(self, request, *args, **kwargs):
         # We're storing a key in the session to pass user information from OAuth response. Make sure it's there.
@@ -176,6 +176,11 @@ class RegistrationView(BaseRegistrationView):
 
 # Step 3
 class ActivationView(BaseActivationView):
+    template_name = "registration/activate.html"
+
+    def get_success_url(self, user):
+        return reverse('registration_activation_complete')    
+    
     def validate_key(self, activation_key):
         try:
             dump = signing.loads(activation_key, salt=REGISTRATION_SALT,
