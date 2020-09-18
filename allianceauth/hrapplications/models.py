@@ -35,7 +35,7 @@ class ApplicationForm(models.Model):
 class Application(models.Model):
     form = models.ForeignKey(ApplicationForm, on_delete=models.CASCADE, related_name='applications')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
-    approved = models.NullBooleanField(blank=True, null=True, default=None)
+    approved = models.BooleanField(blank=True, null=True, default=None)
     reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     reviewer_character = models.ForeignKey(EveCharacter, on_delete=models.SET_NULL, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
