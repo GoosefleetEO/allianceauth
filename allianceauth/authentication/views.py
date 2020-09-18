@@ -6,7 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext_lazy as _
 
@@ -137,9 +137,7 @@ class RegistrationView(BaseRegistrationView):
     template_name = "public/register.html"
     email_body_template = "registration/activation_email.txt"
     email_subject_template = "registration/activation_email_subject.txt"
-
-    def get_success_url(self, user):
-        return reverse('registration_complete')
+    success_url = reverse_lazy('registration_complete')    
 
     def dispatch(self, request, *args, **kwargs):
         # We're storing a key in the session to pass user information from OAuth response. Make sure it's there.
@@ -177,9 +175,7 @@ class RegistrationView(BaseRegistrationView):
 # Step 3
 class ActivationView(BaseActivationView):
     template_name = "registration/activate.html"
-
-    def get_success_url(self, user):
-        return reverse('registration_activation_complete')    
+    success_url = reverse_lazy('registration_activation_complete')    
     
     def validate_key(self, activation_key):
         try:
