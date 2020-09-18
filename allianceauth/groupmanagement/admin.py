@@ -41,7 +41,7 @@ class AuthGroupInlineAdmin(admin.StackedInline):
             kwargs["queryset"] = Group.objects.order_by(Lower('name'))
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):

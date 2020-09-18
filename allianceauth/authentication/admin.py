@@ -100,7 +100,7 @@ class UserProfileInline(admin.StackedInline):
         formset.get_form_kwargs = get_kwargs
         return formset
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):
@@ -549,7 +549,7 @@ class PermissionAdmin(admin.ModelAdmin):
     def admin_name(obj):
         return str(obj)
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request, obj=None):
         return False
 
     def has_delete_permission(self, request, obj=None):
