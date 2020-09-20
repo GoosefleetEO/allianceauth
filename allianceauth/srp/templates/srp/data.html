@@ -6,7 +6,8 @@
 {% load humanize %}
 {% block page_title %}Srp Fleet Data{% endblock page_title %}
 {% block extra_css %}
-  {% include 'bundles/x-editable.css.html' %}
+    {% include 'bundles/datatables-css.html' %}
+    {% include 'bundles/x-editable.css.html' %}
   <link href="{% static 'css/checkbox.css' %}" rel="stylesheet" type="text/css">
   <style>
   .radio label, .checkbox label {
@@ -82,8 +83,8 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table">
-                            <tr>
+                        <table class="table srplist">
+                            <thead>
                                 <th class="text-center">{% trans "Pilot Name" %}</th>
                                 <th class="text-center">{% trans "Killboard Link" %}</th>
                                 <th class="text-center">{% trans "Additional Info" %}</th>
@@ -98,7 +99,9 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                 {% if perms.auth.srp_management %}
                                     <th class="text-center">{% trans "Actions" %}</th>
                                 {% endif %}
-                            </tr>
+                            </thead>
+
+                            <tbody>
                             {% for srpfleetrequest in srpfleetrequests %}
                                 <tr>
                                     <td class="text-center">{{ srpfleetrequest.character.character_name }}</td>
@@ -108,9 +111,9 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                     </td>
                                     <td class="text-center">{{ srpfleetrequest.additional_info }}</td>
                                     <td class="text-center">{{ srpfleetrequest.srp_ship_name }}</td>
-                                    <td class="text-center">{{ srpfleetrequest.kb_total_loss | intcomma }} ISK</td>
-                                    <td class="srp" data-name="srp_total_amount" data-type="number" data-pk="{{srpfleetrequest.id}}" data-url="{% url 'srp:request_update_amount' srpfleetrequest.id %}" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}" class="text-center">{{ srpfleetrequest.srp_total_amount | intcomma }} ISK</td>
-                                    <td class="text-center">{{ srpfleetrequest.post_time | date:"Y-m-d H:i" }}</td>
+                                    <td class="text-center" data-sort="{{ srpfleetrequest.kb_total_loss }}">{{ srpfleetrequest.kb_total_loss | intcomma }} ISK</td>
+                                    <td class="srp text-center" data-name="srp_total_amount" data-type="number" data-pk="{{srpfleetrequest.id}}" data-url="{% url 'srp:request_update_amount' srpfleetrequest.id %}" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}" data-sort="{{ srpfleetrequest.srp_total_amount }}">{{ srpfleetrequest.srp_total_amount | intcomma }} ISK</td>
+                                    <td class="text-center" data-sort="{{ srpfleetrequest.post_time | date:"Y-m-d H:i" }}">{{ srpfleetrequest.post_time | date:"Y-M-d H:i" }}</td>
                                     <td class="text-center">
                                         {% if srpfleetrequest.srp_status == "Approved" %}
                                             <div class="label label-success">
@@ -137,7 +140,9 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                         </td>
                                     {% endif %}
                                 </tr>
-                            {% endfor %}   
+                            {% endfor %}
+                            <tbody>
+
                         </table>
                     </div>
                     <div class="alert alert-info" role="alert">
@@ -168,7 +173,9 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
 {% endblock content %}
 
 {% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
     {% include 'bundles/x-editable-js.html' %}
+    {% include 'bundles/moment-js.html' %}
 {% endblock %}
 
 {% block extra_script %}
@@ -202,7 +209,43 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
           }
      });
   });
+
   $(document).ready(function(){
     $("[rel=tooltip]").tooltip({ placement: 'top'});
-});
+  });
+
+  $.fn.dataTable.moment = function(format, locale) {
+    var types = $.fn.dataTable.ext.type;
+
+      // Add type detection
+      types.detect.unshift(function(d) {
+        return moment(d, format, locale, true).isValid() ?
+          'moment-'+format :
+          null;
+      } );
+
+      // Add sorting method - use an integer for the sorting
+      types.order[ 'moment-'+format+'-pre' ] = function(d) {
+        return moment(d, format, locale, true).unix();
+    };
+  };
+
+  $(document).ready( function(){
+    $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
+
+    $('table.srplist').DataTable({
+      "order": [[ 6, "asc" ]],
+      "paging": false,
+      "columnDefs": [{
+          "targets": [1, 8],
+          "orderable": false
+      },
+      {
+          "targets": [4, 5],
+          "type": "num"
+      }]
+
+    });
+  });
+
 {% endblock extra_script %}

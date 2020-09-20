@@ -53,7 +53,7 @@ def srp_fleet_view(request, fleet_id):
     except SrpFleetMain.DoesNotExist:
         raise Http404
     context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
-               "srpfleetrequests": fleet_main.srpuserrequest_set.select_related('character').order_by('srp_ship_name'),
+               "srpfleetrequests": fleet_main.srpuserrequest_set.select_related('character'),
                "totalcost": fleet_main.total_cost}
 
     return render(request, 'srp/data.html', context=context)
