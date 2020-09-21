@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 04:56+0000\n"
+"POT-Creation-Date: 2020-09-21 01:35+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Rounon Dax <rounon.dax@terra-nanotech.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
@@ -44,7 +44,7 @@ msgstr "Dein Nutzerstatus ist nun %(state)s"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:12
+#: allianceauth/templates/allianceauth/side-menu.html:11
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -552,6 +552,11 @@ msgstr "Flottenteilnahme registriert."
 msgid "FAT link has expired."
 msgstr "FAT-Link ist abgelaufen."
 
+#: allianceauth/groupmanagement/auth_hooks.py:16
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
+msgid "Group Management"
+msgstr "Gruppenverwaltung"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
 msgid "Audit Log"
@@ -624,7 +629,7 @@ msgstr "Gruppenmitgliedschaft"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:17
+#: allianceauth/templates/allianceauth/side-menu.html:16
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -638,7 +643,7 @@ msgstr "Beschreibung"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:85
 #: allianceauth/hrapplications/templates/hrapplications/management.html:130
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:27
-#: allianceauth/srp/templates/srp/data.html:97
+#: allianceauth/srp/templates/srp/data.html:98
 msgid "Status"
 msgstr "Status"
 
@@ -738,11 +743,6 @@ msgstr "Keine Gruppenaustrittsanfragen"
 msgid "Toggle navigation"
 msgstr "Toggle Navigation"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:25
-msgid "Group Management"
-msgstr "Gruppenverwaltung"
-
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:21
 msgid "Group Requests"
 msgstr "Gruppenanfragen"
@@ -825,7 +825,7 @@ msgstr "Du hast Dich bereits für diese Gruppe beworben."
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:125
+#: allianceauth/srp/templates/srp/data.html:128
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "Beantragt"
@@ -852,7 +852,7 @@ msgstr "Du hast bereits ein ausstehendes Austrittsgesuch für diese Gruppe."
 msgid "Applied to leave group %(group)s."
 msgstr "Austrittsgesuch für Gruppe %(group)s gesendet."
 
-#: allianceauth/hrapplications/auth_hooks.py:10
+#: allianceauth/hrapplications/auth_hooks.py:13
 msgid "Applications"
 msgstr "Bewerbungen"
 
@@ -909,7 +909,7 @@ msgstr "Benutzername"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:131
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:28
 #: allianceauth/hrapplications/templates/hrapplications/view.html:75
-#: allianceauth/srp/templates/srp/data.html:99
+#: allianceauth/srp/templates/srp/data.html:100
 #: allianceauth/srp/templates/srp/management.html:46
 msgid "Actions"
 msgstr "Aktionen"
@@ -919,7 +919,7 @@ msgstr "Aktionen"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:117
+#: allianceauth/srp/templates/srp/data.html:120
 msgid "Approved"
 msgstr "Akzeptiert"
 
@@ -927,7 +927,7 @@ msgstr "Akzeptiert"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:121
+#: allianceauth/srp/templates/srp/data.html:124
 msgid "Rejected"
 msgstr "Abgelehnt"
 
@@ -1033,7 +1033,7 @@ msgstr "Ungelesen"
 
 #: allianceauth/notifications/templates/notifications/list.html:18
 msgid "Read"
-msgstr "Lesen"
+msgstr "Gelesen"
 
 #: allianceauth/notifications/templates/notifications/list.html:22
 msgid "Mark All Read"
@@ -1628,7 +1628,7 @@ msgstr "Dienst"
 msgid "Domain"
 msgstr "Domain"
 
-#: allianceauth/srp/auth_hooks.py:9
+#: allianceauth/srp/auth_hooks.py:12
 msgid "Ship Replacement"
 msgstr "Schiffserstattung"
 
@@ -1642,7 +1642,7 @@ msgstr "Flottenzeit"
 msgid "Fleet Doctrine"
 msgstr "Flottendoktrin"
 
-#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:89
+#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:90
 msgid "Additional Info"
 msgstr "Zusätzliche Info"
 
@@ -1671,65 +1671,65 @@ msgstr "SRP-Flotte erstellen"
 msgid "Give this link to the line members"
 msgstr "Gib diesen Link an Deine Piloten weiter"
 
-#: allianceauth/srp/templates/srp/data.html:48
+#: allianceauth/srp/templates/srp/data.html:49
 msgid "SRP Fleet Data"
 msgstr "SRP-Flotte Daten"
 
-#: allianceauth/srp/templates/srp/data.html:53
+#: allianceauth/srp/templates/srp/data.html:54
 msgid "Mark Incomplete"
 msgstr "Als unvollständig markieren"
 
-#: allianceauth/srp/templates/srp/data.html:57
+#: allianceauth/srp/templates/srp/data.html:58
 msgid "Mark Completed"
 msgstr "Als vollständig markieren"
 
-#: allianceauth/srp/templates/srp/data.html:69
-#: allianceauth/srp/templates/srp/data.html:145
+#: allianceauth/srp/templates/srp/data.html:70
+#: allianceauth/srp/templates/srp/data.html:150
 msgid "Total Losses:"
 msgstr "Verluste insgesamt:"
 
-#: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:146
+#: allianceauth/srp/templates/srp/data.html:71
+#: allianceauth/srp/templates/srp/data.html:151
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "ISK-Kosten insgesamt:"
 
-#: allianceauth/srp/templates/srp/data.html:78
-#: allianceauth/srp/templates/srp/data.html:154
+#: allianceauth/srp/templates/srp/data.html:79
+#: allianceauth/srp/templates/srp/data.html:159
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "Bist Du sicher das Du SRP Anfragen löschen willst?"
 
-#: allianceauth/srp/templates/srp/data.html:87
+#: allianceauth/srp/templates/srp/data.html:88
 msgid "Pilot Name"
 msgstr "Name des Piloten"
 
-#: allianceauth/srp/templates/srp/data.html:88
+#: allianceauth/srp/templates/srp/data.html:89
 msgid "Killboard Link"
 msgstr "Killboard Link"
 
-#: allianceauth/srp/templates/srp/data.html:90
+#: allianceauth/srp/templates/srp/data.html:91
 msgid "Ship Type"
 msgstr "Schiffstyp"
 
-#: allianceauth/srp/templates/srp/data.html:91
+#: allianceauth/srp/templates/srp/data.html:92
 msgid "Killboard Loss Amt"
 msgstr "Summe Killboard Verluste"
 
-#: allianceauth/srp/templates/srp/data.html:92
+#: allianceauth/srp/templates/srp/data.html:93
 msgid "SRP ISK Cost"
 msgstr "SRP ISK-Kosten"
 
-#: allianceauth/srp/templates/srp/data.html:93
+#: allianceauth/srp/templates/srp/data.html:94
 msgid "Click value to edit Enter to save & next ESC to cancel"
 msgstr ""
 "Klicke auf den Wert um diesen zu bearbeiten, Enter zum Speichern und um zum "
 "nächsten Wert zu springen, ESC zum Beenden."
 
-#: allianceauth/srp/templates/srp/data.html:96
+#: allianceauth/srp/templates/srp/data.html:97
 msgid "Post Time"
 msgstr "Veröffentlichungszeit"
 
-#: allianceauth/srp/templates/srp/data.html:163
+#: allianceauth/srp/templates/srp/data.html:168
 msgid "No SRP requests for this fleet."
 msgstr "Keine SRP Anfragen für diese Flotte."
 

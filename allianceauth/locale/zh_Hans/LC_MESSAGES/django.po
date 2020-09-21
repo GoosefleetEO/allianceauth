@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 03:24+0000\n"
+"POT-Creation-Date: 2020-09-21 01:35+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Aaron BuBu <351793078@qq.com>, 2020\n"
 "Language-Team: Chinese Simplified (https://www.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
@@ -43,7 +43,7 @@ msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:12
+#: allianceauth/templates/allianceauth/side-menu.html:11
 msgid "Dashboard"
 msgstr "账户总览"
 
@@ -538,6 +538,11 @@ msgstr "成功注册舰队PAP"
 msgid "FAT link has expired."
 msgstr "PAP链接已过期"
 
+#: allianceauth/groupmanagement/auth_hooks.py:16
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
+msgid "Group Management"
+msgstr "用户组管理"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
 msgid "Audit Log"
@@ -610,7 +615,7 @@ msgstr "用户组成员"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:17
+#: allianceauth/templates/allianceauth/side-menu.html:16
 msgid "Groups"
 msgstr "群组"
 
@@ -624,7 +629,7 @@ msgstr "描述"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:85
 #: allianceauth/hrapplications/templates/hrapplications/management.html:130
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:27
-#: allianceauth/srp/templates/srp/data.html:97
+#: allianceauth/srp/templates/srp/data.html:98
 msgid "Status"
 msgstr "状态"
 
@@ -724,11 +729,6 @@ msgstr "没有离开用户组的请求，小老弟你人缘可以啊？"
 msgid "Toggle navigation"
 msgstr "打开导航栏"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:25
-msgid "Group Management"
-msgstr "用户组管理"
-
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:21
 msgid "Group Requests"
 msgstr "用户组请求"
@@ -807,7 +807,7 @@ msgstr "你已经有了该组的未决申请"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:125
+#: allianceauth/srp/templates/srp/data.html:128
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "待定"
@@ -834,7 +834,7 @@ msgstr "你已经有了该组的未决离开请求"
 msgid "Applied to leave group %(group)s."
 msgstr "已经离开群组%(group)s"
 
-#: allianceauth/hrapplications/auth_hooks.py:10
+#: allianceauth/hrapplications/auth_hooks.py:13
 msgid "Applications"
 msgstr "申请"
 
@@ -891,7 +891,7 @@ msgstr "用户名"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:131
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:28
 #: allianceauth/hrapplications/templates/hrapplications/view.html:75
-#: allianceauth/srp/templates/srp/data.html:99
+#: allianceauth/srp/templates/srp/data.html:100
 #: allianceauth/srp/templates/srp/management.html:46
 msgid "Actions"
 msgstr "操作"
@@ -901,7 +901,7 @@ msgstr "操作"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:117
+#: allianceauth/srp/templates/srp/data.html:120
 msgid "Approved"
 msgstr "通过"
 
@@ -909,7 +909,7 @@ msgstr "通过"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:121
+#: allianceauth/srp/templates/srp/data.html:124
 msgid "Rejected"
 msgstr "拒绝"
 
@@ -1599,7 +1599,7 @@ msgstr "服务"
 msgid "Domain"
 msgstr "域名"
 
-#: allianceauth/srp/auth_hooks.py:9
+#: allianceauth/srp/auth_hooks.py:12
 msgid "Ship Replacement"
 msgstr "补损"
 
@@ -1613,7 +1613,7 @@ msgstr "集结时间"
 msgid "Fleet Doctrine"
 msgstr "舰队船型"
 
-#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:89
+#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:90
 msgid "Additional Info"
 msgstr "其他信息"
 
@@ -1642,63 +1642,63 @@ msgstr "创建补损舰队"
 msgid "Give this link to the line members"
 msgstr "把这个链接发送给火力狗们"
 
-#: allianceauth/srp/templates/srp/data.html:48
+#: allianceauth/srp/templates/srp/data.html:49
 msgid "SRP Fleet Data"
 msgstr "舰队补损信息"
 
-#: allianceauth/srp/templates/srp/data.html:53
+#: allianceauth/srp/templates/srp/data.html:54
 msgid "Mark Incomplete"
 msgstr "标记为未完成"
 
-#: allianceauth/srp/templates/srp/data.html:57
+#: allianceauth/srp/templates/srp/data.html:58
 msgid "Mark Completed"
 msgstr "标记为已完成"
 
-#: allianceauth/srp/templates/srp/data.html:69
-#: allianceauth/srp/templates/srp/data.html:145
+#: allianceauth/srp/templates/srp/data.html:70
+#: allianceauth/srp/templates/srp/data.html:150
 msgid "Total Losses:"
 msgstr "损失总额："
 
-#: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:146
+#: allianceauth/srp/templates/srp/data.html:71
+#: allianceauth/srp/templates/srp/data.html:151
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "ISK花费总额："
 
-#: allianceauth/srp/templates/srp/data.html:78
-#: allianceauth/srp/templates/srp/data.html:154
+#: allianceauth/srp/templates/srp/data.html:79
+#: allianceauth/srp/templates/srp/data.html:159
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "老哥，你确定要删了补损请求么？"
 
-#: allianceauth/srp/templates/srp/data.html:87
+#: allianceauth/srp/templates/srp/data.html:88
 msgid "Pilot Name"
 msgstr "玩家ID"
 
-#: allianceauth/srp/templates/srp/data.html:88
+#: allianceauth/srp/templates/srp/data.html:89
 msgid "Killboard Link"
 msgstr "KB网链接"
 
-#: allianceauth/srp/templates/srp/data.html:90
+#: allianceauth/srp/templates/srp/data.html:91
 msgid "Ship Type"
 msgstr "船型"
 
-#: allianceauth/srp/templates/srp/data.html:91
+#: allianceauth/srp/templates/srp/data.html:92
 msgid "Killboard Loss Amt"
 msgstr "KB网总损失"
 
-#: allianceauth/srp/templates/srp/data.html:92
+#: allianceauth/srp/templates/srp/data.html:93
 msgid "SRP ISK Cost"
 msgstr "补损ISK花费"
 
-#: allianceauth/srp/templates/srp/data.html:93
+#: allianceauth/srp/templates/srp/data.html:94
 msgid "Click value to edit Enter to save & next ESC to cancel"
 msgstr "点击数值就可以编辑啦，按回车确认，按ESC取消"
 
-#: allianceauth/srp/templates/srp/data.html:96
+#: allianceauth/srp/templates/srp/data.html:97
 msgid "Post Time"
 msgstr "发布时间"
 
-#: allianceauth/srp/templates/srp/data.html:163
+#: allianceauth/srp/templates/srp/data.html:168
 msgid "No SRP requests for this fleet."
 msgstr "这次起队没有补损请求！大捷"
 
