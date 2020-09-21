@@ -4,19 +4,19 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Lahty <js03js70@gmail.com>, 2020
-# Kim Hyundong <khd1226543@gmail.com>, 2020
+# None None <khd1226543@gmail.com>, 2020
 # Seowon Jung <seowon@hawaii.edu>, 2020
 # Olgeda Choi <undead.choi@gmail.com>, 2020
+# Lahty <js03js70@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 00:57+0000\n"
+"POT-Creation-Date: 2020-09-21 01:35+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Olgeda Choi <undead.choi@gmail.com>, 2020\n"
+"Last-Translator: Lahty <js03js70@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/alliance-auth/teams/107430/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,55 +32,56 @@ msgstr "해당 기능을 수행하려면 주 캐릭터가 요구됨. 아래에 �
 msgid "Email"
 msgstr "이메일"
 
-#: allianceauth/authentication/models.py:76
-msgid "State Changed"
-msgstr "상태 변경됨"
-
-#: allianceauth/authentication/models.py:77
+#: allianceauth/authentication/models.py:78
 #, python-format
-msgid "Your user state has been changed to %(state)s"
-msgstr "사용자의 상태가 %(state)s변경됨"
+msgid "State changed to: %s"
+msgstr "상태가 %s로 변경됐습니다."
+
+#: allianceauth/authentication/models.py:79
+#, python-format
+msgid "Your user's state is now: %(state)s"
+msgstr "사용자의 상태는 %(state)s입니다."
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:5
 #: allianceauth/authentication/templates/authentication/dashboard.html:8
-#: allianceauth/templates/allianceauth/side-menu.html:10
+#: allianceauth/templates/allianceauth/side-menu.html:11
 msgid "Dashboard"
 msgstr "대시보드"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:17
-#: allianceauth/corputils/templates/corputils/corpstats.html:116
-#: allianceauth/corputils/templates/corputils/search.html:16
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
-#: allianceauth/hrapplications/templates/hrapplications/management.html:83
-#: allianceauth/hrapplications/templates/hrapplications/management.html:128
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
-#: allianceauth/hrapplications/templates/hrapplications/view.html:32
-msgid "Main Character"
-msgstr "주 캐릭터"
+#: allianceauth/authentication/templates/authentication/dashboard.html:18
+#, python-format
+msgid ""
+"\n"
+"                                Main Character (State: %(state)s)\n"
+"                            "
+msgstr ""
+"\n"
+"                                메인 캐릭터 (상태: %(state)s)\n"
+"                            "
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:77
+#: allianceauth/authentication/templates/authentication/dashboard.html:81
 msgid "No main character set."
 msgstr "주 캐릭터가 지정되지 않음"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:84
+#: allianceauth/authentication/templates/authentication/dashboard.html:88
 msgid "Add Character"
 msgstr "캐릭터 추가"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:92
 msgid "Change Main"
 msgstr "주 캐릭터 변경"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:97
+#: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "Group Memberships"
 msgstr "그룹 멤버쉽"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:117
+#: allianceauth/authentication/templates/authentication/dashboard.html:121
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr "캐릭터"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:125
+#: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -89,13 +90,13 @@ msgstr "캐릭터"
 msgid "Name"
 msgstr "이름"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:126
+#: allianceauth/authentication/templates/authentication/dashboard.html:130
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr "콥"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:127
+#: allianceauth/authentication/templates/authentication/dashboard.html:131
 #: allianceauth/corputils/templates/corputils/corpstats.html:77
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
@@ -151,12 +152,12 @@ msgstr "주 캐릭터가 %(char)s로 변경됨"
 #: allianceauth/authentication/views.py:89
 #, python-format
 msgid "Added %(name)s to your account."
-msgstr "%(name)s을(를) 계정에 추가함"
+msgstr "계정에 %(name)s를 추가했습니다."
 
 #: allianceauth/authentication/views.py:91
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
-msgstr "%(name)s을(를) 계정에 추가하는데 실패함. 이미 추가되어있음."
+msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 추가된 계정입니다."
 
 #: allianceauth/authentication/views.py:130
 msgid "Unable to authenticate as the selected character."
@@ -227,8 +228,8 @@ msgstr "마지막 업데이트"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:37
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:96
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 msgid "Character"
 msgstr "캐릭터"
 
@@ -249,6 +250,16 @@ msgstr "콥"
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
 msgstr "킬보드"
+
+#: allianceauth/corputils/templates/corputils/corpstats.html:116
+#: allianceauth/corputils/templates/corputils/search.html:16
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
+#: allianceauth/hrapplications/templates/hrapplications/management.html:83
+#: allianceauth/hrapplications/templates/hrapplications/management.html:128
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:25
+#: allianceauth/hrapplications/templates/hrapplications/view.html:32
+msgid "Main Character"
+msgstr "주 캐릭터"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:117
 #: allianceauth/corputils/templates/corputils/search.html:17
@@ -531,6 +542,11 @@ msgstr "플릿 참여 등록됨"
 msgid "FAT link has expired."
 msgstr "플릿활동추적 링크 기한만료"
 
+#: allianceauth/groupmanagement/auth_hooks.py:16
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
+msgid "Group Management"
+msgstr "그룹 관리"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
 msgid "Audit Log"
@@ -583,8 +599,8 @@ msgid "Portrait"
 msgstr "포트레잇"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:38
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "조직"
@@ -603,7 +619,7 @@ msgstr "그룹 멤버쉽"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
-#: allianceauth/templates/allianceauth/side-menu.html:15
+#: allianceauth/templates/allianceauth/side-menu.html:16
 msgid "Groups"
 msgstr "그룹"
 
@@ -617,7 +633,7 @@ msgstr "설명"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:85
 #: allianceauth/hrapplications/templates/hrapplications/management.html:130
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:27
-#: allianceauth/srp/templates/srp/data.html:97
+#: allianceauth/srp/templates/srp/data.html:98
 msgid "Status"
 msgstr "상태"
 
@@ -647,8 +663,8 @@ msgid "Audit Members"
 msgstr "멤버 검사"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
-msgid "Copy Direrct Join Link"
-msgstr ""
+msgid "Copy Direct Join Link"
+msgstr "직접 참여 링크 복사"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
 msgid "No groups to list."
@@ -679,48 +695,43 @@ msgstr "사용 가능한 그룹 없음."
 msgid "Groups Management"
 msgstr "그룹 관리"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:25
 msgid "Join Requests"
 msgstr "가입 요청"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
 msgid "Leave Requests"
 msgstr "탈퇴 요청"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:39
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:98
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "그룹"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:71
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:130
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
 msgid "Accept"
 msgstr "수락"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:74
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:133
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "거절"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:83
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:97
 msgid "No group add requests."
 msgstr "가입 요청 없음"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
 msgid "No group leave requests."
 msgstr "탈퇴 요청 없음"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:10
 msgid "Toggle navigation"
 msgstr "네비게이션 전환"
-
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
-#: allianceauth/templates/allianceauth/side-menu.html:23
-msgid "Group Management"
-msgstr "그룹 관리"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:21
 msgid "Group Requests"
@@ -730,104 +741,104 @@ msgstr "그룹 요청"
 msgid "Group Membership"
 msgstr "그룹 멤버쉽"
 
-#: allianceauth/groupmanagement/views.py:166
+#: allianceauth/groupmanagement/views.py:162
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr "유저 %(user)s이(가) %(group)s에서 제거됨."
 
-#: allianceauth/groupmanagement/views.py:168
+#: allianceauth/groupmanagement/views.py:164
 msgid "User does not exist in that group"
 msgstr "유저가 해당 그룹에 존재하지 않음."
 
-#: allianceauth/groupmanagement/views.py:171
+#: allianceauth/groupmanagement/views.py:167
 msgid "Group does not exist"
 msgstr "그룹이 존재하지 않음."
 
-#: allianceauth/groupmanagement/views.py:198
+#: allianceauth/groupmanagement/views.py:194
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 신청 수락"
 
-#: allianceauth/groupmanagement/views.py:205
-#: allianceauth/groupmanagement/views.py:238
+#: allianceauth/groupmanagement/views.py:201
+#: allianceauth/groupmanagement/views.py:234
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 신청을 처리하는 중 알 수 없는 에러 발생"
 
-#: allianceauth/groupmanagement/views.py:231
+#: allianceauth/groupmanagement/views.py:227
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 신청 거절"
 
-#: allianceauth/groupmanagement/views.py:267
+#: allianceauth/groupmanagement/views.py:263
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 탈퇴 수락"
 
-#: allianceauth/groupmanagement/views.py:273
-#: allianceauth/groupmanagement/views.py:307
+#: allianceauth/groupmanagement/views.py:269
+#: allianceauth/groupmanagement/views.py:303
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 탈퇴를 처리하는 중 알 수 없는 에러 발생"
 
-#: allianceauth/groupmanagement/views.py:300
+#: allianceauth/groupmanagement/views.py:296
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr "%(mainchar)s의 %(group)s 그룹 탈퇴 거절"
 
-#: allianceauth/groupmanagement/views.py:346
-#: allianceauth/groupmanagement/views.py:358
+#: allianceauth/groupmanagement/views.py:342
+#: allianceauth/groupmanagement/views.py:354
 msgid "You cannot join that group"
 msgstr "해당 그룹에 참여할 수 없습니다."
 
-#: allianceauth/groupmanagement/views.py:352
+#: allianceauth/groupmanagement/views.py:348
 msgid "You are already a member of that group."
 msgstr "이미 해당 그룹에 가입되어 있습니다."
 
-#: allianceauth/groupmanagement/views.py:367
+#: allianceauth/groupmanagement/views.py:363
 msgid "You already have a pending application for that group."
 msgstr "해당 그룹에 대한 참여신청이 보류되었습니다."
 
-#: allianceauth/groupmanagement/views.py:370
-#: allianceauth/groupmanagement/views.py:408
+#: allianceauth/groupmanagement/views.py:366
+#: allianceauth/groupmanagement/views.py:404
 #: allianceauth/hrapplications/templates/hrapplications/management.html:37
 #: allianceauth/hrapplications/templates/hrapplications/management.html:72
 #: allianceauth/hrapplications/templates/hrapplications/management.html:99
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:125
+#: allianceauth/srp/templates/srp/data.html:128
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "보류 중"
 
-#: allianceauth/groupmanagement/views.py:376
+#: allianceauth/groupmanagement/views.py:372
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "%(group)s그룹에 지원하였음."
 
-#: allianceauth/groupmanagement/views.py:387
+#: allianceauth/groupmanagement/views.py:383
 msgid "You cannot leave that group"
 msgstr "해당 그룹을 떠날 수 없습니다."
 
-#: allianceauth/groupmanagement/views.py:392
+#: allianceauth/groupmanagement/views.py:388
 msgid "You are not a member of that group"
 msgstr "해당그룹의 멤버가 아닙니다."
 
-#: allianceauth/groupmanagement/views.py:401
+#: allianceauth/groupmanagement/views.py:397
 msgid "You already have a pending leave request for that group."
 msgstr "해당 그룹의 탈퇴 신청이 접수된 상태입니다."
 
-#: allianceauth/groupmanagement/views.py:414
+#: allianceauth/groupmanagement/views.py:410
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "%(group)s그룹의 탈퇴가 신청됨."
 
-#: allianceauth/hrapplications/auth_hooks.py:10
+#: allianceauth/hrapplications/auth_hooks.py:13
 msgid "Applications"
 msgstr "지원"
 
@@ -884,7 +895,7 @@ msgstr "사용자명"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:131
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:28
 #: allianceauth/hrapplications/templates/hrapplications/view.html:75
-#: allianceauth/srp/templates/srp/data.html:99
+#: allianceauth/srp/templates/srp/data.html:100
 #: allianceauth/srp/templates/srp/management.html:46
 msgid "Actions"
 msgstr "활동"
@@ -894,7 +905,7 @@ msgstr "활동"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:117
+#: allianceauth/srp/templates/srp/data.html:120
 msgid "Approved"
 msgstr "승인"
 
@@ -902,7 +913,7 @@ msgstr "승인"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:121
+#: allianceauth/srp/templates/srp/data.html:124
 msgid "Rejected"
 msgstr "거절"
 
@@ -1285,23 +1296,50 @@ msgstr "비밀번호"
 msgid "Password must be at least 8 characters long."
 msgstr "비밀번호는 8글자 이상이어야 합니다."
 
-#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:23
+#: allianceauth/services/modules/discord/models.py:224
+msgid "Discord Account Disabled"
+msgstr "디스코드 계정 비활성화"
+
+#: allianceauth/services/modules/discord/models.py:226
+msgid ""
+"Your Discord account was disabeled automatically by Auth. If you think this "
+"was a mistake, please contact an admin."
+msgstr "Auth에 의해 자동으로 디스코드 계정이 비활성화됐습니다. 원치 않는 사항일 경우, 관리자에게 문의해 주세요."
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
+msgid "Join the Discord server"
+msgstr "디스코드 서버 입장"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
+msgid "Leave- and rejoin the Discord Server (Reset)"
+msgstr "디스코드 서버를 나가고 다시 입장하기 (리셋)"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
+msgid "Leave the Discord server"
+msgstr "디스코드 서버 나가기"
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:32
 msgid "Link Discord Server"
 msgstr "디스코드 서버 링크"
 
-#: allianceauth/services/modules/discord/views.py:26
+#: allianceauth/services/modules/discord/views.py:30
 msgid "Deactivated Discord account."
 msgstr "디스코드 계정 해제 완료"
 
-#: allianceauth/services/modules/discord/views.py:29
-#: allianceauth/services/modules/discord/views.py:41
-#: allianceauth/services/modules/discord/views.py:65
+#: allianceauth/services/modules/discord/views.py:36
+#: allianceauth/services/modules/discord/views.py:59
 msgid "An error occurred while processing your Discord account."
 msgstr "디스코드 계정 처리 중 오류가 발생했습니다."
 
-#: allianceauth/services/modules/discord/views.py:62
-msgid "Activated Discord account."
-msgstr "디스코드 계정 활성화 완료"
+#: allianceauth/services/modules/discord/views.py:102
+msgid "Your Discord account has been successfully activated."
+msgstr "디스코드 계정과 성공적으로 연동됐습니다."
+
+#: allianceauth/services/modules/discord/views.py:108
+msgid ""
+"An error occurred while trying to activate your Discord account. Please try "
+"again."
+msgstr "디스코드 계정 연동 중 오류가 발생했습니다. 다시 시도해 주세요."
 
 #: allianceauth/services/modules/discourse/views.py:37
 msgid "You are not authorized to access Discourse."
@@ -1565,7 +1603,7 @@ msgstr "서드파티"
 msgid "Domain"
 msgstr "도메인"
 
-#: allianceauth/srp/auth_hooks.py:9
+#: allianceauth/srp/auth_hooks.py:12
 msgid "Ship Replacement"
 msgstr "SRP"
 
@@ -1579,7 +1617,7 @@ msgstr "플릿 시간"
 msgid "Fleet Doctrine"
 msgstr "플릿 독트린"
 
-#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:89
+#: allianceauth/srp/form.py:12 allianceauth/srp/templates/srp/data.html:90
 msgid "Additional Info"
 msgstr "추가 기재 사항"
 
@@ -1608,63 +1646,63 @@ msgstr "SRP 보상 플릿 생성"
 msgid "Give this link to the line members"
 msgstr "이 링크를 직계 멤버들에게 전달"
 
-#: allianceauth/srp/templates/srp/data.html:48
+#: allianceauth/srp/templates/srp/data.html:49
 msgid "SRP Fleet Data"
 msgstr "SRP 보상 플릿 데이터"
 
-#: allianceauth/srp/templates/srp/data.html:53
+#: allianceauth/srp/templates/srp/data.html:54
 msgid "Mark Incomplete"
 msgstr "표시 미완료"
 
-#: allianceauth/srp/templates/srp/data.html:57
+#: allianceauth/srp/templates/srp/data.html:58
 msgid "Mark Completed"
 msgstr "표시 완료"
 
-#: allianceauth/srp/templates/srp/data.html:69
-#: allianceauth/srp/templates/srp/data.html:145
+#: allianceauth/srp/templates/srp/data.html:70
+#: allianceauth/srp/templates/srp/data.html:150
 msgid "Total Losses:"
 msgstr "전체 손실:"
 
-#: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:146
+#: allianceauth/srp/templates/srp/data.html:71
+#: allianceauth/srp/templates/srp/data.html:151
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "전체 ISK 비용:"
 
-#: allianceauth/srp/templates/srp/data.html:78
-#: allianceauth/srp/templates/srp/data.html:154
+#: allianceauth/srp/templates/srp/data.html:79
+#: allianceauth/srp/templates/srp/data.html:159
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "SRP 보상 요청을 삭제하시겠습니까?"
 
-#: allianceauth/srp/templates/srp/data.html:87
+#: allianceauth/srp/templates/srp/data.html:88
 msgid "Pilot Name"
 msgstr "파일럿 이름"
 
-#: allianceauth/srp/templates/srp/data.html:88
+#: allianceauth/srp/templates/srp/data.html:89
 msgid "Killboard Link"
 msgstr "킬보드 링크"
 
-#: allianceauth/srp/templates/srp/data.html:90
+#: allianceauth/srp/templates/srp/data.html:91
 msgid "Ship Type"
 msgstr "함선 종류"
 
-#: allianceauth/srp/templates/srp/data.html:91
+#: allianceauth/srp/templates/srp/data.html:92
 msgid "Killboard Loss Amt"
 msgstr "킬보드상 손실 금액"
 
-#: allianceauth/srp/templates/srp/data.html:92
+#: allianceauth/srp/templates/srp/data.html:93
 msgid "SRP ISK Cost"
 msgstr "SRP 보상 비용"
 
-#: allianceauth/srp/templates/srp/data.html:93
+#: allianceauth/srp/templates/srp/data.html:94
 msgid "Click value to edit Enter to save & next ESC to cancel"
 msgstr "금액을 수정하려면 클릭, 저장을 하고 다음으로 가려면 엔터, 취소를 하려면 ESC를 누르세요. "
 
-#: allianceauth/srp/templates/srp/data.html:96
+#: allianceauth/srp/templates/srp/data.html:97
 msgid "Post Time"
 msgstr "작성 시간"
 
-#: allianceauth/srp/templates/srp/data.html:163
+#: allianceauth/srp/templates/srp/data.html:168
 msgid "No SRP requests for this fleet."
 msgstr "이 플릿에는 SRP 보상 요청이 없습니다."
 
@@ -1856,32 +1894,30 @@ msgid "Current"
 msgstr "현재"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:40
-msgid "Latest Major"
-msgstr "최근 주요 사항"
+msgid "Latest Stable"
+msgstr "최신 안정화 버전"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:46
-#: allianceauth/templates/allianceauth/admin-status/overview.html:56
-#: allianceauth/templates/allianceauth/admin-status/overview.html:66
 msgid "Update available"
 msgstr "업데이트 가능"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:50
-msgid "Latest Minor"
-msgstr "최근 기타 사항"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:51
+msgid "Latest Pre-Release"
+msgstr "최신 사전 출시 버전"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:60
-msgid "Latest Patch"
-msgstr "최근 패치"
+#: allianceauth/templates/allianceauth/admin-status/overview.html:57
+msgid "Pre-Release available"
+msgstr "사전 출시 사용 가능"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:73
+#: allianceauth/templates/allianceauth/admin-status/overview.html:65
 msgid "Task Queue"
 msgstr "대기 중인 할 일"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:90
+#: allianceauth/templates/allianceauth/admin-status/overview.html:82
 msgid "Error retrieving task queue length"
 msgstr "대기 중인 할 일 목록 회수 에러"
 
-#: allianceauth/templates/allianceauth/admin-status/overview.html:92
+#: allianceauth/templates/allianceauth/admin-status/overview.html:84
 #, python-format
 msgid "%(tasks)s task"
 msgid_plural "%(tasks)s tasks"
