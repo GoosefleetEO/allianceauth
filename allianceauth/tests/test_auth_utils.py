@@ -39,7 +39,7 @@ class TestAuthUtils(TestCase):
 
     def test_can_add_permission_to_user_by_name(self):
         user = AuthUtils.create_user('Bruce Wayne')
-        AuthUtils.add_permission_to_user_by_name(
+        user = AuthUtils.add_permission_to_user_by_name(
             'auth.timer_management', user
         )
         self.assertTrue(user.has_perm('auth.timer_management'))
