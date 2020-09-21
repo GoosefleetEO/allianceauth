@@ -41,7 +41,7 @@ test-3.8-all:
 
 deploy_production:
   stage: deploy
-  image: python:3.6-stretch
+  image: python:3.8-buster
 
   before_script:
     - pip install twine
