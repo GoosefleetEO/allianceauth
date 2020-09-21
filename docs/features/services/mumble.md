@@ -284,3 +284,16 @@ From now on, only registered member can join your mumble server. Now if you stil
 
 - Allow the "Guest" state to activate the Mumble service in your Auth instance
 - Use [Mumble temporary links](https://github.com/pvyParts/allianceauth-mumble-temp)
+
+### Enabling Avatars in Overlay (V1.0.0+)
+
+Ensure you have an up to date Mumble-Authenticator, this feature was added in V1.0.0
+
+Edit `authenticator.ini` and change (or add for older installs) This code block.
+
+```ini
+;If enabled, textures are automatically set as player's EvE avatar for use on overlay.
+avatar_enable = True
+;Get EvE avatar images from this location. {charid} will be filled in.
+ccp_avatar_url = https://images.evetech.net/characters/{charid}/portrait?size=32
+```
