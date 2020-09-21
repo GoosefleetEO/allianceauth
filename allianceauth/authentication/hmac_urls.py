@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^register/$', views.RegistrationView.as_view(), name='registration_register'),
     url(r'^register/complete/$', views.registration_complete, name='registration_complete'),
     url(r'^register/closed/$', views.registration_closed, name='registration_disallowed'),
-    url(r'', include('registration.auth_urls')),
+    url(r'', include('django.contrib.auth.urls')),
 ]

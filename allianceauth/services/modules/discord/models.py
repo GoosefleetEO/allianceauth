@@ -211,6 +211,7 @@ class DiscordUser(models.Model):
         Return None if user does no longer exist
         """
         try:
+            _user = self.user
             client = DiscordUser.objects._bot_client(is_rate_limited=is_rate_limited)
             success = client.remove_guild_member(
                 guild_id=DISCORD_GUILD_ID, user_id=self.uid
@@ -220,7 +221,7 @@ class DiscordUser(models.Model):
                 if deleted_count > 0:
                     if notify_user:
                         notify(
-                            user=self.user, 
+                            user=_user, 
                             title=gettext_lazy('Discord Account Disabled'), 
                             message=gettext_lazy(
                                 'Your Discord account was disabeled automatically '
@@ -229,22 +230,22 @@ class DiscordUser(models.Model):
                             ),
                             level='warning'
                         )
-                    logger.info('Account for user %s was deleted.', self.user)
+                    logger.info('Account for user %s was deleted.', _user)
                     return True
                 else:
-                    logger.debug('Account for user %s was already deleted.', self.user)
+                    logger.debug('Account for user %s was already deleted.', _user)
                     return None
             
             else:
                 logger.warning(
-                    'Failed to remove user %s from the Discord server', self.user
+                    'Failed to remove user %s from the Discord server', _user
                 )
                 return False
         
         except (HTTPError, ConnectionError, DiscordApiBackoff) as ex:
             if handle_api_exceptions:
                 logger.exception(
-                    'Failed to remove user %s from Discord server: %s', self.user, ex
+                    'Failed to remove user %s from Discord server: %s',self.user, ex
                 )
                 return False        
             else:

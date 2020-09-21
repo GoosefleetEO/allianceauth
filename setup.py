@@ -22,12 +22,12 @@ install_requires = [
     'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once',
 
-    'django>=2.2.1,<3.0',
+    'django>=3.1.1,<4.0.0',
     'django-bootstrap-form',
-    'django-registration==2.4',
+    'django-registration>=3.1',
     'django-sortedm2m',
     'django-redis-cache>=2.1.0,<3.0.0',
-    'django-celery-beat>=1.1.1,<2.0.0',
+    'django-celery-beat>=2.0.0',
 
     'openfire-restapi',
     'sleekxmpp',

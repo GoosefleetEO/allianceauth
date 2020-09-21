@@ -25,7 +25,7 @@ class GroupRequest(models.Model):
 
 
 class RequestLog(models.Model):
-    request_type = models.NullBooleanField(default=0)
+    request_type = models.BooleanField(null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     request_info = models.CharField(max_length=254)
     action = models.BooleanField(default=0)
