@@ -28,8 +28,6 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # Support for recommonmark module
 import recommonmark
-
-from recommonmark.parser import CommonMarkParser
 from recommonmark.transform import AutoStructify
 
 # -- General configuration ------------------------------------------------
@@ -41,8 +39,11 @@ from recommonmark.transform import AutoStructify
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
+    'sphinx_rtd_theme',
     'sphinx.ext.autodoc',    
+    'recommonmark',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -76,7 +77,7 @@ version = u'2.0'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -170,12 +171,6 @@ texinfo_documents = [
      author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
      'Miscellaneous'),
 ]
-
-# Markdown support
-source_parsers = {
-    '.md': CommonMarkParser,
-}
-
 
 def setup(app):
     app.add_config_value('recommonmark_config', {
