@@ -61,7 +61,7 @@
                     {% endif %}
                 </div>
             </h1>
-            
+
             {% if srpfleetrequests %}
                 <form method="POST">
                     {% csrf_token %}
@@ -104,7 +104,13 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                             <tbody>
                             {% for srpfleetrequest in srpfleetrequests %}
                                 <tr>
-                                    <td class="text-center">{{ srpfleetrequest.character.character_name }}</td>
+                                    <td class="text-center">
+                                        {% if srpfleetrequest.character.alliance.alliance_ticker %}
+                                            {{ srpfleetrequest.character.alliance.alliance_ticker }}
+                                        {% endif %}
+                                        [{{ srpfleetrequest.character.corporation.corporation_ticker }}]
+                                        {{ srpfleetrequest.character.character_name }}
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ srpfleetrequest.killboard_link }}"
                                         target="_blank" class="label label-warning">Link</a>
@@ -136,7 +142,7 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                                     <input type="checkbox" name="{{srpfleetrequest.id}}">
                                                     <span class="cr"><i class="cr-icon fas fa-check"></i></span>
                                                 </label>
-                                            </div>                            
+                                            </div>
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -205,7 +211,7 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
               var $next = $(this).closest('tr').next().find('.editable');
               setTimeout(function() {
                   $next.editable('show');
-              }, 400); 
+              }, 400);
           }
      });
   });
