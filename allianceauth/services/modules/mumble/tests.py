@@ -211,4 +211,4 @@ class MumbleManagerTestCase(TestCase):
         pwhash = self.manager.gen_pwhash('test')
 
         self.assertEqual(pwhash[:15], '$bcrypt-sha256$')
-        self.assertEqual(len(pwhash), 75)
+        self.assertEqual(len(pwhash), 83)
