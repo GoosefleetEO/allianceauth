@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 01:41+0000\n"
+"POT-Creation-Date: 2020-10-01 02:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "A main character is required to perform that action. Add one below."
 msgstr ""
 
-#: allianceauth/authentication/forms.py:6
+#: allianceauth/authentication/forms.py:5
 msgid "Email"
 msgstr ""
 
@@ -154,22 +154,22 @@ msgstr ""
 msgid "Unable to authenticate as the selected character."
 msgstr ""
 
-#: allianceauth/authentication/views.py:148
+#: allianceauth/authentication/views.py:146
 msgid "Registration token has expired."
 msgstr ""
 
-#: allianceauth/authentication/views.py:200
+#: allianceauth/authentication/views.py:201
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr ""
 
-#: allianceauth/authentication/views.py:205
+#: allianceauth/authentication/views.py:206
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 
-#: allianceauth/authentication/views.py:210
-msgid "Registraion of new accounts it not allowed at this time."
+#: allianceauth/authentication/views.py:211
+msgid "Registration of new accounts is not allowed at this time."
 msgstr ""
 
 #: allianceauth/corputils/auth_hooks.py:10
@@ -1289,13 +1289,13 @@ msgstr ""
 msgid "Password must be at least 8 characters long."
 msgstr ""
 
-#: allianceauth/services/modules/discord/models.py:224
+#: allianceauth/services/modules/discord/models.py:225
 msgid "Discord Account Disabled"
 msgstr ""
 
-#: allianceauth/services/modules/discord/models.py:226
+#: allianceauth/services/modules/discord/models.py:227
 msgid ""
-"Your Discord account was disabeled automatically by Auth. If you think this "
+"Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr ""
 
