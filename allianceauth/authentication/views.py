@@ -137,7 +137,12 @@ class RegistrationView(BaseRegistrationView):
     template_name = "public/register.html"
     email_body_template = "registration/activation_email.txt"
     email_subject_template = "registration/activation_email_subject.txt"
-    success_url = reverse_lazy('registration_complete')    
+    success_url = reverse_lazy('registration_complete') 
+
+    def get_success_url(self, user):
+        if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
+            return reverse_lazy('authentication:dashboard')
+        return super().get_success_url(user)
 
     def dispatch(self, request, *args, **kwargs):
         # We're storing a key in the session to pass user information from OAuth response. Make sure it's there.
