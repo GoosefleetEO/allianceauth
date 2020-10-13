@@ -64,12 +64,12 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'allianceauth.urls'
@@ -86,6 +86,8 @@ LANGUAGES = (
     ('zh-hans', ugettext('Chinese Simplified')),
     ('ru', ugettext('Russian')),
     ('ko', ugettext('Korean')),
+    ('fr', ugettext('French')),
+    ('ja', ugettext('Japanese')),
 )
 
 TEMPLATES = [
@@ -137,6 +139,8 @@ AUTHENTICATION_BACKENDS = ['allianceauth.authentication.backends.StateBackend',
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGE_COOKIE_AGE = 1209600
 
 TIME_ZONE = 'UTC'
 

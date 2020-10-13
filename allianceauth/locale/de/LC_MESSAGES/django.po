@@ -6,16 +6,16 @@
 # Translators:
 # Erik Kalkoken <erik.kalkoken@gmail.com>, 2020
 # Joel Falknau <ozirascal@gmail.com>, 2020
-# Rounon Dax <rounon.dax@terra-nanotech.de>, 2020
+# Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 01:35+0000\n"
+"POT-Creation-Date: 2020-10-11 03:43+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Rounon Dax <rounon.dax@terra-nanotech.de>, 2020\n"
+"Last-Translator: Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -28,7 +28,7 @@ msgid "A main character is required to perform that action. Add one below."
 msgstr ""
 "Für diese Aktion wird ein Hauptcharacter benötigt. Bitte füge einen hinzu."
 
-#: allianceauth/authentication/forms.py:6
+#: allianceauth/authentication/forms.py:5
 msgid "Email"
 msgstr "E-Mail"
 
@@ -168,11 +168,11 @@ msgstr ""
 msgid "Unable to authenticate as the selected character."
 msgstr "Authentifizierung mit dem ausgewählten Charakter nicht möglich."
 
-#: allianceauth/authentication/views.py:148
+#: allianceauth/authentication/views.py:146
 msgid "Registration token has expired."
 msgstr "Token zur Registrierung ist abgelaufen."
 
-#: allianceauth/authentication/views.py:200
+#: allianceauth/authentication/views.py:201
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
@@ -180,12 +180,12 @@ msgstr ""
 "Bestätigungsmail gesendet. Bitte folge dem Link in der E-Mail zur "
 "Bestätigung."
 
-#: allianceauth/authentication/views.py:205
+#: allianceauth/authentication/views.py:206
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 "Deine E-Mail Adresse wurde bestätigt. Bitte log Dich ein um fortzufahren."
 
-#: allianceauth/authentication/views.py:210
+#: allianceauth/authentication/views.py:211
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "Registrierung von neuen Konten ist zur Zeit nicht erlaubt."
 
@@ -825,7 +825,7 @@ msgstr "Du hast Dich bereits für diese Gruppe beworben."
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:128
+#: allianceauth/srp/templates/srp/data.html:134
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "Beantragt"
@@ -919,7 +919,7 @@ msgstr "Aktionen"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:120
+#: allianceauth/srp/templates/srp/data.html:126
 msgid "Approved"
 msgstr "Akzeptiert"
 
@@ -927,7 +927,7 @@ msgstr "Akzeptiert"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:124
+#: allianceauth/srp/templates/srp/data.html:130
 msgid "Rejected"
 msgstr "Abgelehnt"
 
@@ -1310,11 +1310,11 @@ msgstr "Passwort"
 msgid "Password must be at least 8 characters long."
 msgstr "Passwort muss mindestens 8 Zeichen lang sein"
 
-#: allianceauth/services/modules/discord/models.py:224
+#: allianceauth/services/modules/discord/models.py:225
 msgid "Discord Account Disabled"
 msgstr "Discord Konto deaktiviert"
 
-#: allianceauth/services/modules/discord/models.py:226
+#: allianceauth/services/modules/discord/models.py:227
 msgid ""
 "Your Discord account was disabeled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
@@ -1684,18 +1684,18 @@ msgid "Mark Completed"
 msgstr "Als vollständig markieren"
 
 #: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:150
+#: allianceauth/srp/templates/srp/data.html:156
 msgid "Total Losses:"
 msgstr "Verluste insgesamt:"
 
 #: allianceauth/srp/templates/srp/data.html:71
-#: allianceauth/srp/templates/srp/data.html:151
+#: allianceauth/srp/templates/srp/data.html:157
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "ISK-Kosten insgesamt:"
 
 #: allianceauth/srp/templates/srp/data.html:79
-#: allianceauth/srp/templates/srp/data.html:159
+#: allianceauth/srp/templates/srp/data.html:165
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "Bist Du sicher das Du SRP Anfragen löschen willst?"
 
@@ -1729,7 +1729,7 @@ msgstr ""
 msgid "Post Time"
 msgstr "Veröffentlichungszeit"
 
-#: allianceauth/srp/templates/srp/data.html:168
+#: allianceauth/srp/templates/srp/data.html:174
 msgid "No SRP requests for this fleet."
 msgstr "Keine SRP Anfragen für diese Flotte."
 

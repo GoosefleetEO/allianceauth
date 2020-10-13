@@ -224,7 +224,7 @@ class DiscordUser(models.Model):
                             user=_user, 
                             title=gettext_lazy('Discord Account Disabled'), 
                             message=gettext_lazy(
-                                'Your Discord account was disabeled automatically '
+                                'Your Discord account was disabled automatically '
                                 'by Auth. If you think this was a mistake, '
                                 'please contact an admin.'
                             ),

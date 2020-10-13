@@ -4,18 +4,18 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Joel Falknau <ozirascal@gmail.com>, 2020
 # Jesse . <sgeine@hotmail.com>, 2020
 # Aaron BuBu <351793078@qq.com>, 2020
+# Joel Falknau <ozirascal@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 01:35+0000\n"
+"POT-Creation-Date: 2020-10-11 03:43+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Aaron BuBu <351793078@qq.com>, 2020\n"
+"Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2020\n"
 "Language-Team: Chinese Simplified (https://www.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr ""
 msgid "A main character is required to perform that action. Add one below."
 msgstr "只有主要角色才能执行这个操作。在下面添加一个"
 
-#: allianceauth/authentication/forms.py:6
+#: allianceauth/authentication/forms.py:5
 msgid "Email"
 msgstr "电子邮箱"
 
@@ -159,21 +159,21 @@ msgstr "添加%(name)s到您的账户失败：他们已经在一个账户中了"
 msgid "Unable to authenticate as the selected character."
 msgstr "无法作为选定的角色进行身份验证"
 
-#: allianceauth/authentication/views.py:148
+#: allianceauth/authentication/views.py:146
 msgid "Registration token has expired."
 msgstr "注册令牌过期。"
 
-#: allianceauth/authentication/views.py:200
+#: allianceauth/authentication/views.py:201
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "已经发送了确认邮件。请按照链接确定您的电邮地址"
 
-#: allianceauth/authentication/views.py:205
+#: allianceauth/authentication/views.py:206
 msgid "Confirmed your email address. Please login to continue."
 msgstr "已确认您的电邮地址。请登录以继续"
 
-#: allianceauth/authentication/views.py:210
+#: allianceauth/authentication/views.py:211
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "现在不允许注册新账户。"
 
@@ -807,7 +807,7 @@ msgstr "你已经有了该组的未决申请"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:128
+#: allianceauth/srp/templates/srp/data.html:134
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "待定"
@@ -901,7 +901,7 @@ msgstr "操作"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:120
+#: allianceauth/srp/templates/srp/data.html:126
 msgid "Approved"
 msgstr "通过"
 
@@ -909,7 +909,7 @@ msgstr "通过"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:124
+#: allianceauth/srp/templates/srp/data.html:130
 msgid "Rejected"
 msgstr "拒绝"
 
@@ -1292,11 +1292,11 @@ msgstr "密码"
 msgid "Password must be at least 8 characters long."
 msgstr "密码至少要有8个字符啊，你也太不注重安全啦"
 
-#: allianceauth/services/modules/discord/models.py:224
+#: allianceauth/services/modules/discord/models.py:225
 msgid "Discord Account Disabled"
 msgstr ""
 
-#: allianceauth/services/modules/discord/models.py:226
+#: allianceauth/services/modules/discord/models.py:227
 msgid ""
 "Your Discord account was disabeled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
@@ -1655,18 +1655,18 @@ msgid "Mark Completed"
 msgstr "标记为已完成"
 
 #: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:150
+#: allianceauth/srp/templates/srp/data.html:156
 msgid "Total Losses:"
 msgstr "损失总额："
 
 #: allianceauth/srp/templates/srp/data.html:71
-#: allianceauth/srp/templates/srp/data.html:151
+#: allianceauth/srp/templates/srp/data.html:157
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "ISK花费总额："
 
 #: allianceauth/srp/templates/srp/data.html:79
-#: allianceauth/srp/templates/srp/data.html:159
+#: allianceauth/srp/templates/srp/data.html:165
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "老哥，你确定要删了补损请求么？"
 
@@ -1698,7 +1698,7 @@ msgstr "点击数值就可以编辑啦，按回车确认，按ESC取消"
 msgid "Post Time"
 msgstr "发布时间"
 
-#: allianceauth/srp/templates/srp/data.html:168
+#: allianceauth/srp/templates/srp/data.html:174
 msgid "No SRP requests for this fleet."
 msgstr "这次起队没有补损请求！大捷"
 

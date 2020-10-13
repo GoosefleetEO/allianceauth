@@ -213,5 +213,5 @@ def activation_complete(request):
 
 
 def registration_closed(request):
-    messages.error(request, _('Registraion of new accounts it not allowed at this time.'))
+    messages.error(request, _('Registration of new accounts is not allowed at this time.'))
     return redirect('authentication:login')

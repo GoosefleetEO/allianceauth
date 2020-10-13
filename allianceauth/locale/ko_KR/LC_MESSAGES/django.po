@@ -5,8 +5,8 @@
 # 
 # Translators:
 # None None <khd1226543@gmail.com>, 2020
-# Seowon Jung <seowon@hawaii.edu>, 2020
 # Olgeda Choi <undead.choi@gmail.com>, 2020
+# Seowon Jung <seowon@hawaii.edu>, 2020
 # Lahty <js03js70@gmail.com>, 2020
 # 
 #, fuzzy
@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 01:35+0000\n"
+"POT-Creation-Date: 2020-10-11 03:43+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Lahty <js03js70@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/alliance-auth/teams/107430/ko_KR/)\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "A main character is required to perform that action. Add one below."
 msgstr "해당 기능을 수행하려면 주 캐릭터가 요구됨. 아래에 하나를 추가하시오."
 
-#: allianceauth/authentication/forms.py:6
+#: allianceauth/authentication/forms.py:5
 msgid "Email"
 msgstr "이메일"
 
@@ -163,21 +163,21 @@ msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 추가된 계
 msgid "Unable to authenticate as the selected character."
 msgstr "선택한 캐릭터로 인증을 수행할 수 없음"
 
-#: allianceauth/authentication/views.py:148
+#: allianceauth/authentication/views.py:146
 msgid "Registration token has expired."
 msgstr "등록토큰 만료"
 
-#: allianceauth/authentication/views.py:200
+#: allianceauth/authentication/views.py:201
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "확인 메일 전송됨. 다음 링크를 눌러 이메일 주소를 확인하세요."
 
-#: allianceauth/authentication/views.py:205
+#: allianceauth/authentication/views.py:206
 msgid "Confirmed your email address. Please login to continue."
 msgstr "이메일 주소가 확인되었습니다. 로그인 해주세요."
 
-#: allianceauth/authentication/views.py:210
+#: allianceauth/authentication/views.py:211
 msgid "Registraion of new accounts it not allowed at this time."
 msgstr "현재 새로운 계정 등록은 받지않습니다."
 
@@ -811,7 +811,7 @@ msgstr "해당 그룹에 대한 참여신청이 보류되었습니다."
 #: allianceauth/hrapplications/templates/hrapplications/management.html:144
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
 #: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:128
+#: allianceauth/srp/templates/srp/data.html:134
 #: allianceauth/srp/templates/srp/management.html:81
 msgid "Pending"
 msgstr "보류 중"
@@ -905,7 +905,7 @@ msgstr "활동"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:147
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:40
 #: allianceauth/hrapplications/templates/hrapplications/view.html:16
-#: allianceauth/srp/templates/srp/data.html:120
+#: allianceauth/srp/templates/srp/data.html:126
 msgid "Approved"
 msgstr "승인"
 
@@ -913,7 +913,7 @@ msgstr "승인"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:104
 #: allianceauth/hrapplications/templates/hrapplications/management.html:149
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:42
-#: allianceauth/srp/templates/srp/data.html:124
+#: allianceauth/srp/templates/srp/data.html:130
 msgid "Rejected"
 msgstr "거절"
 
@@ -1296,11 +1296,11 @@ msgstr "비밀번호"
 msgid "Password must be at least 8 characters long."
 msgstr "비밀번호는 8글자 이상이어야 합니다."
 
-#: allianceauth/services/modules/discord/models.py:224
+#: allianceauth/services/modules/discord/models.py:225
 msgid "Discord Account Disabled"
 msgstr "디스코드 계정 비활성화"
 
-#: allianceauth/services/modules/discord/models.py:226
+#: allianceauth/services/modules/discord/models.py:227
 msgid ""
 "Your Discord account was disabeled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
@@ -1659,18 +1659,18 @@ msgid "Mark Completed"
 msgstr "표시 완료"
 
 #: allianceauth/srp/templates/srp/data.html:70
-#: allianceauth/srp/templates/srp/data.html:150
+#: allianceauth/srp/templates/srp/data.html:156
 msgid "Total Losses:"
 msgstr "전체 손실:"
 
 #: allianceauth/srp/templates/srp/data.html:71
-#: allianceauth/srp/templates/srp/data.html:151
+#: allianceauth/srp/templates/srp/data.html:157
 #: allianceauth/srp/templates/srp/management.html:30
 msgid "Total ISK Cost:"
 msgstr "전체 ISK 비용:"
 
 #: allianceauth/srp/templates/srp/data.html:79
-#: allianceauth/srp/templates/srp/data.html:159
+#: allianceauth/srp/templates/srp/data.html:165
 msgid "Are you sure you want to delete SRP requests?"
 msgstr "SRP 보상 요청을 삭제하시겠습니까?"
 
@@ -1702,7 +1702,7 @@ msgstr "금액을 수정하려면 클릭, 저장을 하고 다음으로 가려�
 msgid "Post Time"
 msgstr "작성 시간"
 
-#: allianceauth/srp/templates/srp/data.html:168
+#: allianceauth/srp/templates/srp/data.html:174
 msgid "No SRP requests for this fleet."
 msgstr "이 플릿에는 SRP 보상 요청이 없습니다."
 
