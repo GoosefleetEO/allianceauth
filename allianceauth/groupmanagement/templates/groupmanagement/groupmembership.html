@@ -14,7 +14,7 @@
                 {% trans "Groups" %}
             </div>
             <div class="panel-body">
-                {% if groups %}                    
+                {% if groups %}
                     <div class="table-responsive">
                         <table class="table table-aa">
                             <thead>
@@ -30,7 +30,7 @@
                                 {% for group in groups %}
                                     <tr>
                                         <td class="text-center">
-                                            <a href="{% url 'groupmanagement:membership_list' group.id %}">{{ group.name }}</a>
+                                            <a href="{% url 'groupmanagement:membership' group.id %}">{{ group.name }}</a>
                                         </td>
                                         <td class="text-center">{{ group.authgroup.description }}</td>
                                         <td class="text-center">
@@ -46,9 +46,8 @@
                                             {{ group.num_members }}
                                         </td>
                                         <td class="text-center">
-                                            <a href="{% url 'groupmanagement:membership_list' group.id %}" class="btn btn-primary"
-                                                title="{% trans "View Members" %}">
-                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                            <a href="{% url 'groupmanagement:membership' group.id %}" class="btn btn-primary" title="{% trans "View Members" %}">
+                                                <i class="glyphicon glyphicon-eye-open"></i>
                                             </a>
                                             <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
                                                 <i class="glyphicon glyphicon-list-alt"></i>
@@ -72,7 +71,7 @@
         </div>
     </div>
 {% endblock content %}
-{% block extra_javascript %}    
+{% block extra_javascript %}
     {% include 'bundles/clipboard-js.html' %}
 <script>
     new ClipboardJS('#clipboard-copy');
