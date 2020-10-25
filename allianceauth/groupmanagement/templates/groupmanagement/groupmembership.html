@@ -25,7 +25,7 @@
                                     <th>{% trans "Description" %}</th>
                                     <th>{% trans "Status" %}</th>
                                     <th>{% trans "Member Count" %}</th>
-                                    <th></th>
+                                    <th style="min-width: 170px;"></th>
                                 </tr>
                             </thead>
 
@@ -36,7 +36,7 @@
                                             <a href="{% url 'groupmanagement:membership' group.id %}">{{ group.name }}</a>
                                         </td>
 
-                                        <td>{{ group.authgroup.description }}</td>
+                                        <td>{{ group.authgroup.description|linebreaks|urlize }}</td>
 
                                         <td>
                                             {% if group.authgroup.hidden %}
@@ -64,7 +64,6 @@
                                             <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% trans "Copy Direct Join Link" %}">
                                                 <i class="glyphicon glyphicon-copy"></i>
                                             </a>
-
                                         </td>
                                     </tr>
                                 {% endfor %}

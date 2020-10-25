@@ -55,7 +55,6 @@ class RequestLog(models.Model):
         return user.profile.main_character
 
 
-
 class AuthGroup(models.Model):
     """
     Extends Django Group model with a one-to-one field
@@ -76,46 +75,75 @@ class AuthGroup(models.Model):
         Open - Users are automatically accepted into the group
         Not Open - Users requests must be approved before they are added to the group
     """
+
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
 
-    internal = models.BooleanField(default=True,
-                                   help_text="Internal group, users cannot see, join or request to join this group.<br>"
-                                             "Used for groups such as Members, Corp_*, Alliance_* etc.<br>"
-                                             "<b>Overrides Hidden and Open options when selected.</b>")
-    hidden = models.BooleanField(default=True,
-                                 help_text="Group is hidden from users but can still join with the correct link.")
-    open = models.BooleanField(default=False,
-                               help_text="Group is open and users will be automatically added upon request. <br>"
-                                         "If the group is not open users will need their request manually approved.")
-    public = models.BooleanField(default=False,
-                                 help_text="Group is public. Any registered user is able to join this group, with "
-                                           "visibility based on the other options set for this group.<br> Auth will "
-                                           "not remove users from this group automatically when they are no longer "
-                                           "authenticated.")
+    internal = models.BooleanField(
+        default=True,
+        help_text="Internal group, users cannot see, join or request to join this group.<br>"
+        "Used for groups such as Members, Corp_*, Alliance_* etc.<br>"
+        "<b>Overrides Hidden and Open options when selected.</b>",
+    )
+
+    hidden = models.BooleanField(
+        default=True,
+        help_text="Group is hidden from users but can still join with the correct link.",
+    )
+
+    open = models.BooleanField(
+        default=False,
+        help_text="Group is open and users will be automatically added upon request. <br>"
+        "If the group is not open users will need their request manually approved.",
+    )
+
+    public = models.BooleanField(
+        default=False,
+        help_text="Group is public. Any registered user is able to join this group, with "
+        "visibility based on the other options set for this group.<br> Auth will "
+        "not remove users from this group automatically when they are no longer "
+        "authenticated.",
+    )
+
     # Group leaders have management access to this group
-    group_leaders = models.ManyToManyField(User, related_name='leads_groups', blank=True,
-                                           help_text="Group leaders can process group requests for this group "
-                                                     "specifically. Use the auth.group_management permission to allow "
-                                                     "a user to manage all groups.")
+    group_leaders = models.ManyToManyField(
+        User,
+        related_name="leads_groups",
+        blank=True,
+        help_text="Group leaders can process group requests for this group "
+        "specifically. Use the auth.group_management permission to allow "
+        "a user to manage all groups.",
+    )
+
     # allow groups to be *group leads*
-    group_leader_groups = models.ManyToManyField(Group, related_name='leads_group_groups', blank=True,
-                                           help_text="Group leaders can process group requests for this group "
-                                                     "specifically. Use the auth.group_management permission to allow "
-                                                     "a user to manage all groups.")
+    group_leader_groups = models.ManyToManyField(
+        Group,
+        related_name="leads_group_groups",
+        blank=True,
+        help_text="Group leaders can process group requests for this group "
+        "specifically. Use the auth.group_management permission to allow "
+        "a user to manage all groups.",
+    )
 
-    states = models.ManyToManyField(State, related_name='valid_states', blank=True,
-                                    help_text="States listed here will have the ability to join this group provided "
-                                              "they have the proper permissions.")
+    states = models.ManyToManyField(
+        State,
+        related_name="valid_states",
+        blank=True,
+        help_text="States listed here will have the ability to join this group provided "
+        "they have the proper permissions.",
+    )
 
-    description = models.CharField(max_length=512, blank=True, help_text="Description of the group shown to users.")
+    description = models.TextField(
+        max_length=512,
+        null=True,
+        blank=True,
+        help_text="Short description <i>(max. 512 characters)</i> of the group shown to users.",
+    )
 
     def __str__(self):
         return self.group.name
 
     class Meta:
-        permissions = (
-            ("request_groups", u"Can request non-public groups"),
-        )
+        permissions = (("request_groups", u"Can request non-public groups"),)
         default_permissions = tuple()
 
 

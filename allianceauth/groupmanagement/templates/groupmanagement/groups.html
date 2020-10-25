@@ -22,7 +22,7 @@
                     {% for g in groups %}
                         <tr>
                             <td>{{ g.group.name }}</td>
-                            <td>{{ g.group.authgroup.description|urlize }}</td>
+                            <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
                             <td class="text-right">
                                 {% if g.group in user.groups.all %}
                                     {% if not g.request %}

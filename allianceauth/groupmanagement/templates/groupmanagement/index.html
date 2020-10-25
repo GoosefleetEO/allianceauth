@@ -23,6 +23,7 @@
             <li class="active">
                 <a data-toggle="tab" href="#add">
                     {% trans "Join Requests" %}
+
                     {% if acceptrequests %}
                         <span class="badge">{{ acceptrequests|length }}</span>
                     {% endif %}
@@ -31,6 +32,7 @@
             <li>
                 <a data-toggle="tab" href="#leave">
                     {% trans "Leave Requests" %}
+
                     {% if leaverequests %}
                         <span class="badge">{{ leaverequests|length }}</span>
                     {% endif %}
@@ -131,7 +133,7 @@
                                                     </a><br>
                                                     {{ leaverequest.main_char.alliance_name|default_if_none:"" }}
                                                 {% else %}
-                                                    (unknown)
+                                                    {% trans "(unknown)" %}
                                                 {% endif %}
                                             </td>
                                             <td>{{ leaverequest.group.name }}</td>
