@@ -24,7 +24,7 @@
                                     <th>{% trans "Name" %}</th>
                                     <th>{% trans "Description" %}</th>
                                     <th>{% trans "Status" %}</th>
-                                    <th>{% trans "Member Count" %}</th>
+                                    <th style="white-space: nowrap;">{% trans "Member Count" %}</th>
                                     <th style="min-width: 170px;"></th>
                                 </tr>
                             </thead>
@@ -48,7 +48,7 @@
                                             {% endif %}
                                         </td>
 
-                                        <td>
+                                        <td class="text-right">
                                             {{ group.num_members }}
                                         </td>
 
