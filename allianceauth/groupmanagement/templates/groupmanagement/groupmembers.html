@@ -9,38 +9,35 @@
     <div class="col-lg-12">
         <br>
         {% include 'groupmanagement/menu.html' %}
-        
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 {{ group.name }} - {% trans 'Members' %}
             </div>
-            <div class="panel-body">                
-                <p>                    
+
+            <div class="panel-body">
+                <p>
                     <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
                         {% trans "Back" %}
                     </a>
-                </p>                
-                {% if group.user_set %}                    
+                </p>
+
+                {% if group.user_set %}
                     <div class="table-responsive">
                         <table class="table table-aa" id="tab_group_members">
                             <thead>
-                                <tr>                                                        
-                                    <th class="text-right">{% trans "Portrait" %}</th>
-                                    <th class="text-center">{% trans "Character" %}</th>
-                                    <th class="text-center">{% trans "Organization" %}</th>                                    
-                                    <th class="text-center"></th>
+                                <tr>
+                                    <th>{% trans "Character" %}</th>
+                                    <th>{% trans "Organization" %}</th>
+                                    <th></th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {% for member in members %}
-                                    <tr>                                                                
-                                        <td class="text-right">
-                                            {% if member.is_leader %}
-                                                <i class="fas fa-star"></i>&nbsp;
-                                            {% endif %}
-                                            <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle">                                            
-                                        </td>
-                                        <td class="text-center">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle" style="margin-right: 1rem;">
                                             {% if member.main_char %}
                                                 <a href="{{ member.main_char|evewho_character_url }}" target="_blank">
                                                     {{ member.main_char.character_name }}
@@ -48,28 +45,36 @@
                                             {% else %}
                                                 {{ member.user.username }}
                                             {% endif %}
+
+                                            {% if member.is_leader %}
+                                                <i class="fas fa-star" title="{% trans "Group leader" %}" style="margin-left: 1rem;"></i>&nbsp;
+                                            {% endif %}
                                         </td>
-                                        <td class="text-center">
+
+                                        <td>
                                             {% if member.main_char %}
                                                 <a href="{{ member.main_char|dotlan_corporation_url }}" target="_blank">
                                                     {{ member.main_char.corporation_name }}
                                                 </a><br>
                                                 {{ member.main_char.alliance_name|default_if_none:"" }}
                                             {% else %}
-                                                (unknown)
+                                                {% trans "(unknown)" %}
                                             {% endif %}
-                                        </td>                                                                
-                                        <td class="text-center">
-                                            <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger"
-                                                title="{% trans "Remove from group" %}">
-                                                    <i class="glyphicon glyphicon-remove"></i>
+                                        </td>
+
+                                        <td class="text-right">
+                                            <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger" title="{% trans "Remove from group" %}">
+                                                <i class="glyphicon glyphicon-remove"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <p class="text-muted"><i class="fas fa-star"></i>: Group leader</p>
+
+                        <p class="text-muted">
+                            <i class="fas fa-star"></i>: {% trans "Group leader" %}
+                        </p>
                     </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
@@ -77,7 +82,7 @@
                     </div>
                 {% endif %}
             </div>
-            
+
         </div>
     </div>
 {% endblock content %}
@@ -93,9 +98,12 @@
 {% block extra_script %}
     $(document).ready(function(){
         $('#tab_group_members').DataTable({
-            order: [ [ 1, "asc" ] ],
+            order: [[0, "asc"]],
             columnDefs: [
-                { "sortable": false, "targets": [0, 3] },
+                {
+                    "sortable": false,
+                    "targets": [2]
+                },
             ]
         });
     });
