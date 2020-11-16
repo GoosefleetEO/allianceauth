@@ -17,7 +17,6 @@ class Migration(migrations.Migration):
                 blank=True,
                 help_text="Short description <i>(max. 512 characters)</i> of the group shown to users.",
                 max_length=512,
-                null=True,
             ),
         ),
     ]

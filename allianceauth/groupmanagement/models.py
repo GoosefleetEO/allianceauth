@@ -107,7 +107,7 @@ class AuthGroup(models.Model):
                                     help_text="States listed here will have the ability to join this group provided "
                                               "they have the proper permissions.")
 
-    description = models.TextField(max_length=512, null=True, blank=True, help_text="Short description <i>(max. 512 characters)</i> of the group shown to users.")
+    description = models.TextField(max_length=512, blank=True, help_text="Short description <i>(max. 512 characters)</i> of the group shown to users.")
 
     def __str__(self):
         return self.group.name
