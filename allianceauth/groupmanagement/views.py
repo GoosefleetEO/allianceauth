@@ -103,7 +103,7 @@ def group_membership_list(request, group_id):
 
         # Check its a joinable group i.e. not corp or internal
         # And the user has permission to manage it
-        if (not GroupManager.check_internal_group(group) 
+        if (not GroupManager.check_internal_group(group)
             or not GroupManager.can_manage_group(request.user, group)
         ):
             logger.warning(
@@ -132,7 +132,7 @@ def group_membership_list(request, group_id):
     render_items = {'group': group, 'members': members}
 
     return render(
-        request, 'groupmanagement/groupmembers.html', 
+        request, 'groupmanagement/groupmembers.html',
         context=render_items
     )
 
@@ -166,7 +166,7 @@ def group_membership_remove(request, group_id, user_id):
     except ObjectDoesNotExist:
         messages.warning(request, _("Group does not exist"))
 
-    return redirect('groupmanagement:membership_list', group_id)
+    return redirect('groupmanagement:membership', group_id)
 
 
 @login_required
@@ -312,18 +312,18 @@ def group_leave_reject_request(request, group_request_id):
 @login_required
 def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
-    
+
     groups_qs = GroupManager.get_joinable_groups_for_user(
         request.user, include_hidden=False
     )
     groups_qs = groups_qs.order_by('name')
     groups = []
-    for group in groups_qs:        
+    for group in groups_qs:
         group_request = GroupRequest.objects\
             .filter(user=request.user)\
             .filter(group=group)
         groups.append({
-            'group': group, 
+            'group': group,
             'request': group_request[0] if group_request else None
         })
 

@@ -8,58 +8,65 @@
     <div class="col-lg-12">
         <br>
         {% include 'groupmanagement/menu.html' %}
+
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{ group }} - {% trans 'Audit Log' %}
+                {{ group }} - {% trans "Audit Log" %}
             </div>
-            <div class="panel-body">            
-                <p> 
+
+            <div class="panel-body">
+                <p>
                     <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
                         {% trans "Back" %}
                     </a>
-                </p>              
+                </p>
+
                 {% if entries %}
                     <div class="table-responsive">
                         <table class="table table-striped" id="log-entries">
                             <thead>
-                                <th class="text-center" scope="col">{% trans "Date/Time" %}</th>
-                                <th class="text-center" scope="col">{% trans "Requestor" %}</th>
-                                <th class="text-center" scope="col">{% trans "Character" %}</th>
-                                <th class="text-center" scope="col">{% trans "Corporation" %}</th>
-                                <th class="text-center" scope="col">{% trans "Type" %}</th>
-                                <th class="text-center" scope="col">{% trans "Action" %}</th>
-                                <th class="text-center" scope="col">{% trans "Actor" %}</th>
+                                <th scope="col">{% trans "Date/Time" %}</th>
+                                <th scope="col">{% trans "Requestor" %}</th>
+                                <th scope="col">{% trans "Character" %}</th>
+                                <th scope="col">{% trans "Corporation" %}</th>
+                                <th scope="col">{% trans "Type" %}</th>
+                                <th scope="col">{% trans "Action" %}</th>
+                                <th scope="col">{% trans "Actor" %}</th>
                             </thead>
+
                             <tbody>
                                 {% for entry in entries %}
                                     <tr>
-                                        <td class="text-center">{{ entry.date|date:"Y-M-d, H:i" }}</td>
-                                        <td class="text-center">{{ entry.requestor }}</td>
-                                        <td class="text-center">{{ entry.req_char }}</td>
-                                        <td class="text-center">{{ entry.req_char.corporation_name }}</td>
-                                        <td class="text-center">{{ entry.type_to_str }}</td>
+                                        <td>{{ entry.date|date:"Y-M-d, H:i" }}</td>
+                                        <td>{{ entry.requestor }}</td>
+                                        <td>{{ entry.req_char }}</td>
+                                        <td>{{ entry.req_char.corporation_name }}</td>
+                                        <td>{{ entry.type_to_str }}</td>
+
                                         {% if entry.request_type is None %}
-                                            <td class="text-center"> Removed</td>
+                                            <td>{% trans "Removed" %}</td>
                                         {% else %}
-                                            <td class="text-center">{{ entry.action_to_str }}</td>
+                                            <td>{{ entry.action_to_str }}</td>
                                         {% endif %}
-                                        <td class="text-center">{{ entry.request_actor }}</td>
+
+                                        <td>{{ entry.request_actor }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+
                         <p class="text-muted">
-                            All times displayed are EVE/UTC.
+                            {% trans "All times displayed are EVE/UTC." %}
                         </p>
                     </div>
-                {% else %}                                        
+                {% else %}
                     <div class="clearfix"></div>
                     <br>
-                    <div class="alert alert-warning text-center">                        
+                    <div class="alert alert-warning text-center">
                         {% trans "No entries found for this group." %}
-                    </div>                    
+                    </div>
                 {% endif %}
-            </div>        
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -75,31 +82,30 @@
 {% endblock %}
 
 {% block extra_script %}
-
-    $.fn.dataTable.moment = function ( format, locale ) {
+    $.fn.dataTable.moment = function(format, locale) {
         var types = $.fn.dataTable.ext.type;
-    
+
         // Add type detection
-        types.detect.unshift( function ( d ) {
-            return moment( d, format, locale, true ).isValid() ?
+        types.detect.unshift(function(d) {
+            return moment(d, format, locale, true).isValid() ?
                 'moment-'+format :
                 null;
-        } );
-    
+        });
+
         // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
-            return moment( d, format, locale, true ).unix();
+        types.order[ 'moment-'+format+'-pre' ] = function(d) {
+            return moment(d, format, locale, true).unix();
         };
     };
 
     $(document).ready(function(){
-        $.fn.dataTable.moment( 'YYYY-MMM-D, HH:mm' );
+        $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
         $('#log-entries').DataTable({
-            order: [[ 0, 'desc' ], [ 1, 'asc' ] ],
+            order: [[0, 'desc'], [1, 'asc']],
             filterDropDown:
             {
-                columns: [                                       
+                columns: [
                     {
                         idx: 1
                     },
@@ -124,4 +130,3 @@
         });
     });
 {% endblock %}
-
