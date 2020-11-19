@@ -40,7 +40,7 @@ urlpatterns = [
         name="reject_request",
     ),
     url(
-        r"groupmanagement/request/leave/accept/(\w+)/$",
+        r"^groupmanagement/request/leave/accept/(\w+)/$",
         views.group_leave_accept_request,
         name="leave_accept_request",
     ),
