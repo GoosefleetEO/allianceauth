@@ -181,6 +181,8 @@ For **scopes** your SSO app needs to have at least `publicData`. Additional scop
 
 As **callback URL** you want to define the URL of your Alliance Auth site plus the route: `/sso/callback`. Example for a valid callback URL: `https://auth.example.com/sso/callback`
 
+In `local.py` you will need to set `ESI_USER_CONTACT_EMAIL` to an email address to ensure that CCP has reliable contact information for you.
+
 ### Alliance Auth Project
 
 Ensure wheel is available before continuing:
