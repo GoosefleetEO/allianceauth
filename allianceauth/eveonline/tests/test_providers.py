@@ -592,3 +592,12 @@ class TestEveSwaggerProvider(TestCase):
         self.assertTrue(mock_esi_client_factory.called)
         self.assertIsNotNone(my_provider._client)
         self.assertEqual(my_client, 'my_client')
+
+    @patch(MODULE_PATH + '.__version__', '1.0.0')
+    def test_user_agent_header(self):
+        my_provider = EveSwaggerProvider()
+        my_client = my_provider.client
+        operation = my_client.Status.get_status()
+        self.assertEqual(
+            operation.future.request.headers['User-Agent'], 'allianceauth v1.0.0'
+        )
