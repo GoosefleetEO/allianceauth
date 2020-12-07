@@ -1,5 +1,6 @@
 import os
 from celery import Celery
+from celery.app import trace
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', '{{ project_name }}.settings.local')
@@ -27,3 +28,6 @@ app.conf.ONCE = {
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
+# Remove result from default log message on task success
+trace.LOG_SUCCESS = "Task %(name)s[%(id)s] succeeded in %(runtime)ss"
