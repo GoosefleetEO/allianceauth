@@ -45,6 +45,7 @@ DATABASES['default'] = {
 ESI_SSO_CLIENT_ID = ''
 ESI_SSO_CLIENT_SECRET = ''
 ESI_SSO_CALLBACK_URL = ''
+ESI_USER_CONTACT_EMAIL = ''    # A server maintainer that CCP can contact in case of issues.
 
 # By default emails are validated before new users can log in.
 # It's recommended to use a free service like SparkPost or Elastic Email to send email.

@@ -7,6 +7,8 @@ from jsonschema.exceptions import RefResolutionError
 from django.conf import settings
 from esi.clients import esi_client_factory
 
+from allianceauth import __version__
+
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'swagger.json'
@@ -166,7 +168,7 @@ class EveSwaggerProvider(EveProvider):
         else:
             try:
                 self._client = esi_client_factory(
-                    token=token, spec_file=SWAGGER_SPEC_PATH
+                    token=token, spec_file=SWAGGER_SPEC_PATH, app_info_text=("allianceauth v" + __version__)
                 )
             except (HTTPError, RefResolutionError):
                 logger.exception(
@@ -182,7 +184,7 @@ class EveSwaggerProvider(EveProvider):
     def client(self):
         if self._client is None:
             self._client = esi_client_factory(
-                token=self._token, spec_file=SWAGGER_SPEC_PATH
+                token=self._token, spec_file=SWAGGER_SPEC_PATH, app_info_text=("allianceauth v" + __version__)
             )
         return self._client
 
