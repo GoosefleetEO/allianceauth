@@ -20,7 +20,7 @@ install_requires = [
 
     'redis>=3.3.1,<4.0.0',
     'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
-    'celery_once',
+    'celery_once>=2.0.1',
 
     'django>=3.1.1,<4.0.0',
     'django-bootstrap-form',
