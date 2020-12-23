@@ -26,7 +26,7 @@ install_requires = [
     'django-bootstrap-form',
     'django-registration>=3.1',
     'django-sortedm2m',
-    'django-redis-cache>=2.1.0,<3.0.0,!=2.1.3',  # 2.1.3 != Django 3 (Issue 1264)
+    'django-redis-cache>=3.0.0',
     'django-celery-beat>=2.0.0',
 
     'openfire-restapi',
