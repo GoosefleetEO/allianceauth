@@ -40,7 +40,9 @@ Any reviewer who can see the application can view the applicant's APIs if they p
 
 ## Permissions
 
-The following permissions have an effect on the website above and beyond their usual admin site functions.
+To administer this feature, users will require some of the following.
+
+Users do not require any permission to apply to a corporation and fill out the form.
 
 ```eval_rst
 +---------------------------------------+------------------+----------------------------------------------------+
@@ -54,12 +56,11 @@ The following permissions have an effect on the website above and beyond their u
 +---------------------------------------+------------------+----------------------------------------------------+
 | hrapplications.reject_applications    | None             | Can reject applications                            |
 +---------------------------------------+------------------+----------------------------------------------------+
-| hrapplications.view_apis              | None             | Can view applicant API keys, and audit in Jacknife |
-+---------------------------------------+------------------+----------------------------------------------------+
 | hrapplications.add_applicationcomment | Can create model | Can comment on applications                        |
 +---------------------------------------+------------------+----------------------------------------------------+
-
 ```
+
+A user with `auth.human_resources` can only see applications to their own corp.
 
 Best practice is to bundle the `auth.human_resources` permission alongside the `hrapplications.approve_application` and `hrapplications.reject_application` permissions, as in isolation these don't make much sense.
 

@@ -38,4 +38,26 @@ Group leaders have the same abilities as users with the `group_management` permi
 - Approve requests for groups they are a leader of.
 - View the Group Membership and Group Members of groups they are leaders of.
 
-This allows you to more finely control who has access to manage which groups. Currently it is not possible to add a Group as group leaders.
+This allows you to more finely control who has access to manage which groups.
+
+## Permissions
+
+Group Management should be mostly done using group leaders, a series of permissions are included below for thoroughness.
+
+```eval_rst
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| Permission                     | Admin Site        | Auth Site                                                                          |
++================================+===================+====================================================================================+
+| auth.group_management          | None              | Can Approve and Deny all Group Requests, Can view and manage all group memberships |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| groupmanagement.request_groups | None              | Can Request Non-Public Groups                                                      |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| groupmanagement.add_group      | Can Add Models    | None                                                                               |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| groupmanagement.change_group   | Can Edit Models   | None                                                                               |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| groupmanagement.delete_group   | Can Delete Models | None                                                                               |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+| groupmanagement.view_group     | Can View Models   | None                                                                               |
++--------------------------------+-------------------+------------------------------------------------------------------------------------+
+```

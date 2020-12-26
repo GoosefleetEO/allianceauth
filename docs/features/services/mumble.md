@@ -200,13 +200,16 @@ python /home/allianceserver/myauth/manage.py migrate
 supervisorctl restart myauth:
 ```
 
-## Permissions on Auth
+## Permissions
 
-To enable the mumble service for users on Auth you need to give them the `access_mumble` permission. This permission is often added to the `Member` state.
+To use this service, users will require some of the following.
 
 ```eval_rst
-.. note::
-   Note that groups will only be created on Mumble automatically when a user joins who is in the group.
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| mumble.access_mumble                  | None             | Can Access the Mumble Service                                            |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
 ```
 
 ## ACL configuration

@@ -26,7 +26,7 @@ This option still respects the Open option.
 
 ### Open
 
-When a group is toggled open, users who request to join the group will be immediately added to the group. 
+When a group is toggled open, users who request to join the group will be immediately added to the group.
 
 If the group is not open, their request will have to be approved manually by someone with the group management role, or a group leader of that group.
 

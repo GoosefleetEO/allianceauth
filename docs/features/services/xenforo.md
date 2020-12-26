@@ -1,12 +1,15 @@
 # XenForo
 
 ## Overview
+
 [XenForo](https://xenforo.com/) is a popular paid forum. This guide will assume that you already have XenForo installed with a valid license (please keep in mind that XenForo is not free nor open-source, therefore you need to purchase a license first). If you come across any problems related with the installation of XenForo please contact their support service.
 
 ## Prepare Your Settings
+
 In your auth project's settings file, do the following:
- - Add `'allianceauth.services.modules.xenforo',` to your `INSTALLED_APPS` list
- - Append the following to your local.py settings file:
+
+- Add `'allianceauth.services.modules.xenforo',` to your `INSTALLED_APPS` list
+- Append the following to your local.py settings file:
 
 ```python
 # XenForo Configuration
@@ -39,3 +42,15 @@ The settings you created earlier now need to be filled out.
 `XENFORO_API_KEY` is the API key value you set earlier.
 
 Once these are entered, run migrations and restart Gunicorn and Celery.
+
+## Permissions
+
+To use this service, users will require some of the following.
+
+```eval_rst
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| xenforo.access_xenforo                | None             | Can Access the XenForo Service                                           |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+```

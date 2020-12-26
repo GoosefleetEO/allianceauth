@@ -33,3 +33,20 @@ When you create an autogroup config you will be given the following options:
 - Corp/Alliance name source sets the source of the Corp/Alliance name used in creating the group name. Currently the options are Full name and Ticker.
 
 - Replace spaces allows you to replace spaces in the autogroup name with the value in the Replace spaces with field. This can be blank.
+
+## Permissions
+
+Auto Groups are configured via models in the Admin Interface, a user will require the `Staff` Flag in addition to the following permissions.
+
+```eval_rst
++-------------------------------------------+------------------+----------------+
+| Permission                                | Admin Site       | Auth Site      |
++===========================================+==================+================+
+| eve_autogroups.add_autogroupsconfig	    | Can create model | None.          |
++-------------------------------------------+------------------+----------------+
+| eve_autogroups.change_autogroupsconfig	| Can edit model   | None.          |
++-------------------------------------------+------------------+----------------+
+| eve_autogroups.delete_autogroupsconfig	| Can delete model | None.          |
++-------------------------------------------+------------------+----------------+
+```
+There exists more models that will be automatically created and maintained by this module, they do not require end-user/admin interaction. `managedalliancegroup` `managedcorpgroups`
