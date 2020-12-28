@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-11 03:43+0000\n"
+"POT-Creation-Date: 2020-11-20 05:33+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2020\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
@@ -82,7 +82,7 @@ msgstr "Charaktere"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
 #: allianceauth/hrapplications/templates/hrapplications/view.html:45
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:34
@@ -168,11 +168,11 @@ msgstr ""
 msgid "Unable to authenticate as the selected character."
 msgstr "Authentifizierung mit dem ausgewählten Charakter nicht möglich."
 
-#: allianceauth/authentication/views.py:146
+#: allianceauth/authentication/views.py:151
 msgid "Registration token has expired."
 msgstr "Token zur Registrierung ist abgelaufen."
 
-#: allianceauth/authentication/views.py:201
+#: allianceauth/authentication/views.py:206
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
@@ -180,13 +180,13 @@ msgstr ""
 "Bestätigungsmail gesendet. Bitte folge dem Link in der E-Mail zur "
 "Bestätigung."
 
-#: allianceauth/authentication/views.py:206
+#: allianceauth/authentication/views.py:211
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 "Deine E-Mail Adresse wurde bestätigt. Bitte log Dich ein um fortzufahren."
 
-#: allianceauth/authentication/views.py:211
-msgid "Registraion of new accounts it not allowed at this time."
+#: allianceauth/authentication/views.py:216
+msgid "Registration of new accounts is not allowed at this time."
 msgstr "Registrierung von neuen Konten ist zur Zeit nicht erlaubt."
 
 #: allianceauth/corputils/auth_hooks.py:10
@@ -234,16 +234,16 @@ msgstr "Letzes Update:"
 #: allianceauth/corputils/templates/corputils/search.html:13
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:24
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:109
 msgid "Character"
 msgstr "Charakter"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:76
 #: allianceauth/corputils/templates/corputils/search.html:14
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:28
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:31
 #: allianceauth/hrapplications/templates/hrapplications/management.html:27
 #: allianceauth/hrapplications/templates/hrapplications/management.html:84
 #: allianceauth/hrapplications/templates/hrapplications/management.html:129
@@ -552,36 +552,35 @@ msgstr "Flottenteilnahme registriert."
 msgid "FAT link has expired."
 msgstr "FAT-Link ist abgelaufen."
 
-#: allianceauth/groupmanagement/auth_hooks.py:16
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
+#: allianceauth/groupmanagement/auth_hooks.py:17
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:14
 msgid "Group Management"
 msgstr "Gruppenverwaltung"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:14
 msgid "Audit Log"
 msgstr "Protokoll"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:18
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:20
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:20
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:21
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
 msgid "Back"
 msgstr "Zurück"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:25
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:28
 msgid "Date/Time"
 msgstr "Datum/Uhrzeit"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:26
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:29
 msgid "Requestor"
 msgstr "Antragsteller"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:32
 msgid "Type"
 msgstr "Typ"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:17
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:33
 #: allianceauth/notifications/templates/notifications/list.html:37
 #: allianceauth/notifications/templates/notifications/list.html:69
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:18
@@ -592,11 +591,19 @@ msgstr "Typ"
 msgid "Action"
 msgstr "Aktion"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:31
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:34
 msgid "Actor"
 msgstr "Ausführender"
 
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:47
+msgid "Removed"
+msgstr "Entfernt"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:59
+msgid "All times displayed are EVE/UTC."
+msgstr "Alle angezeigten Zeiten sind EVE/UTC"
+
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:66
 msgid "No entries found for this group."
 msgstr "Keine Einträge für diese Gruppe gefunden."
 
@@ -604,22 +611,24 @@ msgstr "Keine Einträge für diese Gruppe gefunden."
 msgid "Group Members"
 msgstr "Gruppenmitglieder"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:28
-msgid "Portrait"
-msgstr "Portrait"
-
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:31
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "Organization"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:64
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:61
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:78
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:136
+msgid "(unknown)"
+msgstr "(unbekannt)"
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:66
 msgid "Remove from group"
 msgstr "Aus Gruppe entfernen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:76
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:81
 msgid "No group members to list."
 msgstr "Keine Gruppenmitglieder vorhanden."
 
@@ -627,18 +636,18 @@ msgstr "Keine Gruppenmitglieder vorhanden."
 msgid "Groups Membership"
 msgstr "Gruppenmitgliedschaft"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:15
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
 #: allianceauth/templates/allianceauth/side-menu.html:16
 msgid "Groups"
 msgstr "Gruppen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:25
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:16
 msgid "Description"
 msgstr "Beschreibung"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:26
 #: allianceauth/hrapplications/templates/hrapplications/management.html:28
 #: allianceauth/hrapplications/templates/hrapplications/management.html:85
 #: allianceauth/hrapplications/templates/hrapplications/management.html:130
@@ -647,36 +656,36 @@ msgstr "Beschreibung"
 msgid "Status"
 msgstr "Status"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:25
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:27
 msgid "Member Count"
 msgstr "Mitgliederzahl"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:38
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:43
 msgid "Hidden"
 msgstr "Verborgen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:40
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:45
 #: allianceauth/templates/allianceauth/admin-status/overview.html:12
 msgid "Open"
 msgstr "Öffnen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:42
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:47
 msgid "Requestable"
 msgstr "Anfragbar"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:50
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
 msgid "View Members"
 msgstr "Mitglieder ansehen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:60
 msgid "Audit Members"
 msgstr "Mitglieder Protokoll"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:64
 msgid "Copy Direct Join Link"
 msgstr "Direktlink kopieren"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:75
 msgid "No groups to list."
 msgstr "Keine Gruppen vorhanden."
 
@@ -685,19 +694,19 @@ msgstr "Keine Gruppen vorhanden."
 msgid "Available Groups"
 msgstr "Verfügbare Gruppen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:30
 msgid "Leave"
 msgstr "Verlassen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:39
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:40
 msgid "Join"
 msgstr "Beitreten"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:43
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:44
 msgid "Request"
 msgstr "Anfrage"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:58
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:59
 msgid "No groups available."
 msgstr "Keine Gruppen verfügbar"
 
@@ -709,24 +718,24 @@ msgstr "Gruppenverwaltung"
 msgid "Join Requests"
 msgstr "Beitrittsgesuche"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:34
 msgid "Leave Requests"
 msgstr "Austrittsgesuche"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "Gruppen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:84
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
 msgid "Accept"
 msgstr "Akzeptieren"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:146
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "Ablehnen"
@@ -735,19 +744,19 @@ msgstr "Ablehnen"
 msgid "No group add requests."
 msgstr "Keine Gruppenbeitrittsanfragen."
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:155
 msgid "No group leave requests."
 msgstr "Keine Gruppenaustrittsanfragen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:10
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:9
 msgid "Toggle navigation"
 msgstr "Toggle Navigation"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:21
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:20
 msgid "Group Requests"
 msgstr "Gruppenanfragen"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:23
 msgid "Group Membership"
 msgstr "Gruppenmitgliedschaft"
 
@@ -1264,7 +1273,7 @@ msgstr "Flotten Comms:"
 
 #: allianceauth/services/forms.py:9
 msgid "Fleet Type:"
-msgstr "Flottenzeit:"
+msgstr "Flottenart:"
 
 #: allianceauth/services/forms.py:10
 msgid "Ship Priorities:"
@@ -1316,7 +1325,7 @@ msgstr "Discord Konto deaktiviert"
 
 #: allianceauth/services/modules/discord/models.py:227
 msgid ""
-"Your Discord account was disabeled automatically by Auth. If you think this "
+"Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr ""
 "Dein Discord Konto wurde automatisch durch Auth deaktiviert. Wenn Du glaubst"
@@ -2089,3 +2098,6 @@ msgstr "Neuen Timer hinzugefügt in %(system)s um %(time)s."
 #: allianceauth/timerboard/views.py:83
 msgid "Saved changes to the timer."
 msgstr "Änderungen am Timer gespeichert"
+
+#~ msgid "Portrait"
+#~ msgstr "Portrait"

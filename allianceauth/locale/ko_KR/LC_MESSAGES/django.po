@@ -5,18 +5,19 @@
 # 
 # Translators:
 # None None <khd1226543@gmail.com>, 2020
-# Olgeda Choi <undead.choi@gmail.com>, 2020
 # Seowon Jung <seowon@hawaii.edu>, 2020
+# Olgeda Choi <undead.choi@gmail.com>, 2020
 # Lahty <js03js70@gmail.com>, 2020
+# Joel Falknau <ozirascal@gmail.com>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-11 03:43+0000\n"
+"POT-Creation-Date: 2020-11-20 05:33+0000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Lahty <js03js70@gmail.com>, 2020\n"
+"Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/alliance-auth/teams/107430/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -83,7 +84,7 @@ msgstr "캐릭터"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:129
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:22
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
 #: allianceauth/hrapplications/templates/hrapplications/view.html:45
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:34
@@ -163,22 +164,22 @@ msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 추가된 계
 msgid "Unable to authenticate as the selected character."
 msgstr "선택한 캐릭터로 인증을 수행할 수 없음"
 
-#: allianceauth/authentication/views.py:146
+#: allianceauth/authentication/views.py:151
 msgid "Registration token has expired."
 msgstr "등록토큰 만료"
 
-#: allianceauth/authentication/views.py:201
+#: allianceauth/authentication/views.py:206
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "확인 메일 전송됨. 다음 링크를 눌러 이메일 주소를 확인하세요."
 
-#: allianceauth/authentication/views.py:206
+#: allianceauth/authentication/views.py:211
 msgid "Confirmed your email address. Please login to continue."
 msgstr "이메일 주소가 확인되었습니다. 로그인 해주세요."
 
-#: allianceauth/authentication/views.py:211
-msgid "Registraion of new accounts it not allowed at this time."
+#: allianceauth/authentication/views.py:216
+msgid "Registration of new accounts is not allowed at this time."
 msgstr "현재 새로운 계정 등록은 받지않습니다."
 
 #: allianceauth/corputils/auth_hooks.py:10
@@ -226,16 +227,16 @@ msgstr "마지막 업데이트"
 #: allianceauth/corputils/templates/corputils/search.html:13
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:24
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:28
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:27
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:51
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:109
 msgid "Character"
 msgstr "캐릭터"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:76
 #: allianceauth/corputils/templates/corputils/search.html:14
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:28
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:31
 #: allianceauth/hrapplications/templates/hrapplications/management.html:27
 #: allianceauth/hrapplications/templates/hrapplications/management.html:84
 #: allianceauth/hrapplications/templates/hrapplications/management.html:129
@@ -542,36 +543,35 @@ msgstr "플릿 참여 등록됨"
 msgid "FAT link has expired."
 msgstr "플릿활동추적 링크 기한만료"
 
-#: allianceauth/groupmanagement/auth_hooks.py:16
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:15
+#: allianceauth/groupmanagement/auth_hooks.py:17
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:14
 msgid "Group Management"
 msgstr "그룹 관리"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:14
 msgid "Audit Log"
 msgstr "감사 기록"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:18
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:20
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:20
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:21
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
 msgid "Back"
 msgstr "돌아가기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:25
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:28
 msgid "Date/Time"
 msgstr "날짜/시간"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:26
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:29
 msgid "Requestor"
 msgstr "요청인"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:32
 msgid "Type"
 msgstr "타입"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:17
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:33
 #: allianceauth/notifications/templates/notifications/list.html:37
 #: allianceauth/notifications/templates/notifications/list.html:69
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:18
@@ -582,11 +582,19 @@ msgstr "타입"
 msgid "Action"
 msgstr "활동"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:31
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:34
 msgid "Actor"
 msgstr "활동한 사람"
 
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:47
+msgid "Removed"
+msgstr ""
+
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:59
+msgid "All times displayed are EVE/UTC."
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:66
 msgid "No entries found for this group."
 msgstr "이 그룹에는 항목 없음"
 
@@ -594,22 +602,24 @@ msgstr "이 그룹에는 항목 없음"
 msgid "Group Members"
 msgstr "그룹 멤버"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:28
-msgid "Portrait"
-msgstr "포트레잇"
-
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:30
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:31
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:52
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:110
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:23
 msgid "Organization"
 msgstr "조직"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:64
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:61
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:78
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:136
+msgid "(unknown)"
+msgstr ""
+
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:66
 msgid "Remove from group"
 msgstr "그룹에서 제거"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:76
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:81
 msgid "No group members to list."
 msgstr "목록에 그룹 멤버 없음"
 
@@ -617,18 +627,18 @@ msgstr "목록에 그룹 멤버 없음"
 msgid "Groups Membership"
 msgstr "그룹 멤버쉽"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:14
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:15
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:40
 #: allianceauth/templates/allianceauth/side-menu.html:16
 msgid "Groups"
 msgstr "그룹"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:23
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:25
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:16
 msgid "Description"
 msgstr "설명"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:26
 #: allianceauth/hrapplications/templates/hrapplications/management.html:28
 #: allianceauth/hrapplications/templates/hrapplications/management.html:85
 #: allianceauth/hrapplications/templates/hrapplications/management.html:130
@@ -637,36 +647,36 @@ msgstr "설명"
 msgid "Status"
 msgstr "상태"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:25
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:27
 msgid "Member Count"
 msgstr "멤버 수"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:38
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:43
 msgid "Hidden"
 msgstr "숨김"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:40
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:45
 #: allianceauth/templates/allianceauth/admin-status/overview.html:12
 msgid "Open"
 msgstr "열기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:42
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:47
 msgid "Requestable"
 msgstr "요청 가능"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:50
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
 msgid "View Members"
 msgstr "멤버 보기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:53
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:60
 msgid "Audit Members"
 msgstr "멤버 검사"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:56
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:64
 msgid "Copy Direct Join Link"
 msgstr "직접 참여 링크 복사"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:68
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:75
 msgid "No groups to list."
 msgstr "목록에 그룹 없음"
 
@@ -675,19 +685,19 @@ msgstr "목록에 그룹 없음"
 msgid "Available Groups"
 msgstr "사용 가능한 그룹"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:30
 msgid "Leave"
 msgstr "떠나기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:39
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:40
 msgid "Join"
 msgstr "참여하기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:43
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:44
 msgid "Request"
 msgstr "요청하기"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:58
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:59
 msgid "No groups available."
 msgstr "사용 가능한 그룹 없음."
 
@@ -699,24 +709,24 @@ msgstr "그룹 관리"
 msgid "Join Requests"
 msgstr "가입 요청"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:33
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:34
 msgid "Leave Requests"
 msgstr "탈퇴 요청"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:53
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:111
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 #: allianceauth/services/modules/openfire/forms.py:6
 msgid "Group"
 msgstr "그룹"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:85
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:144
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:84
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:142
 msgid "Accept"
 msgstr "수락"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:88
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:147
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:146
 #: allianceauth/hrapplications/templates/hrapplications/view.html:85
 msgid "Reject"
 msgstr "거절"
@@ -725,19 +735,19 @@ msgstr "거절"
 msgid "No group add requests."
 msgstr "가입 요청 없음"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:156
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:155
 msgid "No group leave requests."
 msgstr "탈퇴 요청 없음"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:10
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:9
 msgid "Toggle navigation"
 msgstr "네비게이션 전환"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:21
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:20
 msgid "Group Requests"
 msgstr "그룹 요청"
 
-#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:24
+#: allianceauth/groupmanagement/templates/groupmanagement/menu.html:23
 msgid "Group Membership"
 msgstr "그룹 멤버쉽"
 
@@ -1302,7 +1312,7 @@ msgstr "디스코드 계정 비활성화"
 
 #: allianceauth/services/modules/discord/models.py:227
 msgid ""
-"Your Discord account was disabeled automatically by Auth. If you think this "
+"Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr "Auth에 의해 자동으로 디스코드 계정이 비활성화됐습니다. 원치 않는 사항일 경우, 관리자에게 문의해 주세요."
 
@@ -2057,3 +2067,6 @@ msgstr "%(time)s 에 있을 %(system)s 타이머를 추가했습니다."
 #: allianceauth/timerboard/views.py:83
 msgid "Saved changes to the timer."
 msgstr "타이머 변경사항이 저장되었습니다."
+
+#~ msgid "Portrait"
+#~ msgstr "포트레잇"
