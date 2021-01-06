@@ -356,6 +356,9 @@ def group_request_add(request, group_id):
     if group.authgroup.open:
         logger.info("%s joining %s as is an open group" % (request.user, group))
         request.user.groups.add(group)
+        request_info = request.user.username + ":" + group.name
+        log = RequestLog(request_type=False, group=group, request_info=request_info, action=1, request_actor=request.user)
+        log.save()
         return redirect("groupmanagement:groups")
     req = GroupRequest.objects.filter(user=request.user, group=group)
     if len(req) > 0:
@@ -389,6 +392,9 @@ def group_request_leave(request, group_id):
         return redirect('groupmanagement:groups')
     if group.authgroup.open:
         logger.info("%s leaving %s as is an open group" % (request.user, group))
+        request_info = request.user.username + ":" + group.name
+        log = RequestLog(request_type=True, group=group, request_info=request_info, action=1, request_actor=request.user)
+        log.save()
         request.user.groups.remove(group)
         return redirect("groupmanagement:groups")
     req = GroupRequest.objects.filter(user=request.user, group=group)
@@ -398,6 +404,9 @@ def group_request_leave(request, group_id):
         return redirect("groupmanagement:groups")
     if getattr(settings, 'AUTO_LEAVE', False):
         logger.info("%s leaving joinable group %s due to auto_leave" % (request.user, group))
+        request_info = request.user.username + ":" + group.name
+        log = RequestLog(request_type=True, group=group, request_info=request_info, action=1, request_actor=request.user)
+        log.save()
         request.user.groups.remove(group)
         return redirect('groupmanagement:groups')
     grouprequest = GroupRequest()

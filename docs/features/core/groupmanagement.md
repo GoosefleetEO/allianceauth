@@ -26,11 +26,6 @@ These logs contain the Date and Time the action was taken (in EVE/UTC), the user
 
 ![Audit Log Example](/_static/images/features/core/groupmanagement/group_audit_log.png)
 
-```eval_rst
-.. note::
-    There is no tracking for "Open" groups as members are able to freely join/leave these groups.
-```
-
 ## Group Leaders
 
 Group leaders have the same abilities as users with the `group_management` permission, _however_, they will only be able to:
