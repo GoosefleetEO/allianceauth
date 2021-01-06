@@ -1,17 +1,21 @@
 # TeamSpeak 3
 
 ## Overview
+
 TeamSpeak3 is the most popular VOIP program for gamers.
 
 But have you considered using Mumble? Not only is it free, but it has features and performance far superior to Teamspeak3.
 
 ## Setup
+
 Sticking with TS3? Alright, I tried.
 
 ### Prepare Your Settings
+
 In your auth project's settings file, do the following:
- - Add `'allianceauth.services.modules.teamspeak3',` to your `INSTALLED_APPS` list
- - Append the following to the bottom of the settings file:
+
+- Add `'allianceauth.services.modules.teamspeak3',` to your `INSTALLED_APPS` list
+- Append the following to the bottom of the settings file:
 
 ```python
 # Teamspeak3 Configuration
@@ -29,51 +33,70 @@ CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
 ```
 
 ### Download Installer
+
 To install we need a copy of the server. You can find the latest version from [this dl server](http://dl.4players.de/ts/releases/) (I’d recommend getting the latest stable version – find this version number from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the Linux version.
 
 Download the server, replacing the link with the link you got earlier.
 
-    http://dl.4players.de/ts/releases/3.1.1/teamspeak3-server_linux_amd64-3.1.1.tar.bz2
+```url
+http://dl.4players.de/ts/releases/3.13.2/teamspeak3-server_linux_amd64-3.13.2.tar.bz2
+```
 
 Now we need to extract the file.
 
+```bash
     tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
+```
 
 ### Create User
+
 TeamSpeak needs its own user.
 
-    adduser --disabled-login teamspeak
+```bash
+adduser --disabled-login teamspeak
+```
 
 ### Install Binary
+
 Now we move the server binary somewhere more accessible and change its ownership to the new user.
 
-    mv teamspeak3-server_linux_amd64 /usr/local/teamspeak
-    chown -R teamspeak:teamspeak /usr/local/teamspeak
+```bash
+mv teamspeak3-server_linux_amd64 /usr/local/teamspeak
+chown -R teamspeak:teamspeak /usr/local/teamspeak
+```
 
 ### Startup
+
 Now we generate a startup script so TeamSpeak comes up with the server.
 
-    ln -s /usr/local/teamspeak/ts3server_startscript.sh /etc/init.d/teamspeak
-    update-rc.d teamspeak defaults
+```bash
+ln -s /usr/local/teamspeak/ts3server_startscript.sh /etc/init.d/teamspeak
+update-rc.d teamspeak defaults
+```
 
 Finally we start the server.
 
-    service teamspeak start
+```bash
+service teamspeak start
+```
 
 ### Update Settings
+
 The console will spit out a block of text. If it does not appear, it can be found with `service teamspeak status`. **SAVE THIS**.
 
 If you plan on claiming the ServerAdmin token, do so with a different TeamSpeak client profile than the one used for your auth account, or you will lose your admin status.
 
 Edit the settings you added to your auth project's settings file earlier, entering the following:
- - `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from that block of text it just spat out (usually `serveradmin`)
- - `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` from that block of text it just spat out
- - `TEAMSPEAK_VIRTUAL_SERVER` is the virtual server ID of the server to be managed - it will only ever not be 1 if your server is hosted by a professional company
- - `TEAMSPEAK3_PUBLIC_URL` is the public address of your TeamSpeak server. Do not include any leading http:// or teamspeak://
+
+- `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from that block of text it just spat out (usually `serveradmin`)
+- `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` from that block of text it just spat out
+- `TEAMSPEAK_VIRTUAL_SERVER` is the virtual server ID of the server to be managed - it will only ever not be 1 if your server is hosted by a professional company
+- `TEAMSPEAK3_PUBLIC_URL` is the public address of your TeamSpeak server. Do not include any leading http:// or teamspeak://
 
 Once settings are entered, run migrations and restart Gunicorn and Celery.
 
 ### Generate User Account
+
 And now we can generate ourselves a user account. Navigate to the services in Alliance Auth for your user account and press the checkmark for TeamSpeak 3.
 
 Click the URL provided to automatically connect to our server. It will prompt you to redeem the serveradmin token, enter the `token` from startup.
@@ -95,14 +118,19 @@ Using the advanced permissions editor, ensure the `Guest` group has the permissi
 To enable advanced permissions, on your client go to the `Tools` menu, `Application`, and under the `Misc` section, tick `Advanced permission system`
 
 ### TS group models not populating on admin site
+
 The method which populates these runs every 30 minutes. To populate manually, start a django shell:
 
-    python manage.py shell
+```bash
+python manage.py shell
+```
 
 And execute the update:
 
-    from allianceauth.services.modules.teamspeak3.tasks import Teamspeak3Tasks
-    Teamspeak3Tasks.run_ts3_group_update()
+```python
+from allianceauth.services.modules.teamspeak3.tasks import Teamspeak3Tasks
+Teamspeak3Tasks.run_ts3_group_update()
+```
 
 Ensure that command does not return an error.
 
@@ -129,3 +157,23 @@ The serverquery account login specified in local.py is incorrect. Please verify 
 ### `2568 insufficient client permissions`
 
 This usually occurs if you've created a separate serverquery user to use with auth. It has not been assigned sufficient permissions to complete all the tasks required of it. The full list of required permissions is not known, so assign liberally.
+
+## Permissions
+
+To use and configure this service, users will require some of the following.
+
+```eval_rst
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| teamspeak.access_teamspeak            | None             | Can Access the Discord Service                                           |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| teamspeak.add_authts                  | Can Add Model    | None                                                                     |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| teamspeak.change_authts               | Can Change Model | None                                                                     |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| teamspeak.delete_authts               | Can Delete Model | None                                                                     |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| teamspeak.view_authts                 | Can View Model   | None                                                                     |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+```

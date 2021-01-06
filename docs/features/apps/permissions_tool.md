@@ -37,3 +37,15 @@ The permissions audit page will give you an overview of all the users who have a
 ![permissions audit](/_static/images/features/apps/permissions_tool/audit.png)
 
 Please note that users may appear multiple times if this permission is granted via multiple sources.
+
+## Permissions
+
+To use this feature, users will require some of the following.
+
+```eval_rst
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| permissions_tool.audit_permissions    | None             | Can view the Permissions Audit tool                                      |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+```

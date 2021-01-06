@@ -102,11 +102,6 @@ To use this feature, users will require some of the following:
 +---------------------------------------+------------------+----------------------------------------------------+
 | corpstats.add_corpstats               | Can create model | Can add new corpstats using an SSO token.          |
 +---------------------------------------+------------------+----------------------------------------------------+
-| corpstats.change_corpstats            | Can edit model   | None.                                              |
-+---------------------------------------+------------------+----------------------------------------------------+
-| corpstats.remove_corpstats            | Can delete model | None.                                              |
-+---------------------------------------+------------------+----------------------------------------------------+
-
 ```
 
 Users who add a Corp Stats with their token will be granted permissions to view it regardless of the above permissions. View permissions are interpreted in the "OR" sense: a user can view their corporation's Corp Stats without the `view_corp_corpstats` permission if they have the `view_alliance_corpstats` permission, same idea for their state. Note that these evaluate against the user's main character.

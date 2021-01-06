@@ -1,12 +1,15 @@
 # SMF
 
 ## Overview
+
 SMF is a free PHP-based forum.
 
 ## Dependencies
+
 SMF requires PHP installed in your web server. Apache has `mod_php`, NGINX requires `php-fpm`. More details can be found in the [SMF requirements page.](https://download.simplemachines.org/requirements.php)
 
 ## Prepare Your Settings
+
 In your auth project's settings file, do the following:
  - Add `'allianceauth.services.modules.smf',` to your `INSTALLED_APPS` list
  - Append the following to the bottom of the settings file:
@@ -25,7 +28,9 @@ DATABASES['smf'] = {
 ```
 
 ## Setup
+
 ### Download SMF
+
 Using your browser, you can download the latest version of SMF to your desktop computer. All SMF downloads can be found at SMF Downloads. The latest recommended version will always be available at http://www.simplemachines.org/download/index.php/latest/install/. Retrieve the file location from the hyperlinked box icon for the zip full install,  depending on your browser you may have a Copy Link or similar option in your right click menu.
 
 
@@ -53,6 +58,7 @@ Nginx: `chown -R nginx:nginx /var/www/forums`
 ```
 
 ### Database Preparation
+
 SMF needs a database. Create one:
 
     mysql -u root -p
@@ -63,6 +69,7 @@ SMF needs a database. Create one:
 Enter the database information into the `DATABASES['smf']` section of your auth project's settings file.
 
 ### Web Server Configuration
+
 Your web server needs to be configured to serve SMF.
 
 A minimal Apache config might look like:
@@ -96,6 +103,7 @@ A minimal Nginx config might look like:
 Enter the web address to your forums into the `SMF_URL` setting in your auth project's settings file.
 
 ### Web Install
+
 Navigate to your forums address where you will be presented with an installer.
 
 Click on the `Install` tab.
@@ -103,16 +111,29 @@ Click on the `Install` tab.
 All the requirements should be met. Press `Start Install`.
 
 Under Database Settings, set the following:
- - Database Type is `MySQL`
- - Database Server Hostname is `127.0.0.1`
- - Database Server Port is left blank
- - Database Name is `alliance_smf`
- - Database Username is your auth MySQL user, usually `allianceserver`
- - Database Password is this user’s password
+- Database Type is `MySQL`
+- Database Server Hostname is `127.0.0.1`
+- Database Server Port is left blank
+- Database Name is `alliance_smf`
+- Database Username is your auth MySQL user, usually `allianceserver`
+- Database Password is this user’s password
 
 If you use a table prefix other than the standard `smf_` you need to add an additional setting to your auth project's settings file, `SMF_TABLE_PREFIX = ''`, and enter the prefix.
 
 Follow the directions in the installer.
 
 ### Preparing Auth
+
 Once settings are entered, apply migrations and restart Gunicorn and Celery.
+
+## Permissions
+
+To use this service, users will require some of the following.
+
+```eval_rst
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| smf.access_smf                        | None             | Can Access the SMF Service                                               |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+```

@@ -17,20 +17,26 @@ DISCOURSE_SSO_SECRET = ''
 
 ## Install Docker
 
-    wget -qO- https://get.docker.io/ | sh
+```bash
+wget -qO- https://get.docker.io/ | sh
+```
 
 ## Install Discourse
 
 ### Download Discourse
 
-    mkdir /var/discourse
-    git clone https://github.com/discourse/discourse_docker.git /var/discourse
+```bash
+mkdir /var/discourse
+git clone https://github.com/discourse/discourse_docker.git /var/discourse
+```
 
 ### Configure
 
-    cd /var/discourse
-    cp samples/standalone.yml containers/app.yml
-    nano containers/app.yml
+```bash
+cd /var/discourse
+cp samples/standalone.yml containers/app.yml
+nano containers/app.yml
+```
 
 Change the following:
 
@@ -40,38 +46,50 @@ Change the following:
 
 To install behind Apache/Nginx, look for this section:
 
-    ...
-    ## which TCP/IP ports should this container expose?
-    expose:
-      - "80:80"   # fwd host port 80   to container port 80 (http)
-    ...
+```ini
+...
+## which TCP/IP ports should this container expose?
+expose:
+    - "80:80"   # fwd host port 80   to container port 80 (http)
+...
+```
 
 Change it to this:
 
-    ...
-    ## which TCP/IP ports should this container expose?
-    expose:
-      - "7890:80"   # fwd host port 7890   to container port 80 (http)
-    ...
+```ini
+...
+## which TCP/IP ports should this container expose?
+expose:
+    - "7890:80"   # fwd host port 7890   to container port 80 (http)
+...
+```
 
 Or any other port will do, if taken. Remember this number.
 
 ### Build and launch
 
-    nano /etc/default/docker
+```bash
+nano /etc/default/docker
+```
 
 Uncomment this line:
 
+```ini
     DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
+```
 
 Restart Docker:
 
+```bash
     service docker restart
+```
 
 Now build:
 
+```bash
     ./launcher bootstrap app
     ./launcher start app
+```
 
 ## Web Server Configuration
 
@@ -79,22 +97,26 @@ You will need to configure your web server to proxy requests to Discourse.
 
 A minimal Apache config might look like:
 
-    <VirtualHost *:80>
-        ServerName discourse.example.com
-        ProxyPass / http://0.0.0.0:7890/
-        ProxyPassReverse / http://0.0.0.0:7890/
-    </VirtualHost>
+```ini
+<VirtualHost *:80>
+    ServerName discourse.example.com
+    ProxyPass / http://0.0.0.0:7890/
+    ProxyPassReverse / http://0.0.0.0:7890/
+</VirtualHost>
+```
 
 A minimal Nginx config might look like:
 
-    server {
-        listen 80;
-        server_name discourse.example.com;
-        location / {
-            include proxy_params;
-            proxy_pass http://127.0.0.1:7890;
-        }
+```ini
+server {
+    listen 80;
+    server_name discourse.example.com;
+    location / {
+        include proxy_params;
+        proxy_pass http://127.0.0.1:7890;
     }
+}
+```
 
 ## Configure API
 
@@ -102,8 +124,10 @@ A minimal Nginx config might look like:
 
 From the `/var/discourse` directory,
 
-    ./launcher enter app
-    rake admin:create
+```bash
+./launcher enter app
+rake admin:create
+```
 
 Follow prompts, being sure to answer `y` when asked to allow admin privileges.
 
@@ -128,3 +152,15 @@ Navigate to `discourse.example.com` and log in. Back to the admin site, scroll d
 Save, now set `DISCOURSE_SSO_SECRET` in your auth project's settings file to the secure key you just put in Discourse.
 
 Finally run migrations and restart Gunicorn and Celery.
+
+## Permissions
+
+To use this service, users will require some of the following.
+
+```eval_rst
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+| Permission                            | Admin Site       | Auth Site                                                                |
++=======================================+==================+==========================================================================+
+| discourse.access_discourse            | None             | Can Access the Discourse Service                                         |
++---------------------------------------+------------------+--------------------------------------------------------------------------+
+```
