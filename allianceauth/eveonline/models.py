@@ -82,6 +82,7 @@ class EveCorporationInfo(models.Model):
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
+    ceo_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     alliance = models.ForeignKey(
         EveAllianceInfo, blank=True, null=True, on_delete=models.SET_NULL
     )
@@ -89,10 +90,16 @@ class EveCorporationInfo(models.Model):
     objects = EveCorporationManager()
     provider = EveCorporationProviderManager()
 
+    class Meta:
+        indexes = [
+                    models.Index(fields=['ceo_id',]),
+                  ]
+
     def update_corporation(self, corp: providers.Corporation = None):
         if corp is None:
             corp = self.provider.get_corporation(self.corporation_id)
         self.member_count = corp.members
+        self.ceo_id = corp.ceo_id
         try:
             self.alliance = EveAllianceInfo.objects.get(alliance_id=corp.alliance_id)
         except EveAllianceInfo.DoesNotExist:
