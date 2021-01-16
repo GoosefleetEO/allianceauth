@@ -6,8 +6,9 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
-from django.urls import reverse, reverse_lazy
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from allianceauth.eveonline.models import EveCharacter
