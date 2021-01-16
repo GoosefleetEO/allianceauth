@@ -104,8 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'allianceauth.notifications.context_processors.user_notification_count',                
+                'django.template.context_processors.tz',                
                 'allianceauth.context_processors.auth_settings',
             ],
         },
@@ -172,6 +171,8 @@ CACHES = {
         }
     }
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 DEBUG = True
 ALLOWED_HOSTS = ['*']
