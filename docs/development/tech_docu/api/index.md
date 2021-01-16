@@ -9,5 +9,6 @@ To reduce redundancy and help speed up development we encourage developers to ut
     esi
     evelinks
     eveonline
+    notifications
     testutils
 ```

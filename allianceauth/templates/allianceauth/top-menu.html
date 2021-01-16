@@ -20,17 +20,11 @@
                     <li>
                         {% include 'allianceauth/night-toggle.html' %}
                     </li>
-                {% if notifications %}
-                    <li class="{% navactive request 'notifications:' %}">
-                        <a href="{% url 'notifications:list' %}">Notifications
-                            <span class="badge">{{ notifications }}</span>
-                        </a>
+                    <li 
+                        class="{% navactive request 'notifications:' %}" id="menu_item_notifications"
+                    >
+                    {% include 'allianceauth/notifications_menu_item.html' %}
                     </li>
-                {% else %}
-                    <li><a href="{% url 'notifications:list' %}">
-                        <i class="far fa-bell"></i></a>
-                    </li>
-                {% endif %}
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">{% trans "Admin" %}</a></li>
@@ -64,3 +58,4 @@
         </div>
     </div>
 </nav>
+
