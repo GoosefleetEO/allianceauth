@@ -25,6 +25,11 @@ The development environment consists of the following components:
 
 We will use the build-in Django development webserver, so we don't need to setup a WSGI server or a web server.
 
+```eval_rst
+.. note::
+   This setup works with both WSL 1 and WSL 2. However, due to the significantly better performance we recommend WSL 2.
+```
+
 ## Requirement
 
 The only requirement is a PC with Windows 10 and Internet connection in order to download the additional software components.
@@ -361,8 +366,7 @@ Here is an example debug config for Celery:
     "module": "celery",
     "cwd": "${workspaceFolder}/myauth",
     "console": "integratedTerminal",
-    "args": [
-        "-E",
+    "args": [        
         "-A",
         "myauth",
         "worker",
@@ -371,7 +375,8 @@ Here is an example debug config for Celery:
         "-P",
         "solo",
     ],
-    "django": true
+    "django": true,
+    "justMyCode": true,
 },
 ```
 
@@ -386,15 +391,14 @@ Finally it makes sense to have a dedicated debug config for running unit tests. 
     "request": "launch",
     "program": "${workspaceFolder}/myauth/manage.py",
     "args": [
-        "test",
-        "-v 2",
+        "test",        
         "--keepdb",
         "--debug-mode",
         "--failfast",
         "example",
     ],
-
-    "django": true
+    "django": true,
+    "justMyCode": true
 },
 ```
 
@@ -416,13 +420,31 @@ Finally you may also want to have a debug config to debug a non-Django Python sc
 
 ## Additional tools
 
-The following additional tools are very helpful when developing for AA.
+The following additional tools are very helpful when developing for AA with VS Code:
+
+### Pylance
+
+Pylance is an extension that works alongside Python in Visual Studio Code to provide performant language support: [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
 
 ### Code Spell Checker
 
-Typos in your user facing comments can be quite embarrassing. This spell checker helps you avoid them.
+Typos in your user facing comments can be quite embarrassing. This spell checker helps you avoid them: [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
-Install from here: [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+### markdownlint
+
+Extension for Visual Studio Code - Markdown linting and style checking for Visual Studio Code: [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+
+### GitLens
+
+Extension for Visual Studio Code - Supercharge the Git capabilities built into Visual Studio Code: [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
+
+### RST preview
+
+A VS Code extension to preview restructured text and provide syntax highlighting: [RST Preview](https://marketplace.visualstudio.com/items?itemName=tht13.rst-vscode)
+
+### Django Template
+
+This extension adds language colorization support and user snippets for the Django template language to VS Code: [Django Template](https://marketplace.visualstudio.com/items?itemName=bibhasdn.django-html)
 
 ### DBeaver
 
