@@ -42,11 +42,12 @@ Auto Groups are configured via models in the Admin Interface, a user will requir
 +-------------------------------------------+------------------+----------------+
 | Permission                                | Admin Site       | Auth Site      |
 +===========================================+==================+================+
-| eve_autogroups.add_autogroupsconfig	    | Can create model | None.          |
+| eve_autogroups.add_autogroupsconfig       | Can create model | None.          |
 +-------------------------------------------+------------------+----------------+
-| eve_autogroups.change_autogroupsconfig	| Can edit model   | None.          |
+| eve_autogroups.change_autogroupsconfig    | Can edit model   | None.          |
 +-------------------------------------------+------------------+----------------+
-| eve_autogroups.delete_autogroupsconfig	| Can delete model | None.          |
+| eve_autogroups.delete_autogroupsconfig    | Can delete model | None.          |
 +-------------------------------------------+------------------+----------------+
 ```
+
 There exists more models that will be automatically created and maintained by this module, they do not require end-user/admin interaction. `managedalliancegroup` `managedcorpgroups`

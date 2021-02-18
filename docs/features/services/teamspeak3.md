@@ -38,14 +38,14 @@ To install we need a copy of the server. You can find the latest version from [t
 
 Download the server, replacing the link with the link you got earlier.
 
-```url
+```text
 http://dl.4players.de/ts/releases/3.13.2/teamspeak3-server_linux_amd64-3.13.2.tar.bz2
 ```
 
 Now we need to extract the file.
 
 ```bash
-    tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
+tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
 ```
 
 ### Create User

@@ -14,7 +14,7 @@ models
 ===========
 
 .. autoclass:: allianceauth.notifications.models.Notification
-    :members: view, set_level, LEVEL_CHOICES
+    :members: LEVEL_CHOICES, mark_viewed, set_level
     :undoc-members:
 
 managers
