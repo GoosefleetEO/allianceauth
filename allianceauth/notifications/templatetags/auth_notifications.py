@@ -33,10 +33,8 @@ def user_unread_notification_count(user: object) -> int:
 
 @register.simple_tag
 def notifications_refresh_time() -> int: 
-    refresh_time = getattr(settings, 'NOTIFICATIONS_REFRESH_TIME', None)
-    if (
-        refresh_time is None or not isinstance(refresh_time, int) or refresh_time < 0
-    ):
+    refresh_time = getattr(settings, 'NOTIFICATIONS_REFRESH_TIME', Notification.NOTIFICATIONS_REFRESH_TIME_DEFAULT)
+    if (not isinstance(refresh_time, int) or refresh_time < 0):
         logger.warning('NOTIFICATIONS_REFRESH_TIME setting is invalid. Using default.')
         refresh_time = Notification.NOTIFICATIONS_REFRESH_TIME_DEFAULT
 
