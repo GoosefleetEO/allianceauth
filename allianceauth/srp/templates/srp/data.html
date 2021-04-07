@@ -10,6 +10,9 @@
     {% include 'bundles/x-editable.css.html' %}
   <link href="{% static 'css/checkbox.css' %}" rel="stylesheet" type="text/css">
   <style>
+  .copy-text-fa-icon:hover {
+    cursor: pointer;
+  }
   .radio label, .checkbox label {
       padding-left: 10px;
   }
@@ -109,7 +112,8 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                             {{ srpfleetrequest.character.alliance.alliance_ticker }}
                                         {% endif %}
                                         [{{ srpfleetrequest.character.corporation.corporation_ticker }}]
-                                        {{ srpfleetrequest.character.character_name }}
+                                        {{ srpfleetrequest.character.character_name }}&nbsp;<i class="copy-text-fa-icon far fa-copy" data-clipboard-text="{{ srpfleetrequest.character.character_name }}"></i>
+                                        </span>
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ srpfleetrequest.killboard_link }}"
@@ -182,7 +186,24 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
     {% include 'bundles/datatables-js.html' %}
     {% include 'bundles/x-editable-js.html' %}
     {% include 'bundles/moment-js.html' %}
-{% endblock %}
+    {% include 'bundles/clipboard-js.html' %}
+    
+    <script>
+        var clipboard = new ClipboardJS('.copy-text-fa-icon');
+        clipboard.on('success', function (e) {
+        console.info('Action:', e.action);
+        console.info('Text:', e.text);
+        console.info('Trigger:', e.trigger);
+
+        e.clearSelection();
+        });
+
+        clipboard.on('error', function (e) {
+        console.error('Action:', e.action);
+        console.error('Trigger:', e.trigger);
+        });
+    </script>
+{% endblock extra_javascript %}
 
 {% block extra_script %}
   $(document).ready(function() {
