@@ -22,7 +22,7 @@ install_requires = [
     'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once>=2.0.1',
 
-    'django>=3.1.1,<4.0.0',
+    'django>=3.1.1,<3.2.0',
     'django-bootstrap-form',
     'django-registration>=3.1',
     'django-sortedm2m',
@@ -71,7 +71,7 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 2.2',
+        'Framework :: Django :: 3.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX :: Linux',
