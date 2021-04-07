@@ -1,3 +1,5 @@
+import re
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,6 +23,11 @@ class SrpFleetUserRequestForm(forms.Form):
         data = self.cleaned_data['killboard_link']
         if "zkillboard.com" not in data:
             raise forms.ValidationError(_("Invalid Link. Please use zKillboard.com"))
+
+        if not re.match(r"http[s]?://zkillboard\.com/kill/\d+\/", data):
+            raise forms.ValidationError(
+                _("Invalid Link. Please post a direct link to a killmail.")
+            )
         return data
 
 
