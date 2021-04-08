@@ -64,6 +64,21 @@ test-3.8-core:
     reports:
       cobertura: coverage.xml
 
+test-3.9-core:
+  image: python:3.9-buster
+  script:  
+  - tox -e py39-core
+  before_script:
+  - apt-get update && apt-get install redis-server -y
+  - redis-server --daemonize yes
+  - redis-cli ping
+  - python -V
+  - pip install wheel tox
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+
 test-3.6-all:
   image: python:3.6-buster
   script:  
@@ -109,9 +124,24 @@ test-3.8-all:
     reports:
       cobertura: coverage.xml
 
+test-3.9-all:
+  image: python:3.9-buster
+  script:  
+  - tox -e py39-all
+  before_script:
+  - apt-get update && apt-get install redis-server -y
+  - redis-server --daemonize yes
+  - redis-cli ping
+  - python -V
+  - pip install wheel tox
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+
 deploy_production:
   stage: deploy
-  image: python:3.8-buster
+  image: python:3.9-buster
 
   before_script:
     - pip install twine wheel
