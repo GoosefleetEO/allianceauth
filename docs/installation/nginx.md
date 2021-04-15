@@ -69,6 +69,10 @@ server {
         autoindex off;
     }
 
+    location /robots.txt {
+        alias /var/www/myauth/static/robots.txt;
+    }
+
     # Gunicorn config goes below
     location / {
         include proxy_params;

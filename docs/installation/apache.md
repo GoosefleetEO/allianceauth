@@ -45,17 +45,25 @@ Place your virtual host configuration in the appropriate section within `/etc/ht
 ```
 <VirtualHost *:80>
         ServerName auth.example.com
-
+    
         ProxyPassMatch ^/static !
+        ProxyPassMatch ^/robots.txt !
+
         ProxyPass / http://127.0.0.1:8000/
         ProxyPassReverse / http://127.0.0.1:8000/
         ProxyPreserveHost On
 
         Alias "/static" "/var/www/myauth/static"
+        Alias "/robots.txt" "/var/www/myauth/static/robots.txt"
+
         <Directory "/var/www/myauth/static">
             Require all granted
         </Directory>
 
+        <Location "/robots.txt">
+            SetHandler None
+            Require all granted
+        </Location>
 </VirtualHost>
 ```
 
