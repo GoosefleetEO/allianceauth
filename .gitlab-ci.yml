@@ -7,28 +7,28 @@ include:
 - template: Dependency-Scanning.gitlab-ci.yml
 - template: Security/SAST.gitlab-ci.yml
 
+before_script:
+  - apt-get update && apt-get install redis-server -y
+  - redis-server --daemonize yes
+  - python -V
+  - pip install wheel tox
+
 sast:
   stage: gitlab
+  before_script: []
 
 dependency_scanning:
   stage: gitlab
   before_script:
   - apt-get update && apt-get install redis-server libmariadbclient-dev -y
   - redis-server --daemonize yes
-  - redis-cli ping
   - python -V
   - pip install wheel tox
 
 test-3.6-core:
   image: python:3.6-buster
   script:  
-  - tox -e py36-core
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
+  - tox -e py36-core  
   artifacts:
     when: always
     reports:
@@ -38,12 +38,6 @@ test-3.7-core:
   image: python:3.7-buster
   script:  
   - tox -e py37-core
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
   artifacts:
     when: always
     reports:
@@ -53,12 +47,6 @@ test-3.8-core:
   image: python:3.8-buster
   script:  
   - tox -e py38-core
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
   artifacts:
     when: always
     reports:
@@ -68,12 +56,6 @@ test-3.6-all:
   image: python:3.6-buster
   script:  
   - tox -e py36-all
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
   artifacts:
     when: always
     reports:
@@ -83,12 +65,6 @@ test-3.7-all:
   image: python:3.7-buster
   script:  
   - tox -e py37-all
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
   artifacts:
     when: always
     reports:
@@ -98,12 +74,6 @@ test-3.8-all:
   image: python:3.8-buster
   script:  
   - tox -e py38-all
-  before_script:
-  - apt-get update && apt-get install redis-server -y
-  - redis-server --daemonize yes
-  - redis-cli ping
-  - python -V
-  - pip install wheel tox
   artifacts:
     when: always
     reports:
