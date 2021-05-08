@@ -1,10 +1,10 @@
 from math import ceil
 from unittest.mock import patch
 
-from requests import RequestException
 import requests_mock
 from packaging.version import Version as Pep440Version
 
+from django.core.cache import cache
 from django.test import TestCase
 
 from allianceauth.templatetags.admin_status import (
@@ -12,8 +12,7 @@ from allianceauth.templatetags.admin_status import (
     _fetch_list_from_gitlab,
     _current_notifications, 
     _current_version_summary, 
-    _fetch_notification_issues_from_gitlab,
-    _fetch_tags_from_gitlab,
+    _fetch_notification_issues_from_gitlab,    
     _latests_versions
 )
 
@@ -103,35 +102,51 @@ class TestStatusOverviewTag(TestCase):
 
 class TestNotifications(TestCase):
 
+    def setUp(self) -> None:
+        cache.clear()
+
     @requests_mock.mock()
     def test_fetch_notification_issues_from_gitlab(self, requests_mocker):
+        # given
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/issues'
             '?labels=announcement'
         )        
         requests_mocker.get(url, json=GITHUB_NOTIFICATION_ISSUES)
+        # when
         result = _fetch_notification_issues_from_gitlab()
+        # then
         self.assertEqual(result, GITHUB_NOTIFICATION_ISSUES)
 
     @patch(MODULE_PATH + '.admin_status.cache')
     def test_current_notifications_normal(self, mock_cache):
+        # given
         mock_cache.get_or_set.return_value = GITHUB_NOTIFICATION_ISSUES
-
+        # when
         result = _current_notifications()
+        # then
         self.assertEqual(result['notifications'], GITHUB_NOTIFICATION_ISSUES[:5])
 
-    @patch(MODULE_PATH + '.admin_status.cache')
-    def test_current_notifications_failed(self, mock_cache):
-        mock_cache.get_or_set.side_effect = RequestException
-
+    @requests_mock.mock()    
+    def test_current_notifications_failed(self, requests_mocker):
+        # given
+        url = (
+            'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/issues'
+            '?labels=announcement'
+        )        
+        requests_mocker.get(url, status_code=404)
+        # when
         result = _current_notifications()
+        # then
         self.assertEqual(result['notifications'], list())
 
     @patch(MODULE_PATH + '.admin_status.cache')
     def test_current_notifications_is_none(self, mock_cache):
+        # given
         mock_cache.get_or_set.return_value = None
-
+        # when
         result = _current_notifications()
+        # then
         self.assertEqual(result['notifications'], list())
 
 
@@ -143,12 +158,17 @@ class TestCeleryQueueLength(TestCase):
 
 class TestVersionTags(TestCase):
 
+    def setUp(self) -> None:
+        cache.clear()
+
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status.cache')
-    def test_current_version_info_normal(self, mock_cache):
+    def test_current_version_info_normal(self, mock_cache):        
+        # given
         mock_cache.get_or_set.return_value = GITHUB_TAGS
-
+        # when
         result = _current_version_summary()
+        # then
         self.assertTrue(result['latest_major'])
         self.assertTrue(result['latest_minor'])
         self.assertTrue(result['latest_patch'])
@@ -158,32 +178,41 @@ class TestVersionTags(TestCase):
         self.assertEqual(result['latest_beta_version'], '2.4.6a1')
 
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
-    @patch(MODULE_PATH + '.admin_status.cache')
-    def test_current_version_info_failed(self, mock_cache):
-        mock_cache.get_or_set.side_effect = RequestException
-        
-        expected = {}
+    @requests_mock.mock()
+    def test_current_version_info_failed(self, requests_mocker):
+        # given
+        url = (
+            'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth'
+            '/repository/tags'
+        )        
+        requests_mocker.get(url, status_code=500)
+        # when
         result = _current_version_summary()
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, {})
 
     @requests_mock.mock()
     def test_fetch_tags_from_gitlab(self, requests_mocker):
+        # given
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth'
             '/repository/tags'
         )        
         requests_mocker.get(url, json=GITHUB_TAGS)
-        result = _fetch_tags_from_gitlab()
-        self.assertEqual(result, GITHUB_TAGS)
+        # when
+        result = _current_version_summary()
+        # then
+        self.assertTrue(result)
 
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status.cache')
     def test_current_version_info_return_no_data(self, mock_cache):
-        mock_cache.get_or_set.return_value = None
-        
-        expected = {}
+        # given
+        mock_cache.get_or_set.return_value = None                
+        # when
         result = _current_version_summary()
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, {})
 
 
 class TestLatestsVersion(TestCase):

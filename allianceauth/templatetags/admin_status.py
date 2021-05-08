@@ -70,8 +70,8 @@ def _current_notifications() -> dict:
             _fetch_notification_issues_from_gitlab,
             NOTIFICATION_CACHE_TIME
         )
-    except requests.RequestException:
-        logger.exception('Error while getting gitlab notifications')
+    except requests.HTTPError:
+        logger.warning('Error while getting gitlab notifications', exc_info=True)
         top_notifications = []
     else:
         if notifications:
@@ -95,8 +95,8 @@ def _current_version_summary() -> dict:
         tags = cache.get_or_set(
             'git_release_tags', _fetch_tags_from_gitlab, TAG_CACHE_TIME
         )
-    except requests.RequestException:
-        logger.exception('Error while getting gitlab release tags')
+    except requests.HTTPError:
+        logger.warning('Error while getting gitlab release tags', exc_info=True)
         return {}
 
     if not tags:
