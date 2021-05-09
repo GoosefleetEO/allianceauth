@@ -96,24 +96,62 @@ class EveAllianceForm(EveEntityForm):
 
 @admin.register(EveCorporationInfo)
 class EveCorporationInfoAdmin(admin.ModelAdmin):
+    search_fields = ['corporation_name']
+    list_display = ('corporation_name', 'alliance')    
+    list_select_related = ('alliance',)
+    list_filter = (('alliance', admin.RelatedOnlyFieldListFilter),)
+    ordering = ('corporation_name',)
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
     def get_form(self, request, obj=None, **kwargs):
         if not obj or not obj.pk:
             return EveCorporationForm
-        return super(EveCorporationInfoAdmin, self).get_form(request, obj=obj, **kwargs)
+        return super().get_form(request, obj=obj, **kwargs)
 
 
 @admin.register(EveAllianceInfo)
 class EveAllianceInfoAdmin(admin.ModelAdmin):
+    search_fields = ['alliance_name']
+    list_display = ('alliance_name',)        
+    ordering = ('alliance_name',)
+    
+    def has_change_permission(self, request, obj=None):
+        return False
+
     def get_form(self, request, obj=None, **kwargs):
         if not obj or not obj.pk:
             return EveAllianceForm
-        return super(EveAllianceInfoAdmin, self).get_form(request, obj=obj, **kwargs)
+        return super().get_form(request, obj=obj, **kwargs)
 
 
 @admin.register(EveCharacter)
 class EveCharacterAdmin(admin.ModelAdmin):
-    search_fields = ['character_name', 'corporation_name', 'alliance_name', 'character_ownership__user__username']
-    list_display = ('character_name', 'corporation_name', 'alliance_name', 'user', 'main_character')
+    search_fields = [
+        'character_name', 
+        'corporation_name', 
+        'alliance_name', 
+        'character_ownership__user__username'
+    ]
+    list_display = (
+        'character_name', 'corporation_name', 'alliance_name', 'user', 'main_character'
+    )
+    list_select_related = (
+        'character_ownership', 'character_ownership__user__profile__main_character'
+    )
+    list_filter = (
+        'corporation_name', 
+        'alliance_name',         
+        (
+            'character_ownership__user__profile__main_character', 
+            admin.RelatedOnlyFieldListFilter
+        ),
+    )
+    ordering = ('character_name', )
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
     @staticmethod
     def user(obj):
