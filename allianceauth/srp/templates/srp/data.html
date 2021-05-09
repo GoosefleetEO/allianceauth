@@ -187,7 +187,7 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
     {% include 'bundles/x-editable-js.html' %}
     {% include 'bundles/moment-js.html' %}
     {% include 'bundles/clipboard-js.html' %}
-    
+
     <script>
         var clipboard = new ClipboardJS('.copy-text-fa-icon');
         clipboard.on('success', function (e) {
@@ -206,73 +206,71 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
 {% endblock extra_javascript %}
 
 {% block extra_script %}
-  $(document).ready(function() {
-      $.fn.editable.defaults.mode = 'inline';
-      $.fn.editable.defaults.showbuttons = false;
-      $.fn.editable.defaults.highlight = "#AAFF80";
+    $(document).ready(function() {
+        $.fn.editable.defaults.mode = 'inline';
+        $.fn.editable.defaults.showbuttons = false;
+        $.fn.editable.defaults.highlight = "#AAFF80";
 
+        $.fn.dataTable.moment = function(format, locale) {
+            let types = $.fn.dataTable.ext.type;
 
-      $('.srp').editable({
-          display: function(value, response) {
-              return false;
-          },
-          success: function(response, newValue) {
-              newValue = parseInt(newValue);
-              newvalue = newValue.toLocaleString() + " ISK";
-              $(this).html(newvalue.bold());
-          },
-          validate: function(value) {
-              if (value === null || value === '') {
-                  return 'Empty values not allowed';
-              }
-          }
-      });
-      $('.srp').on('hidden', function(e, reason){
-              if(reason === 'save' || reason === 'nochange') {
-              var $next = $(this).closest('tr').next().find('.editable');
-              setTimeout(function() {
-                  $next.editable('show');
-              }, 400);
-          }
-     });
-  });
+            // Add type detection
+            types.detect.unshift(function(d) {
+                return moment(d, format, locale, true).isValid() ?
+                    'moment-' + format :
+                    null;
+            });
 
-  $(document).ready(function(){
-    $("[rel=tooltip]").tooltip({ placement: 'top'});
-  });
+            // Add sorting method - use an integer for the sorting
+            types.order[ 'moment-' + format+'-pre' ] = function(d) {
+                return moment(d, format, locale, true).unix();
+            };
+        };
+        $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
 
-  $.fn.dataTable.moment = function(format, locale) {
-    var types = $.fn.dataTable.ext.type;
+        $('.srp').editable({
+            display: function(value, response) {
+                return false;
+            },
+            success: function(response, newValue) {
+                newValue = parseInt(newValue);
+                let newValueOutput = newValue.toLocaleString() + " ISK";
 
-      // Add type detection
-      types.detect.unshift(function(d) {
-        return moment(d, format, locale, true).isValid() ?
-          'moment-'+format :
-          null;
-      } );
+                $(this).html(newValueOutput.bold());
+            },
+            validate: function(value) {
+                if (value === null || value === '') {
+                    return 'Empty values not allowed';
+                }
+            }
+        });
 
-      // Add sorting method - use an integer for the sorting
-      types.order[ 'moment-'+format+'-pre' ] = function(d) {
-        return moment(d, format, locale, true).unix();
-    };
-  };
+        $('.srp').on('hidden', function(e, reason){
+            if(reason === 'save' || reason === 'nochange') {
+                let $next = $(this).closest('tr').next().find('.editable');
 
-  $(document).ready( function(){
-    $.fn.dataTable.moment('YYYY-MMM-D, HH:mm');
+                setTimeout(function() {
+                    $next.editable('show');
+                }, 400);
+            }
+        });
 
-    $('table.srplist').DataTable({
-      "order": [[ 6, "asc" ]],
-      "paging": false,
-      "columnDefs": [{
-          "targets": [1, 8],
-          "orderable": false
-      },
-      {
-          "targets": [4, 5],
-          "type": "num"
-      }]
+        $('table.srplist').DataTable({
+            "order": [[ 6, "asc" ]],
+            "paging": false,
+            "columnDefs": [
+                {
+                    "targets": [1, 8],
+                    "orderable": false
+                },
+                {
+                    "targets": [4, 5],
+                    "type": "num"
+                }
+            ]
+        });
 
+        // tooltip
+        $("[rel=tooltip]").tooltip({ placement: 'top'});
     });
-  });
-
 {% endblock extra_script %}
