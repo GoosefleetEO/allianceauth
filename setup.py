@@ -58,7 +58,7 @@ setup(
     extras_require={
         'testing': testing_extras
     },
-    python_requires='~=3.6',
+    python_requires='~=3.7',
     license='GPLv2',
     packages=['allianceauth'],
     url=allianceauth.__url__,
@@ -78,11 +78,14 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    project_urls={
+        'Documentation': 'https://allianceauth.readthedocs.io/',
+    },
+
 )
