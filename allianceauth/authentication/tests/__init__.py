@@ -10,6 +10,7 @@ def get_admin_change_view_url(obj: object) -> str:
         args=(obj.pk,)
     )
 
+
 def get_admin_search_url(ModelClass: type) -> str:
     """returns URL to search URL for model of given object"""
     return '{}{}/'.format(

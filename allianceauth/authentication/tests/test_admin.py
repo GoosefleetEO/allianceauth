@@ -1,10 +1,8 @@
 from urllib.parse import quote
 from unittest.mock import patch, MagicMock
 
-from django.conf import settings
-from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
-from django.contrib.auth.models import User as BaseUser, Group
+from django.contrib.auth.models import Group
 from django.test import TestCase, RequestFactory, Client
 
 from allianceauth.authentication.models import (
@@ -18,8 +16,7 @@ from allianceauth.tests.auth_utils import AuthUtils
 
 from ..admin import (
     BaseUserAdmin,
-    CharacterOwnershipAdmin,
-    PermissionAdmin,
+    CharacterOwnershipAdmin,    
     StateAdmin,
     MainCorporationsFilter,
     MainAllianceFilter,
@@ -35,11 +32,6 @@ from ..admin import (
 )
 from . import get_admin_change_view_url, get_admin_search_url
 
-if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
-    _has_auto_groups = True
-    from allianceauth.eveonline.autogroups.models import AutogroupsConfig
-else:
-    _has_auto_groups = False
 
 MODULE_PATH = 'allianceauth.authentication.admin'
 
@@ -47,6 +39,7 @@ MODULE_PATH = 'allianceauth.authentication.admin'
 class MockRequest(object):    
     def __init__(self, user=None):
         self.user = user
+
 
 class TestCaseWithTestData(TestCase):
 
@@ -279,6 +272,7 @@ class TestStateAdmin(TestCaseWithTestData):
         expected = 200
         self.assertEqual(response.status_code, expected)
 
+
 class TestUserAdmin(TestCaseWithTestData):
 
     def setUp(self):
@@ -287,24 +281,12 @@ class TestUserAdmin(TestCaseWithTestData):
             model=User, admin_site=AdminSite()
         )
         self.character_1 = self.user_1.character_ownerships.first().character
-
-    def _create_autogroups(self):
-        """create autogroups for corps and alliances"""
-        if _has_auto_groups:
-            autogroups_config = AutogroupsConfig(
-                corp_groups = True,
-                alliance_groups = True
-            )
-            autogroups_config.save()
-            for state in State.objects.all():
-                autogroups_config.states.add(state)        
-            autogroups_config.update_corp_group_membership(self.user_1)        
-    
-    # column rendering
-
+           
     def test_user_profile_pic_u1(self):
-        expected = ('<img src="https://images.evetech.net/characters/1001/'
-            'portrait?size=32" class="img-circle">')        
+        expected = (
+            '<img src="https://images.evetech.net/characters/1001/'
+            'portrait?size=32" class="img-circle">'
+        )        
         self.assertEqual(user_profile_pic(self.user_1), expected)
 
     def test_user_profile_pic_u3(self):
@@ -351,37 +333,17 @@ class TestUserAdmin(TestCaseWithTestData):
         result = self.modeladmin._characters(self.user_3)
         self.assertEqual(result, expected)
     
-    def test_groups_u1(self):
-        self._create_autogroups()
+    def test_groups_u1(self):        
         expected = 'Group 1'
         result = self.modeladmin._groups(self.user_1)
         self.assertEqual(result, expected)
 
-    def test_groups_u2(self):
-        self._create_autogroups()
+    def test_groups_u2(self):        
         expected = 'Group 2'
         result = self.modeladmin._groups(self.user_2)
         self.assertEqual(result, expected)
     
-    def test_groups_u3(self):        
-        self._create_autogroups()
-        result = self.modeladmin._groups(self.user_3)
-        self.assertIsNone(result)
-
-    @patch(MODULE_PATH + '._has_auto_groups', False)
-    def test_groups_u1_no_autogroups(self):        
-        expected = 'Group 1'
-        result = self.modeladmin._groups(self.user_1)
-        self.assertEqual(result, expected)
-
-    @patch(MODULE_PATH + '._has_auto_groups', False)
-    def test_groups_u2_no_autogroups(self):        
-        expected = 'Group 2'
-        result = self.modeladmin._groups(self.user_2)
-        self.assertEqual(result, expected)
-    
-    @patch(MODULE_PATH + '._has_auto_groups', False)
-    def test_groups_u3_no_autogroups(self):                
+    def test_groups_u3(self):                
         result = self.modeladmin._groups(self.user_3)
         self.assertIsNone(result)
 
@@ -413,8 +375,10 @@ class TestUserAdmin(TestCaseWithTestData):
 
     def test_list_2_html_w_tooltips_w_cutoff(self):
         items = ['one', 'two', 'three']
-        expected = ('<span data-tooltip="one, two, three" '
-            'class="tooltip">one, two, (...)</span>')
+        expected = (
+            '<span data-tooltip="one, two, three" '
+            'class="tooltip">one, two, (...)</span>'
+        )
         result = self.modeladmin._list_2_html_w_tooltips(items, 2)
         self.assertEqual(expected, result)
 
@@ -439,63 +403,7 @@ class TestUserAdmin(TestCaseWithTestData):
         self.assertTrue(mock_message_user.called)
     
     # filters
-
-    def test_filter_real_groups_with_autogroups(self):
-        
-        class UserAdminTest(BaseUserAdmin): 
-            list_filter = (UserAdmin.RealGroupsFilter,)
-                
-        self._create_autogroups()        
-        my_modeladmin = UserAdminTest(User, AdminSite())
-
-        # Make sure the lookups are correct
-        request = self.factory.get('/')
-        request.user = self.user_1
-        changelist = my_modeladmin.get_changelist_instance(request)
-        filters = changelist.get_filters(request)
-        filterspec = filters[0][0]
-        expected = [
-            (self.group_1.pk, self.group_1.name), 
-            (self.group_2.pk, self.group_2.name),
-        ]
-        self.assertEqual(filterspec.lookup_choices, expected)
-
-        # Make sure the correct queryset is returned
-        request = self.factory.get('/', {'group_id__exact': self.group_1.pk})
-        request.user = self.user_1                
-        changelist = my_modeladmin.get_changelist_instance(request)
-        queryset = changelist.get_queryset(request)
-        expected = User.objects.filter(groups__in=[self.group_1])
-        self.assertSetEqual(set(queryset), set(expected))
-
-    @patch(MODULE_PATH + '._has_auto_groups', False)
-    def test_filter_real_groups_no_autogroups(self):
-        
-        class UserAdminTest(BaseUserAdmin): 
-            list_filter = (UserAdmin.RealGroupsFilter,)
-                        
-        my_modeladmin = UserAdminTest(User, AdminSite())
-
-        # Make sure the lookups are correct
-        request = self.factory.get('/')
-        request.user = self.user_1
-        changelist = my_modeladmin.get_changelist_instance(request)
-        filters = changelist.get_filters(request)
-        filterspec = filters[0][0]
-        expected = [
-            (self.group_1.pk, self.group_1.name), 
-            (self.group_2.pk, self.group_2.name),
-        ]
-        self.assertEqual(filterspec.lookup_choices, expected)
-
-        # Make sure the correct queryset is returned
-        request = self.factory.get('/', {'group_id__exact': self.group_1.pk})
-        request.user = self.user_1                
-        changelist = my_modeladmin.get_changelist_instance(request)
-        queryset = changelist.get_queryset(request)
-        expected = User.objects.filter(groups__in=[self.group_1])
-        self.assertSetEqual(set(queryset), set(expected))
-
+    
     def test_filter_main_corporations(self):
         
         class UserAdminTest(BaseUserAdmin): 
@@ -603,7 +511,6 @@ class TestMakeServicesHooksActions(TestCaseWithTestData):
         def sync_nicknames_bulk(self, user):
             pass
          
-
     def test_service_has_update_groups_only(self):        
         service = self.MyServicesHookTypeA()
         mock_service = MagicMock(spec=service)      
