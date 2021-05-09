@@ -526,9 +526,7 @@
     {% include 'bundles/moment-js.html' with locale=True %}
     <script src="{% static 'js/timers.js' %}"></script>
     <script type="application/javascript">
-        var locale = "{{ LANGUAGE_CODE }}";
-
-        var timers = [
+        let timers = [
             {% for timer in timers %}
                 {
                     'id': {{ timer.id }},
@@ -545,67 +543,64 @@
             {% endfor %}
         ];
 
-        moment.locale(locale);
+        /**
+         * Update a timer
+         * @param timer Timer information
+         */
+        let updateTimer = function (timer) {
+            if (timer.targetDate.isAfter(Date.now())) {
+                let duration = moment.duration(timer.targetDate - moment(), 'milliseconds');
 
-        // Set initial values
-        setAllLocalTimes();
-        timedUpdate();
+                document.getElementById("countdown" + timer.id).innerHTML = getDurationString(duration);
+            } else {
+                timer.expired = true;
 
-        // Start timed updates
-        setInterval(timedUpdate, 1000);
+                document.getElementById("countdown" + timer.id).innerHTML = "";
+            }
+        };
+
+        let updateAllTimers = function () {
+            let l = timers.length;
+
+            for (var i=0; i < l; ++i) {
+                if (timers[i].expired) continue;
+
+                updateTimer(timers[i]);
+            }
+        };
 
         function timedUpdate() {
             updateClock();
             updateAllTimers();
         }
 
-        function updateAllTimers () {
-            var l = timers.length;
-            for (var i=0; i < l; ++i) {
-                if (timers[i].expired) continue;
-                updateTimer(timers[i]);
-            }
-        }
-
         /**
-         * Update a timer
+         * Set the local time info for the timer
          * @param timer Timer information
-         * @param timer.targetDate Date of the timer
-         * @param timer.id Id number of the timer
-         * @param timer.expired
          */
-        function updateTimer(timer) {
-            if (timer.targetDate.isAfter(Date.now())) {
-                duration = moment.duration(timer.targetDate - moment(), 'milliseconds');
-                document.getElementById("countdown" + timer.id).innerHTML = getDurationString(duration);
-            } else {
-                timer.expired = true;
-                document.getElementById("countdown" + timer.id).innerHTML = "";
-            }
-        }
+        let setLocalTime = function (timer) {
+            document.getElementById("localtime" + timer.id).innerHTML = timer.targetDate.format("ddd @ LT");
+        };
 
         /**
          * Set all local time fields
          */
-        function setAllLocalTimes() {
-            var l = timers.length;
+        let setAllLocalTimes = function () {
+            let l = timers.length;
+
             for (var i=0; i < l; ++i) {
                 setLocalTime(timers[i]);
             }
-        }
+        };
 
-        /**
-         * Set the local time info for the timer
-         * @param timer Timer information
-         * @param timer.targetDate Date of the timer
-         * @param timer.id Id number of the timer
-         */
-        function setLocalTime(timer) {
-            document.getElementById("localtime" + timer.id).innerHTML = timer.targetDate.format("ddd @ LT");
-        }
-
-        function updateClock() {
+        let updateClock = function () {
             document.getElementById("current-time").innerHTML = getCurrentEveTimeString();
-        }
+        };
+        // Set initial values
+        setAllLocalTimes();
+        timedUpdate();
+
+        // Start timed updates
+        setInterval(timedUpdate, 1000);
     </script>
 {% endblock content %}
