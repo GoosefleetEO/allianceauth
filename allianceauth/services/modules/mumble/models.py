@@ -74,7 +74,41 @@ class MumbleUser(AbstractServiceModel):
         editable=False,
         help_text="Hash of Mumble client certificate as presented when user authenticates"
     )
-    display_name = models.CharField(max_length=254, unique=True)
+    display_name = models.CharField(
+        max_length=254,
+        unique=True
+    )
+    release = models.TextField(
+        verbose_name="Mumble Release",
+        max_length=254,
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="The Mumble Release the user last authenticated with"
+    )
+    version = models.IntegerField(
+        verbose_name="Mumble Version",
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="Client version. Major version in upper 16 bits, followed by 8 bits of minor version and 8 bits of patchlevel. Version 1.2.3 = 0x010203."
+    )
+    last_connect = models.DateTimeField(
+        verbose_name="Last Connection",
+        max_length=254,
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="Timestamp of the users Last Connection to Mumble"
+    )
+    last_disconnect = models.DateTimeField(
+        verbose_name="Last Disconnection",
+        max_length=254,
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="Timestamp of the users Last Disconnection to Mumble"
+    )
 
     objects = MumbleManager()
 
