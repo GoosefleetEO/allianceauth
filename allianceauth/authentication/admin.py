@@ -1,10 +1,8 @@
-from django.conf import settings
-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User as BaseUser, \
     Permission as BasePermission, Group
-from django.db.models import Q, F
+from django.db.models import Count, Q
 from allianceauth.services.hooks import ServicesHook
 from django.db.models.signals import pre_save, post_save, pre_delete, \
     post_delete, m2m_changed
@@ -23,11 +21,6 @@ from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
 from allianceauth.eveonline.tasks import update_character
 from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
     AUTHENTICATION_ADMIN_USERS_MAX_CHARS
-
-if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
-    _has_auto_groups = True    
-else:
-    _has_auto_groups = False
 
 
 def make_service_hooks_update_groups_action(service):
@@ -91,8 +84,7 @@ class UserProfileInline(admin.StackedInline):
             if request.user.is_superuser:
                 query |= Q(userprofile__isnull=True)
             else:
-                query |= Q(character_ownership__user=obj)
-        qs = EveCharacter.objects.filter(query)
+                query |= Q(character_ownership__user=obj)        
         formset = super().get_formset(request, obj=obj, **kwargs)
 
         def get_kwargs(self, index):
@@ -121,6 +113,8 @@ def user_profile_pic(obj):
         )
     else:
         return None
+
+
 user_profile_pic.short_description = ''
 
 
@@ -152,6 +146,7 @@ def user_username(obj):
             user_obj.username,
         )
 
+
 user_username.short_description = 'user / main'
 user_username.admin_order_field = 'username'
 
@@ -168,13 +163,15 @@ def user_main_organization(obj):
     else:        
         corporation = user_obj.profile.main_character.corporation_name
         if user_obj.profile.main_character.alliance_id:        
-            result = format_html('{}<br>{}',
+            result = format_html(
+                '{}<br>{}',
                 corporation, 
                 user_obj.profile.main_character.alliance_name
             )
         else:
             result = corporation    
     return result
+
 
 user_main_organization.short_description = 'Corporation / Alliance (Main)'
 user_main_organization.admin_order_field = \
@@ -205,13 +202,13 @@ class MainCorporationsFilter(admin.SimpleListFilter):
             return qs.all()
         else:    
             if qs.model == User:
-                return qs\
-                    .filter(profile__main_character__corporation_id=\
-                        self.value())
+                return qs.filter(
+                    profile__main_character__corporation_id=self.value()
+                )
             else:
-                return qs\
-                    .filter(user__profile__main_character__corporation_id=\
-                        self.value())
+                return qs.filter(
+                    user__profile__main_character__corporation_id=self.value()
+                )
             
 
 class MainAllianceFilter(admin.SimpleListFilter):
@@ -239,12 +236,11 @@ class MainAllianceFilter(admin.SimpleListFilter):
             return qs.all()
         else:    
             if qs.model == User:
-                return qs\
-                    .filter(profile__main_character__alliance_id=self.value())                
+                return qs.filter(profile__main_character__alliance_id=self.value())                
             else:
-                return qs\
-                    .filter(user__profile__main_character__alliance_id=\
-                        self.value())
+                return qs.filter(
+                    user__profile__main_character__alliance_id=self.value()
+                )
                 
 
 def update_main_character_model(modeladmin, request, queryset):    
@@ -259,6 +255,7 @@ def update_main_character_model(modeladmin, request, queryset):
         'Update from ESI started for {} characters'.format(tasks_count)
     )
 
+
 update_main_character_model.short_description = \
     'Update main character model from ESI'
 
@@ -267,32 +264,16 @@ class UserAdmin(BaseUserAdmin):
     """Extending Django's UserAdmin model
     
     Behavior of groups and characters columns can be configured via settings
-
     """
 
     class Media:
         css = {
             "all": ("authentication/css/admin.css",)
         }
-         
-    class RealGroupsFilter(admin.SimpleListFilter):
-        """Custom filter to get groups w/o Autogroups"""
-        title = 'group'
-        parameter_name = 'group_id__exact'
-
-        def lookups(self, request, model_admin):
-            qs = Group.objects.all().order_by(Lower('name'))
-            if _has_auto_groups:
-                qs = qs\
-                    .filter(managedalliancegroup__isnull=True)\
-                    .filter(managedcorpgroup__isnull=True)                
-            return tuple([(x.pk, x.name) for x in qs])
-
-        def queryset(self, request, queryset):
-            if self.value() is None:
-                return queryset.all()
-            else:    
-                return queryset.filter(groups__pk=self.value())
+             
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related("character_ownerships__character", "groups")
 
     def get_actions(self, request):
         actions = super(BaseUserAdmin, self).get_actions(request)
@@ -341,11 +322,9 @@ class UserAdmin(BaseUserAdmin):
         return result
     
     inlines = BaseUserAdmin.inlines + [UserProfileInline]
-
-    ordering = ('username', )
-    list_select_related = True
-    show_full_result_count = True 
-    
+    ordering = ('username', )    
+    list_select_related = ('profile__state', 'profile__main_character')
+    show_full_result_count = True     
     list_display = (
         user_profile_pic,
         user_username, 
@@ -358,10 +337,9 @@ class UserAdmin(BaseUserAdmin):
         '_role'
     )    
     list_display_links = None
-
     list_filter = ( 
         'profile__state',
-        RealGroupsFilter,        
+        'groups',        
         MainCorporationsFilter,        
         MainAllianceFilter,
         'is_active',
@@ -375,41 +353,25 @@ class UserAdmin(BaseUserAdmin):
     )
     
     def _characters(self, obj):
-        my_characters = [
-            x.character.character_name 
-            for x in CharacterOwnership.objects\
-                .filter(user=obj)\
-                .order_by('character__character_name')\
-                .select_related()
-        ]
+        character_ownerships = list(obj.character_ownerships.all())
+        characters = [obj.character.character_name for obj in character_ownerships]
         return self._list_2_html_w_tooltips(
-            my_characters, 
+            sorted(characters), 
             AUTHENTICATION_ADMIN_USERS_MAX_CHARS
         )
           
     _characters.short_description = 'characters'
     
-
     def _state(self, obj):
         return obj.profile.state.name
     
     _state.short_description = 'state'
     _state.admin_order_field = 'profile__state'
 
-    def _groups(self, obj):
-        if not _has_auto_groups:
-            my_groups = [x.name for x in obj.groups.order_by('name')]
-        else:
-            my_groups = [
-                x.name for x in obj.groups\
-                    .filter(managedalliancegroup__isnull=True)\
-                    .filter(managedcorpgroup__isnull=True)\
-                    .order_by('name')
-            ]
-        
+    def _groups(self, obj):        
+        my_groups = sorted([group.name for group in list(obj.groups.all())])
         return self._list_2_html_w_tooltips(
-            my_groups, 
-            AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
+            my_groups, AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
         )
        
     _groups.short_description = 'groups'
@@ -446,9 +408,14 @@ class StateAdmin(admin.ModelAdmin):
     list_select_related = True
     list_display = ('name', 'priority', '_user_count')
     
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.annotate(user_count=Count("userprofile__id"))
+
     def _user_count(self, obj):
-        return obj.userprofile_set.all().count()
+        return obj.user_count
     _user_count.short_description = 'Users'
+    _user_count.admin_order_field = 'user_count'
 
     fieldsets = (
         (None, {
@@ -504,7 +471,8 @@ class BaseOwnershipAdmin(admin.ModelAdmin):
             "all": ("authentication/css/admin.css",)
         }
      
-    list_select_related = True
+    list_select_related = (
+        'user__profile__state', 'user__profile__main_character', 'character')    
     list_display = (
         user_profile_pic,
         user_username,
@@ -542,6 +510,7 @@ class CharacterOwnershipAdmin(BaseOwnershipAdmin):
 class PermissionAdmin(admin.ModelAdmin):
     actions = None
     readonly_fields = [field.name for field in BasePermission._meta.fields]
+    search_fields = ('codename', )
     list_display = ('admin_name', 'name', 'codename', 'content_type')
     list_filter = ('content_type__app_label',)
 

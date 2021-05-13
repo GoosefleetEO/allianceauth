@@ -1,5 +1,4 @@
-from django.conf import settings
-
+from django.apps import apps
 from django.contrib import admin
 from django.contrib.auth.models import Group as BaseGroup, User
 from django.db.models import Count
@@ -10,9 +9,8 @@ from django.dispatch import receiver
 
 from .models import AuthGroup
 from .models import GroupRequest
-from . import signals
 
-if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
+if 'eve_autogroups' in apps.app_configs:    
     _has_auto_groups = True    
 else:
     _has_auto_groups = False
@@ -97,9 +95,10 @@ class HasLeaderFilter(admin.SimpleListFilter):
         else:
             return queryset
 
+
 class GroupAdmin(admin.ModelAdmin):    
-    list_select_related = True
-    ordering = ('name', )
+    list_select_related = ('authgroup',)
+    ordering = ('name',)
     list_display = (
         'name', 
         '_description', 
@@ -118,9 +117,12 @@ class GroupAdmin(admin.ModelAdmin):
     list_filter.append(HasLeaderFilter)
 
     search_fields = ('name', 'authgroup__description')
-    
+        
     def get_queryset(self, request):
         qs = super().get_queryset(request)                
+        if _has_auto_groups:
+            qs = qs.prefetch_related('managedalliancegroup_set', 'managedcorpgroup_set')
+        qs = qs.prefetch_related('authgroup__group_leaders')
         qs = qs.annotate(
             member_count=Count('user', distinct=True),
         )        
@@ -173,13 +175,29 @@ class Group(BaseGroup):
         verbose_name = BaseGroup._meta.verbose_name
         verbose_name_plural = BaseGroup._meta.verbose_name_plural
 
+
 try:
     admin.site.unregister(BaseGroup)
 finally:
     admin.site.register(Group, GroupAdmin)
 
 
-admin.site.register(GroupRequest)
+@admin.register(GroupRequest)
+class GroupRequestAdmin(admin.ModelAdmin):        
+    search_fields = ('user__username', )
+    list_display = ('id', 'group', 'user', '_leave_request', 'status')
+    list_filter = (
+        ('group', admin.RelatedOnlyFieldListFilter),
+        ('user', admin.RelatedOnlyFieldListFilter),
+        'leave_request', 
+        'status'
+    )
+
+    def _leave_request(self, obj) -> True:
+        return obj.leave_request
+    
+    _leave_request.short_description = 'is leave request'
+    _leave_request.boolean = True
 
 
 @receiver(pre_save, sender=Group)
