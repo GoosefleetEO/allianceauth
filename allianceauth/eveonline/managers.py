@@ -32,10 +32,12 @@ class EveCharacterManager(models.Manager):
     def update_character(self, character_id):
         return self.get(character_id=character_id).update_character()
 
-    def get_character_by_id(self, char_id):
-        if self.filter(character_id=char_id).exists():
-            return self.get(character_id=char_id)
-        return None
+    def get_character_by_id(self, character_id: int):
+        """Return character by character ID or None if not found."""
+        try:
+            return self.get(character_id=character_id)
+        except self.model.DoesNotExist:
+            return None
 
 
 class EveAllianceProviderManager:
