@@ -104,6 +104,8 @@ CREATE DATABASE alliance_auth CHARACTER SET utf8mb4;
 GRANT ALL PRIVILEGES ON alliance_auth . * TO 'allianceserver'@'localhost';
 ```
 
+Once your database is set up, you can leave the SQL shell with `exit`.
+
 Add timezone tables to your mysql installation:
 
 ```bash
@@ -177,7 +179,7 @@ source /home/allianceserver/venv/auth/bin/activate
 
 You need to have a dedicated Eve SSO app for Alliance auth. Please go to [EVE Developer](https://developers.eveonline.com/applications) to create one.
 
-For **scopes** your SSO app needs to have at least `publicData`. Additional scopes depends on which Alliance Auth apps you will be using. For convenience we recommend adding all available ESO scopes to your SSO app. Note that Alliance Auth will always ask the users to approve specific scopes before they are used.
+For **scopes** your SSO app needs to have at least `publicData`. Additional scopes depends on which Alliance Auth apps you will be using. For convenience, we recommend adding all available ESO scopes to your SSO app. Note that Alliance Auth will always ask the users to approve specific scopes before they are used.
 
 As **callback URL** you want to define the URL of your Alliance Auth site plus the route: `/sso/callback`. Example for a valid callback URL: `https://auth.example.com/sso/callback`
 
@@ -236,7 +238,7 @@ Check to ensure your settings are valid.
 python /home/allianceserver/myauth/manage.py check
 ```
 
-And finally ensure the allianceserver user has read/write permissions to this directory before proceeding.
+Finally, ensure the allianceserver user has read/write permissions to this directory before proceeding.
 
 ```bash
 chown -R allianceserver:allianceserver /home/allianceserver/myauth
@@ -244,7 +246,7 @@ chown -R allianceserver:allianceserver /home/allianceserver/myauth
 
 ## Services
 
-Alliance Auth needs some additional services to run, which we will setup and configure next.
+Alliance Auth needs some additional services to run, which we will set up and configure next.
 
 ### Gunicorn
 
@@ -275,7 +277,7 @@ systemctl enable supervisord.service
 systemctl start supervisord.service
 ```
 
-Once installed it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the Celery workers, Celery task scheduler and Gunicorn are all running.
+Once installed, it needs a configuration file to know which processes to watch. Your Alliance Auth project comes with a ready-to-use template which will ensure the Celery workers, Celery task scheduler and Gunicorn are all running.
 
 Ubuntu:
 
@@ -289,7 +291,7 @@ CentOS:
 ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
 ```
 
-And activate it with `supervisorctl reload`.
+Activate it with `supervisorctl reload`.
 
 You can check the status of the processes with `supervisorctl status`. Logs from these processes are available in `/home/allianceserver/myauth/log` named by process.
 
@@ -304,11 +306,11 @@ You can check the status of the processes with `supervisorctl status`. Logs from
 
 Once installed, decide on whether you're going to use [NGINX](nginx.md) or [Apache](apache.md) and follow the respective guide.
 
-Note that Alliance Auth is designed to run with web servers on HTTPS. While running on HTTP is technically possible, it is not recommended for production use and some functions (e.g. Email confirmation links) will not work properly.
+Note that Alliance Auth is designed to run with web servers on HTTPS. While running on HTTP is technically possible, it is not recommended for production use, and some functions (e.g. Email confirmation links) will not work properly.
 
 ## Superuser
 
-Before using your auth site it is essential to create a superuser account. This account will have all permissions in Alliance Auth. It's OK to use this as your personal auth account.
+Before using your auth site, it is essential to create a superuser account. This account will have all permissions in Alliance Auth. It's OK to use this as your personal auth account.
 
 ```bash
 python /home/allianceserver/myauth/manage.py createsuperuser
@@ -316,7 +318,7 @@ python /home/allianceserver/myauth/manage.py createsuperuser
 
 The superuser account is accessed by logging in via the admin site at `https://example.com/admin`.
 
-If you intend to use this account as your personal auth account you need to add a main character. Navigate to the normal user dashboard (at `https://example.com`) after logging in via the admin site and select `Change Main`. Once a main character has been added it is possible to use SSO to login to this account.
+If you intend to use this account as your personal auth account you need to add a main character. Navigate to the normal user dashboard (at `https://example.com`) after logging in via the admin site and select `Change Main`. Once a main character has been added, it is possible to use SSO to login to this account.
 
 ## Updating
 
@@ -340,7 +342,7 @@ Some releases come with new or changed models. Update your database to reflect t
 python /home/allianceserver/myauth/manage.py migrate
 ```
 
-Finally some releases come with new or changed static files. Run the following command to update your static files folder:
+Finally, some releases come with new or changed static files. Run the following command to update your static files folder:
 
 ```bash
 python /home/allianceserver/myauth/manage.py collectstatic
