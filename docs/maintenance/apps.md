@@ -17,8 +17,8 @@ Mature Alliance Auth installations, or those with actively developed extensions 
 
 This can make it confusing for admins to apply the right permissions, contribute to larger queries in backend management or simply look unsightly.
 
-```python
-    python manage.py remove_stale_contenttypes --include-stale-apps
+```shell
+python manage.py remove_stale_contenttypes --include-stale-apps
 ```
 
 This inbuilt Django command will step through each contenttype and offer to delete it, displaying what exactly this will cascade to delete. Pay attention and ensure you understand exactly what is being removed before answering `yes`.
