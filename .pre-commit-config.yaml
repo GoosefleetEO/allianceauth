@@ -16,3 +16,5 @@ repos:
         exclude: \.(min\.css|min\.js|po|mo)$
       - id: end-of-file-fixer
         exclude: \.(min\.css|min\.js|po|mo)$
+      - id: mixed-line-ending
+        args: [ '--fix=lf' ]
