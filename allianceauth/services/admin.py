@@ -3,9 +3,9 @@ from django.contrib import admin
 
 from allianceauth import hooks
 from allianceauth.authentication.admin import (
-    user_profile_pic, 
-    user_username, 
-    user_main_organization, 
+    user_profile_pic,
+    user_username,
+    user_main_organization,
     MainCorporationsFilter,
     MainAllianceFilter
 )
@@ -22,17 +22,17 @@ class ServicesUserAdmin(admin.ModelAdmin):
 
     search_fields = ('user__username',)
     ordering = ('user__username',)
-    list_select_related = True              
+    list_select_related = True
     list_display = (
         user_profile_pic,
         user_username,
         '_state',
-        user_main_organization, 
+        user_main_organization,
         '_date_joined'
     )
-    list_filter = (        
+    list_filter = (
         'user__profile__state',
-        MainCorporationsFilter,        
+        MainCorporationsFilter,
         MainAllianceFilter,
         'user__date_joined',
     )
@@ -45,7 +45,7 @@ class ServicesUserAdmin(admin.ModelAdmin):
 
     def _date_joined(self, obj):
         return obj.user.date_joined
-    
+
     _date_joined.short_description = 'date joined'
     _date_joined.admin_order_field = 'user__date_joined'
 

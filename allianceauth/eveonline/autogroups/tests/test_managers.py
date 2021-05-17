@@ -44,7 +44,7 @@ class AutogroupsConfigManagerTestCase(TestCase):
         with patch('.models.AutogroupsConfig.update_group_membership_for_user') \
         as update_group_membership_for_user:
             AutogroupsConfig.objects.update_groups_for_user(
-                user=member, 
+                user=member,
                 state=member.profile.state
             )
 

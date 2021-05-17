@@ -23,7 +23,7 @@ logger = set_logger_to_file(MODULE_PATH, __file__)
 @patch(MODULE_PATH + '.DiscordUser.update_groups')
 @patch(MODULE_PATH + ".logger")
 class TestUpdateGroups(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -32,7 +32,7 @@ class TestUpdateGroups(TestCase):
         cls.group_2 = Group.objects.create(name='Group 2')
         cls.group_1.user_set.add(cls.user)
         cls.group_2.user_set.add(cls.user)
-        
+
     def test_can_update_groups(self, mock_logger, mock_update_groups):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         tasks.update_groups(self.user.pk)
@@ -43,7 +43,7 @@ class TestUpdateGroups(TestCase):
     ):
         tasks.update_groups(self.user.pk)
         self.assertFalse(mock_update_groups.called)
-    
+
     def test_retries_on_api_backoff(self, mock_logger, mock_update_groups):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         mock_exception = DiscordApiBackoff(999)
@@ -63,7 +63,7 @@ class TestUpdateGroups(TestCase):
             tasks.update_groups(self.user.pk)
 
         self.assertTrue(mock_logger.warning.called)
-    
+
     def test_retry_on_http_error_404_when_user_not_deleted(
         self, mock_logger, mock_update_groups
     ):
@@ -77,8 +77,8 @@ class TestUpdateGroups(TestCase):
             tasks.update_groups(self.user.pk)
 
         self.assertTrue(mock_logger.warning.called)
-        
-    def test_retry_on_non_http_error(self, mock_logger, mock_update_groups):        
+
+    def test_retry_on_non_http_error(self, mock_logger, mock_update_groups):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         mock_update_groups.side_effect = ConnectionError
 
@@ -86,23 +86,23 @@ class TestUpdateGroups(TestCase):
             tasks.update_groups(self.user.pk)
 
         self.assertTrue(mock_logger.warning.called)
-        
+
     @patch(MODULE_PATH + '.DISCORD_TASKS_MAX_RETRIES', 3)
     def test_log_error_if_retries_exhausted(self, mock_logger, mock_update_groups):
-        DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)        
+        DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         mock_task = MagicMock(**{'request.retries': 3})
         mock_update_groups.side_effect = ConnectionError
         update_groups_inner = tasks.update_groups.__wrapped__.__func__
-                
+
         update_groups_inner(mock_task, self.user.pk)
         self.assertTrue(mock_logger.error.called)
-                
+
     @patch(MODULE_PATH + '.delete_user.delay')
     def test_delete_user_if_user_is_no_longer_member_of_discord_server(
         self, mock_delete_user, mock_logger, mock_update_groups
     ):
         mock_update_groups.return_value = None
-        
+
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         tasks.update_groups(self.user.pk)
         self.assertTrue(mock_update_groups.called)
@@ -111,45 +111,45 @@ class TestUpdateGroups(TestCase):
 
 @patch(MODULE_PATH + '.DiscordUser.update_nickname')
 class TestUpdateNickname(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.user = AuthUtils.create_member(TEST_USER_NAME)
         AuthUtils.add_main_character_2(
-            cls.user, 
-            TEST_MAIN_NAME, 
-            TEST_MAIN_ID, 
-            corp_id='2', 
-            corp_name='test_corp', 
+            cls.user,
+            TEST_MAIN_NAME,
+            TEST_MAIN_ID,
+            corp_id='2',
+            corp_name='test_corp',
             corp_ticker='TEST',
             disconnect_signals=True
         )
         cls.discord_user = DiscordUser.objects.create(user=cls.user, uid=TEST_USER_ID)
 
-    def test_can_update_nickname(self, mock_update_nickname):        
-        mock_update_nickname.return_value = True        
-        
+    def test_can_update_nickname(self, mock_update_nickname):
+        mock_update_nickname.return_value = True
+
         tasks.update_nickname(self.user.pk)
         self.assertTrue(mock_update_nickname.called)
 
     def test_no_action_when_user_had_no_account(self, mock_update_nickname):
         my_user = AuthUtils.create_user('Dummy User')
         mock_update_nickname.return_value = False
-        
+
         tasks.update_nickname(my_user.pk)
         self.assertFalse(mock_update_nickname.called)
-        
-    def test_retries_on_api_backoff(self, mock_update_nickname):                
+
+    def test_retries_on_api_backoff(self, mock_update_nickname):
         mock_exception = DiscordApiBackoff(999)
         mock_update_nickname.side_effect = mock_exception
-        
+
         with self.assertRaises(Retry):
             tasks.update_nickname(self.user.pk)
 
-    def test_retries_on_general_exception(self, mock_update_nickname):        
+    def test_retries_on_general_exception(self, mock_update_nickname):
         mock_update_nickname.side_effect = ConnectionError
-        
+
         with self.assertRaises(Retry):
             tasks.update_nickname(self.user.pk)
 
@@ -158,9 +158,9 @@ class TestUpdateNickname(TestCase):
         mock_task = MagicMock(**{'request.retries': 3})
         mock_update_nickname.side_effect = ConnectionError
         update_nickname_inner = tasks.update_nickname.__wrapped__.__func__
-                
+
         update_nickname_inner(mock_task, self.user.pk)
-        
+
 
 @patch(MODULE_PATH + '.DiscordUser.update_username')
 class TestUpdateUsername(TestCase):
@@ -206,7 +206,7 @@ class TestDeleteUser(TestCase):
         self, mock_delete_user_delay, mock_delete_user
     ):
         mock_delete_user.return_value = None
-        
+
         tasks.delete_user(self.user.pk)
         self.assertTrue(mock_delete_user.called)
         self.assertFalse(mock_delete_user_delay.called)
@@ -218,15 +218,15 @@ class TestTaskPerformUserAction(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = AuthUtils.create_member('Peter Parker')    
+        cls.user = AuthUtils.create_member('Peter Parker')
         cls.discord_user = DiscordUser.objects.create(user=cls.user, uid=TEST_USER_ID)
 
     def test_raise_value_error_on_unknown_method(self, mock_update_groups):
         mock_task = MagicMock(**{'request.retries': 0})
-        
+
         with self.assertRaises(ValueError):
             tasks._task_perform_user_action(mock_task, self.user.pk, 'invalid_method')
-    
+
     def test_catch_and_log_unexpected_exceptions(self, mock_update_groups):
         mock_task = MagicMock(**{'request.retries': 0})
         mock_update_groups.side_effect = RuntimeError
@@ -253,8 +253,8 @@ class TestTaskUpdateServername(TestCase):
 
         self.assertFalse(mock_logger.error.called)
 
-    def test_retry_on_http_error(self, mock_logger, mock_server_name):        
-        mock_exception = HTTPError(MagicMock(**{"response.status_code": 500}))        
+    def test_retry_on_http_error(self, mock_logger, mock_server_name):
+        mock_exception = HTTPError(MagicMock(**{"response.status_code": 500}))
         mock_server_name.side_effect = mock_exception
 
         with self.assertRaises(Retry):
@@ -262,20 +262,20 @@ class TestTaskUpdateServername(TestCase):
 
         self.assertTrue(mock_logger.warning.called)
 
-    def test_retry_on_connection_error(self, mock_logger, mock_server_name):        
+    def test_retry_on_connection_error(self, mock_logger, mock_server_name):
         mock_server_name.side_effect = ConnectionError
 
         with self.assertRaises(Retry):
             tasks.update_servername()
 
         self.assertTrue(mock_logger.warning.called)
-    
+
     @patch(MODULE_PATH + '.DISCORD_TASKS_MAX_RETRIES', 3)
     def test_log_error_if_retries_exhausted(self, mock_logger, mock_server_name):
         mock_task = MagicMock(**{'request.retries': 3})
         mock_server_name.side_effect = ConnectionError
         update_groups_inner = tasks.update_servername.__wrapped__.__func__
-                
+
         update_groups_inner(mock_task)
         self.assertTrue(mock_logger.error.called)
 
@@ -285,24 +285,24 @@ class TestTaskPerformUsersAction(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        super().setUpClass()        
+        super().setUpClass()
 
     def test_raise_value_error_on_unknown_method(self, mock_server_name):
         mock_task = MagicMock(**{'request.retries': 0})
-        
+
         with self.assertRaises(ValueError):
             tasks._task_perform_users_action(mock_task, 'invalid_method')
-    
+
     def test_catch_and_log_unexpected_exceptions(self, mock_server_name):
         mock_server_name.side_effect = RuntimeError
         mock_task = MagicMock(**{'request.retries': 0})
-        
+
         tasks._task_perform_users_action(mock_task, 'server_name')
 
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
 class TestBulkTasks(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -321,7 +321,7 @@ class TestBulkTasks(TestCase):
         tasks.update_groups_bulk(expected_pks)
         self.assertEqual(mock_update_groups.call_count, 2)
         current_pks = [args[0][0] for args in mock_update_groups.call_args_list]
-        
+
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
     @patch(MODULE_PATH + '.update_groups.si')
@@ -347,7 +347,7 @@ class TestBulkTasks(TestCase):
         self.assertEqual(mock_update_nickname.call_count, 2)
         current_pks = [
             args[0][0] for args in mock_update_nickname.call_args_list
-        ]        
+        ]
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
     @patch(MODULE_PATH + '.update_nickname.si')
@@ -374,11 +374,11 @@ class TestBulkTasks(TestCase):
         tasks.update_usernames_bulk(expected_pks)
         self.assertEqual(mock_update_username.call_count, 2)
         current_pks = [args[0][0] for args in mock_update_username.call_args_list]
-        
+
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
     @patch(MODULE_PATH + '.update_username')
-    @patch(MODULE_PATH + '.update_servername')    
+    @patch(MODULE_PATH + '.update_servername')
     def test_can_update_all_usernames(
         self, mock_update_servername, mock_update_username
     ):
@@ -405,7 +405,7 @@ class TestBulkTasks(TestCase):
         du_3 = DiscordUser.objects.create(user=self.user_3, uid=789)
 
         tasks.update_all()
-        self.assertEqual(mock_update_groups.si.call_count, 3)        
+        self.assertEqual(mock_update_groups.si.call_count, 3)
         current_pks = [args[0][0] for args in mock_update_groups.si.call_args_list]
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
@@ -415,7 +415,7 @@ class TestBulkTasks(TestCase):
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
-        self.assertEqual(mock_update_usernames.si.call_count, 3)        
+        self.assertEqual(mock_update_usernames.si.call_count, 3)
         current_pks = [args[0][0] for args in mock_update_usernames.si.call_args_list]
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
@@ -432,14 +432,14 @@ class TestBulkTasks(TestCase):
         du_3 = DiscordUser.objects.create(user=self.user_3, uid=789)
 
         tasks.update_all()
-        self.assertEqual(mock_update_groups.si.call_count, 3)        
+        self.assertEqual(mock_update_groups.si.call_count, 3)
         current_pks = [args[0][0] for args in mock_update_groups.si.call_args_list]
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))
 
         self.assertEqual(mock_update_nickname.si.call_count, 0)
 
-        self.assertEqual(mock_update_usernames.si.call_count, 3)        
+        self.assertEqual(mock_update_usernames.si.call_count, 3)
         current_pks = [args[0][0] for args in mock_update_usernames.si.call_args_list]
         expected_pks = [du_1.pk, du_2.pk, du_3.pk]
         self.assertSetEqual(set(current_pks), set(expected_pks))

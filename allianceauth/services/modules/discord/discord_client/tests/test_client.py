@@ -14,11 +14,11 @@ from . import (
     TEST_USER_ID,
     TEST_USER_NAME,
     TEST_BOT_TOKEN,
-    TEST_ROLE_ID,    
-    ROLE_ALPHA, 
-    ROLE_BRAVO, 
-    ALL_ROLES, 
-    create_role, 
+    TEST_ROLE_ID,
+    ROLE_ALPHA,
+    ROLE_BRAVO,
+    ALL_ROLES,
+    create_role,
     create_matched_role,
     create_user_info
 )
@@ -91,7 +91,7 @@ class TestBasicsAndHelpers(TestCase):
         mock_default_cache = MagicMock(**{'get_master_client.return_value': my_redis})
         my_dict = {'default': mock_default_cache}
         mock_caches.__getitem__.side_effect = my_dict.__getitem__
-                
+
         client = DiscordClient(TEST_BOT_TOKEN)
         self.assertTrue(mock_default_cache.get_master_client.called)
         self.assertEqual(client._redis, my_redis)
@@ -102,24 +102,24 @@ class TestBasicsAndHelpers(TestCase):
         mock_default_cache = MagicMock(**{'get_master_client.return_value': my_redis})
         my_dict = {'default': mock_default_cache}
         mock_caches.__getitem__.side_effect = my_dict.__getitem__
-                
+
         with self.assertRaises(RuntimeError):
             DiscordClient(TEST_BOT_TOKEN)
-        
-        self.assertTrue(mock_default_cache.get_master_client.called)        
-        
+
+        self.assertTrue(mock_default_cache.get_master_client.called)
+
 
 @requests_mock.Mocker()
 class TestOtherMethods(TestCase):
-   
+
     def setUp(self):
         self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
         self.headers = DEFAULT_REQUEST_HEADERS
 
-    def test_user_get_current(self, requests_mocker):        
+    def test_user_get_current(self, requests_mocker):
         expected = create_user_info()
         headers = {
-            'accept': 'application/json', 
+            'accept': 'application/json',
             'authorization': 'Bearer accesstoken'
         }
         requests_mocker.register_uri(
@@ -132,33 +132,33 @@ class TestOtherMethods(TestCase):
         result = client.current_user()
         self.assertDictEqual(result, expected)
 
-    def test_get_infos(self, requests_mocker):          
+    def test_get_infos(self, requests_mocker):
         expected = {
-            'id': TEST_GUILD_ID, 
+            'id': TEST_GUILD_ID,
             'name': 'alpha'
-        } 
-        requests_mocker.get(            
+        }
+        requests_mocker.get(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}',
             request_headers=self.headers,
             json=expected
-        )        
+        )
         result = self.client.guild_infos(TEST_GUILD_ID)
         self.assertDictEqual(result, expected)
 
-    
+
 @requests_mock.Mocker()
-class TestGuildRoles(TestCase):    
+class TestGuildRoles(TestCase):
 
     def setUp(self):
         self.url = f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles'
 
-    def test_without_cache(self, requests_mocker):        
+    def test_without_cache(self, requests_mocker):
         expected = [ROLE_ALPHA, ROLE_BRAVO]
         my_mock_redis = MagicMock(**{
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=expected
@@ -168,12 +168,12 @@ class TestGuildRoles(TestCase):
         self.assertListEqual(result, expected)
         self.assertTrue(my_mock_redis.set.called)
 
-    def test_return_from_cache_if_in_cache(self, requests_mocker):        
+    def test_return_from_cache_if_in_cache(self, requests_mocker):
         expected = [ROLE_ALPHA, ROLE_BRAVO]
         my_mock_redis = MagicMock(**{
             'get.return_value': json.dumps(expected).encode('utf8')
         })
-        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)                
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_roles(TEST_GUILD_ID)
         self.assertEqual(result, expected)
         self.assertFalse(my_mock_redis.set.called)
@@ -186,12 +186,12 @@ class TestGuildRoles(TestCase):
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=expected
         )
-        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)                
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_roles(TEST_GUILD_ID)
         self.assertEqual(result, expected)
         self.assertTrue(my_mock_redis.set.called)
@@ -204,12 +204,12 @@ class TestGuildRoles(TestCase):
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=expected
         )
-        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)                
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_roles(TEST_GUILD_ID)
         self.assertEqual(result, expected)
         self.assertFalse(my_mock_redis.set.called)
@@ -222,57 +222,57 @@ class TestGuildRoles(TestCase):
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=expected
         )
-        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)                
+        client = DiscordClient2(TEST_BOT_TOKEN, my_mock_redis)
         result = client.guild_roles(TEST_GUILD_ID)
         self.assertEqual(result, expected)
         self.assertFalse(my_mock_redis.set.called)
-    
+
 
 @requests_mock.Mocker()
 class TestGuildMember(TestCase):
-   
+
     def setUp(self):
         self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
         self.headers = DEFAULT_REQUEST_HEADERS
 
     def test_return_guild_member_when_ok(self, requests_mocker):
         expected = create_user_info()
-        requests_mocker.get(            
+        requests_mocker.get(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}',
             request_headers=self.headers,
             json=expected
-        )        
+        )
         result = self.client.guild_member(TEST_GUILD_ID, TEST_USER_ID)
         self.assertDictEqual(result, expected)
 
-    def test_return_none_if_member_not_known(self, requests_mocker):        
-        requests_mocker.get(            
+    def test_return_none_if_member_not_known(self, requests_mocker):
+        requests_mocker.get(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}',
             request_headers=self.headers,
-            status_code=404,        
+            status_code=404,
             json={'code': 10007}
-        )        
-        result = self.client.guild_member(TEST_GUILD_ID, TEST_USER_ID)        
+        )
+        result = self.client.guild_member(TEST_GUILD_ID, TEST_USER_ID)
         self.assertIsNone(result)
 
-    def test_raise_exception_on_error(self, requests_mocker):        
-        requests_mocker.get(            
+    def test_raise_exception_on_error(self, requests_mocker):
+        requests_mocker.get(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}',
             request_headers=self.headers,
             status_code=500
-        )        
+        )
         with self.assertRaises(HTTPError):
-            self.client.guild_member(TEST_GUILD_ID, TEST_USER_ID)        
-        
+            self.client.guild_member(TEST_GUILD_ID, TEST_USER_ID)
+
 
 class TestGuildGetName(TestCase):
 
-    @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
+    @patch(MODULE_PATH + '.DiscordClient.guild_infos')
     def test_returns_from_cache_if_found(self, mock_guild_get_infos):
         guild_name = 'Omega'
         my_mock_redis = MagicMock(**{'get.return_value': guild_name.encode('utf8')})
@@ -283,7 +283,7 @@ class TestGuildGetName(TestCase):
         self.assertTrue(my_mock_redis.get.called)
         self.assertFalse(my_mock_redis.set.called)
 
-    @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
+    @patch(MODULE_PATH + '.DiscordClient.guild_infos')
     def test_fetches_from_server_if_not_found_in_cache_and_stores_in_cache(
         self, mock_guild_get_infos
     ):
@@ -296,7 +296,7 @@ class TestGuildGetName(TestCase):
         self.assertTrue(my_mock_redis.get.called)
         self.assertTrue(my_mock_redis.set.called)
 
-    @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
+    @patch(MODULE_PATH + '.DiscordClient.guild_infos')
     def test_fetches_from_server_if_asked_to_ignore_cache_and_stores_in_cache(
         self, mock_guild_get_infos
     ):
@@ -309,7 +309,7 @@ class TestGuildGetName(TestCase):
         self.assertEqual(result, guild_name)
         self.assertTrue(my_mock_redis.set.called)
 
-    @patch(MODULE_PATH + '.DiscordClient.guild_infos')    
+    @patch(MODULE_PATH + '.DiscordClient.guild_infos')
     def test_return_empty_if_not_found_in_cache_and_not_returned_from_server(
         self, mock_guild_get_infos
     ):
@@ -325,7 +325,7 @@ class TestGuildGetName(TestCase):
 @requests_mock.Mocker()
 class TestCreateGuildRole(TestCase):
 
-    def setUp(self):        
+    def setUp(self):
         self.request_url = f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles'
         self.my_mock_redis = MagicMock(**{
             'get.return_value': None,
@@ -340,39 +340,39 @@ class TestCreateGuildRole(TestCase):
 
         def data_matcher(request):
             return (json.loads(request.text) == expected)
-                 
-        requests_mocker.post(            
+
+        requests_mocker.post(
             self.request_url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             additional_matcher=data_matcher,
             text=json.dumps(expected),
-        )        
+        )
         result = self.client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=role_name_input
         )
         self.assertDictEqual(result, expected)
         self.assertTrue(self.my_mock_redis.delete.called)
 
-    def test_guild_create_role_empty_response(self, requests_mocker):                 
+    def test_guild_create_role_empty_response(self, requests_mocker):
         expected = {}
         requests_mocker.post(
             self.request_url,
-            request_headers=DEFAULT_REQUEST_HEADERS,        
+            request_headers=DEFAULT_REQUEST_HEADERS,
             text=json.dumps(expected),
-        )        
+        )
         result = self.client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name='dummy'
         )
         self.assertDictEqual(result, expected)
         self.assertFalse(self.my_mock_redis.delete.called)
-    
+
 
 @requests_mock.Mocker()
 class TestGuildDeleteRole(TestCase):
 
-    def setUp(self):        
+    def setUp(self):
         self.request_url = \
-            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles/{TEST_ROLE_ID}'        
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles/{TEST_ROLE_ID}'
         self.my_mock_redis = MagicMock(**{
             'get.return_value': None,
             'pttl.return_value': -1,
@@ -380,7 +380,7 @@ class TestGuildDeleteRole(TestCase):
         self.client = DiscordClient2(TEST_BOT_TOKEN, self.my_mock_redis)
 
     def test_guild_delete_role_success(self, requests_mocker):
-        requests_mocker.delete(            
+        requests_mocker.delete(
             self.request_url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             status_code=204
@@ -392,7 +392,7 @@ class TestGuildDeleteRole(TestCase):
         self.assertTrue(self.my_mock_redis.delete.called)
 
     def test_guild_delete_role_failed(self, requests_mocker):
-        requests_mocker.delete(            
+        requests_mocker.delete(
             self.request_url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             status_code=200
@@ -406,9 +406,9 @@ class TestGuildDeleteRole(TestCase):
 
 @requests_mock.Mocker()
 class TestGuildAddMember(TestCase):
-    
+
     def setUp(self):
-        self.access_token = 'accesstoken'        
+        self.access_token = 'accesstoken'
         self.headers = DEFAULT_REQUEST_HEADERS
         self.request_url = \
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
@@ -416,59 +416,59 @@ class TestGuildAddMember(TestCase):
 
     def test_create_new_without_params(self, requests_mocker):
 
-        def data_matcher(request):            
+        def data_matcher(request):
             expected = {'access_token': self.access_token}
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'PUT',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=201,            
-        )        
+            status_code=201,
+        )
         result = self.client.add_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             access_token=self.access_token
         )
         self.assertTrue(result)
 
     def test_create_existing_without_params(self, requests_mocker):
-        
-        def data_matcher(request):            
+
+        def data_matcher(request):
             expected = {'access_token': self.access_token}
             return (json.loads(request.text) == expected)
-          
+
         requests_mocker.register_uri(
             'PUT',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=204,            
-        )        
+            status_code=204,
+        )
         result = self.client.add_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             access_token=self.access_token
         )
         self.assertIsNone(result)
 
     def test_create_failed_without_params(self, requests_mocker):
-        
-        def data_matcher(request):            
+
+        def data_matcher(request):
             expected = {'access_token': self.access_token}
             return (json.loads(request.text) == expected)
-         
+
         requests_mocker.register_uri(
             'PUT',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=200,            
-        )        
+            status_code=200,
+        )
         result = self.client.add_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             access_token=self.access_token
         )
@@ -484,16 +484,16 @@ class TestGuildAddMember(TestCase):
                 'roles': role_ids
             }
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'PUT',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=201,            
-        )        
+            status_code=201,
+        )
         result = self.client.add_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             access_token=self.access_token,
             role_ids=role_ids
@@ -503,7 +503,7 @@ class TestGuildAddMember(TestCase):
     def test_raise_exception_on_invalid_roles(self, requests_mocker):
         with self.assertRaises(ValueError):
             self.client.add_guild_member(
-                guild_id=TEST_GUILD_ID, 
+                guild_id=TEST_GUILD_ID,
                 user_id=TEST_USER_ID,
                 access_token=self.access_token,
                 role_ids=['abc', 'def']
@@ -520,16 +520,16 @@ class TestGuildAddMember(TestCase):
                 'nick': nick_used
             }
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'PUT',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=201,            
-        )        
+            status_code=201,
+        )
         result = self.client.add_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             access_token=self.access_token,
             nick=nick_input
@@ -539,9 +539,9 @@ class TestGuildAddMember(TestCase):
 
 @requests_mock.Mocker()
 class TestGuildModifyMember(TestCase):
-    
+
     def setUp(self):
-        self.access_token = 'accesstoken'        
+        self.access_token = 'accesstoken'
         self.headers = DEFAULT_REQUEST_HEADERS.copy()
         self.headers['content-type'] = 'application/json'
         self.request_url = \
@@ -550,20 +550,20 @@ class TestGuildModifyMember(TestCase):
 
     def test_can_update_roles(self, requests_mocker):
         role_ids = [1, 2]
-            
-        def data_matcher(request):            
+
+        def data_matcher(request):
             expected = {'roles': role_ids}
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'patch',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=204,            
-        )        
+            status_code=204,
+        )
         result = self.client.modify_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             role_ids=role_ids
         )
@@ -572,20 +572,20 @@ class TestGuildModifyMember(TestCase):
     def test_can_update_nick(self, requests_mocker):
         nick_input = 'x' * 50
         nick_used = 'x' * 32
-            
-        def data_matcher(request):            
+
+        def data_matcher(request):
             expected = {'nick': nick_used}
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'patch',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=204,            
-        )        
+            status_code=204,
+        )
         result = self.client.modify_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             nick=nick_input
         )
@@ -593,23 +593,23 @@ class TestGuildModifyMember(TestCase):
 
     def test_can_update_roles_and_nick(self, requests_mocker):
         role_ids = [1, 2]
-            
-        def data_matcher(request):            
+
+        def data_matcher(request):
             expected = {
                 'roles': role_ids,
                 'nick': TEST_USER_NAME
             }
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'patch',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=204,            
-        )        
+            status_code=204,
+        )
         result = self.client.modify_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             role_ids=role_ids,
             nick=TEST_USER_NAME,
@@ -618,20 +618,20 @@ class TestGuildModifyMember(TestCase):
 
     def test_returns_none_if_member_is_unknown(self, requests_mocker):
 
-        def data_matcher(request):            
+        def data_matcher(request):
             expected = {'nick': TEST_USER_NAME}
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'patch',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=404,            
+            status_code=404,
             json={'code': 10007}
-        )        
+        )
         result = self.client.modify_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             nick=TEST_USER_NAME
         )
@@ -639,19 +639,19 @@ class TestGuildModifyMember(TestCase):
 
     def test_returns_false_if_unsuccessful(self, requests_mocker):
 
-        def data_matcher(request):            
+        def data_matcher(request):
             expected = {'nick': TEST_USER_NAME}
             return (json.loads(request.text) == expected)
-             
+
         requests_mocker.register_uri(
             'patch',
             self.request_url,
             request_headers=self.headers,
             additional_matcher=data_matcher,
-            status_code=200,            
-        )        
+            status_code=200,
+        )
         result = self.client.modify_guild_member(
-            guild_id=TEST_GUILD_ID, 
+            guild_id=TEST_GUILD_ID,
             user_id=TEST_USER_ID,
             nick=TEST_USER_NAME
         )
@@ -660,16 +660,16 @@ class TestGuildModifyMember(TestCase):
     def test_raise_exception_on_invalid_roles(self, requests_mocker):
         with self.assertRaises(ValueError):
             self.client.modify_guild_member(
-                guild_id=TEST_GUILD_ID, 
-                user_id=TEST_USER_ID,                
+                guild_id=TEST_GUILD_ID,
+                user_id=TEST_USER_ID,
                 role_ids=['abc', 'def']
             )
 
     def test_raise_exception_if_role_ids_not_list_like(self, requests_mocker):
         with self.assertRaises(TypeError):
             self.client.modify_guild_member(
-                guild_id=TEST_GUILD_ID, 
-                user_id=TEST_USER_ID,                
+                guild_id=TEST_GUILD_ID,
+                user_id=TEST_USER_ID,
                 role_ids='I am not a list'
             )
 
@@ -678,19 +678,19 @@ class TestGuildModifyMember(TestCase):
     ):
         with self.assertRaises(ValueError):
             self.client.modify_guild_member(
-                guild_id=TEST_GUILD_ID, 
+                guild_id=TEST_GUILD_ID,
                 user_id=TEST_USER_ID
             )
 
 
 class TestGuildRemoveMember(TestCase):
 
-    def setUp(self):        
+    def setUp(self):
         self.headers = DEFAULT_REQUEST_HEADERS
         self.request_url = \
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
         self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
-    
+
     @requests_mock.Mocker()
     def test_returns_true_on_success(self, requests_mocker):
         requests_mocker.register_uri(
@@ -698,12 +698,12 @@ class TestGuildRemoveMember(TestCase):
             self.request_url,
             request_headers=self.headers,
             status_code=204
-        )        
+        )
         result = self.client.remove_guild_member(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID
         )
         self.assertTrue(result)
-    
+
     @requests_mock.Mocker()
     def test_returns_none_if_member_unknown(self, requests_mocker):
         requests_mocker.register_uri(
@@ -712,7 +712,7 @@ class TestGuildRemoveMember(TestCase):
             request_headers=self.headers,
             status_code=404,
             json={'code': 10007}
-        )        
+        )
         result = self.client.remove_guild_member(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID
         )
@@ -726,7 +726,7 @@ class TestGuildRemoveMember(TestCase):
             request_headers=self.headers,
             status_code=404,
             json={}
-        )        
+        )
         with self.assertRaises(HTTPError):
             self.client.remove_guild_member(
                 guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID
@@ -739,7 +739,7 @@ class TestGuildRemoveMember(TestCase):
             self.request_url,
             request_headers=self.headers,
             status_code=404
-        )        
+        )
         with self.assertRaises(HTTPError):
             self.client.remove_guild_member(
                 guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID
@@ -752,7 +752,7 @@ class TestGuildRemoveMember(TestCase):
             self.request_url,
             request_headers=self.headers,
             status_code=200
-        )        
+        )
         result = self.client.remove_guild_member(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID
         )
@@ -760,58 +760,7 @@ class TestGuildRemoveMember(TestCase):
 
 
 class TestGuildMemberAddRole(TestCase):
-    
-    def setUp(self):        
-        self.headers = DEFAULT_REQUEST_HEADERS
-        self.request_url = (
-            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
-            f'/roles/{TEST_ROLE_ID}'
-        )
-        self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
-    
-    @requests_mock.Mocker()
-    def test_returns_true_on_success(self, requests_mocker):
-        requests_mocker.register_uri(
-            'PUT',
-            self.request_url,
-            request_headers=self.headers,
-            status_code=204
-        )        
-        result = self.client.add_guild_member_role(
-            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
-        )
-        self.assertTrue(result)
 
-    @requests_mock.Mocker()
-    def test_return_none_if_member_not_known(self, requests_mocker):
-        requests_mocker.register_uri(
-            'PUT',
-            self.request_url,
-            request_headers=self.headers,
-            status_code=404,        
-            json={'code': 10007}
-        )        
-        result = self.client.add_guild_member_role(
-            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
-        )
-        self.assertIsNone(result)
-    
-    @requests_mock.Mocker()
-    def test_returns_false_when_not_successful(self, requests_mocker):
-        requests_mocker.register_uri(
-            'PUT',
-            self.request_url,
-            request_headers=self.headers,
-            status_code=200
-        )        
-        result = self.client.add_guild_member_role(
-            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
-        )
-        self.assertFalse(result)
-
-
-class TestGuildMemberRemoveRole(TestCase):
-    
     def setUp(self):
         self.headers = DEFAULT_REQUEST_HEADERS
         self.request_url = (
@@ -819,7 +768,58 @@ class TestGuildMemberRemoveRole(TestCase):
             f'/roles/{TEST_ROLE_ID}'
         )
         self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
-    
+
+    @requests_mock.Mocker()
+    def test_returns_true_on_success(self, requests_mocker):
+        requests_mocker.register_uri(
+            'PUT',
+            self.request_url,
+            request_headers=self.headers,
+            status_code=204
+        )
+        result = self.client.add_guild_member_role(
+            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
+        )
+        self.assertTrue(result)
+
+    @requests_mock.Mocker()
+    def test_return_none_if_member_not_known(self, requests_mocker):
+        requests_mocker.register_uri(
+            'PUT',
+            self.request_url,
+            request_headers=self.headers,
+            status_code=404,
+            json={'code': 10007}
+        )
+        result = self.client.add_guild_member_role(
+            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
+        )
+        self.assertIsNone(result)
+
+    @requests_mock.Mocker()
+    def test_returns_false_when_not_successful(self, requests_mocker):
+        requests_mocker.register_uri(
+            'PUT',
+            self.request_url,
+            request_headers=self.headers,
+            status_code=200
+        )
+        result = self.client.add_guild_member_role(
+            guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
+        )
+        self.assertFalse(result)
+
+
+class TestGuildMemberRemoveRole(TestCase):
+
+    def setUp(self):
+        self.headers = DEFAULT_REQUEST_HEADERS
+        self.request_url = (
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
+            f'/roles/{TEST_ROLE_ID}'
+        )
+        self.client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
+
     @requests_mock.Mocker()
     def test_returns_true_on_success(self, requests_mocker):
         requests_mocker.register_uri(
@@ -827,7 +827,7 @@ class TestGuildMemberRemoveRole(TestCase):
             self.request_url,
             request_headers=self.headers,
             status_code=204
-        )        
+        )
         result = self.client.remove_guild_member_role(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
         )
@@ -839,9 +839,9 @@ class TestGuildMemberRemoveRole(TestCase):
             'DELETE',
             self.request_url,
             request_headers=self.headers,
-            status_code=404,        
+            status_code=404,
             json={'code': 10007}
-        )        
+        )
         result = self.client.remove_guild_member_role(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
         )
@@ -854,7 +854,7 @@ class TestGuildMemberRemoveRole(TestCase):
             self.request_url,
             request_headers=self.headers,
             status_code=200
-        )        
+        )
         result = self.client.remove_guild_member_role(
             guild_id=TEST_GUILD_ID, user_id=TEST_USER_ID, role_id=TEST_ROLE_ID
         )
@@ -865,14 +865,14 @@ class TestMatchGuildRolesToName(TestCase):
 
     def setUp(self):
         self.url = f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles'
-        
+
     @requests_mock.Mocker()
     def test_return_role_if_known(self, requests_mocker):
         my_mock_redis = MagicMock(**{
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=ALL_ROLES
@@ -887,7 +887,7 @@ class TestMatchGuildRolesToName(TestCase):
             'get.return_value': None,
             'pttl.return_value': -1,
         })
-        requests_mocker.get(     
+        requests_mocker.get(
             url=self.url,
             request_headers=DEFAULT_REQUEST_HEADERS,
             json=ALL_ROLES
@@ -900,11 +900,11 @@ class TestMatchGuildRolesToName(TestCase):
 @patch(MODULE_PATH + '.DiscordClient.create_guild_role')
 @patch(MODULE_PATH + '.DiscordClient.guild_roles')
 class TestMatchOrCreateGuildRolesToName(TestCase):
-            
+
     def test_return_role_if_known(
         self, mock_guild_get_roles, mock_guild_create_role,
     ):
-        role_name = 'alpha'        
+        role_name = 'alpha'
         mock_guild_get_roles.return_value = ALL_ROLES
         client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
         result = client.match_or_create_role_from_name(TEST_GUILD_ID, role_name)
@@ -929,23 +929,23 @@ class TestMatchOrCreateGuildRolesToName(TestCase):
     def test_return_none_if_role_creation_is_disabled(
         self, mock_guild_get_roles, mock_guild_create_role,
     ):
-        role_name = 'echo'        
-        mock_guild_get_roles.return_value = ALL_ROLES        
+        role_name = 'echo'
+        mock_guild_get_roles.return_value = ALL_ROLES
         client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
         result = client.match_or_create_role_from_name(TEST_GUILD_ID, role_name)
         expected = (None, False)
         self.assertEqual(result, expected)
         self.assertFalse(mock_guild_create_role.called)
-    
+
     def test_raise_exception_if_name_has_invalid_type(
         self, mock_guild_get_roles, mock_guild_create_role,
     ):
         role_name = ['echo']
-        mock_guild_get_roles.return_value = ALL_ROLES        
+        mock_guild_get_roles.return_value = ALL_ROLES
         client = DiscordClient2(TEST_BOT_TOKEN, mock_redis)
         with self.assertRaises(TypeError):
-            client.match_or_create_role_from_name(TEST_GUILD_ID, role_name)        
-        
+            client.match_or_create_role_from_name(TEST_GUILD_ID, role_name)
+
 
 @patch(MODULE_PATH + '.DiscordClient.create_guild_role')
 @patch(MODULE_PATH + '.DiscordClient.guild_roles')
@@ -960,7 +960,7 @@ class TestMatchOrCreateGuildRolesToNames(TestCase):
         result = client.match_or_create_roles_from_names(TEST_GUILD_ID, role_names)
         expected = [create_matched_role(ROLE_ALPHA), create_matched_role(ROLE_BRAVO)]
         self.assertEqual(
-            DiscordRoles.create_from_matched_roles(result), 
+            DiscordRoles.create_from_matched_roles(result),
             DiscordRoles.create_from_matched_roles(expected)
         )
         self.assertFalse(mock_guild_create_role.called)
@@ -977,7 +977,7 @@ class TestMatchOrCreateGuildRolesToNames(TestCase):
         expected = \
             [create_matched_role(ROLE_ALPHA), create_matched_role(new_role, True)]
         self.assertEqual(
-            DiscordRoles.create_from_matched_roles(result), 
+            DiscordRoles.create_from_matched_roles(result),
             DiscordRoles.create_from_matched_roles(expected)
         )
         self.assertTrue(mock_guild_create_role.called)
@@ -994,7 +994,7 @@ class TestMatchOrCreateGuildRolesToNames(TestCase):
         result = client.match_or_create_roles_from_names(TEST_GUILD_ID, role_names)
         expected = [create_matched_role(ROLE_ALPHA)]
         self.assertEqual(
-            DiscordRoles.create_from_matched_roles(result), 
+            DiscordRoles.create_from_matched_roles(result),
             DiscordRoles.create_from_matched_roles(expected)
         )
         self.assertFalse(mock_guild_create_role.called)
@@ -1008,7 +1008,7 @@ class TestMatchOrCreateGuildRolesToNames(TestCase):
         result = client.match_or_create_roles_from_names(TEST_GUILD_ID, role_names)
         expected = [create_matched_role(ROLE_ALPHA), create_matched_role(ROLE_BRAVO)]
         self.assertEqual(
-            DiscordRoles.create_from_matched_roles(result), 
+            DiscordRoles.create_from_matched_roles(result),
             DiscordRoles.create_from_matched_roles(expected)
         )
         self.assertFalse(mock_guild_create_role.called)
@@ -1025,7 +1025,7 @@ class TestMatchOrCreateGuildRolesToNames(TestCase):
         result = client.match_or_create_roles_from_names(TEST_GUILD_ID, role_names)
         expected = [create_matched_role(new_role)]
         self.assertEqual(
-            DiscordRoles.create_from_matched_roles(result), 
+            DiscordRoles.create_from_matched_roles(result),
             DiscordRoles.create_from_matched_roles(expected)
         )
         self.assertFalse(mock_guild_create_role.called)
@@ -1035,7 +1035,7 @@ class TestApiRequestBasics(TestCase):
 
     def setUp(self):
         self.client = DiscordClient(TEST_BOT_TOKEN, mock_redis)
-    
+
     @patch(MODULE_PATH + '.requests', spec=requests)
     def test_raises_exception_on_invalid_method(self, mock_requests):
         with self.assertRaises(ValueError):
@@ -1045,25 +1045,25 @@ class TestApiRequestBasics(TestCase):
 @patch(MODULE_PATH + '.DiscordClient._redis_decr_or_set')
 @requests_mock.Mocker()
 class TestRateLimitMechanic(TestCase):
-    
+
     my_role = ROLE_ALPHA
-    
+
     @staticmethod
     def my_redis_pttl(name: str):
         if name == DiscordClient._KEY_GLOBAL_BACKOFF_UNTIL:
             return -1
         else:
             return TEST_RETRY_AFTER
-    
+
     def test_proceed_if_requests_remaining(
         self, mock_redis_decr_or_set, requests_mocker
-    ):               
+    ):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )        
+        )
         my_mock_redis = MagicMock(**{'pttl.side_effect': self.my_redis_pttl})
         mock_redis_decr_or_set.return_value = 5
-        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
@@ -1072,15 +1072,15 @@ class TestRateLimitMechanic(TestCase):
     @patch(MODULE_PATH + '.sleep')
     def test_wait_if_reset_happens_soon(
         self, requests_mocker, mock_sleep, mock_redis_decr_or_set
-    ):        
+    ):
         counter = 0
-        
+
         def my_redis_pttl_2(name: str):
             if name == DiscordClient._KEY_GLOBAL_BACKOFF_UNTIL:
                 return -1
             else:
                 return 100
-        
+
         def my_redis_decr_or_set(**kwargs):
             nonlocal counter
             counter += 1
@@ -1092,12 +1092,12 @@ class TestRateLimitMechanic(TestCase):
 
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )        
+        )
         mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
-        mock_redis_decr_or_set.side_effect = my_redis_decr_or_set        
+        mock_redis_decr_or_set.side_effect = my_redis_decr_or_set
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
-        
+
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
@@ -1107,15 +1107,15 @@ class TestRateLimitMechanic(TestCase):
     @patch(MODULE_PATH + '.sleep')
     def test_wait_if_reset_happens_soon_and_sleep_must_not_be_negative(
         self, requests_mocker, mock_sleep, mock_redis_decr_or_set
-    ):        
+    ):
         counter = 0
-                
+
         def my_redis_pttl_2(name: str):
             if name == DiscordClient._KEY_GLOBAL_BACKOFF_UNTIL:
                 return -1
             else:
                 return -1
-        
+
         def my_redis_decr_or_set(**kwargs):
             nonlocal counter
             counter += 1
@@ -1127,24 +1127,24 @@ class TestRateLimitMechanic(TestCase):
 
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )        
+        )
         mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
         mock_redis_decr_or_set.side_effect = my_redis_decr_or_set
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
-        
+
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
         self.assertDictEqual(result, self.my_role)
         self.assertTrue(mock_sleep.called)
-    
+
     def test_throw_exception_if_rate_limit_reached(
         self, mock_redis_decr_or_set, requests_mocker
-    ):        
+    ):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )        
+        )
         my_mock_redis = MagicMock(**{'pttl.side_effect': self.my_redis_pttl})
         mock_redis_decr_or_set.return_value = -1
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
@@ -1160,42 +1160,42 @@ class TestRateLimitMechanic(TestCase):
     @patch(MODULE_PATH + '.sleep')
     def test_throw_exception_if_retries_are_exhausted(
         self, requests_mocker, mock_sleep, mock_redis_decr_or_set
-    ):        
+    ):
         def my_redis_pttl_2(name: str):
             if name == DiscordClient._KEY_GLOBAL_BACKOFF_UNTIL:
                 return -1
             else:
                 return 100
-        
+
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )        
+        )
         mock_sleep.side_effect = my_sleep
         my_mock_redis = MagicMock(**{'pttl.side_effect': my_redis_pttl_2})
         mock_redis_decr_or_set.return_value = -1
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
-        
+
         with self.assertRaises(RuntimeError):
             client.create_guild_role(
                 guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
             )
-        
+
     def test_report_api_rate_limits(
         self, mock_redis_decr_or_set, requests_mocker
-    ):               
+    ):
         headers = {
             'x-ratelimit-limit': '10',
             'x-ratelimit-remaining': '9',
             'x-ratelimit-reset-after': '10.000',
         }
         requests_mocker.post(
-            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', 
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             json=self.my_role,
             headers=headers
-        )        
+        )
         my_mock_redis = MagicMock(**{'pttl.side_effect': self.my_redis_pttl})
         mock_redis_decr_or_set.return_value = 5
-        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
@@ -1203,20 +1203,20 @@ class TestRateLimitMechanic(TestCase):
 
     def test_dont_report_api_rate_limits(
         self, mock_redis_decr_or_set, requests_mocker
-    ):               
+    ):
         headers = {
             'x-ratelimit-limit': '10',
             'x-ratelimit-remaining': '5',
             'x-ratelimit-reset-after': '10.000',
         }
         requests_mocker.post(
-            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', 
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             json=self.my_role,
             headers=headers
-        )        
+        )
         my_mock_redis = MagicMock(**{'pttl.side_effect': self.my_redis_pttl})
         mock_redis_decr_or_set.return_value = 5
-        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
@@ -1224,20 +1224,20 @@ class TestRateLimitMechanic(TestCase):
 
     def test_ignore_errors_in_api_rate_limits(
         self, mock_redis_decr_or_set, requests_mocker
-    ):               
+    ):
         headers = {
             'x-ratelimit-limit': '10',
             'x-ratelimit-remaining': '0',
             'x-ratelimit-reset-after': 'invalid',
         }
         requests_mocker.post(
-            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', 
+            f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             json=self.my_role,
             headers=headers
-        )        
+        )
         my_mock_redis = MagicMock(**{'pttl.side_effect': self.my_redis_pttl})
         mock_redis_decr_or_set.return_value = 5
-        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
         )
@@ -1245,14 +1245,14 @@ class TestRateLimitMechanic(TestCase):
 
     @patch(MODULE_PATH + '.DiscordClient._ensure_rate_limed_not_exhausted')
     def test_can_turn_off_rate_limiting(
-        self, 
-        requests_mocker, 
-        mock_ensure_rate_limed_not_exhausted, 
+        self,
+        requests_mocker,
+        mock_ensure_rate_limed_not_exhausted,
         mock_redis_decr_or_set
-    ):        
+    ):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
-        )                
+        )
         client = DiscordClient(TEST_BOT_TOKEN, mock_redis, is_rate_limited=False)
         result = client.create_guild_role(
             guild_id=TEST_GUILD_ID, role_name=self.my_role['name']
@@ -1264,7 +1264,7 @@ class TestRateLimitMechanic(TestCase):
 @patch(MODULE_PATH + '.DiscordClient._redis_decr_or_set')
 @requests_mock.Mocker()
 class TestBackoffHandling(TestCase):
-    
+
     my_role = ROLE_ALPHA
 
     def test_dont_raise_exception_when_no_global_backoff(
@@ -1275,17 +1275,17 @@ class TestBackoffHandling(TestCase):
         )
         my_mock_redis = MagicMock(**{'pttl.return_value': -1})
         mock_redis_decr_or_set.return_value = 5
-        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)        
+        client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         result = client.create_guild_role(guild_id=TEST_GUILD_ID, role_name='dummy')
         self.assertDictEqual(result, self.my_role)
-    
+
     def test_raise_exception_when_global_backoff_in_effect(
         self, mock_redis_decr_or_set, requests_mocker
     ):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
         )
-        retry_after = 1000        
+        retry_after = 1000
         my_mock_redis = MagicMock(**{'pttl.return_value': retry_after})
         mock_redis_decr_or_set.return_value = 5
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
@@ -1299,7 +1299,7 @@ class TestBackoffHandling(TestCase):
 
     @patch(MODULE_PATH + '.sleep')
     def test_just_wait_if_global_backoff_ends_soon(
-        self, requests_mocker, mock_sleep, mock_redis_decr_or_set, 
+        self, requests_mocker, mock_sleep, mock_redis_decr_or_set,
     ):
         requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles', json=self.my_role
@@ -1315,22 +1315,22 @@ class TestBackoffHandling(TestCase):
         result = client.create_guild_role(guild_id=TEST_GUILD_ID, role_name='dummy')
         self.assertDictEqual(result, self.my_role)
         self.assertTrue(mock_sleep.called)
-    
+
     @patch(MODULE_PATH + '.DiscordClient._redis_set_if_longer')
     def test_raise_exception_if_api_returns_429(
         self, requests_mocker, mock_redis_set_if_longer, mock_redis_decr_or_set,
     ):
         retry_after = 5000
-        requests_mocker.post(            
+        requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             status_code=429,
             json={'retry_after': retry_after}
-        )        
+        )
         my_mock_redis = MagicMock(
             **{'pttl.side_effect': TestRateLimitMechanic.my_redis_pttl}
         )
         mock_redis_decr_or_set.return_value = 5
-        
+
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         try:
             client.create_guild_role(
@@ -1347,16 +1347,16 @@ class TestBackoffHandling(TestCase):
     def test_raise_exception_if_api_returns_429_no_retry_info(
         self, requests_mocker, mock_redis_set_if_longer, mock_redis_decr_or_set,
     ):
-        requests_mocker.post(            
+        requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             status_code=429,
             json={}
-        )        
+        )
         my_mock_redis = MagicMock(
             **{'pttl.side_effect': TestRateLimitMechanic.my_redis_pttl}
         )
         mock_redis_decr_or_set.return_value = 5
-        
+
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         try:
             client.create_guild_role(
@@ -1373,16 +1373,16 @@ class TestBackoffHandling(TestCase):
     def test_raise_exception_if_api_returns_429_ignore_value_error(
         self, requests_mocker, mock_redis_set_if_longer, mock_redis_decr_or_set,
     ):
-        requests_mocker.post(            
+        requests_mocker.post(
             f'{API_BASE_URL}guilds/{TEST_GUILD_ID}/roles',
             status_code=429,
             json={'retry_after': "invalid"}
-        )        
+        )
         my_mock_redis = MagicMock(
             **{'pttl.side_effect': TestRateLimitMechanic.my_redis_pttl}
         )
         mock_redis_decr_or_set.return_value = 5
-        
+
         client = DiscordClient(TEST_BOT_TOKEN, my_mock_redis)
         try:
             client.create_guild_role(
@@ -1412,7 +1412,7 @@ class TestRedisDecode(TestCase):
 
 
 class TestTouchLuaScripts(TestCase):
-    
+
     def test__redis_script_decr_or_set(self):
         client = DiscordClient(TEST_BOT_TOKEN, mock_redis)
         client._redis_decr_or_set(name='dummy', value=5, px=1000)

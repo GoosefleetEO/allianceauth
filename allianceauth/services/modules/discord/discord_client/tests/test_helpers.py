@@ -25,7 +25,7 @@ class TestDiscordRoles(TestCase):
     def test_raises_exception_if_roles_raw_of_wrong_type(self):
         with self.assertRaises(TypeError):
             DiscordRoles({'id': 1})
-    
+
     def test_raises_exception_if_list_contains_non_dict(self):
         roles_raw = [ROLE_ALPHA, 'not_valid']
         with self.assertRaises(TypeError):
@@ -45,7 +45,7 @@ class TestDiscordRoles(TestCase):
         roles_raw = [{'id': 1, 'name': 'alpha'}]
         with self.assertRaises(ValueError):
             DiscordRoles(roles_raw)
-    
+
     def test_roles_are_equal(self):
         roles_a = DiscordRoles([ROLE_ALPHA, ROLE_BRAVO])
         roles_b = DiscordRoles([ROLE_ALPHA, ROLE_BRAVO])
@@ -57,19 +57,19 @@ class TestDiscordRoles(TestCase):
         self.assertNotEqual(roles_a, roles_b)
 
     def test_different_objects_are_not_equal(self):
-        roles_a = DiscordRoles([ROLE_ALPHA, ROLE_BRAVO])        
+        roles_a = DiscordRoles([ROLE_ALPHA, ROLE_BRAVO])
         self.assertFalse(roles_a == "invalid")
 
-    def test_len(self):        
+    def test_len(self):
         self.assertEqual(len(self.all_roles), 4)
 
     def test_contains(self):
         self.assertTrue(1 in self.all_roles)
         self.assertFalse(99 in self.all_roles)
 
-    def test_sanitize_role_name(self):        
+    def test_sanitize_role_name(self):
         role_name_input = 'x' * 110
-        role_name_expected = 'x' * 100                
+        role_name_expected = 'x' * 100
         result = DiscordRoles.sanitize_role_name(role_name_input)
         self.assertEqual(result, role_name_expected)
 
@@ -94,8 +94,8 @@ class TestIds(TestCase):
 
     def setUp(self):
         self.all_roles = DiscordRoles(ALL_ROLES)
-        
-    def test_return_role_ids_default(self):        
+
+    def test_return_role_ids_default(self):
         result = self.all_roles.ids()
         expected = {1, 2, 3, 13}
         self.assertSetEqual(result, expected)
@@ -154,7 +154,7 @@ class TestHasRoles(TestCase):
 
     def test_true_if_all_roles_exit_str(self):
         self.assertTrue(self.all_roles.has_roles(['1', '2']))
-    
+
     def test_false_if_role_does_not_exit(self):
         self.assertFalse(self.all_roles.has_roles([99]))
 
@@ -163,7 +163,7 @@ class TestHasRoles(TestCase):
 
     def test_true_for_empty_roles(self):
         self.assertTrue(self.all_roles.has_roles([]))
-        
+
 
 class TestGetMatchingRolesByName(TestCase):
 

@@ -34,28 +34,28 @@ class TestDjangoBackend(TestCase):
 
     TEST_KEY = "my-django-backend-test-key"
     TIMEOUT = 1800
-    
+
     def setUp(self) -> None:
         cache.delete(self.TEST_KEY)
         self.backend = DjangoBackend(dict())
-    
+
     def test_can_get_lock(self):
         """
-        when lock can be acquired 
+        when lock can be acquired
         then set it with timetout
         """
         self.backend.raise_or_lock(self.TEST_KEY, self.TIMEOUT)
         self.assertIsNotNone(cache.get(self.TEST_KEY))
         self.assertAlmostEqual(cache.ttl(self.TEST_KEY), self.TIMEOUT, delta=2)
-        
+
     def test_when_cant_get_lock_raise_exception(self):
         """
-        when lock can bot be acquired 
+        when lock can bot be acquired
         then raise AlreadyQueued exception with countdown
         """
         self.backend.raise_or_lock(self.TEST_KEY, self.TIMEOUT)
 
-        try: 
+        try:
             self.backend.raise_or_lock(self.TEST_KEY, self.TIMEOUT)
         except Exception as ex:
             self.assertIsInstance(ex, AlreadyQueued)
@@ -64,7 +64,7 @@ class TestDjangoBackend(TestCase):
     def test_can_clear_lock(self):
         """
         when a lock exists
-        then can get a new lock after clearing it 
+        then can get a new lock after clearing it
         """
         self.backend.raise_or_lock(self.TEST_KEY, self.TIMEOUT)
 

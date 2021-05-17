@@ -53,21 +53,21 @@ def run_many_updates(runs):
     logger.info('Starting piloting_tasks for %d runs', runs)
     users = list()
     all_groups = Group.objects.all()
-    for i in range(runs):        
+    for i in range(runs):
         if not users:
             users = list(User.objects.filter(discord__isnull=False))
         user = users.pop()
         logger.info('%d/%d: Starting run with user %s', i + 1, runs, user)
-        # force change of nick        
+        # force change of nick
         new_nick = f'Testnick {uuid1().hex}'[:32]
         logger.info(
             '%d/%d: Changing nickname of %s to "%s"', i + 1, runs, user, new_nick
         )
         user.profile.main_character.character_name = new_nick
-        user.profile.main_character.save()        
-        
+        user.profile.main_character.save()
+
         # force change of groups
-        user_groups = user.groups.all()        
+        user_groups = user.groups.all()
         user.groups.remove(random.choice(user_groups))
         while True:
             new_group = random.choice(all_groups)

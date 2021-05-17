@@ -17,7 +17,7 @@ class SrpMenu(MenuItemHook):
     def render(self, request):
         if request.user.has_perm('srp.access_srp'):
             app_count = SRPManager.pending_requests_count_for_user(request.user)
-            self.count = app_count if app_count and app_count > 0 else None            
+            self.count = app_count if app_count and app_count > 0 else None
             return MenuItemHook.render(self, request)
         return ''
 

@@ -3,9 +3,9 @@
 from urllib.parse import urljoin, quote
 
 from . import (
-    _ESI_CATEGORY_ALLIANCE, 
-    _ESI_CATEGORY_CORPORATION, 
-    _ESI_CATEGORY_REGION, 
+    _ESI_CATEGORY_ALLIANCE,
+    _ESI_CATEGORY_CORPORATION,
+    _ESI_CATEGORY_REGION,
     _ESI_CATEGORY_SOLARSYSTEM
 )
 
@@ -15,28 +15,28 @@ _BASE_URL = 'http://evemaps.dotlan.net'
 
 def _build_url(category: str, name: str) -> str:
     """return url to profile page for an eve entity"""
-    
-    if category == _ESI_CATEGORY_ALLIANCE:        
+
+    if category == _ESI_CATEGORY_ALLIANCE:
         partial = 'alliance'
 
-    elif category == _ESI_CATEGORY_CORPORATION:        
+    elif category == _ESI_CATEGORY_CORPORATION:
         partial = 'corp'
 
     elif category == _ESI_CATEGORY_REGION:
         partial = 'map'
-    
+
     elif category == _ESI_CATEGORY_SOLARSYSTEM:
         partial = 'system'
-    
+
     else:
         raise NotImplementedError(
             "Not implemented yet for category:" + category
         )
-        
+
     url = urljoin(
         _BASE_URL,
         '{}/{}'.format(partial, quote(str(name).replace(" ", "_")))
-        
+
     )
     return url
 

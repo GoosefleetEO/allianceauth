@@ -12,15 +12,15 @@ logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 
 @admin.register(DiscordUser)
-class DiscordUserAdmin(ServicesUserAdmin):            
+class DiscordUserAdmin(ServicesUserAdmin):
     search_fields = ServicesUserAdmin.search_fields + ('uid', 'username')
     list_display = ServicesUserAdmin.list_display + ('activated', '_username', '_uid')
     list_filter = ServicesUserAdmin.list_filter + ('activated',)
     ordering = ('-activated',)
-   
+
     def _uid(self, obj):
         return obj.uid
-    
+
     _uid.short_description = 'Discord ID (UID)'
     _uid.admin_order_field = 'uid'
 
@@ -29,6 +29,6 @@ class DiscordUserAdmin(ServicesUserAdmin):
             return f'{obj.username}#{obj.discriminator}'
         else:
             return ''
-    
+
     _username.short_description = 'Discord Username'
     _username.admin_order_field = 'username'

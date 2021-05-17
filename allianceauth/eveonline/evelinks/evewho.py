@@ -3,9 +3,9 @@
 from urllib.parse import urljoin
 
 from . import (
-    _ESI_CATEGORY_ALLIANCE, 
-    _ESI_CATEGORY_CORPORATION, 
-    _ESI_CATEGORY_CHARACTER,  
+    _ESI_CATEGORY_ALLIANCE,
+    _ESI_CATEGORY_CORPORATION,
+    _ESI_CATEGORY_CHARACTER,
 )
 
 
@@ -14,21 +14,21 @@ _BASE_URL = 'https://evewho.com'
 
 def _build_url(category: str, eve_id: int) -> str:
     """return url to profile page for an eve entity"""
-    
-    if category == _ESI_CATEGORY_ALLIANCE:        
+
+    if category == _ESI_CATEGORY_ALLIANCE:
         partial = 'alliance'
 
-    elif category == _ESI_CATEGORY_CORPORATION:        
+    elif category == _ESI_CATEGORY_CORPORATION:
         partial = 'corporation'
 
     elif category == _ESI_CATEGORY_CHARACTER:
         partial = 'character'
-    
+
     else:
         raise NotImplementedError(
             "Not implemented yet for category:" + category
         )
-    
+
     url = urljoin(
         _BASE_URL,
         '{}/{}'.format(partial, int(eve_id))

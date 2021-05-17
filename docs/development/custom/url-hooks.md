@@ -12,8 +12,8 @@ To register a UrlHook class you would do the following:
     @hooks.register('url_hook')
     def register_urls():
         return UrlHook(app_name.urls, 'app_name', r^'app_name/')
-        
-        
+
+
 The `UrlHook` class specifies some parameters/instance variables required for URL pattern inclusion.
 
 `UrlHook(urls, app_name, base_url)`
@@ -36,7 +36,7 @@ The app's `urls.py` would look like so:
 
     from django.conf.urls import url
     import plugin.views
-    
+
     urlpatterns = [
         url(r^'index$', plugins.views.index, name='index'),
         ]

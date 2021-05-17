@@ -3,10 +3,10 @@
 from urllib.parse import urljoin
 
 from . import (
-    _ESI_CATEGORY_ALLIANCE, 
-    _ESI_CATEGORY_CORPORATION, 
+    _ESI_CATEGORY_ALLIANCE,
+    _ESI_CATEGORY_CORPORATION,
     _ESI_CATEGORY_CHARACTER,
-    _ESI_CATEGORY_REGION, 
+    _ESI_CATEGORY_REGION,
     _ESI_CATEGORY_SOLARSYSTEM
 )
 
@@ -16,11 +16,11 @@ _BASE_URL = 'https://zkillboard.com'
 
 def _build_url(category: str, eve_id: int) -> str:
     """return url to profile page for an eve entity"""
-    
-    if category == _ESI_CATEGORY_ALLIANCE:        
+
+    if category == _ESI_CATEGORY_ALLIANCE:
         partial = 'alliance'
 
-    elif category == _ESI_CATEGORY_CORPORATION:        
+    elif category == _ESI_CATEGORY_CORPORATION:
         partial = 'corporation'
 
     elif category == _ESI_CATEGORY_CHARACTER:
@@ -31,12 +31,12 @@ def _build_url(category: str, eve_id: int) -> str:
 
     elif category == _ESI_CATEGORY_SOLARSYSTEM:
         partial = 'system'
-    
+
     else:
         raise NotImplementedError(
             "Not implemented yet for category:" + category
         )
-    
+
     url = urljoin(
         _BASE_URL,
         '{}/{}/'.format(partial, int(eve_id))

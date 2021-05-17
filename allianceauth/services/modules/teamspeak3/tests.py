@@ -304,21 +304,20 @@ class Teamspeak3ManagerTestCase(TestCase):
 
     @mock.patch.object(Teamspeak3Manager, '_group_list')
     @mock.patch.object(Teamspeak3Manager, '_group_id_by_name')
-    def test_add_user_exception(self, _group_id_by_name, _group_list):  
+    def test_add_user_exception(self, _group_id_by_name, _group_list):
         """test 1st exception occuring in add_user()"""
         # set mocks in Teamspeak3Manager class
         _group_list.return_value = ['Member', 'Guest']
-        _group_id_by_name.return_value =  99        
+        _group_id_by_name.return_value =  99
         manager = Teamspeak3Manager()
         server = mock.MagicMock()
         server._connected.return_value = True
         server.send_command = mock.Mock(side_effect=Teamspeak3ManagerTestCase.my_side_effect)
         manager._server = server
 
-        # create test data                
+        # create test data
         user = User.objects.create_user("dummy")
         user.profile.state = State.objects.filter(name="Member").first()
-        
+
         # perform test
         manager.add_user(user, "Dummy User")
-    

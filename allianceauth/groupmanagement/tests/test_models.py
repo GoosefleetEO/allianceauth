@@ -11,7 +11,7 @@ from allianceauth.eveonline.models import (
 from ..models import GroupRequest, RequestLog
 
 
-def create_testdata():    
+def create_testdata():
     # clear DB
     User.objects.all().delete()
     Group.objects.all().delete()
@@ -20,13 +20,13 @@ def create_testdata():
     EveAllianceInfo.objects.all().delete()
 
     # group 1
-    group = Group.objects.create(name='Superheros')        
+    group = Group.objects.create(name='Superheros')
     group.authgroup.description = 'Default Group'
     group.authgroup.internal = False
     group.authgroup.hidden = False
     group.authgroup.save()
-    
-    # user 1        
+
+    # user 1
     user_1 = AuthUtils.create_user('Bruce Wayne')
     AuthUtils.add_main_character_2(
         user_1,
@@ -34,7 +34,7 @@ def create_testdata():
         character_id=1001,
         corp_id=2001,
         corp_name='Wayne Technologies'
-    )        
+    )
     user_1.groups.add(group)
     group.authgroup.group_leaders.add(user_1)
 
@@ -46,13 +46,13 @@ def create_testdata():
         character_id=1002,
         corp_id=2002,
         corp_name='Wayne Technologies'
-    )            
+    )
     return group, user_1, user_2
 
 
 
 class TestGroupRequest(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -78,7 +78,7 @@ class TestGroupRequest(TestCase):
 
 
 class TestRequestLog(TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -124,7 +124,7 @@ class TestRequestLog(TestCase):
         self.assertEqual(request_log.type_to_str(), expected)
 
     def test_action_to_str_accept(self):
-        request_log = RequestLog.objects.create(            
+        request_log = RequestLog.objects.create(
             group=self.group,
             request_info='Clark Kent:Superheros',
             request_actor=self.user_1,
@@ -134,7 +134,7 @@ class TestRequestLog(TestCase):
         self.assertEqual(request_log.action_to_str(), expected)
 
     def test_action_to_str_reject(self):
-        request_log = RequestLog.objects.create(            
+        request_log = RequestLog.objects.create(
             group=self.group,
             request_info='Clark Kent:Superheros',
             request_actor=self.user_1,
@@ -144,7 +144,7 @@ class TestRequestLog(TestCase):
         self.assertEqual(request_log.action_to_str(), expected)
 
     def test_req_char(self):
-        request_log = RequestLog.objects.create(            
+        request_log = RequestLog.objects.create(
             group=self.group,
             request_info='Clark Kent:Superheros',
             request_actor=self.user_1,
@@ -157,7 +157,7 @@ class TestRequestLog(TestCase):
 class TestAuthGroup(TestCase):
 
     def test_str(self):
-        group = Group.objects.create(name='Superheros')        
+        group = Group.objects.create(name='Superheros')
         group.authgroup.description = 'Default Group'
         group.authgroup.internal = False
         group.authgroup.hidden = False

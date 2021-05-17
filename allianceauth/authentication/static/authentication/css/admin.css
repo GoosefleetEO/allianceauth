@@ -1,12 +1,12 @@
-/* 
-CSS for allianceauth admin site 
+/*
+CSS for allianceauth admin site
 */
 
 /* styling for profile pic */
-.img-circle { 
-    border-radius: 50%; 
+.img-circle {
+    border-radius: 50%;
 }
-.column-user_profile_pic {     
+.column-user_profile_pic {
     width: 1px;
     white-space: nowrap;
 }
@@ -26,4 +26,4 @@ CSS for allianceauth admin site
     color: black ;
     background-color: rgb(255, 255, 204) ;
     z-index: 1 ;
-} 
+}

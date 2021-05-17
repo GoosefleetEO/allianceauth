@@ -125,7 +125,7 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
 
 @receiver(state_changed)
 def check_service_accounts_state_changed(sender, user, state, **kwargs):
-    logger.debug("Received state_changed from %s to state %s" % (user, state))    
+    logger.debug("Received state_changed from %s to state %s" % (user, state))
     for svc in ServicesHook.get_services():
         svc.validate_user(user)
         svc.update_groups(user)
@@ -154,7 +154,7 @@ def disable_services_on_inactive(sender, instance, *args, **kwargs):
 
 
 @receiver(pre_save, sender=UserProfile)
-def process_main_character_change(sender, instance, *args, **kwargs):    
+def process_main_character_change(sender, instance, *args, **kwargs):
     if not instance.pk:
         # ignore new model being created
         return
@@ -169,9 +169,9 @@ def process_main_character_change(sender, instance, *args, **kwargs):
                 instance.user
             )
             disable_user(instance.user)
-        elif old_instance.main_character != instance.main_character:              
+        elif old_instance.main_character != instance.main_character:
             logger.info(
-                "Updating Names due to change of main character for user %s", 
+                "Updating Names due to change of main character for user %s",
                 instance.user
             )
             for svc in ServicesHook.get_services():
@@ -181,8 +181,8 @@ def process_main_character_change(sender, instance, *args, **kwargs):
                 except:
                     logger.exception(
                         "Exception running sync_nickname for services module %s "
-                        "on user %s", 
-                        svc, 
+                        "on user %s",
+                        svc,
                         instance
                     )
 
@@ -192,10 +192,10 @@ def process_main_character_change(sender, instance, *args, **kwargs):
 
 @receiver(pre_save, sender=EveCharacter)
 def process_main_character_update(sender, instance, *args, **kwargs):
-    try:        
+    try:
         if instance.userprofile:
             logger.debug(
-                "Received pre_save from %s for process_main_character_update", 
+                "Received pre_save from %s for process_main_character_update",
                 instance
             )
             old_instance = EveCharacter.objects.get(pk=instance.pk)

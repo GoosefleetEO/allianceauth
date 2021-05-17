@@ -22,7 +22,7 @@ class DjangoBackend:
     @staticmethod
     def raise_or_lock(key, timeout):
         acquired = cache.add(key=key, value="lock", timeout=timeout)
-        if not acquired:            
+        if not acquired:
             raise AlreadyQueued(int(cache.ttl(key)))
 
     @staticmethod

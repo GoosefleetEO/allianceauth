@@ -366,7 +366,7 @@ Here is an example debug config for Celery:
     "module": "celery",
     "cwd": "${workspaceFolder}/myauth",
     "console": "integratedTerminal",
-    "args": [        
+    "args": [
         "-A",
         "myauth",
         "worker",
@@ -391,7 +391,7 @@ Finally it makes sense to have a dedicated debug config for running unit tests. 
     "request": "launch",
     "program": "${workspaceFolder}/myauth/manage.py",
     "args": [
-        "test",        
+        "test",
         "--keepdb",
         "--debug-mode",
         "--failfast",

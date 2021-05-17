@@ -37,7 +37,7 @@ class CorpStatsQuerySet(models.QuerySet):
             return self.filter(query)
         except AssertionError:
             logger.debug('User %s has no main character. No corpstats visible.' % user)
-            return self.none()        
+            return self.none()
 
 
 class CorpStatsManager(models.Manager):

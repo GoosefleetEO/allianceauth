@@ -198,10 +198,10 @@ class ServicesSignalsTestCase(TestCase):
         # Assert
         self.assertTrue(services_hook.get_services.called)
 
-        self.assertTrue(svc.validate_user.called)        
+        self.assertTrue(svc.validate_user.called)
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
-        
+
         self.assertTrue(svc.update_groups.called)
         args, kwargs = svc.update_groups.call_args
         self.assertEqual(self.member, args[0])
@@ -217,11 +217,11 @@ class ServicesSignalsTestCase(TestCase):
         svc.access_perm = 'auth.access_testsvc'
 
         services_hook.get_services.return_value = [svc]
-        
+
         new_main = EveCharacter.objects.create(
-            character_id=123, 
-            character_name="Alter Ego", 
-            corporation_id=987, 
+            character_id=123,
+            character_name="Alter Ego",
+            corporation_id=987,
             corporation_name="ABC"
         )
         self.member.profile.main_character = new_main
@@ -230,17 +230,17 @@ class ServicesSignalsTestCase(TestCase):
         # Assert
         self.assertTrue(services_hook.get_services.called)
 
-        self.assertTrue(svc.validate_user.called)        
+        self.assertTrue(svc.validate_user.called)
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
-        
+
         self.assertTrue(svc.sync_nickname.called)
         args, kwargs = svc.sync_nickname.call_args
         self.assertEqual(self.member, args[0])
 
     @mock.patch('allianceauth.services.signals.ServicesHook')
     def test_state_changed_services_validation_and_groups_update_2(self, services_hook):
-        """Test a user changing main has service does not have accounts validated 
+        """Test a user changing main has service does not have accounts validated
         and sync updated if the new main is equal to the old main
         """
         svc = mock.Mock()
@@ -249,7 +249,7 @@ class ServicesSignalsTestCase(TestCase):
         svc.access_perm = 'auth.access_testsvc'
 
         services_hook.get_services.return_value = [svc]
-        
+
         # this creates a clone of the Django object
         new_main = deepcopy(self.member.profile.main_character)
         self.assertIsNot(new_main, self.member.profile.main_character)
@@ -258,5 +258,5 @@ class ServicesSignalsTestCase(TestCase):
 
         # Assert
         self.assertFalse(services_hook.get_services.called)
-        self.assertFalse(svc.validate_user.called)                
+        self.assertFalse(svc.validate_user.called)
         self.assertFalse(svc.sync_nickname.called)

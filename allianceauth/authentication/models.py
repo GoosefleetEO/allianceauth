@@ -74,7 +74,7 @@ class UserProfile(models.Model):
                 logger.info('Updating {} state to {}'.format(self.user, self.state))
                 self.save(update_fields=['state'])
                 notify(
-                    self.user, 
+                    self.user,
                     _('State changed to: %s' % state),
                     _('Your user\'s state is now: %(state)s')
                     % ({'state': state}),

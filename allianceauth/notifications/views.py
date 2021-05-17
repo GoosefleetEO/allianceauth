@@ -18,9 +18,9 @@ def notification_list(request):
     new_notifs = notifications_qs.filter(viewed=False)
     old_notifs = notifications_qs.filter(viewed=True)
     logger.debug(
-        "User %s has %s unread and %s read notifications", 
-        request.user, 
-        len(new_notifs), 
+        "User %s has %s unread and %s read notifications",
+        request.user,
+        len(new_notifs),
         len(old_notifs)
     )
     context = {
@@ -33,8 +33,8 @@ def notification_list(request):
 @login_required
 def notification_view(request, notif_id):
     logger.debug(
-        "notification_view called by user %s for notif_id %s", 
-        request.user, 
+        "notification_view called by user %s for notif_id %s",
+        request.user,
         notif_id
     )
     notif = get_object_or_404(Notification, pk=notif_id)
@@ -46,7 +46,7 @@ def notification_view(request, notif_id):
     else:
         logger.warn(
             "User %s not authorized to view notif_id %s belonging to user %s",
-            request.user, 
+            request.user,
             notif_id, notif.user
         )
         messages.error(request, _('You are not authorized to view that notification.'))
@@ -57,7 +57,7 @@ def notification_view(request, notif_id):
 def remove_notification(request, notif_id):
     logger.debug(
         "remove notification called by user %s for notif_id %s",
-        request.user, 
+        request.user,
         notif_id
     )
     notif = get_object_or_404(Notification, pk=notif_id)
@@ -68,8 +68,8 @@ def remove_notification(request, notif_id):
             messages.success(request, _('Deleted notification.'))
     else:
         logger.error(
-            "Unable to delete notif id %s for user %s - notif matching id not found.", 
-            notif_id, 
+            "Unable to delete notif id %s for user %s - notif matching id not found.",
+            notif_id,
             request.user
         )
         messages.error(request, _('Failed to locate notification.'))
@@ -94,9 +94,9 @@ def delete_all_read(request):
 
 def user_notifications_count(request, user_pk: int):
     """returns to notifications count for the give user as JSON
-    
+
     This view is public and does not require login
     """
-    unread_count = Notification.objects.user_unread_count(user_pk)    
+    unread_count = Notification.objects.user_unread_count(user_pk)
     data = {'unread_count': unread_count}
     return JsonResponse(data, safe=False)

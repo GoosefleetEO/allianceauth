@@ -47,11 +47,11 @@ def reset_discord(request):
     ):
         logger.info(
             "Successfully deleted discord user for user %s - "
-            "forwarding to discord activation.", 
+            "forwarding to discord activation.",
             request.user
         )
         return redirect("discord:activate")
-    
+
     logger.error(
         "Unsuccessful attempt to reset discord for user %s", request.user
     )
@@ -74,7 +74,7 @@ def discord_callback(request):
     logger.debug(
         "Received Discord callback for activation of user %s", request.user
     )
-    authorization_code = request.GET.get('code', None)    
+    authorization_code = request.GET.get('code', None)
     if not authorization_code:
         logger.warning(
             "Did not receive OAuth code from callback for user %s", request.user
@@ -82,34 +82,34 @@ def discord_callback(request):
         success = False
     else:
         if DiscordUser.objects.add_user(
-            user=request.user, 
-            authorization_code=authorization_code, 
+            user=request.user,
+            authorization_code=authorization_code,
             is_rate_limited=False
         ):
             logger.info(
                 "Successfully activated Discord account for user %s", request.user
             )
             success = True
-            
+
         else:
             logger.error(
                 "Failed to activate Discord account for user %s", request.user
             )
             success = False
-        
+
     if success:
         messages.success(
             request, _('Your Discord account has been successfully activated.')
         )
     else:
         messages.error(
-            request, 
+            request,
             _(
                 'An error occurred while trying to activate your Discord account. '
                 'Please try again.'
             )
         )
-    
+
     return redirect("services:services")
 
 

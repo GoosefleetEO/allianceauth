@@ -104,7 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
-                'django.template.context_processors.tz',                
+                'django.template.context_processors.tz',
                 'allianceauth.context_processors.auth_settings',
             ],
         },

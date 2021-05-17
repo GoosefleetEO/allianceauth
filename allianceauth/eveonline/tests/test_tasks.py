@@ -4,9 +4,9 @@ from django.test import TestCase
 
 from ..models import EveCharacter, EveCorporationInfo, EveAllianceInfo
 from ..tasks import (
-    update_alliance, 
-    update_corp, 
-    update_character, 
+    update_alliance,
+    update_corp,
+    update_character,
     run_model_update
 )
 
@@ -22,7 +22,7 @@ class TestTasks(TestCase):
         self.assertEqual(
             mock_EveCorporationInfo.objects.update_corporation.call_args[0][0], 42
         )
-            
+
     @patch('allianceauth.eveonline.tasks.EveAllianceInfo')
     def test_update_alliance(self, mock_EveAllianceInfo):
         update_alliance(42)
@@ -58,7 +58,7 @@ class TestRunModelUpdate(TestCase):
         EveCorporationInfo.objects.all().delete()
         EveAllianceInfo.objects.all().delete()
         EveCharacter.objects.all().delete()
-        
+
         EveCorporationInfo.objects.create(
             corporation_id=2345,
             corporation_name='corp.name',
@@ -71,13 +71,13 @@ class TestRunModelUpdate(TestCase):
             alliance_name='alliance.name',
             alliance_ticker='a.t',
             executor_corp_id=5,
-        )       
+        )
         EveCharacter.objects.create(
             character_id=1,
             character_name='character.name1',
             corporation_id=2345,
             corporation_name='character.corp.name',
-            corporation_ticker='c.c.t',  # max 5 chars 
+            corporation_ticker='c.c.t',  # max 5 chars
             alliance_id=None
         )
         EveCharacter.objects.create(
@@ -85,7 +85,7 @@ class TestRunModelUpdate(TestCase):
             character_name='character.name2',
             corporation_id=9876,
             corporation_name='character.corp.name',
-            corporation_ticker='c.c.t',  # max 5 chars 
+            corporation_ticker='c.c.t',  # max 5 chars
             alliance_id=3456,
             alliance_name='character.alliance.name',
         )
@@ -94,7 +94,7 @@ class TestRunModelUpdate(TestCase):
             character_name='character.name3',
             corporation_id=9876,
             corporation_name='character.corp.name',
-            corporation_ticker='c.c.t',  # max 5 chars 
+            corporation_ticker='c.c.t',  # max 5 chars
             alliance_id=3456,
             alliance_name='character.alliance.name',
         )
@@ -103,7 +103,7 @@ class TestRunModelUpdate(TestCase):
             character_name='character.name4',
             corporation_id=9876,
             corporation_name='character.corp.name',
-            corporation_ticker='c.c.t',  # max 5 chars 
+            corporation_ticker='c.c.t',  # max 5 chars
             alliance_id=3456,
             alliance_name='character.alliance.name',
         )
@@ -113,12 +113,12 @@ class TestRunModelUpdate(TestCase):
             character_name='character.name5',
             corporation_id=9876,
             corporation_name='character.corp.name',
-            corporation_ticker='c.c.t',  # max 5 chars 
+            corporation_ticker='c.c.t',  # max 5 chars
             alliance_id=3456,
             alliance_name='character.alliance.name',
         )
-        """      
-        
+        """
+
     def setUp(self):
         self.affiliations = [
             {'character_id': 1, 'corporation_id': 5},
@@ -152,14 +152,14 @@ class TestRunModelUpdate(TestCase):
 
         mock_provider.client.Character.post_characters_affiliation.side_effect \
             = get_affiliations
-       
+
         mock_provider.client.Universe.post_universe_names.side_effect = get_names
-        
+
         run_model_update()
-        
+
         self.assertEqual(
             mock_provider.client.Character.post_characters_affiliation.call_count, 2
-        )        
+        )
         self.assertEqual(
             mock_provider.client.Universe.post_universe_names.call_count, 2
         )
@@ -175,7 +175,7 @@ class TestRunModelUpdate(TestCase):
         self.assertEqual(mock_update_alliance.apply_async.call_count, 1)
         self.assertEqual(
             int(mock_update_alliance.apply_async.call_args[1]['args'][0]), 3456
-        )        
+        )
         characters_updated = {
             x[1]['args'][0] for x in mock_update_character.apply_async.call_args_list
         }
@@ -203,9 +203,9 @@ class TestRunModelUpdate(TestCase):
 
         mock_provider.client.Character.post_characters_affiliation.side_effect \
             = get_affiliations
-       
+
         mock_provider.client.Universe.post_universe_names.side_effect = get_names
-        
+
         run_model_update()
         characters_updated = {
             x[1]['args'][0] for x in mock_update_character.apply_async.call_args_list
@@ -234,9 +234,9 @@ class TestRunModelUpdate(TestCase):
 
         mock_provider.client.Character.post_characters_affiliation.side_effect \
             = get_affiliations
-       
+
         mock_provider.client.Universe.post_universe_names.side_effect = get_names
-        
+
         run_model_update()
         characters_updated = {
             x[1]['args'][0] for x in mock_update_character.apply_async.call_args_list

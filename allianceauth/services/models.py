@@ -6,7 +6,7 @@ from allianceauth.authentication.models import State
 class NameFormatConfig(models.Model):
     service_name = models.CharField(max_length=100, blank=False)
     default_to_username = models.BooleanField(
-        default=True, 
+        default=True,
         help_text=
             'If a user has no main_character, '
             'default to using their Auth username instead.'
@@ -20,10 +20,10 @@ class NameFormatConfig(models.Model):
             'topic "Services Name Formats".'
     )
     states = models.ManyToManyField(
-        State, 
+        State,
         help_text=
             "States to apply this format to. You should only have one "
-            "formatter for each state for each service."        
+            "formatter for each state for each service."
     )
 
     def __str__(self):

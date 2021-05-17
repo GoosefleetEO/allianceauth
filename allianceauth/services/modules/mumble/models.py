@@ -18,11 +18,11 @@ class MumbleManager(models.Manager):
     def get_display_name(user):
         from .auth_hooks import MumbleService
         return NameFormatter(MumbleService(), user).format_name()
-    
+
     @staticmethod
     def get_username(user):
         return user.profile.main_character.character_name  # main character as the user.username may be incorect
-    
+
     @staticmethod
     def sanitise_username(username):
         return username.replace(" ", "_")

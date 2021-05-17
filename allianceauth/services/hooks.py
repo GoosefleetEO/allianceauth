@@ -139,11 +139,11 @@ class MenuItemHook:
         self.url_name = url_name
         self.template = 'public/menuitem.html'
         self.order = order if order is not None else 9999
-        
+
         # count is an integer shown next to the menu item as badge when count != None
         # apps need to set the count in their child class, e.g. in render() method
         self.count = None
-        
+
         navactive = navactive or []
         navactive.append(url_name)
         self.navactive = navactive

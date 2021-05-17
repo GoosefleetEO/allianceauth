@@ -10,8 +10,8 @@ urlpatterns = [
     url(r'^notifications/$', views.notification_list, name='list'),
     url(r'^notifications/(\w+)/$', views.notification_view, name='view'),
     url(
-        r'^user_notifications_count/(?P<user_pk>\d+)/$', 
-        views.user_notifications_count, 
+        r'^user_notifications_count/(?P<user_pk>\d+)/$',
+        views.user_notifications_count,
         name='user_notifications_count'
     ),
 ]

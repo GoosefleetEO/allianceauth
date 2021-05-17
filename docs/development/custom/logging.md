@@ -15,7 +15,7 @@ This works by creating a child logger of the extension logger which propagates a
 to the parent (extensions) logger.
 
 ## Changing the Logging Level
-By default, the extension logger's level is set to `DEBUG`. 
+By default, the extension logger's level is set to `DEBUG`.
 To change this, uncomment (or add) the following line in `local.py`.
 
 ```python

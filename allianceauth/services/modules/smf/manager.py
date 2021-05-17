@@ -102,7 +102,7 @@ class SmfManager:
 
     @classmethod
     def add_avatar(cls, member_name, characterid):
-        logger.debug("Adding EVE character id %s portrait as smf avatar for user %s" % (characterid, member_name))        
+        logger.debug("Adding EVE character id %s portrait as smf avatar for user %s" % (characterid, member_name))
         avatar_url = EveCharacter.generic_portrait_url(characterid, 64)
         cursor = connections['smf'].cursor()
         id_member = cls.get_user_id(member_name)

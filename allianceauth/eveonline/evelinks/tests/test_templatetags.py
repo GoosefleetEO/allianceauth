@@ -38,15 +38,15 @@ class TestTemplateTags(TestCase):
             member_count=42,
             alliance=self.my_alliance
         )
-        
+
         self.my_region_id = 8001
         self.my_region_name = 'Southpark'
-        
+
         self.my_solar_system_id = 9001
         self.my_solar_system_name = 'Gotham'
-    
 
-    def test_evewho_character_url(self):                
+
+    def test_evewho_character_url(self):
         self.assertEqual(
             evelinks.evewho_character_url(self.my_character),
             evewho.character_url(self.my_character.character_id),
@@ -59,9 +59,9 @@ class TestTemplateTags(TestCase):
             evelinks.evewho_character_url(self.my_character.character_id),
             evewho.character_url(self.my_character.character_id),
         )
-        
-    
-    def test_evewho_corporation_url(self):                
+
+
+    def test_evewho_corporation_url(self):
         self.assertEqual(
             evelinks.evewho_corporation_url(self.my_character),
             evewho.corporation_url(self.my_character.corporation_id),
@@ -80,7 +80,7 @@ class TestTemplateTags(TestCase):
         )
 
 
-    def test_evewho_alliance_url(self):                
+    def test_evewho_alliance_url(self):
         self.assertEqual(
             evelinks.evewho_alliance_url(self.my_character),
             evewho.alliance_url(self.my_character.alliance_id),
@@ -100,12 +100,12 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.evewho_alliance_url(self.my_character.alliance_id),
             evewho.alliance_url(self.my_character.alliance_id),
-        )      
+        )
 
-    
+
     # dotlan
-    
-    def test_dotlan_corporation_url(self):                
+
+    def test_dotlan_corporation_url(self):
         self.assertEqual(
             evelinks.dotlan_corporation_url(self.my_character),
             dotlan.corporation_url(self.my_character.corporation_name),
@@ -121,10 +121,10 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.dotlan_corporation_url(self.my_character.corporation_name),
             dotlan.corporation_url(self.my_character.corporation_name),
-        )   
+        )
 
 
-    def test_dotlan_alliance_url(self):                
+    def test_dotlan_alliance_url(self):
         self.assertEqual(
             evelinks.dotlan_alliance_url(self.my_character),
             dotlan.alliance_url(self.my_character.alliance_name),
@@ -144,32 +144,32 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.dotlan_alliance_url(self.my_character.alliance_name),
             dotlan.alliance_url(self.my_character.alliance_name),
-        )      
+        )
 
-    def test_dotlan_region_url(self):                
+    def test_dotlan_region_url(self):
         self.assertEqual(
             evelinks.dotlan_region_url(self.my_region_name),
             dotlan.region_url(self.my_region_name),
-        )        
+        )
         self.assertEqual(
             evelinks.dotlan_region_url(None),
             ''
-        )        
+        )
 
-    def test_dotlan_solar_system_url(self):                
+    def test_dotlan_solar_system_url(self):
         self.assertEqual(
             evelinks.dotlan_solar_system_url(self.my_solar_system_name),
             dotlan.solar_system_url(self.my_solar_system_name),
-        )        
+        )
         self.assertEqual(
             evelinks.dotlan_solar_system_url(None),
             ''
-        )   
+        )
 
-    
+
     # zkillboard
 
-    def test_zkillboard_character_url(self):                
+    def test_zkillboard_character_url(self):
         self.assertEqual(
             evelinks.zkillboard_character_url(self.my_character),
             zkillboard.character_url(self.my_character.character_id),
@@ -182,9 +182,9 @@ class TestTemplateTags(TestCase):
             evelinks.zkillboard_character_url(self.my_character.character_id),
             zkillboard.character_url(self.my_character.character_id),
         )
-        
-    
-    def test_zkillboard_corporation_url(self):                
+
+
+    def test_zkillboard_corporation_url(self):
         self.assertEqual(
             evelinks.zkillboard_corporation_url(self.my_character),
             zkillboard.corporation_url(self.my_character.corporation_id),
@@ -200,10 +200,10 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.zkillboard_corporation_url(self.my_character.corporation_id),
             zkillboard.corporation_url(self.my_character.corporation_id),
-        )      
+        )
 
 
-    def test_zkillboard_alliance_url(self):                
+    def test_zkillboard_alliance_url(self):
         self.assertEqual(
             evelinks.zkillboard_alliance_url(self.my_character),
             zkillboard.alliance_url(self.my_character.alliance_id),
@@ -223,29 +223,29 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.zkillboard_alliance_url(self.my_character.alliance_id),
             zkillboard.alliance_url(self.my_character.alliance_id),
-        )        
+        )
 
 
-    def test_zkillboard_region_url(self):                
+    def test_zkillboard_region_url(self):
         self.assertEqual(
             evelinks.zkillboard_region_url(self.my_region_id),
             zkillboard.region_url(self.my_region_id),
-        )        
+        )
         self.assertEqual(
             evelinks.zkillboard_region_url(None),
             ''
-        )        
+        )
 
 
-    def test_zkillboard_solar_system_url(self):                
+    def test_zkillboard_solar_system_url(self):
         self.assertEqual(
             evelinks.zkillboard_solar_system_url(self.my_solar_system_id),
             zkillboard.solar_system_url(self.my_solar_system_id),
-        )        
+        )
         self.assertEqual(
             evelinks.zkillboard_solar_system_url(None),
             ''
-        )   
+        )
 
 
     # image URLs
@@ -254,12 +254,12 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.character_portrait_url(123),
             EveCharacter.generic_portrait_url(123)
-            
+
         ),
         self.assertEqual(
             evelinks.character_portrait_url(123, 128),
             EveCharacter.generic_portrait_url(123, 128)
-            
+
         )
         self.assertEqual(
             evelinks.character_portrait_url(123, 99),
@@ -267,7 +267,7 @@ class TestTemplateTags(TestCase):
         )
         self.assertEqual(
             evelinks.character_portrait_url(self.my_character),
-            self.my_character.portrait_url()  
+            self.my_character.portrait_url()
         )
         self.assertEqual(
             evelinks.character_portrait_url(None),
@@ -286,7 +286,7 @@ class TestTemplateTags(TestCase):
         )
         self.assertEqual(
             evelinks.corporation_logo_url(123, 99),
-            ''            
+            ''
         )
         self.assertEqual(
             evelinks.corporation_logo_url(self.my_corporation),
@@ -303,7 +303,7 @@ class TestTemplateTags(TestCase):
 
 
     def test_alliance_logo_url(self):
-        self.assertEqual(            
+        self.assertEqual(
             evelinks.alliance_logo_url(123),
             EveAllianceInfo.generic_logo_url(123)
         ),
@@ -314,7 +314,7 @@ class TestTemplateTags(TestCase):
         self.assertEqual(
             evelinks.alliance_logo_url(123, 99),
             ''
-        )   
+        )
         self.assertEqual(
             evelinks.alliance_logo_url(self.my_alliance),
             self.my_alliance.logo_url()
@@ -338,10 +338,10 @@ class TestTemplateTags(TestCase):
 
         expected = eveimageserver.type_icon_url(123, 128)
         self.assertEqual(evelinks.type_icon_url(123, 128), expected)
-        
+
         expected = ''
         self.assertEqual(evelinks.type_icon_url(123, 99), expected)
-        
+
         expected = ''
         self.assertEqual(evelinks.type_icon_url(None), expected)
 
@@ -351,9 +351,9 @@ class TestTemplateTags(TestCase):
 
         expected = eveimageserver.type_render_url(123, 128)
         self.assertEqual(evelinks.type_render_url(123, 128), expected)
-        
+
         expected = ''
         self.assertEqual(evelinks.type_render_url(123, 99), expected)
-        
+
         expected = ''
         self.assertEqual(evelinks.type_render_url(None), expected)

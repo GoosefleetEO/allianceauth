@@ -143,7 +143,7 @@ System check identified no issues (0 silenced).
 
 Make sure you are in your venv!
 
-First we create a list of all installed packages in your venv. You can use this list later as reference to see what packages should be installed. 
+First we create a list of all installed packages in your venv. You can use this list later as reference to see what packages should be installed.
 
 ```bash
 pip freeze > requirements.txt
@@ -262,7 +262,7 @@ ls /home/allianceserver/venv/auth /home/allianceserver/venv
 
 If the output shows these two folders you should be safe to proceed:
 
-- `auth` 
+- `auth`
 - `auth_old`
 
 Run these commands to remove your current venv and switch back to the old venv for auth:

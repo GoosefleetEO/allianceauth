@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 
 class Notification(models.Model):
     """Notification to a user within Auth"""
-    
+
     NOTIFICATIONS_MAX_PER_USER_DEFAULT = 50
     NOTIFICATIONS_REFRESH_TIME_DEFAULT = 30
-    
+
     LEVEL_CHOICES = (
         ('danger', 'CRITICAL'),
         ('danger', 'ERROR'),
@@ -30,18 +30,18 @@ class Notification(models.Model):
     viewed = models.BooleanField(default=False, db_index=True)
 
     objects = NotificationManager()
-  
+
     def __str__(self) -> str:
         return "%s: %s" % (self.user, self.title)
 
     def save(self, *args, **kwargs):
         # overriden save to ensure cache is invaidated on very call
-        super().save(*args, **kwargs)        
+        super().save(*args, **kwargs)
         Notification.objects.invalidate_user_notification_cache(self.user.pk)
 
     def delete(self, *args, **kwargs):
         # overriden delete to ensure cache is invaidated on very call
-        super().delete(*args, **kwargs)     
+        super().delete(*args, **kwargs)
         Notification.objects.invalidate_user_notification_cache(self.user.pk)
 
     def mark_viewed(self) -> None:
@@ -52,7 +52,7 @@ class Notification(models.Model):
 
     def set_level(self, level_name: str) -> None:
         """set notification level according to level name, e.g. 'CRITICAL'
-        
+
         raised exception on invalid level names
         """
         try:

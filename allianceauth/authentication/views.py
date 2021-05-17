@@ -16,8 +16,8 @@ from esi.decorators import token_required
 from esi.models import Token
 
 from django_registration.backends.activation.views import (
-    RegistrationView as BaseRegistrationView, 
-    ActivationView as BaseActivationView, 
+    RegistrationView as BaseRegistrationView,
+    ActivationView as BaseActivationView,
     REGISTRATION_SALT
 )
 from django_registration.signals import user_registered
@@ -52,7 +52,7 @@ def dashboard(request):
         .filter(character_ownership__user=request.user)\
         .select_related()\
         .order_by('character_name')
-        
+
     context = {
         'groups': groups,
         'characters': characters
@@ -71,7 +71,7 @@ def main_character_change(request, token):
             co = CharacterOwnership.objects.create_by_token(token)
         else:
             messages.error(
-                request, 
+                request,
                 _('Cannot change main character to %(char)s: character owned by a different account.') % ({'char': token.character_name})
             )
             co = None
@@ -138,7 +138,7 @@ class RegistrationView(BaseRegistrationView):
     template_name = "public/register.html"
     email_body_template = "registration/activation_email.txt"
     email_subject_template = "registration/activation_email_subject.txt"
-    success_url = reverse_lazy('registration_complete') 
+    success_url = reverse_lazy('registration_complete')
 
     def get_success_url(self, user):
         if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
@@ -181,8 +181,8 @@ class RegistrationView(BaseRegistrationView):
 # Step 3
 class ActivationView(BaseActivationView):
     template_name = "registration/activate.html"
-    success_url = reverse_lazy('registration_activation_complete')    
-    
+    success_url = reverse_lazy('registration_activation_complete')
+
     def validate_key(self, activation_key):
         try:
             dump = signing.loads(activation_key, salt=REGISTRATION_SALT,

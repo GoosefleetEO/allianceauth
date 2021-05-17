@@ -27,8 +27,8 @@ ALL_ROLES = [ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE]
 
 
 def create_user_info(
-    id: int = TEST_USER_ID, 
-    username: str = TEST_USER_NAME, 
+    id: int = TEST_USER_ID,
+    username: str = TEST_USER_NAME,
     discriminator: str = TEST_USER_DISCRIMINATOR
 ):
     return {

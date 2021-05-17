@@ -42,7 +42,7 @@ from recommonmark.transform import AutoStructify
 
 extensions = [
     'sphinx_rtd_theme',
-    'sphinx.ext.autodoc',    
+    'sphinx.ext.autodoc',
     'recommonmark',
 ]
 

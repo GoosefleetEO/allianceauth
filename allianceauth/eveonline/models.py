@@ -51,7 +51,7 @@ class EveAllianceInfo(models.Model):
     ) -> str:
         """image URL for the given alliance ID"""
         return eveimageserver.alliance_logo_url(alliance_id, size)
-    
+
     def logo_url(self, size: int = _DEFAULT_IMAGE_SIZE) -> str:
         """image URL of this alliance"""
         return self.generic_logo_url(self.alliance_id, size)
@@ -224,7 +224,7 @@ class EveCharacter(models.Model):
     def portrait_url_128(self) -> str:
         """image URL for this character"""
         return self.portrait_url(128)
-    
+
     @property
     def portrait_url_256(self) -> str:
         """image URL for this character"""
@@ -275,7 +275,7 @@ class EveCharacter(models.Model):
     def alliance_logo_url_128(self) -> str:
         """image URL for alliance of this character or empty string"""
         return self.alliance_logo_url(128)
-    
+
     @property
     def alliance_logo_url_256(self) -> str:
         """image URL for alliance of this character or empty string"""

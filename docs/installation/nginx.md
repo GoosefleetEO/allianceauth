@@ -16,9 +16,9 @@ Nginx is lightweight for a reason. It doesn't try to do everything internally an
 
 ```eval_rst
 +-----------+----------------------------------------+
-| Apache    | Nginx Replacement                      | 
+| Apache    | Nginx Replacement                      |
 +===========+========================================+
-| mod_php   | php5-fpm or php7-fpm (PHP FastCGI)     | 
+| mod_php   | php5-fpm or php7-fpm (PHP FastCGI)     |
 +-----------+----------------------------------------+
 | mod_wsgi  | Gunicorn or other external WSGI server |
 +-----------+----------------------------------------+

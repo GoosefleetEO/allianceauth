@@ -17,7 +17,7 @@ def migrate_service_enabled(apps, schema_editor):
         app_config.models_module = True
         create_permissions(app_config, apps=apps, verbosity=0)
         app_config.models_module = None
-        
+
     Group = apps.get_model("auth", "Group")
     Permission = apps.get_model("auth", "Permission")
     Ips4User = apps.get_model("ips4", "Ips4User")

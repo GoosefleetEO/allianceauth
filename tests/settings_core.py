@@ -18,7 +18,7 @@ NOSE_ARGS = [
 # Celery configuration
 CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
-INSTALLED_APPS += [    
+INSTALLED_APPS += [
     'django_nose',
 ]
 

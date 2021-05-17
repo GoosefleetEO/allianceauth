@@ -17,7 +17,7 @@ def create_permissions(apps, schema_editor):
     Permission = apps.get_model('auth', 'Permission')
     ct = ContentType.objects.get_for_model(User)
     Permission.objects.get_or_create(codename="member", content_type=ct, name="member")
-    Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member") 
+    Permission.objects.get_or_create(codename="blue_member", content_type=ct, name="blue_member")
 
 
 class Migration(migrations.Migration):

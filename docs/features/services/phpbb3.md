@@ -69,7 +69,7 @@ mv phpBB3 /var/www/forums
 
 The web server needs read/write permission to this folder
 
-Apache: `chown -R www-data:www-data /var/www/forums`  
+Apache: `chown -R www-data:www-data /var/www/forums`
 Nginx: `chown -R nginx:nginx /var/www/forums`
 
 ```eval_rst

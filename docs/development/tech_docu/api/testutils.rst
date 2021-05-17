@@ -10,5 +10,5 @@ auth_utils
 ===========
 
 .. automodule:: allianceauth.tests.auth_utils
-    :members:    
+    :members:
     :undoc-members:

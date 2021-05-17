@@ -1,6 +1,6 @@
 {% load auth_notifications %}
 
-{% with unread_count=request.user|user_unread_notification_count %} 
+{% with unread_count=request.user|user_unread_notification_count %}
     {% if unread_count > 0 %}
         <a href="{% url 'notifications:list' %}">Notifications
             <span class="badge">{{ unread_count }}</span>
@@ -8,6 +8,6 @@
     {% else %}
         <a href="{% url 'notifications:list' %}">
             <i class="far fa-bell"></i>
-        </a>    
+        </a>
     {% endif %}
 {% endwith %}
