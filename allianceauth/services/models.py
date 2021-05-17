@@ -30,4 +30,3 @@ class NameFormatConfig(models.Model):
         return '%s: %s' % (
             self.service_name, ', '.join([str(x) for x in self.states.all()])
         )
-

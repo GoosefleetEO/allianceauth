@@ -16,4 +16,3 @@ class DiscourseUser(models.Model):
         permissions = (
             ("access_discourse", u"Can access the Discourse service"),
         )
-

@@ -122,4 +122,3 @@ def get_hooks(name):
     """
     register_all_hooks()
     return _hooks.get(name, [])
-

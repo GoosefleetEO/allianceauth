@@ -102,4 +102,3 @@ def deactivate_ips4(request):
         logger.error("Unsuccessful attempt to deactivate IPS4 for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
     return redirect("services:services")
-

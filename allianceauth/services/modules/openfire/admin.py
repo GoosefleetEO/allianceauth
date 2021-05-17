@@ -8,4 +8,3 @@ from ...admin import ServicesUserAdmin
 class OpenfireUserAdmin(ServicesUserAdmin):
     list_display = ServicesUserAdmin.list_display + ('username',)
     search_fields = ServicesUserAdmin.search_fields + ('username', )
-

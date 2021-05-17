@@ -94,4 +94,3 @@ def discourse_sso(request):
     # Redirect back to Discourse
     url = '%s/session/sso_login' % settings.DISCOURSE_URL
     return redirect('%s?%s' % (url, query_string))
-

@@ -47,4 +47,3 @@ def disable_user(user):
     for svc in ServicesHook.get_services():
         if svc.service_active_for_user(user):
             svc.delete_user(user)
-

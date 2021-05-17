@@ -39,4 +39,3 @@ class AutogroupsConfigAdmin(admin.ModelAdmin):
 admin.site.register(AutogroupsConfig, AutogroupsConfigAdmin)
 admin.site.register(ManagedCorpGroup)
 admin.site.register(ManagedAllianceGroup)
-
