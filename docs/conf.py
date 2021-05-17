@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Alliance Auth documentation build configuration file, created by
 # sphinx-quickstart on Tue Jan  3 12:56:59 2017.
