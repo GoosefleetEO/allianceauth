@@ -23,8 +23,7 @@ def activate_smf(request):
     # Valid now we get the main characters
     character = request.user.profile.main_character
     logger.debug("Adding smf user for user %s with main character %s" % (request.user, character))
-    result = SmfManager.add_user(SmfTasks.get_username(request.user), request.user.email, ['Member'],
-                                 character.character_id)
+    result = SmfManager.add_user(SmfTasks.get_username(request.user), request.user.email, ['Member'], character.character_id)
     # if empty we failed
     if result[0] != "":
         SmfUser.objects.update_or_create(user=request.user, defaults={'username': result[0]})
@@ -36,8 +35,7 @@ def activate_smf(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'services/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'SMF'})
+        return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'SMF'})
     else:
         logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your SMF account.'))
@@ -74,8 +72,7 @@ def reset_smf_password(request):
                 'username': request.user.smf.username,
                 'password': result,
             }
-            return render(request, 'services/service_credentials.html',
-                          context={'credentials': credentials, 'service': 'SMF'})
+            return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'SMF'})
     logger.error("Unsuccessful attempt to reset smf password for user %s" % request.user)
     messages.error(request, _('An error occurred while processing your SMF account.'))
     return redirect("services:services")
@@ -93,8 +90,7 @@ def set_smf_password(request):
         if form.is_valid() and SmfTasks.has_account(request.user) and character is not None:
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            result = SmfManager.update_user_password(request.user.smf.username, character.character_id,
-                                                     password=password)
+            result = SmfManager.update_user_password(request.user.smf.username, character.character_id, password=password)
             if result != "":
                 logger.info("Successfully set smf password for user %s" % request.user)
                 messages.success(request, _('Set SMF password.'))

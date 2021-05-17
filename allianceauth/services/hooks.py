@@ -181,8 +181,7 @@ class NameFormatter:
         main_char = getattr(self.user.profile, 'main_character', None)
 
         format_data = {
-            'character_name': getattr(main_char, 'character_name',
-                                      self.user.username if self._default_to_username else None),
+            'character_name': getattr(main_char, 'character_name', self.user.username if self._default_to_username else None),
             'character_id': getattr(main_char, 'character_id', None),
             'corp_ticker': getattr(main_char, 'corporation_ticker', None),
             'corp_name': getattr(main_char, 'corporation_name', None),

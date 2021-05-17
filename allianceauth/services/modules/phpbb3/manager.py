@@ -19,9 +19,9 @@ TABLE_PREFIX = getattr(settings, 'PHPBB3_TABLE_PREFIX', 'phpbb_')
 
 
 class Phpbb3Manager:
-    SQL_ADD_USER = r"INSERT INTO %susers (username, username_clean, " \
-                   r"user_password, user_email, group_id, user_regdate, user_permissions, " \
-                   r"user_sig, user_lang) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, 'en')" % TABLE_PREFIX
+    SQL_ADD_USER =  r"INSERT INTO %susers (username, username_clean, " \
+                    r"user_password, user_email, group_id, user_regdate, user_permissions, " \
+                    r"user_sig, user_lang) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, 'en')" % TABLE_PREFIX
 
     SQL_DEL_USER = r"DELETE FROM %susers where username = %%s" % TABLE_PREFIX
 
@@ -42,10 +42,10 @@ class Phpbb3Manager:
     SQL_GET_ALL_GROUPS = r"SELECT group_id, group_name FROM %sgroups" % TABLE_PREFIX
 
     SQL_GET_USER_GROUPS = r"SELECT %(prefix)sgroups.group_name FROM %(prefix)sgroups , %(prefix)suser_group WHERE " \
-                          r"%(prefix)suser_group.group_id = %(prefix)sgroups.group_id AND user_id=%%s" % {'prefix': TABLE_PREFIX}
+                        r"%(prefix)suser_group.group_id = %(prefix)sgroups.group_id AND user_id=%%s" % {'prefix': TABLE_PREFIX}
 
     SQL_ADD_USER_AVATAR = r"UPDATE %susers SET user_avatar_type=2, user_avatar_width=64, user_avatar_height=64, " \
-                          "user_avatar=%%s WHERE user_id = %%s" % TABLE_PREFIX
+                        "user_avatar=%%s WHERE user_id = %%s" % TABLE_PREFIX
 
     SQL_CLEAR_USER_PERMISSIONS = r"UPDATE %susers SET user_permissions = '' WHERE user_id = %%s" % TABLE_PREFIX
 

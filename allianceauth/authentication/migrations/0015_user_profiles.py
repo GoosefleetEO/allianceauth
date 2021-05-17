@@ -106,8 +106,8 @@ def populate_ownerships(apps, schema_editor):
     EveCharacter = apps.get_model('eveonline', 'EveCharacter')
 
     unique_character_owners = [t['character_id'] for t in
-                               Token.objects.all().values('character_id').annotate(n=models.Count('user')) if
-                               t['n'] == 1 and EveCharacter.objects.filter(character_id=t['character_id']).exists()]
+                                Token.objects.all().values('character_id').annotate(n=models.Count('user')) if
+                                t['n'] == 1 and EveCharacter.objects.filter(character_id=t['character_id']).exists()]
 
     tokens = Token.objects.filter(character_id__in=unique_character_owners)
     for c_id in unique_character_owners:
@@ -170,8 +170,7 @@ def recreate_authservicesinfo(apps, schema_editor):
 
     # repopulate main characters
     for profile in UserProfile.objects.exclude(main_character__isnull=True).select_related('user', 'main_character'):
-        AuthServicesInfo.objects.update_or_create(user=profile.user,
-                                                  defaults={'main_char_id': profile.main_character.character_id})
+        AuthServicesInfo.objects.update_or_create(user=profile.user, defaults={'main_char_id': profile.main_character.character_id})
 
     # repopulate states we understand
     for profile in UserProfile.objects.exclude(state__name='Guest').filter(

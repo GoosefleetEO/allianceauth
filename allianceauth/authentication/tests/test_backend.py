@@ -138,7 +138,7 @@ class TestAuthenticate(TestCase):
 
     def test_iterate_username(self):
         t = Token(character_id=self.unclaimed_character.character_id,
-                  character_name=self.unclaimed_character.character_name, character_owner_hash='3')
+                    character_name=self.unclaimed_character.character_name, character_owner_hash='3')
         username = StateBackend().authenticate(token=t).username
         t.character_owner_hash = '4'
         username_1 = StateBackend().authenticate(token=t).username

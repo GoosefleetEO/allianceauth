@@ -12,10 +12,8 @@ class FleetFormatterForm(forms.Form):
     formup_time = forms.CharField(label=_('Formup Time:'), required=True)
     expected_duration = forms.CharField(label=_('Expected Duration:'), required=True)
     purpose = forms.CharField(label=_('Purpose:'), required=True)
-    reimbursable = forms.ChoiceField(label=_('Reimbursable?*'), choices=[(_('Yes'), _('Yes')), (_('No'), _('No'))],
-                                     required=True)
-    important = forms.ChoiceField(label=_('Important?*'), choices=[(_('Yes'), _('Yes')), (_('No'), _('No'))],
-                                  required=True)
+    reimbursable = forms.ChoiceField(label=_('Reimbursable?*'), choices=[(_('Yes'), _('Yes')), (_('No'), _('No'))], required=True)
+    important = forms.ChoiceField(label=_('Important?*'), choices=[(_('Yes'), _('Yes')), (_('No'), _('No'))], required=True)
     comments = forms.CharField(label=_('Comments'), widget=forms.Textarea, required=False)
 
 

@@ -16,8 +16,7 @@
                     {% if success %}
                         <div class="alert alert-success" role="alert">{% trans "Broadcast Sent!!" %}</div>
                     {% endif %}
-                    <form class="form-signin" role="form" action="" method="POST"
-                          onsubmit="submitbutton.disabled = true; return true;">
+                    <form class="form-signin" role="form" action="" method="POST" onsubmit="submitbutton.disabled = true; return true;">
                         {% csrf_token %}
                         {{ form|bootstrap }}
                         <br/>

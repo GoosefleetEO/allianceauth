@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # None None <khd1226543@gmail.com>, 2020
 # Seowon Jung <seowon@hawaii.edu>, 2020
 # Olgeda Choi <undead.choi@gmail.com>, 2020
 # Lahty <js03js70@gmail.com>, 2020
 # Joel Falknau <ozirascal@gmail.com>, 2020
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""

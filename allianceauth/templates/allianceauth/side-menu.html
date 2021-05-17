@@ -6,8 +6,7 @@
     <div class="collapse navbar-collapse auth-menus-collapse auth-side-navbar-collapse">
         <ul class="nav nav-pills nav-stacked gray-icon-color" id="side-menu">
             <li>
-                <a class="{% navactive request 'authentication:dashboard' %}"
-                   href="{% url 'authentication:dashboard' %}">
+                <a class="{% navactive request 'authentication:dashboard' %}" href="{% url 'authentication:dashboard' %}">
                     <i class="fas fa-tachometer-alt fa-fw"></i> {% trans "Dashboard" %}
                 </a>
             </li>
@@ -18,7 +17,6 @@
             </li>
 
             {% menu_items %}
-
         </ul>
     </div>
 </div>

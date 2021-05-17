@@ -208,8 +208,8 @@ class PingBot(sleekxmpp.ClientXMPP):
         self.get_roster()
 
         self.send_message(mto=self.recipient,
-                          mbody=self.msg,
-                          mtype='chat')
+                            mbody=self.msg,
+                            mtype='chat')
         self.message_sent = True
         # Using wait=True ensures that the send queue will be
         # emptied before ending the session.

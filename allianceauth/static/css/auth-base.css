@@ -112,12 +112,12 @@ ul.list-group.list-group-horizontal > li.list-group-item {
         display:  -ms-flexbox;
         display:         flex;
         flex-wrap: wrap;
-      }
+    }
 
-      .row.vertical-flexbox-row2 > [class*='col-'] {
+    .row.vertical-flexbox-row2 > [class*='col-'] {
         display: flex;
         flex-direction: column;
-      }
+    }
 }
 
 /* Extra Small devices (Phones, <768px) */

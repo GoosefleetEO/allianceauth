@@ -135,8 +135,7 @@ def fatlink_statistics_corp_view(request, corpid, year=None, month=None):
     stat_list.sort(key=lambda stat: stat.mainchar.character_name)
     stat_list.sort(key=lambda stat: (stat.n_fats, stat.avg_fat), reverse=True)
 
-    context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year,
-           'previous_month': start_of_previous_month, 'corpid': corpid}
+    context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year, 'previous_month': start_of_previous_month, 'corpid': corpid}
     if datetime.datetime.now() > start_of_next_month:
         context.update({'next_month': start_of_next_month})
 
@@ -163,16 +162,14 @@ def fatlink_statistics_view(request, year=datetime.date.today().year, month=date
 
     for fat in fats_in_span.exclude(character__corporation_id__in=fat_stats):
         if EveCorporationInfo.objects.filter(corporation_id=fat.character.corporation_id).exists():
-            fat_stats[fat.character.corporation_id] = CorpStat(fat.character.corporation_id, start_of_month,
-                                                               start_of_next_month)
+            fat_stats[fat.character.corporation_id] = CorpStat(fat.character.corporation_id, start_of_month, start_of_next_month)
 
     # collect and sort stats
     stat_list = [fat_stats[x] for x in fat_stats]
     stat_list.sort(key=lambda stat: stat.corp.corporation_name)
     stat_list.sort(key=lambda stat: (stat.n_fats, stat.avg_fat), reverse=True)
 
-    context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year,
-           'previous_month': start_of_previous_month}
+    context = {'fatStats': stat_list, 'month': start_of_month.strftime("%B"), 'year': year, 'previous_month': start_of_previous_month}
     if datetime.datetime.now() > start_of_next_month:
         context.update({'next_month': start_of_next_month})
 
@@ -199,8 +196,7 @@ def fatlink_personal_statistics_view(request, year=datetime.date.today().year):
     monthlystats = [(i + 1, datetime.date(year, i + 1, 1).strftime("%h"), monthlystats[i]) for i in range(12)]
 
     if datetime.datetime.now() > datetime.datetime(year + 1, 1, 1):
-        context = {'user': user, 'monthlystats': monthlystats, 'year': year, 'previous_year': year - 1,
-                   'next_year': year + 1}
+        context = {'user': user, 'monthlystats': monthlystats, 'year': year, 'previous_year': year - 1, 'next_year': year + 1}
     else:
         context = {'user': user, 'monthlystats': monthlystats, 'year': year, 'previous_year': year - 1}
 
@@ -229,9 +225,11 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
     for fat in personal_fats:
         ship_statistics[fat.shiptype] = ship_statistics.setdefault(fat.shiptype, 0) + 1
         n_fats += 1
-    context = {'user': user, 'shipStats': sorted(ship_statistics.items()), 'month': start_of_month.strftime("%h"),
-               'year': year, 'n_fats': n_fats, 'char_id': char_id, 'previous_month': start_of_previous_month,
-               'next_month': start_of_next_month}
+    context = {
+        'user': user, 'shipStats': sorted(ship_statistics.items()), 'month': start_of_month.strftime("%h"),
+        'year': year, 'n_fats': n_fats, 'char_id': char_id, 'previous_month': start_of_previous_month,
+        'next_month': start_of_next_month
+    }
 
     created_fats = Fatlink.objects.filter(creator=user).filter(fatdatetime__gte=start_of_month).filter(
         fatdatetime__lt=start_of_next_month)
@@ -257,8 +255,7 @@ def click_fatlink_view(request, token, fat_hash=None):
             location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
             ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
             location['solar_system_name'] = \
-                c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()[
-                    'name']
+                c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
             if location['station_id']:
                 location['station_name'] = \
                     c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']

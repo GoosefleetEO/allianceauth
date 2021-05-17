@@ -16,7 +16,7 @@ As a rule of thumb we therefore recommend to use celery tasks for every process 
 
 ```eval_rst
 .. note::
-   Another solution for dealing with long response time in particular when loading pages is to load parts of a page asynchronously, for example with AJAX.
+    Another solution for dealing with long response time in particular when loading pages is to load parts of a page asynchronously, for example with AJAX.
 ```
 
 ### Recurrence
@@ -108,11 +108,11 @@ The list of task signatures is then converted to a chain and started asynchronou
 
 ```eval_rst
 .. hint::
-   In our example we use ``si()``, which is a shortcut for "immutable signatures" and prevents us from having to deal with result sharing between tasks.
+    In our example we use ``si()``, which is a shortcut for "immutable signatures" and prevents us from having to deal with result sharing between tasks.
 
-   For more information on signature and work flows see the official documentation on `Canvas <https://docs.celeryproject.org/en/latest/userguide/canvas.html>`_.
+    For more information on signature and work flows see the official documentation on `Canvas <https://docs.celeryproject.org/en/latest/userguide/canvas.html>`_.
 
-   In this context please note that Alliance Auth currently only supports chaining, because all other variants require a so called results back, which Alliance Auth does not have.
+    In this context please note that Alliance Auth currently only supports chaining, because all other variants require a so called results back, which Alliance Auth does not have.
 ```
 
 ## How can I define periodic tasks for my app?
@@ -152,14 +152,14 @@ In Alliance Auth we have defined task priorities from 0 - 9 as follows:
 
 ```eval_rst
 .. warning::
-   Please make sure to use task priorities with care and especially do not use higher priorities without a good reason. All apps including Alliance Auth share the same task queues, so using higher task priorities excessively can potentially prevent more important tasks (of other apps) from completing on time.
+    Please make sure to use task priorities with care and especially do not use higher priorities without a good reason. All apps including Alliance Auth share the same task queues, so using higher task priorities excessively can potentially prevent more important tasks (of other apps) from completing on time.
 
-   You also want to make sure to run use lower priorities if you have a large amount of tasks or long running tasks, which are not super urgent. (e.g. the regular update of all Eve characters from ESI runs with priority 7)
+    You also want to make sure to run use lower priorities if you have a large amount of tasks or long running tasks, which are not super urgent. (e.g. the regular update of all Eve characters from ESI runs with priority 7)
 ```
 
 ```eval_rst
 .. hint::
-   If no priority is specified all tasks will be started with the default priority, which is 5.
+    If no priority is specified all tasks will be started with the default priority, which is 5.
 ```
 
 To run a task with a different priority you need to specify it when starting it.
@@ -172,7 +172,7 @@ example.apply_async(priority=3)
 
 ```eval_rst
 .. hint::
-   For defining a priority to tasks you can not use the convenient shortcut ``delay()``, but instead need to start a task with ``apply_async()``, which also requires you to pass parameters to your task function differently. Please check out the `official docs <https://docs.celeryproject.org/en/stable/reference/celery.app.task.html#celery.app.task.Task.apply_async>`_ for details.
+    For defining a priority to tasks you can not use the convenient shortcut ``delay()``, but instead need to start a task with ``apply_async()``, which also requires you to pass parameters to your task function differently. Please check out the `official docs <https://docs.celeryproject.org/en/stable/reference/celery.app.task.html#celery.app.task.Task.apply_async>`_ for details.
 ```
 
 ## What special features should I be aware of?

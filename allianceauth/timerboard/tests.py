@@ -18,9 +18,9 @@ class TimerboardViewsTestCase(WebTest):
 
     def setUp(self):
         corp = EveCorporationInfo.objects.create(corporation_id='2345', corporation_name='test corp',
-                                                 corporation_ticker='testc', member_count=24)
+                                                corporation_ticker='testc', member_count=24)
         other_corp = EveCorporationInfo.objects.create(corporation_id='9345', corporation_name='other test corp',
-                                                       corporation_ticker='testd', member_count=1)
+                                                        corporation_ticker='testd', member_count=1)
         self.user = AuthUtils.create_user('test_user')
         AuthUtils.add_main_character(self.user, 'test character', '1234', '2345', 'test corp', 'testc')
         self.user = User.objects.get_by_natural_key('test_user')

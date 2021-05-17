@@ -142,8 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AllianceAuth.tex', u'Alliance Auth Documentation',
-     u'R4stl1n', 'manual'),
+    (master_doc, 'AllianceAuth.tex', u'Alliance Auth Documentation', u'R4stl1n', 'manual'),
 ]
 
 
@@ -153,7 +152,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'allianceauth', u'Alliance Auth Documentation',
-     [author], 1)
+    [author], 1)
 ]
 
 # -- Options for autodoc  -------------------------------------------------
@@ -167,8 +166,8 @@ add_module_names = False
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'AllianceAuth', u'Alliance Auth Documentation',
-     author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
-     'Miscellaneous'),
+    author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
+    'Miscellaneous'),
 ]
 
 def setup(app):

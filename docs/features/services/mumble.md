@@ -4,17 +4,17 @@ Mumble is a free voice chat server. While not as flashy as TeamSpeak, it has all
 
 ```eval_rst
 .. note::
-   Note that this guide assumes that you have installed Auth with the official :doc:`/installation/allianceauth` guide under ``/home/allianceserver`` and that it is called ``myauth``. Accordingly it assumes that you have a service user called ``allianceserver`` that is used to run all Auth services under supervisor.
+    Note that this guide assumes that you have installed Auth with the official :doc:`/installation/allianceauth` guide under ``/home/allianceserver`` and that it is called ``myauth``. Accordingly it assumes that you have a service user called ``allianceserver`` that is used to run all Auth services under supervisor.
 ```
 
 ```eval_rst
 .. note::
-   Same as the official installation guide this guide is assuming you are performing all steps as ``root`` user.
+    Same as the official installation guide this guide is assuming you are performing all steps as ``root`` user.
 ```
 
 ```eval_rst
 .. warning::
-   This guide is currently for Ubuntu only.
+    This guide is currently for Ubuntu only.
 ```
 
 ## Installations

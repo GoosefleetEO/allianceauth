@@ -75,8 +75,7 @@ def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwa
                 continue
             for svc in ServicesHook.get_services():
                 if svc.access_perm == path_perm:
-                    logger.debug("Permissions changed for group {} on "
-                                 "service {}, re-validating services for groups users".format(instance, svc))
+                    logger.debug("Permissions changed for group {} on service {}, re-validating services for groups users".format(instance, svc))
 
                     def validate_all_groups_users_for_service():
                         logger.debug("Performing validation for service {}".format(svc))
@@ -108,8 +107,7 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
                 continue
             for svc in ServicesHook.get_services():
                 if svc.access_perm == path_perm:
-                    logger.debug("Permissions changed for state {} on "
-                                 "service {}, re-validating services for state users".format(instance, svc))
+                    logger.debug("Permissions changed for state {} on service {}, re-validating services for state users".format(instance, svc))
 
                     def validate_all_state_users_for_service():
                         logger.debug("Performing validation for service {}".format(svc))
@@ -200,8 +198,8 @@ def process_main_character_update(sender, instance, *args, **kwargs):
             )
             old_instance = EveCharacter.objects.get(pk=instance.pk)
             if not instance.character_name == old_instance.character_name or \
-               not instance.corporation_name == old_instance.corporation_name or \
-               not instance.alliance_name == old_instance.alliance_name:
+                not instance.corporation_name == old_instance.corporation_name or \
+                not instance.alliance_name == old_instance.alliance_name:
                 logger.info("syncing service nickname for user {0}".format(instance.userprofile.user))
 
                 for svc in ServicesHook.get_services():

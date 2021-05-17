@@ -7,10 +7,12 @@ from .hooks import ServicesHook
 
 class Services(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self,
-                              _('Services'),
-                              'fas fa-cogs fa-fw',
-                              'services:services', 100)
+        MenuItemHook.__init__(
+            self,
+            _('Services'),
+            'fas fa-cogs fa-fw',
+            'services:services', 100
+        )
 
     def render(self, request):
         for svc in ServicesHook.get_services():

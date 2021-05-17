@@ -35,8 +35,8 @@ Nginx needs to be able to read the folder containing your auth project's static 
 
 ```eval_rst
 .. tip::
-   Some specific distros may use www-data:www-data instead of nginx:nginx, causing static files (images, stylesheets etc) not to appear. You can confirm what user Nginx will run under by checking either its base config file `/etc/nginx/nginx.conf` for the "user" setting, or once Nginx has started `ps aux | grep nginx`.
-   Adjust your chown commands to the correct user if needed.
+    Some specific distros may use www-data:www-data instead of nginx:nginx, causing static files (images, stylesheets etc) not to appear. You can confirm what user Nginx will run under by checking either its base config file `/etc/nginx/nginx.conf` for the "user" setting, or once Nginx has started `ps aux | grep nginx`.
+    Adjust your chown commands to the correct user if needed.
 ..
 ```
 

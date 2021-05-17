@@ -75,8 +75,7 @@ def create_required_models(sender, instance, created, *args, **kwargs):
 @receiver(post_save, sender=Token)
 def record_character_ownership(sender, instance, created, *args, **kwargs):
     if created:
-        logger.debug('New token for {0} character {1} saved. Evaluating ownership.'.format(instance.user,
-                                                                                           instance.character_name))
+        logger.debug('New token for {0} character {1} saved. Evaluating ownership.'.format(instance.user, instance.character_name))
         if instance.user:
             query = Q(owner_hash=instance.character_owner_hash) & Q(user=instance.user)
         else:
@@ -85,18 +84,14 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
         CharacterOwnership.objects.filter(character__character_id=instance.character_id).exclude(query).delete()
         # create character if needed
         if EveCharacter.objects.filter(character_id=instance.character_id).exists() is False:
-            logger.debug('Token is for a new character. Creating model for {0} ({1})'.format(instance.character_name,
-                                                                                             instance.character_id))
+            logger.debug('Token is for a new character. Creating model for {0} ({1})'.format(instance.character_name, instance.character_id))
             EveCharacter.objects.create_character(instance.character_id)
         char = EveCharacter.objects.get(character_id=instance.character_id)
         # check if we need to create ownership
         if instance.user and not CharacterOwnership.objects.filter(
                 character__character_id=instance.character_id).exists():
-            logger.debug("Character {0} is not yet owned. Assigning ownership to {1}".format(instance.character_name,
-                                                                                             instance.user))
-            CharacterOwnership.objects.update_or_create(character=char,
-                                                        defaults={'owner_hash': instance.character_owner_hash,
-                                                                  'user': instance.user})
+            logger.debug("Character {0} is not yet owned. Assigning ownership to {1}".format(instance.character_name, instance.user))
+            CharacterOwnership.objects.update_or_create(character=char, defaults={'owner_hash': instance.character_owner_hash, 'user': instance.user})
 
 
 @receiver(pre_delete, sender=CharacterOwnership)

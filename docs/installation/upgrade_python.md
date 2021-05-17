@@ -4,12 +4,12 @@ This guide describes how to upgrade an existing Alliance Auth (AA) installation 
 
 ```eval_rst
 .. hint::
-   In accordance with the installation guide we will assume you perform all actions as root. If you are not running as root you need to add ``sudo`` to some commands.
+    In accordance with the installation guide we will assume you perform all actions as root. If you are not running as root you need to add ``sudo`` to some commands.
 ```
 
 ```eval_rst
 .. note::
-   This guide will upgrade the software components only but not change any data or configuration.
+    This guide will upgrade the software components only but not change any data or configuration.
 ```
 
 ## Install a new Python version
@@ -18,7 +18,7 @@ To run AA with a newer Python 3 version than your system's default you need to i
 
 ```eval_rst
 .. note::
-   For stability and performance we currently recommend to run AA with Python 3.7. It has proven to be the fastest and most stable version in use currently.
+    For stability and performance we currently recommend to run AA with Python 3.7. It has proven to be the fastest and most stable version in use currently.
 ```
 
 To install other Python versions than those included with your distribution, you need to add a new installation repository. Then you can install the specific Python 3 to your system.
@@ -27,7 +27,7 @@ Ubuntu 1604 1804:
 
 ```eval_rst
 .. note::
-   Ubuntu 2004 ships with Python 3.8, No updates required.
+    Ubuntu 2004 ships with Python 3.8, No updates required.
 ```
 
 ```bash
@@ -156,12 +156,12 @@ At this point we recommend creating a list of the additional packages that you n
 
 ```eval_rst
 .. hint::
-   While `requirements.txt` will contain a complete list of your packages, it will also contain many packages that are automatically installed as dependencies and don't need be manually reinstalled.
+    While `requirements.txt` will contain a complete list of your packages, it will also contain many packages that are automatically installed as dependencies and don't need be manually reinstalled.
 ```
 
 ```eval_rst
 .. note::
-   Some guide on the Internet will suggest to use use the requirements.txt file to recreate a venv. This is indeed possible, but only works if all packages can be installed from PyPI. Since most community apps are installed directly from repos this guide will not follow that approach.
+    Some guide on the Internet will suggest to use use the requirements.txt file to recreate a venv. This is indeed possible, but only works if all packages can be installed from PyPI. Since most community apps are installed directly from repos this guide will not follow that approach.
 ```
 
 Leave the venv and shutdown all AA services:

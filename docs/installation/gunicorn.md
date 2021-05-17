@@ -8,7 +8,7 @@ Check out the full [Gunicorn docs](http://docs.gunicorn.org/en/latest/index.html
 
 ```eval_rst
 .. note::
-   The page contains additional steps on how to setup and configure Gunicorn that are not required for users who decide to stick with the default Gunicorn configuration as described in the main installation guide for AA.
+    The page contains additional steps on how to setup and configure Gunicorn that are not required for users who decide to stick with the default Gunicorn configuration as described in the main installation guide for AA.
 ```
 
 ## Setting up Gunicorn

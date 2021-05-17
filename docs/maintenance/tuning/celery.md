@@ -2,12 +2,12 @@
 
 ```eval_rst
 .. hint::
-   Most tunings will require a change to your supervisor configuration in your `supervisor.conf` file. Note that you need to restart the supervisor daemon in order for any changes to take effect. And before restarting the daemon you may want to make sure your supervisors stop gracefully:(Ubuntu):
+    Most tunings will require a change to your supervisor configuration in your `supervisor.conf` file. Note that you need to restart the supervisor daemon in order for any changes to take effect. And before restarting the daemon you may want to make sure your supervisors stop gracefully:(Ubuntu):
 
-   ::
+    ::
 
-     supervisor stop myauth:
-     systemctl supervisor restart
+      supervisor stop myauth:
+      systemctl supervisor restart
 ```
 
 ## Task Logging
@@ -51,17 +51,17 @@ command=/home/allianceserver/venv/auth/bin/celery -A myauth worker --max-memory-
 
 ```eval_rst
 .. hint::
-   The 256 MB limit is just an example and should be adjusted to your system configuration. We would suggest to not go below 128MB though, since new workers start with around 80 MB already. Also take into consideration that this value is per worker and that you properly have more than one worker running in your system (if your workers run as processes, which is the default).
+    The 256 MB limit is just an example and should be adjusted to your system configuration. We would suggest to not go below 128MB though, since new workers start with around 80 MB already. Also take into consideration that this value is per worker and that you properly have more than one worker running in your system (if your workers run as processes, which is the default).
 ```
 
 ```eval_rst
 .. warning::
-   The ``max-memory-per-child`` parameter only works when workers run as processes (which is the default). It does not work for threads.
+    The ``max-memory-per-child`` parameter only works when workers run as processes (which is the default). It does not work for threads.
 ```
 
 ```eval_rst
 .. note::
-   Alternatively, you can also limit the number of runs per worker until a restart is performed with the worker parameter ``max-tasks-per-child``. This can also protect against memory leaks if you set the threshold is low enough. However, it is less precise since than using ``max-memory-per-child``.
+    Alternatively, you can also limit the number of runs per worker until a restart is performed with the worker parameter ``max-tasks-per-child``. This can also protect against memory leaks if you set the threshold is low enough. However, it is less precise since than using ``max-memory-per-child``.
 ```
 
 See also the [official Celery documentation](https://docs.celeryproject.org/en/stable/userguide/workers.html#max-memory-per-child-setting) for more information about these two worker parameters.
@@ -109,11 +109,11 @@ The recommended number of workers is one per core, which is what you get automat
 
 ```eval_rst
 .. hint::
-   The optimal number will hugely depend on your individual system configuration and you may want to experiment with different settings to find the optimal. One way to generate task load and verify your configuration is to run a model update with the following command:
+    The optimal number will hugely depend on your individual system configuration and you may want to experiment with different settings to find the optimal. One way to generate task load and verify your configuration is to run a model update with the following command:
 
     ::
 
-     celery -A myauth call allianceauth.eveonline.tasks.run_model_update
+      celery -A myauth call allianceauth.eveonline.tasks.run_model_update
 
 ```
 
@@ -125,7 +125,7 @@ Alliance Auth tasks are primarily I/O bound (most tasks are fetching data from E
 
 ```eval_rst
 .. warning::
-   One important feature that no longer works with threads is the worker parameter ``--max-memory-per-child`` that protects against memory leaks. But you can alternatively use supervisor_ to monitor and restart your workers.
+    One important feature that no longer works with threads is the worker parameter ``--max-memory-per-child`` that protects against memory leaks. But you can alternatively use supervisor_ to monitor and restart your workers.
 ```
 
 See also the also [this guide](https://www.distributedpython.com/2018/10/26/celery-execution-pool/) on more information about how to configure the execution pool for workers.
@@ -156,5 +156,5 @@ Make sure to restart supervisor to activate the changes.
 
 ```eval_rst
 .. hint::
-   The optimal number of concurrent workers will be different for every system and we recommend experimenting with different figures to find the optimal for your system. Note, that the example of 10 threads is conservative and should work even with smaller systems.
+    The optimal number of concurrent workers will be different for every system and we recommend experimenting with different figures to find the optimal for your system. Note, that the example of 10 threads is conservative and should work even with smaller systems.
 ```

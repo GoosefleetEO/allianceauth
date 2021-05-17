@@ -142,7 +142,7 @@ class AuthUtils:
 
     @classmethod
     def add_main_character(cls, user, name, character_id, corp_id=2345, corp_name='', corp_ticker='', alliance_id=None,
-                           alliance_name=''):
+                            alliance_name=''):
         if alliance_id:
             try:
                 alliance_id = int(alliance_id)
@@ -279,7 +279,7 @@ class BaseViewTestCase(TestCase):
         self.member.email = 'auth_member@example.com'
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
-                                     corp_ticker='TESTR')
+                                    corp_ticker='TESTR')
 
     def login(self):
         token = Token.objects.create(character_id='12345', character_name='auth_member', character_owner_hash='1', user=self.member, access_token='1')

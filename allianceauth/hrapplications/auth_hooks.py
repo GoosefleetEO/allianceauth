@@ -9,11 +9,12 @@ from .models import Application
 
 class ApplicationsMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self,
-                              _('Applications'),
-                              'far fa-file fa-fw',
-                              'hrapplications:index',
-                              navactive=['hrapplications:'])
+        MenuItemHook.__init__(
+            self,
+            _('Applications'),
+            'far fa-file fa-fw',
+            'hrapplications:index',
+            navactive=['hrapplications:'])
 
     def render(self, request):
         app_count = Application.objects.pending_requests_count_for_user(request.user)

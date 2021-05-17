@@ -45,7 +45,7 @@ class GroupManager:
     @staticmethod
     def get_group_leaders_groups(user: User):
         return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user]) | \
-               Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
+            Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
 
     @staticmethod
     def joinable_group(group: Group, state: State) -> bool:

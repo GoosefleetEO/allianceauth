@@ -8,42 +8,42 @@
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
     {% include 'bundles/x-editable.css.html' %}
-  <link href="{% static 'css/checkbox.css' %}" rel="stylesheet" type="text/css">
-  <style>
-  .copy-text-fa-icon:hover {
-    cursor: pointer;
-  }
-  .radio label, .checkbox label {
-      padding-left: 10px;
-  }
-  .editable {
-    width:150px;
-    text-align: center;
-  }
-  .editableform .form-control {
-      width: 95%;
-      text-align: center;
-      margin-left: 10px;
-  }
+    <link href="{% static 'css/checkbox.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .copy-text-fa-icon:hover {
+            cursor: pointer;
+        }
+        .radio label, .checkbox label {
+            padding-left: 10px;
+        }
+        .editable {
+            width:150px;
+            text-align: center;
+        }
+        .editableform .form-control {
+            width: 95%;
+            text-align: center;
+            margin-left: 10px;
+        }
 
-  .editable-input {
-      width: 95%;
-  }
-  .radio, .checkbox {
-      margin-top: 0px;
-      margin-bottom: 0px;
-  }
-  .editable-error-block {
-      white-space: nowrap;
-  }
-  .editable-click, a.editable-click, a.editable-click:hover {
-      border-bottom: none;
-  }
-  .tooltip-inner {
-    white-space:pre;
-    max-width: none;
-  }
-  </style>
+        .editable-input {
+            width: 95%;
+        }
+        .radio, .checkbox {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+        .editable-error-block {
+            white-space: nowrap;
+        }
+        .editable-click, a.editable-click, a.editable-click:hover {
+            border-bottom: none;
+        }
+        .tooltip-inner {
+            white-space:pre;
+            max-width: none;
+        }
+    </style>
 {% endblock extra_css %}
 
 {% block content %}

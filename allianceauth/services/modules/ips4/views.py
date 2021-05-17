@@ -33,8 +33,7 @@ def activate_ips4(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'services/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'IPSuite4'})
+        return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'IPSuite4'})
     else:
         logger.error("Unsuccessful attempt to activate IPS4 for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your IPSuite4 account.'))
@@ -55,8 +54,7 @@ def reset_ips4_password(request):
                 'username': request.user.ips4.username,
                 'password': result,
             }
-            return render(request, 'services/service_credentials.html',
-                          context={'credentials': credentials, 'service': 'IPSuite4'})
+            return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'IPSuite4'})
 
     logger.error("Unsuccessful attempt to reset IPS4 password for user %s" % request.user)
     messages.error(request, _('An error occurred while processing your IPSuite4 account.'))

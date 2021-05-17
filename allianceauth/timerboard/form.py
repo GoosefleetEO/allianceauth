@@ -33,27 +33,27 @@ class TimerForm(forms.ModelForm):
         super(TimerForm, self).__init__(*args, **kwargs)
 
     structure_choices = [('POCO', 'POCO'),
-                         ('I-HUB', 'I-HUB'),
-                         ('TCU', 'TCU'),
-                         ('POS[S]', 'POS[S]'),
-                         ('POS[M]', 'POS[M]'),
-                         ('POS[L]', 'POS[L]'),
-                         ('Astrahus', 'Astrahus'),
-                         ('Fortizar', 'Fortizar'),
-                         ('Keepstar', 'Keepstar'),
-                         ('Raitaru', 'Raitaru'),
-                         ('Azbel', 'Azbel'),
-                         ('Sotiyo', 'Sotiyo'),
-                         ('Athanor', 'Athanor'),
-                         ('Tatara', 'Tatara'),
-                         ('Pharolux Cyno Beacon', 'Pharolux Cyno Beacon'),
-                         ('Tenebrex Cyno Jammer', 'Tenebrex Cyno Jammer'),
-                         ('Ansiblex Jump Gate', 'Ansiblex Jump Gate'),
-                         ('Moon Mining Cycle', 'Moon Mining Cycle'),
-                         (_('Other'), _('Other'))]
+                            ('I-HUB', 'I-HUB'),
+                            ('TCU', 'TCU'),
+                            ('POS[S]', 'POS[S]'),
+                            ('POS[M]', 'POS[M]'),
+                            ('POS[L]', 'POS[L]'),
+                            ('Astrahus', 'Astrahus'),
+                            ('Fortizar', 'Fortizar'),
+                            ('Keepstar', 'Keepstar'),
+                            ('Raitaru', 'Raitaru'),
+                            ('Azbel', 'Azbel'),
+                            ('Sotiyo', 'Sotiyo'),
+                            ('Athanor', 'Athanor'),
+                            ('Tatara', 'Tatara'),
+                            ('Pharolux Cyno Beacon', 'Pharolux Cyno Beacon'),
+                            ('Tenebrex Cyno Jammer', 'Tenebrex Cyno Jammer'),
+                            ('Ansiblex Jump Gate', 'Ansiblex Jump Gate'),
+                            ('Moon Mining Cycle', 'Moon Mining Cycle'),
+                            (_('Other'), _('Other'))]
     objective_choices = [('Friendly', _('Friendly')),
-                         ('Hostile', _('Hostile')),
-                         ('Neutral', _('Neutral'))]
+                            ('Hostile', _('Hostile')),
+                            ('Neutral', _('Neutral'))]
 
     details = forms.CharField(max_length=254, required=True, label=_('Details'))
     system = forms.CharField(max_length=254, required=True, label=_("System"))
@@ -64,7 +64,7 @@ class TimerForm(forms.ModelForm):
     hours_left = forms.IntegerField(required=True, label=_("Hours Remaining"),
                                     validators=[MinValueValidator(0), MaxValueValidator(23)])
     minutes_left = forms.IntegerField(required=True, label=_("Minutes Remaining"),
-                                      validators=[MinValueValidator(0), MaxValueValidator(59)])
+                                        validators=[MinValueValidator(0), MaxValueValidator(59)])
     important = forms.BooleanField(label=_("Important"), required=False)
     corp_timer = forms.BooleanField(label=_("Corp-Restricted"), required=False)
 
@@ -75,10 +75,10 @@ class TimerForm(forms.ModelForm):
         character = self.user.profile.main_character
         corporation = character.corporation
         logger.debug("Determined timer save request on behalf "
-                     "of character {} corporation {}".format(character, corporation))
+                    "of character {} corporation {}".format(character, corporation))
         # calculate future time
         future_time = datetime.timedelta(days=self.cleaned_data['days_left'], hours=self.cleaned_data['hours_left'],
-                                         minutes=self.cleaned_data['minutes_left'])
+                                        minutes=self.cleaned_data['minutes_left'])
         current_time = timezone.now()
         eve_time = current_time + future_time
         logger.debug(

@@ -4,12 +4,12 @@ This document describes how to install **Alliance Auth** from scratch.
 
 ```eval_rst
 .. tip::
-   If you are uncomfortable with Linux permissions follow the steps below as the root user.
+    If you are uncomfortable with Linux permissions follow the steps below as the root user.
 ```
 
 ```eval_rst
 .. note::
-   There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter :doc:`/features/index` for details.
+    There are additional installation steps for activating services and apps that come with **Alliance Auth**. Please see the page for the respective service or apps in chapter :doc:`/features/index` for details.
 ```
 
 ## Dependencies
@@ -20,7 +20,7 @@ Alliance Auth can be installed on any Unix like operating system. Dependencies a
 
 ```eval_rst
 .. hint::
-   CentOS: A few packages are included in a non-default repository. Add it and update the package lists. ::
+    CentOS: A few packages are included in a non-default repository. Add it and update the package lists. ::
 
       yum -y install https://centos7.iuscommunity.org/ius-release.rpm
       yum update
@@ -48,9 +48,9 @@ It's recommended to use a database service instead of SQLite. Many options are a
 
 ```eval_rst
 .. warning::
-   Many Ubuntu distributions come with an older version of Maria DB, which is not compatible with **Alliance Auth**. You need Maria DB 10.3 or higher!
+    Many Ubuntu distributions come with an older version of Maria DB, which is not compatible with **Alliance Auth**. You need Maria DB 10.3 or higher!
 
-   For instructions on how To install a newer version of Maria DB on Ubuntu visit this page: `MariaDB Repositories <https://downloads.mariadb.org/mariadb/repositories/#distro=Ubuntu&mirror=osuosl>`_.
+    For instructions on how To install a newer version of Maria DB on Ubuntu visit this page: `MariaDB Repositories <https://downloads.mariadb.org/mariadb/repositories/#distro=Ubuntu&mirror=osuosl>`_.
 ```
 
 Ubuntu:
@@ -67,7 +67,7 @@ yum install mariadb-server mariadb-devel mariadb-shared mariadb
 
 ```eval_rst
 .. note::
-   If you don't plan on running the database on the same server as auth you still need to install the libmysqlclient-dev package on Ubuntu or mariadb-devel package on CentOS.
+    If you don't plan on running the database on the same server as auth you still need to install the libmysqlclient-dev package on Ubuntu or mariadb-devel package on CentOS.
 ```
 
 ### Redis and Other Tools
@@ -88,7 +88,7 @@ yum install gcc gcc-c++ unzip git redis curl bzip2-devel
 
 ```eval_rst
 .. important::
-   CentOS: Make sure Redis is running before continuing. ::
+    CentOS: Make sure Redis is running before continuing. ::
 
       systemctl enable redis.service
       systemctl start redis.service
@@ -112,11 +112,11 @@ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
 
 ```eval_rst
 .. note::
-   You may see errors when you add the timezone tables. To make sure that they were correctly added run the following commands and check for the ``time_zone`` tables::
+    You may see errors when you add the timezone tables. To make sure that they were correctly added run the following commands and check for the ``time_zone`` tables::
 
-     mysql -u root -p
-     use mysql;
-     show tables;
+      mysql -u root -p
+      use mysql;
+      show tables;
 ```
 
 Close the SQL shell and secure your database server with this command:
@@ -153,12 +153,12 @@ python3 -m venv /home/allianceserver/venv/auth/
 
 ```eval_rst
 .. warning::
-   The python3 command may not be available on all installations. Try a specific version such as ``python3.6`` if this is the case.
+    The python3 command may not be available on all installations. Try a specific version such as ``python3.6`` if this is the case.
 ```
 
 ```eval_rst
 .. tip::
-   A virtual environment provides support for creating a lightweight "copy" of Python with their own site directories. Each virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories. You can read more about virtual environments on the Python_ docs.
+    A virtual environment provides support for creating a lightweight "copy" of Python with their own site directories. Each virtual environment has its own Python binary (allowing creation of environments with various Python versions) and can have its own independent set of installed Python packages in its site directories. You can read more about virtual environments on the Python_ docs.
 .. _Python: https://docs.python.org/3/library/venv.html
 ```
 
@@ -170,7 +170,7 @@ source /home/allianceserver/venv/auth/bin/activate
 
 ```eval_rst
 .. hint::
-   Each time you come to do maintenance on your Alliance Auth installation, you should activate your virtual environment first. When finished, deactivate it with the ``deactivate`` command.
+    Each time you come to do maintenance on your Alliance Auth installation, you should activate your virtual environment first. When finished, deactivate it with the ``deactivate`` command.
 ```
 
 ### Eve Online SSO
@@ -258,7 +258,7 @@ The default configuration is good enough for most installations. Additional info
 
 ```eval_rst
 .. note::
-   Many package managers will install Supervisor 3 by default, which requires Python 2.
+    Many package managers will install Supervisor 3 by default, which requires Python 2.
 ```
 
 Ubuntu:
@@ -295,9 +295,9 @@ You can check the status of the processes with `supervisorctl status`. Logs from
 
 ```eval_rst
 .. note::
-   Any time the code or your settings change you'll need to restart Gunicorn and Celery. ::
+    Any time the code or your settings change you'll need to restart Gunicorn and Celery. ::
 
-       supervisorctl restart myauth:
+      supervisorctl restart myauth:
 ```
 
 ## Webserver

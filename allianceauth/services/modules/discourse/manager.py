@@ -125,8 +125,7 @@ class DiscourseManager:
     @staticmethod
     def __suspend_user(username):
         u_id = DiscourseManager.__user_name_to_id(username)
-        return providers.discourse.client.suspend(u_id, DiscourseManager.SUSPEND_DAYS,
-                                      DiscourseManager.SUSPEND_REASON)
+        return providers.discourse.client.suspend(u_id, DiscourseManager.SUSPEND_DAYS, DiscourseManager.SUSPEND_REASON)
 
     @staticmethod
     def __unsuspend(username):

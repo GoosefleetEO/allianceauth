@@ -186,7 +186,7 @@ class ActivationView(BaseActivationView):
     def validate_key(self, activation_key):
         try:
             dump = signing.loads(activation_key, salt=REGISTRATION_SALT,
-                                 max_age=settings.ACCOUNT_ACTIVATION_DAYS * 86400)
+                                max_age=settings.ACCOUNT_ACTIVATION_DAYS * 86400)
             return dump
         except signing.BadSignature:
             return None

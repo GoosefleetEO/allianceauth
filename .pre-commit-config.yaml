@@ -13,10 +13,16 @@ repos:
       - id: check-yaml
       - id: fix-byte-order-marker
       - id: trailing-whitespace
-        exclude: \.(min\.css|min\.js|po|mo)$
+        exclude: \.(min\.css|min\.js|mo)$
       - id: end-of-file-fixer
-        exclude: \.(min\.css|min\.js|po|mo)$
+        exclude: \.(min\.css|min\.js|mo)$
       - id: mixed-line-ending
         args: [ '--fix=lf' ]
       - id: fix-encoding-pragma
         args: [ '--remove' ]
+
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 2.3.5
+    hooks:
+      - id: editorconfig-checker
+        exclude: ^(LICENSE|allianceauth/static/css/themes/bootstrap-locals.less)

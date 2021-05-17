@@ -91,9 +91,7 @@ class EveCorporationInfo(models.Model):
     provider = EveCorporationProviderManager()
 
     class Meta:
-        indexes = [
-                    models.Index(fields=['ceo_id',]),
-                  ]
+        indexes = [models.Index(fields=['ceo_id',]),]
 
     def update_corporation(self, corp: providers.Corporation = None):
         if corp is None:
@@ -157,11 +155,11 @@ class EveCharacter(models.Model):
 
     class Meta:
         indexes = [
-                    models.Index(fields=['corporation_id',]),
-                    models.Index(fields=['alliance_id',]),
-                    models.Index(fields=['corporation_name',]),
-                    models.Index(fields=['alliance_name',]),
-                  ]
+            models.Index(fields=['corporation_id',]),
+            models.Index(fields=['alliance_id',]),
+            models.Index(fields=['corporation_name',]),
+            models.Index(fields=['alliance_name',]),
+        ]
 
     @property
     def alliance(self) -> Union[EveAllianceInfo, None]:

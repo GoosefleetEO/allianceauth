@@ -6,10 +6,12 @@ from . import urls
 
 class OpTimerboardMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, _('Fleet Operations'),
-                              'fas fa-exclamation  fa-fw',
-                              'optimer:view',
-                              navactive=['optimer:'])
+        MenuItemHook.__init__(
+            self, _('Fleet Operations'),
+            'fas fa-exclamation  fa-fw',
+            'optimer:view',
+            navactive=['optimer:']
+        )
 
     def render(self, request):
         if request.user.has_perm('auth.optimer_view'):

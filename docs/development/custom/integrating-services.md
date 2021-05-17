@@ -21,18 +21,18 @@ Typically a service will contain 5 key components:
 The architecture looks something like this:
 
           urls -------▶ Views
-           ▲              |
-           |              |
-           |              ▼
-      ServiceHook ----▶ Tasks ----▶ Manager
-           ▲
-           |
-           |
-      AllianceAuth
+            ▲              |
+            |              |
+            |              ▼
+        ServiceHook ----▶ Tasks ----▶ Manager
+            ▲
+            |
+            |
+        AllianceAuth
 
 
       Where:
-         Module --▶ Dependency/Import
+          Module --▶ Dependency/Import
 
 While this is the typical structure of the existing services modules, there is no enforcement of this structure and you are, effectively, free to create whatever architecture may be necessary. A service module need not even communicate with an external service, for example, if similar triggers such as validate_user, delete_user are required for a module it may be convenient to masquerade as a service. Ideally though, using the common structure improves the maintainability for other developers.
 

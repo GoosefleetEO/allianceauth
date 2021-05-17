@@ -9,10 +9,12 @@ from .managers import SRPManager
 
 class SrpMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, _('Ship Replacement'),
-                              'far fa-money-bill-alt fa-fw',
-                              'srp:management',
-                              navactive=['srp:'])
+        MenuItemHook.__init__(
+            self, _('Ship Replacement'),
+            'far fa-money-bill-alt fa-fw',
+            'srp:management',
+            navactive=['srp:']
+        )
 
     def render(self, request):
         if request.user.has_perm('srp.access_srp'):

@@ -8,7 +8,7 @@ In addition all tools described in this guide are open source or free software.
 
 ```eval_rst
 .. hint::
-   This guide is meant for development purposes only and not for installing AA in a production environment. For production installation please see chapter **Installation**.
+    This guide is meant for development purposes only and not for installing AA in a production environment. For production installation please see chapter **Installation**.
 ```
 
 ## Overview
@@ -27,7 +27,7 @@ We will use the build-in Django development webserver, so we don't need to setup
 
 ```eval_rst
 .. note::
-   This setup works with both WSL 1 and WSL 2. However, due to the significantly better performance we recommend WSL 2.
+    This setup works with both WSL 1 and WSL 2. However, due to the significantly better performance we recommend WSL 2.
 ```
 
 ## Requirement
@@ -75,13 +75,13 @@ For AA we want to develop with Python 3.6, because that provides the maximum com
 
 ```eval_rst
 .. hint::
-   To check your system's Python 3 version you can enter: ``python3 --version``
+    To check your system's Python 3 version you can enter: ``python3 --version``
 ```
 
 ```eval_rst
 .. note::
-   Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version supported by AA, e.g Python 3.6
-   You an check out this `page <https://askubuntu.com/questions/682869/how-do-i-install-a-different-python-version-using-apt-get/1195153>`_ on how to install additional Python versions on Ubuntu.
+    Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version supported by AA, e.g Python 3.6
+    You an check out this `page <https://askubuntu.com/questions/682869/how-do-i-install-a-different-python-version-using-apt-get/1195153>`_ on how to install additional Python versions on Ubuntu.
 ```
 
 Use the following command to install Python 3 with all required libraries with the default version:
@@ -100,7 +100,7 @@ sudo apt-get install mysql-server mysql-client libmysqlclient-dev
 
 ```eval_rst
 .. note::
-   We chose to use MySQL instead of MariaDB, because the standard version of MariaDB that comes with this Ubuntu distribution will not work with AA.
+    We chose to use MySQL instead of MariaDB, because the standard version of MariaDB that comes with this Ubuntu distribution will not work with AA.
 ```
 
 We need to apply a permission fix to mysql or you will get a warning with every startup:
@@ -150,14 +150,14 @@ sudo redis-server --daemonize yes
 
 ```eval_rst
 .. note::
-   WSL does not have an init.d service, so it will not automatically start your services such as MySQL and Redis when you boot your Windows machine. For convenience we recommend putting the commands for starting these services in a bash script. Here is an example: ::
+    WSL does not have an init.d service, so it will not automatically start your services such as MySQL and Redis when you boot your Windows machine. For convenience we recommend putting the commands for starting these services in a bash script. Here is an example: ::
 
-      #/bin/bash
-      # start services for AA dev
-      sudo service mysql start
-      sudo redis-server --daemonize yes
+    #/bin/bash
+    # start services for AA dev
+    sudo service mysql start
+    sudo redis-server --daemonize yes
 
-   In addition it is possible to configure Windows to automatically start WSL services, but that procedure goes beyond the scopes of this guide.
+    In addition it is possible to configure Windows to automatically start WSL services, but that procedure goes beyond the scopes of this guide.
 ```
 
 ### Setup dev folder on WSL
@@ -299,15 +299,15 @@ Once running you can access your auth site on the browser under `http://localhos
 
 ```eval_rst
 .. hint::
-   You can start your AA server directly from a terminal window in VSC or with a VSC debug config (see chapter about debugging for details).
+    You can start your AA server directly from a terminal window in VSC or with a VSC debug config (see chapter about debugging for details).
 ```
 
 ```eval_rst
 .. note::
-   **Debug vs. Non-Debug mode**
-   Usually it is best to run your dev AA instance in debug mode, so you get all the detailed error messages that helps a lot for finding errors. But there might be cases where you want to test features that do not exist in debug mode (e.g. error pages) or just want to see how your app behaves in non-debug / production mode.
+    **Debug vs. Non-Debug mode**
+    Usually it is best to run your dev AA instance in debug mode, so you get all the detailed error messages that helps a lot for finding errors. But there might be cases where you want to test features that do not exist in debug mode (e.g. error pages) or just want to see how your app behaves in non-debug / production mode.
 
-   When you turn off debug mode you will see a problem though: Your pages will not render correctly. The reason is that Django will stop serving your static files in production mode and expect you to serve them from a real web server. Luckily, there is an option that forces Django to continue serving your static files directly even when not in debug mode. Just start your server with the following option: ``python manage.py runserver --insecure``
+    When you turn off debug mode you will see a problem though: Your pages will not render correctly. The reason is that Django will stop serving your static files in production mode and expect you to serve them from a real web server. Luckily, there is an option that forces Django to continue serving your static files directly even when not in debug mode. Just start your server with the following option: ``python manage.py runserver --insecure``
 ```
 
 ### Celery
