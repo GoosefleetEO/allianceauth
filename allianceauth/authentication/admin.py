@@ -399,7 +399,7 @@ class UserAdmin(BaseUserAdmin):
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         """overriding this formfield to have sorted lists in the form"""
         if db_field.name == "groups":
-            kwargs["queryset"] = Group.objects.all().order_by(Lower('name'))
+            kwargs["queryset"] = Group.objects.all().order_by(Lower('name'))        
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
@@ -438,7 +438,7 @@ class StateAdmin(admin.ModelAdmin):
     ]
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        """overriding this formfield to have sorted lists in the form"""
+        """overriding this formfield to have sorted lists in the form"""        
         if db_field.name == "member_characters":
             kwargs["queryset"] = EveCharacter.objects.all()\
                 .order_by(Lower('character_name'))
@@ -448,8 +448,10 @@ class StateAdmin(admin.ModelAdmin):
         elif db_field.name == "member_alliances":
             kwargs["queryset"] = EveAllianceInfo.objects.all()\
                 .order_by(Lower('alliance_name'))
+        elif db_field.name == "permissions":
+            kwargs["queryset"] = Permission.objects.select_related("content_type").all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
-
+        
     def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
             return False
