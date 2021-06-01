@@ -216,6 +216,24 @@ class Teamspeak3ViewsTestCase(TestCase):
         self.assertEqual(ts3_user.perm_key, '123abc')
         self.assertTrue(tasks_manager.return_value.__enter__.return_value.update_groups.called)
 
+    @mock.patch(MODULE_PATH + '.views.Teamspeak3Tasks')
+    @mock.patch(MODULE_PATH + '.views.messages')    
+    def test_should_update_ts_groups(self, messages, Teamspeak3Tasks):
+        # given        
+        self.member.is_superuser = True
+        self.member.is_staff = True
+        self.member.save()
+        self.login()
+        # when
+        response = self.client.get(urls.reverse('teamspeak3:admin_update_ts3_groups'))
+        # then                        
+        self.assertRedirects(
+            response, urls.reverse('admin:teamspeak3_authts_changelist'), 
+            target_status_code=200
+        )
+        self.assertTrue(messages.info.called)
+        self.assertTrue(Teamspeak3Tasks.run_ts3_group_update.delay.called)
+        
 
 class Teamspeak3SignalsTestCase(TestCase):
     def setUp(self):

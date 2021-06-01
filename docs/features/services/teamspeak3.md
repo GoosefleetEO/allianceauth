@@ -105,7 +105,9 @@ Click the URL provided to automatically connect to our server. It will prompt yo
 
 Now we need to make groups. AllianceAuth handles groups in teamspeak differently: instead of creating groups it creates an association between groups in TeamSpeak and groups in AllianceAuth. Go ahead and make the groups you want to associate with auth groups, keeping in mind multiple TeamSpeak groups can be associated with a single auth group.
 
-Navigate back to the AllianceAuth admin interface (example.com/admin) and under `Services`, select `Auth / TS Groups`. In the top-right corner click `Add`.
+Navigate back to the AllianceAuth admin interface (example.com/admin) and under `Teamspeak3`, select `Auth / TS Groups`.
+
+In the top-right corner click, first click on `Update TS3 Groups` to fetch the newly created server groups from TS3 (this may take a minute to complete). Then click on `Add Auth / TS Group` to link Auth groups with TS3 server groups.
 
 The dropdown box provides all auth groups. Select one and assign TeamSpeak groups from the panels below. If these panels are empty, wait a minute for the database update to run, or see the [troubleshooting section](#ts-group-models-not-populating-on-admin-site) below.
 
@@ -119,13 +121,23 @@ To enable advanced permissions, on your client go to the `Tools` menu, `Applicat
 
 ### TS group models not populating on admin site
 
-The method which populates these runs every 30 minutes. To populate manually, start a django shell:
+The method which populates these runs every 30 minutes. To populate manually you start the process from the admin site or from the Django shell.
+
+#### Admin Site
+
+Navigate to the AllianceAuth admin interface and under `Teamspeak3`, select `Auth / TS Groups`.
+
+Then, in the top-right corner click, click on `Update TS3 Groups` to start the process of fetching the server groups from TS3 (this may take a minute to complete).
+
+#### Django Shell
+
+Start a django shell with:
 
 ```bash
 python manage.py shell
 ```
 
-And execute the update:
+And execute the update as follows:
 
 ```python
 from allianceauth.services.modules.teamspeak3.tasks import Teamspeak3Tasks

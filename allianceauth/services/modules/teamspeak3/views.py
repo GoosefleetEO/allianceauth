@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -99,3 +100,11 @@ def reset_teamspeak3_perm(request):
         logger.error("Unsuccessful attempt to reset TS3 permission key for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your TeamSpeak3 account.'))
     return redirect("services:services")
+
+
+@login_required
+@staff_member_required
+def admin_update_ts3_groups(request):
+    Teamspeak3Tasks.run_ts3_group_update.delay()
+    messages.info(request, "Started updating TS3 server groups...")
+    return redirect("admin:teamspeak3_authts_changelist")
