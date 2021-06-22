@@ -15,6 +15,7 @@ class Teamspeak3UserAdmin(ServicesUserAdmin):
 
 @admin.register(AuthTS)
 class AuthTSgroupAdmin(admin.ModelAdmin):
+    change_list_template = 'admin/teamspeak3/authts/change_list.html'
     ordering = ('auth_group__name', )
     list_select_related = True
 
@@ -28,7 +29,7 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
         return [x for x in obj.ts_group.all().order_by('ts_group_id')]
 
     _ts_group.short_description = 'ts groups'
-    #_ts_group.admin_order_field = 'profile__state'
+    # _ts_group.admin_order_field = 'profile__state'
 
 
 @admin.register(StateGroup)

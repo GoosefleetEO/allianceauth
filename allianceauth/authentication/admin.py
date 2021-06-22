@@ -448,6 +448,8 @@ class StateAdmin(admin.ModelAdmin):
         elif db_field.name == "member_alliances":
             kwargs["queryset"] = EveAllianceInfo.objects.all()\
                 .order_by(Lower('alliance_name'))
+        elif db_field.name == "permissions":
+            kwargs["queryset"] = Permission.objects.select_related("content_type").all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def has_delete_permission(self, request, obj=None):

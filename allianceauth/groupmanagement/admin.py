@@ -1,4 +1,5 @@
 from django.apps import apps
+from django.contrib.auth.models import Permission
 from django.contrib import admin
 from django.contrib.auth.models import Group as BaseGroup, User
 from django.db.models import Count
@@ -122,7 +123,7 @@ class GroupAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         if _has_auto_groups:
             qs = qs.prefetch_related('managedalliancegroup_set', 'managedcorpgroup_set')
-        qs = qs.prefetch_related('authgroup__group_leaders')
+        qs = qs.prefetch_related('authgroup__group_leaders').select_related('authgroup')
         qs = qs.annotate(
             member_count=Count('user', distinct=True),
         )
@@ -167,6 +168,11 @@ class GroupAdmin(admin.ModelAdmin):
 
     filter_horizontal = ('permissions',)
     inlines = (AuthGroupInlineAdmin,)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "permissions":
+            kwargs["queryset"] = Permission.objects.select_related("content_type").all()
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
 class Group(BaseGroup):
