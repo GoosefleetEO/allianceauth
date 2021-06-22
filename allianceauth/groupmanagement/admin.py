@@ -10,8 +10,8 @@ from django.dispatch import receiver
 from .models import AuthGroup
 from .models import GroupRequest
 
-if 'eve_autogroups' in apps.app_configs:    
-    _has_auto_groups = True    
+if 'eve_autogroups' in apps.app_configs:
+    _has_auto_groups = True
 else:
     _has_auto_groups = False
 
@@ -20,12 +20,12 @@ class AuthGroupInlineAdmin(admin.StackedInline):
     model = AuthGroup
     filter_horizontal = ('group_leaders', 'group_leader_groups', 'states',)
     fields = (
-        'description', 
-        'group_leaders', 
-        'group_leader_groups', 
-        'states', 'internal', 
-        'hidden', 
-        'open', 
+        'description',
+        'group_leaders',
+        'group_leader_groups',
+        'states', 'internal',
+        'hidden',
+        'open',
         'public'
     )
     verbose_name_plural = 'Auth Settings'
@@ -64,12 +64,12 @@ if _has_auto_groups:
             value = self.value()
             if value == 'yes':
                 return queryset.exclude(
-                    managedalliancegroup__isnull=True, 
+                    managedalliancegroup__isnull=True,
                     managedcorpgroup__isnull=True
                 )
             elif value == 'no':
                 return queryset.filter(
-                    managedalliancegroup__isnull=True, 
+                    managedalliancegroup__isnull=True,
                     managedcorpgroup__isnull=True
                 )
             else:
@@ -96,36 +96,36 @@ class HasLeaderFilter(admin.SimpleListFilter):
             return queryset
 
 
-class GroupAdmin(admin.ModelAdmin):    
+class GroupAdmin(admin.ModelAdmin):
     list_select_related = ('authgroup',)
     ordering = ('name',)
     list_display = (
-        'name', 
-        '_description', 
-        '_properties', 
-        '_member_count', 
+        'name',
+        '_description',
+        '_properties',
+        '_member_count',
         'has_leader'
     )
     list_filter = [
-        'authgroup__internal', 
-        'authgroup__hidden', 
-        'authgroup__open', 
-        'authgroup__public',        
+        'authgroup__internal',
+        'authgroup__hidden',
+        'authgroup__open',
+        'authgroup__public',
     ]
     if _has_auto_groups:
         list_filter.append(IsAutoGroupFilter)
     list_filter.append(HasLeaderFilter)
 
     search_fields = ('name', 'authgroup__description')
-        
+
     def get_queryset(self, request):
-        qs = super().get_queryset(request)                
+        qs = super().get_queryset(request)
         if _has_auto_groups:
             qs = qs.prefetch_related('managedalliancegroup_set', 'managedcorpgroup_set')
         qs = qs.prefetch_related('authgroup__group_leaders')
         qs = qs.annotate(
             member_count=Count('user', distinct=True),
-        )        
+        )
         return qs
 
     def _description(self, obj):
@@ -136,16 +136,16 @@ class GroupAdmin(admin.ModelAdmin):
 
     _member_count.short_description = 'Members'
     _member_count.admin_order_field = 'member_count'
-    
+
     def has_leader(self, obj):
         return obj.authgroup.group_leaders.exists()
-    
-    has_leader.boolean = True    
+
+    has_leader.boolean = True
 
     def _properties(self, obj):
-        properties = list()       
+        properties = list()
         if _has_auto_groups and (
-            obj.managedalliancegroup_set.exists() 
+            obj.managedalliancegroup_set.exists()
             or obj.managedcorpgroup_set.exists()
         ):
             properties.append('Auto Group')
@@ -160,7 +160,7 @@ class GroupAdmin(admin.ModelAdmin):
                 properties.append('Public')
         if not properties:
             properties.append('Default')
-                    
+
         return properties
 
     _properties.short_description = "properties"
@@ -183,19 +183,19 @@ finally:
 
 
 @admin.register(GroupRequest)
-class GroupRequestAdmin(admin.ModelAdmin):        
+class GroupRequestAdmin(admin.ModelAdmin):
     search_fields = ('user__username', )
     list_display = ('id', 'group', 'user', '_leave_request', 'status')
     list_filter = (
         ('group', admin.RelatedOnlyFieldListFilter),
         ('user', admin.RelatedOnlyFieldListFilter),
-        'leave_request', 
+        'leave_request',
         'status'
     )
 
     def _leave_request(self, obj) -> True:
         return obj.leave_request
-    
+
     _leave_request.short_description = 'is leave request'
     _leave_request.boolean = True
 

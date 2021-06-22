@@ -6,10 +6,12 @@ from . import urls
 
 class TimerboardMenu(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self, 'Structure Timers',
-                              'far fa-clock fa-fw',
-                              'timerboard:view',
-                              navactive=['timerboard:'])
+        MenuItemHook.__init__(
+            self, 'Structure Timers',
+            'far fa-clock fa-fw',
+            'timerboard:view',
+            navactive=['timerboard:']
+        )
 
     def render(self, request):
         if request.user.has_perm('auth.timer_view'):

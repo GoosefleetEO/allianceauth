@@ -1,7 +1,7 @@
 from . import (
-    _ESI_CATEGORY_ALLIANCE, 
-    _ESI_CATEGORY_CHARACTER, 
-    _ESI_CATEGORY_CORPORATION, 
+    _ESI_CATEGORY_ALLIANCE,
+    _ESI_CATEGORY_CHARACTER,
+    _ESI_CATEGORY_CORPORATION,
     _ESI_CATEGORY_INVENTORYTYPE
 )
 
@@ -10,7 +10,7 @@ _EVE_IMAGE_SERVER_URL = 'https://images.evetech.net'
 _DEFAULT_IMAGE_SIZE = 32
 
 
-def _eve_entity_image_url(    
+def _eve_entity_image_url(
     category: str,
     entity_id: int,
     size: int = 32,
@@ -19,7 +19,7 @@ def _eve_entity_image_url(
 ) -> str:
     """returns image URL for an Eve Online ID.
     Supported categories: alliance, corporation, character, inventory_type
-    
+
     Arguments:
     - category: category of the ID, see ESI category constants
     - entity_id: Eve ID of the entity
@@ -33,7 +33,7 @@ def _eve_entity_image_url(
     Exceptions:
     - Throws ValueError on invalid input
     """
-    
+
     # input validations
     categories = {
         _ESI_CATEGORY_ALLIANCE: {
@@ -54,15 +54,15 @@ def _eve_entity_image_url(
         }
     }
     tenants = ['tranquility', 'singularity']
-   
+
     if not entity_id:
         raise ValueError('Invalid entity_id: {}'.format(entity_id))
     else:
         entity_id = int(entity_id)
-    
+
     if not size or size < 32 or size > 1024 or (size & (size - 1) != 0):
         raise ValueError('Invalid size: {}'.format(size))
-   
+
     if category not in categories:
         raise ValueError('Invalid category {}'.format(category))
     else:
@@ -79,7 +79,7 @@ def _eve_entity_image_url(
 
     if tenant and tenant not in tenants:
         raise ValueError('Invalid tenant {}'.format(tenant))
-        
+
     # compose result URL
     result = '{}/{}/{}/{}?size={}'.format(
         _EVE_IMAGE_SERVER_URL,
@@ -90,7 +90,7 @@ def _eve_entity_image_url(
     )
     if tenant:
         result += '&tenant={}'.format(tenant)
-    
+
     return result
 
 

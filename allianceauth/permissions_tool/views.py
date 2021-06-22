@@ -47,7 +47,7 @@ def permissions_audit(request, app_label, model, codename):
     try:
         perm = Permission.objects\
             .prefetch_related('group_set', 'user_set', 'state_set',
-                              'state_set__userprofile_set', 'group_set__user_set', 'state_set__userprofile_set__user')\
+                                'state_set__userprofile_set', 'group_set__user_set', 'state_set__userprofile_set__user')\
             .get(content_type__app_label=app_label, content_type__model=model, codename=codename)
     except Permission.DoesNotExist:
         raise Http404

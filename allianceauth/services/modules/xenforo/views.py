@@ -33,7 +33,7 @@ def activate_xenforo_forum(request):
             'password': result['password'],
         }
         return render(request, 'services/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'XenForo'})
+                        context={'credentials': credentials, 'service': 'XenForo'})
 
     else:
         logger.error("Unsuccessful attempt to activate xenforo for user %s" % request.user)
@@ -68,7 +68,7 @@ def reset_xenforo_password(request):
                 'password': result['password'],
             }
             return render(request, 'services/service_credentials.html',
-                          context={'credentials': credentials, 'service': 'XenForo'})
+                        context={'credentials': credentials, 'service': 'XenForo'})
     logger.error("Unsuccessful attempt to reset XenForo password for user %s" % request.user)
     messages.error(request, _('An error occurred while processing your XenForo account.'))
     return redirect("services:services")

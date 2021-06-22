@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 class StateBackend(ModelBackend):
     @staticmethod
     def _get_state_permissions(user_obj):
-        """returns permissions for state of given user object"""        
+        """returns permissions for state of given user object"""
         if hasattr(user_obj, "profile") and user_obj.profile:
-            return Permission.objects.filter(state=user_obj.profile.state)            
+            return Permission.objects.filter(state=user_obj.profile.state)
         else:
             return Permission.objects.none()
 

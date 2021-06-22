@@ -1,4 +1,4 @@
-# this package generates profile URL for eve entities 
+# this package generates profile URL for eve entities
 # on 3rd party websites like evewho and zKillboard
 #
 # It contains of modules for views and templatetags for templates

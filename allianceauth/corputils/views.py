@@ -96,7 +96,7 @@ def corpstats_view(request, corp_id=None):
             character_ownership__user__profile__main_character__corporation_id=corpstats.corp.corporation_id)
 
         linked_chars = linked_chars.select_related('character_ownership',
-                                                   'character_ownership__user__profile__main_character') \
+                                                    'character_ownership__user__profile__main_character') \
             .prefetch_related('character_ownership__user__character_ownerships') \
             .prefetch_related('character_ownership__user__character_ownerships__character')
 

@@ -34,4 +34,3 @@ zkillboard
 .. automodule:: allianceauth.eveonline.evelinks.zkillboard
     :members:
     :undoc-members:
-

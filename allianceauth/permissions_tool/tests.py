@@ -40,8 +40,7 @@ class PermissionsToolViewsTestCase(WebTest):
 
         response_content = response.content.decode('utf-8')
 
-        self.assertInHTML('<li><a class="active" href="/permissions/overview/">'
-                          '<i class="fas fa-id-card fa-fw"></i> Permissions Audit</a></li>', response_content)
+        self.assertInHTML('<li><a class="active" href="/permissions/overview/"><i class="fas fa-id-card fa-fw"></i> Permissions Audit</a></li>', response_content)
 
     def test_permissions_overview(self):
         self.app.set_user(self.member)

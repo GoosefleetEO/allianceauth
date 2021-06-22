@@ -5,14 +5,14 @@ from ..discord_client.tests import (    # noqa
     TEST_USER_ID,
     TEST_USER_NAME,
     TEST_USER_DISCRIMINATOR,
-    create_role, 
-    ROLE_ALPHA, 
-    ROLE_BRAVO, 
-    ROLE_CHARLIE, 
-    ROLE_MIKE, 
+    create_role,
+    ROLE_ALPHA,
+    ROLE_BRAVO,
+    ROLE_CHARLIE,
+    ROLE_MIKE,
     ALL_ROLES,
     create_user_info
-)   
+)
 
 DEFAULT_AUTH_GROUP = 'Member'
 MODULE_PATH = 'allianceauth.services.modules.discord'

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Alliance Auth documentation build configuration file, created by
 # sphinx-quickstart on Tue Jan  3 12:56:59 2017.
@@ -42,7 +41,7 @@ from recommonmark.transform import AutoStructify
 
 extensions = [
     'sphinx_rtd_theme',
-    'sphinx.ext.autodoc',    
+    'sphinx.ext.autodoc',
     'recommonmark',
 ]
 
@@ -143,8 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AllianceAuth.tex', u'Alliance Auth Documentation',
-     u'R4stl1n', 'manual'),
+    (master_doc, 'AllianceAuth.tex', u'Alliance Auth Documentation', u'R4stl1n', 'manual'),
 ]
 
 
@@ -154,7 +152,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'allianceauth', u'Alliance Auth Documentation',
-     [author], 1)
+    [author], 1)
 ]
 
 # -- Options for autodoc  -------------------------------------------------
@@ -168,8 +166,8 @@ add_module_names = False
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'AllianceAuth', u'Alliance Auth Documentation',
-     author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
-     'Miscellaneous'),
+    author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
+    'Miscellaneous'),
 ]
 
 def setup(app):

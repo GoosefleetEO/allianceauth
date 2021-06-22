@@ -15,16 +15,16 @@ class TestUserNotify(TestCase):
     def setUpTestData(cls):
         cls.user = AuthUtils.create_user('magic_mike')
         AuthUtils.add_main_character(
-            cls.user, 
-            'Magic Mike', 
-            '1', 
-            corp_id='2', 
-            corp_name='Pole Riders', 
-            corp_ticker='PRIDE', 
-            alliance_id='3', 
+            cls.user,
+            'Magic Mike',
+            '1',
+            corp_id='2',
+            corp_name='Pole Riders',
+            corp_ticker='PRIDE',
+            alliance_id='3',
             alliance_name='RIDERS'
         )
-            
+
     @patch(MODULE_PATH + '.Notification.objects.invalidate_user_notification_cache')
     def test_save_will_invalidate_cache(self, mock_invalidate_user_notification_cache):
         obj = Notification.objects.notify_user(self.user, 'dummy')

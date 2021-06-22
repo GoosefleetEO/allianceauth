@@ -5,11 +5,11 @@ The results can be analysed in a special log file.
 
 This script is design to be run manually as unit test, e.g. by running the following:
 
-python manage.py test 
+python manage.py test
 allianceauth.services.modules.discord.discord_client.tests.piloting_concurrency
 
 To make it work please set the below mentioned environment variables for your server.
-Since this may cause lots of 429s we'd recommend NOT to use your 
+Since this may cause lots of 429s we'd recommend NOT to use your
 alliance Discord server for this.
 """
 
@@ -49,7 +49,7 @@ def worker(num: int):
     client = DiscordClient(DISCORD_BOT_TOKEN)
     try:
         runs = 0
-        while runs < NUMBER_OF_RUNS:            
+        while runs < NUMBER_OF_RUNS:
             run_info = '%s: run %d' % (worker_info, runs + 1)
             my_jitter_secs = random() * MAX_JITTER_PER_RUN_SECS
             logger.info('%s - waiting %s secs', run_info, f'{my_jitter_secs:.3f}')
@@ -67,18 +67,18 @@ def worker(num: int):
                 logger.info(message)
                 print()
                 print(message)
-                sleep(bo.retry_after / 1000)                
-    
+                sleep(bo.retry_after / 1000)
+
     except Exception as ex:
         logger.exception('%s: Processing aborted: %s', worker_info, ex)
-        
+
     logger.info('%s: finished', worker_info)
     return
 
 
 class TestMulti(TestCase):
-    
-    def test_multi(self):        
+
+    def test_multi(self):
         logger.info('Starting multi test')
         for num in range(NUMBER_OF_WORKERS):
             x = threading.Thread(target=worker, args=(num + 1,))

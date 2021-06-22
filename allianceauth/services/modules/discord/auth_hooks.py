@@ -1,6 +1,6 @@
 import logging
 
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
 from allianceauth import hooks
@@ -33,11 +33,11 @@ class DiscordService(ServicesHook):
         if self.user_has_account(user):
             logger.debug('Deleting user %s %s account', user, self.name)
             tasks.delete_user.apply_async(
-                kwargs={'user_pk': user.pk, 'notify_user': notify_user}, 
+                kwargs={'user_pk': user.pk, 'notify_user': notify_user},
                 priority=SINGLE_TASK_PRIORITY
-            )        
-    
-    def render_services_ctrl(self, request):                
+            )
+
+    def render_services_ctrl(self, request):
         if self.user_has_account(request.user):
             user_has_account = True
             username = request.user.discord.username
@@ -51,12 +51,12 @@ class DiscordService(ServicesHook):
             user_has_account = False
 
         return render_to_string(
-            self.service_ctrl_template, 
+            self.service_ctrl_template,
             {
                 'server_name': DiscordUser.objects.server_name(),
                 'user_has_account': user_has_account,
                 'discord_username': discord_username
-            }, 
+            },
             request=request
         )
 
@@ -71,15 +71,15 @@ class DiscordService(ServicesHook):
             tasks.update_nickname.apply_async(
                 kwargs={
                     'user_pk': user.pk,
-                    # since the new nickname is not yet in the DB we need to 
+                    # since the new nickname is not yet in the DB we need to
                     # provide it manually to the task
                     'nickname': DiscordUser.objects.user_formatted_nick(user)
-                }, 
+                },
                 priority=SINGLE_TASK_PRIORITY
             )
 
     def sync_nicknames_bulk(self, users: list):
-        """Sync nickname for a list of users in bulk. 
+        """Sync nickname for a list of users in bulk.
         Preferred over sync_nickname(), because it will not break the rate limit
         """
         logger.debug(
@@ -92,21 +92,21 @@ class DiscordService(ServicesHook):
         logger.debug('Update all %s groups called', self.name)
         tasks.update_all_groups.delay()
 
-    def update_groups(self, user):        
-        logger.debug('Processing %s groups for %s', self.name, user)        
+    def update_groups(self, user):
+        logger.debug('Processing %s groups for %s', self.name, user)
         if self.user_has_account(user):
             tasks.update_groups.apply_async(
                 kwargs={
                     'user_pk': user.pk,
-                    # since state changes may not yet be in the DB we need to 
+                    # since state changes may not yet be in the DB we need to
                     # provide the new state name manually to the task
                     'state_name': user.profile.state.name
-                }, 
+                },
                 priority=SINGLE_TASK_PRIORITY
             )
 
     def update_groups_bulk(self, users: list):
-        """Updates groups for a list of users in bulk. 
+        """Updates groups for a list of users in bulk.
         Preferred over update_groups(), because it will not break the rate limit
         """
         logger.debug(
@@ -114,7 +114,7 @@ class DiscordService(ServicesHook):
         )
         user_pks = [user.pk for user in users]
         tasks.update_groups_bulk.delay(user_pks)
-    
+
     @staticmethod
     def user_has_account(user: User) -> bool:
         result = DiscordUser.objects.user_has_account(user)

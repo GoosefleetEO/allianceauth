@@ -1,7 +1,7 @@
 """This script is for functional testing of the Discord client with a Discord server
 
-It will run single requests of the various functions to validate 
-that they actually work - excluding those that require Oauth, or does not work 
+It will run single requests of the various functions to validate
+that they actually work - excluding those that require Oauth, or does not work
 with a bot token. The results can be also seen in a special log file.
 
 This script is design to be run manually as unit test, e.g. by running the following:
@@ -10,7 +10,7 @@ python manage.py test
 allianceauth.services.modules.discord.discord_self.client.tests.piloting_functionality
 
 To make it work please set the below mentioned environment variables for your server.
-Since this may cause lots of 429s we'd recommend NOT to use your 
+Since this may cause lots of 429s we'd recommend NOT to use your
 alliance Discord server for this.
 """
 
@@ -46,7 +46,7 @@ class TestDiscordApiLive(TestCase):
         """runs features that have not been run in any of the other tests"""
         self.client.guild_infos(DISCORD_GUILD_ID)
         sleep(RATE_LIMIT_DELAY_SECS)
-        
+
         self.client.guild_name(DISCORD_GUILD_ID)
         sleep(RATE_LIMIT_DELAY_SECS)
 
@@ -57,9 +57,9 @@ class TestDiscordApiLive(TestCase):
             DISCORD_GUILD_ID, ['Testrole A', 'Testrole B']
         )
         sleep(RATE_LIMIT_DELAY_SECS)
-        
-    def test_create_and_remove_roles(self):        
-        # get base        
+
+    def test_create_and_remove_roles(self):
+        # get base
         logger.info('guild_roles')
         expected = {role['id'] for role in self.client.guild_roles(DISCORD_GUILD_ID)}
 
@@ -70,8 +70,8 @@ class TestDiscordApiLive(TestCase):
             guild_id=DISCORD_GUILD_ID, role_name=role_name
         )
         sleep(RATE_LIMIT_DELAY_SECS)
-        self.assertEqual(new_role['name'], role_name)        
-        
+        self.assertEqual(new_role['name'], role_name)
+
         # remove role again
         logger.info('delete_guild_role')
         self.client.delete_guild_role(
@@ -102,7 +102,7 @@ class TestDiscordApiLive(TestCase):
         sleep(RATE_LIMIT_DELAY_SECS)
         self.assertEqual(user['nick'], new_nick)
 
-    def test_member_add_remove_roles(self):        
+    def test_member_add_remove_roles(self):
         # create new guild role
         logger.info('create_guild_role')
         new_role = self.client.create_guild_role(
@@ -110,7 +110,7 @@ class TestDiscordApiLive(TestCase):
         )
         sleep(RATE_LIMIT_DELAY_SECS)
         new_role_id = new_role['id']
-        
+
         # add to member
         logger.info('add_guild_member_role')
         self.assertTrue(
@@ -119,7 +119,7 @@ class TestDiscordApiLive(TestCase):
             )
         )
         sleep(RATE_LIMIT_DELAY_SECS)
-        
+
         # remove again
         logger.info('remove_guild_member_role')
         self.assertTrue(

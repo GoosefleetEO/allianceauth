@@ -11,8 +11,8 @@ SMF requires PHP installed in your web server. Apache has `mod_php`, NGINX requi
 ## Prepare Your Settings
 
 In your auth project's settings file, do the following:
- - Add `'allianceauth.services.modules.smf',` to your `INSTALLED_APPS` list
- - Append the following to the bottom of the settings file:
+- Add `'allianceauth.services.modules.smf',` to your `INSTALLED_APPS` list
+- Append the following to the bottom of the settings file:
 
 ```python
 # SMF Configuration
@@ -36,35 +36,43 @@ Using your browser, you can download the latest version of SMF to your desktop c
 
 Download using wget, replacing the URL with the URL for the package you just retrieved
 
-    wget https://download.simplemachines.org/index.php?thanks;filename=smf_2-0-15_install.zip
+```shell
+wget https://download.simplemachines.org/index.php?thanks;filename=smf_2-0-15_install.zip
+```
 
 This needs to be unpackaged. Unzip it, replacing the file name with that of the file you just downloaded
-
-    unzip smf_2-0-15_install.zip
+```shell
+unzip smf_2-0-15_install.zip
+````
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
-
-    mv smf /var/www/forums
+```shell
+mv smf /var/www/forums
+````
 
 The web server needs read/write permission to this folder
 
-Apache: `chown -R www-data:www-data /var/www/forums`  
+Apache: `chown -R www-data:www-data /var/www/forums`
 Nginx: `chown -R nginx:nginx /var/www/forums`
 
 ```eval_rst
 .. tip::
-   Nginx: Some distributions use the ``www-data:www-data`` user:group instead of ``nginx:nginx``. If you run into problems with permissions try it instead.
+    Nginx: Some distributions use the ``www-data:www-data`` user:group instead of ``nginx:nginx``. If you run into problems with permissions try it instead.
 ..
 ```
 
 ### Database Preparation
 
 SMF needs a database. Create one:
+```shell
+mysql -u root -p
+```
 
-    mysql -u root -p
-    create database alliance_smf;
-    grant all privileges on alliance_smf . * to 'allianceserver'@'localhost';
-    exit;
+```mysql
+create database alliance_smf;
+grant all privileges on alliance_smf . * to 'allianceserver'@'localhost';
+exit;
+```
 
 Enter the database information into the `DATABASES['smf']` section of your auth project's settings file.
 
@@ -73,33 +81,34 @@ Enter the database information into the `DATABASES['smf']` section of your auth 
 Your web server needs to be configured to serve SMF.
 
 A minimal Apache config might look like:
-
-    <VirtualHost *:80>
-        ServerName forums.example.com
-        DocumentRoot /var/www/forums
-        <Directory "/var/www/forums">
-            DirectoryIndex index.php
-        </Directory>
-    </VirtualHost>
+```apache
+<VirtualHost *:80>
+    ServerName forums.example.com
+    DocumentRoot /var/www/forums
+    <Directory "/var/www/forums">
+        DirectoryIndex index.php
+    </Directory>
+</VirtualHost>
+````
 
 A minimal Nginx config might look like:
+```nginx
+server {
+    listen 80;
+    server_name  forums.example.com;
+    root   /var/www/forums;
+    index  index.php;
+    access_log  /var/logs/forums.access.log;
 
-    server {
-        listen 80;
-        server_name  forums.example.com;
-        root   /var/www/forums;
-        index  index.php;
-        access_log  /var/logs/forums.access.log;
-
-        location ~ \.php$ {
-            try_files $uri =404;
-            fastcgi_pass   unix:/tmp/php.socket;
-            fastcgi_index  index.php;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-            include fastcgi_params;
-        }
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass   unix:/tmp/php.socket;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include fastcgi_params;
     }
-
+}
+````
 Enter the web address to your forums into the `SMF_URL` setting in your auth project's settings file.
 
 ### Web Install

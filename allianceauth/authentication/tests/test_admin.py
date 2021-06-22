@@ -16,15 +16,15 @@ from allianceauth.tests.auth_utils import AuthUtils
 
 from ..admin import (
     BaseUserAdmin,
-    CharacterOwnershipAdmin,    
+    CharacterOwnershipAdmin,
     StateAdmin,
     MainCorporationsFilter,
     MainAllianceFilter,
     OwnershipRecordAdmin,
     User,
-    UserAdmin,     
+    UserAdmin,
     user_main_organization,
-    user_profile_pic, 
+    user_profile_pic,
     user_username,
     update_main_character_model,
     make_service_hooks_update_groups_action,
@@ -36,7 +36,7 @@ from . import get_admin_change_view_url, get_admin_search_url
 MODULE_PATH = 'allianceauth.authentication.admin'
 
 
-class MockRequest(object):    
+class MockRequest(object):
     def __init__(self, user=None):
         self.user = user
 
@@ -51,7 +51,7 @@ class TestCaseWithTestData(TestCase):
             EveAllianceInfo, EveCorporationInfo, EveCharacter, Group, User
         ]:
             MyModel.objects.all().delete()
-        
+
         # groups
         cls.group_1 = Group.objects.create(
             name='Group 1'
@@ -84,16 +84,16 @@ class TestCaseWithTestData(TestCase):
         alliance = EveAllianceInfo.objects.create(
             alliance_id=3001,
             alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',            
+            alliance_ticker='WE',
             executor_corp_id=2001
         )
         EveCorporationInfo.objects.create(
             corporation_id=2001,
             corporation_name='Wayne Technologies',
-            corporation_ticker='WT',            
+            corporation_ticker='WT',
             member_count=42,
             alliance=alliance
-        )        
+        )
         cls.user_1 = User.objects.create_user(
             character_1.character_name.replace(' ', '_'),
             'abc@example.com',
@@ -111,7 +111,7 @@ class TestCaseWithTestData(TestCase):
         )
         cls.user_1.profile.main_character = character_1
         cls.user_1.profile.save()
-        cls.user_1.groups.add(cls.group_1)        
+        cls.user_1.groups.add(cls.group_1)
 
         # user 2 - corp only, staff
         character_2 = EveCharacter.objects.create(
@@ -125,7 +125,7 @@ class TestCaseWithTestData(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2002,
             corporation_name='Daily Plane',
-            corporation_ticker='DP',            
+            corporation_ticker='DP',
             member_count=99,
             alliance=None
         )
@@ -144,7 +144,7 @@ class TestCaseWithTestData(TestCase):
         cls.user_2.groups.add(cls.group_2)
         cls.user_2.is_staff = True
         cls.user_2.save()
-        
+
         # user 3 - no main, no group, superuser
         character_3 = EveCharacter.objects.create(
             character_id=1101,
@@ -157,7 +157,7 @@ class TestCaseWithTestData(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2101,
             corporation_name='Lex Corp',
-            corporation_ticker='LC',            
+            corporation_ticker='LC',
             member_count=666,
             alliance=None
         )
@@ -186,25 +186,25 @@ def make_generic_search_request(ModelClass: type, search_term: str):
         username='superuser', password='secret', email='admin@example.com'
     )
     c = Client()
-    c.login(username='superuser', password='secret')    
+    c.login(username='superuser', password='secret')
     return c.get(
         '%s?q=%s' % (get_admin_search_url(ModelClass), quote(search_term))
-    )    
+    )
 
 
 class TestCharacterOwnershipAdmin(TestCaseWithTestData):
-    
+
     def setUp(self):
         self.modeladmin = CharacterOwnershipAdmin(
             model=User, admin_site=AdminSite()
         )
 
-    def test_change_view_loads_normally(self):        
+    def test_change_view_loads_normally(self):
         User.objects.create_superuser(
             username='superuser', password='secret', email='admin@example.com'
         )
         c = Client()
-        c.login(username='superuser', password='secret')                
+        c.login(username='superuser', password='secret')
         ownership = self.user_1.character_ownerships.first()
         response = c.get(get_admin_change_view_url(ownership))
         self.assertEqual(response.status_code, 200)
@@ -219,18 +219,18 @@ class TestCharacterOwnershipAdmin(TestCaseWithTestData):
 
 
 class TestOwnershipRecordAdmin(TestCaseWithTestData):
-    
+
     def setUp(self):
         self.modeladmin = OwnershipRecordAdmin(
             model=User, admin_site=AdminSite()
         )
 
-    def test_change_view_loads_normally(self):        
+    def test_change_view_loads_normally(self):
         User.objects.create_superuser(
             username='superuser', password='secret', email='admin@example.com'
         )
         c = Client()
-        c.login(username='superuser', password='secret')                
+        c.login(username='superuser', password='secret')
         ownership_record = OwnershipRecord.objects\
             .filter(user=self.user_1)\
             .first()
@@ -245,23 +245,23 @@ class TestOwnershipRecordAdmin(TestCaseWithTestData):
 
 
 class TestStateAdmin(TestCaseWithTestData):
-        
+
     def setUp(self):
         self.modeladmin = StateAdmin(
             model=User, admin_site=AdminSite()
         )
 
-    def test_change_view_loads_normally(self):        
+    def test_change_view_loads_normally(self):
         User.objects.create_superuser(
             username='superuser', password='secret', email='admin@example.com'
         )
         c = Client()
-        c.login(username='superuser', password='secret')                
-        
+        c.login(username='superuser', password='secret')
+
         guest_state = AuthUtils.get_guest_state()
         response = c.get(get_admin_change_view_url(guest_state))
         self.assertEqual(response.status_code, 200)
-        
+
         member_state = AuthUtils.get_member_state()
         response = c.get(get_admin_change_view_url(member_state))
         self.assertEqual(response.status_code, 200)
@@ -281,12 +281,12 @@ class TestUserAdmin(TestCaseWithTestData):
             model=User, admin_site=AdminSite()
         )
         self.character_1 = self.user_1.character_ownerships.first().character
-           
+
     def test_user_profile_pic_u1(self):
         expected = (
             '<img src="https://images.evetech.net/characters/1001/'
             'portrait?size=32" class="img-circle">'
-        )        
+        )
         self.assertEqual(user_profile_pic(self.user_1), expected)
 
     def test_user_profile_pic_u3(self):
@@ -332,18 +332,18 @@ class TestUserAdmin(TestCaseWithTestData):
         expected = 'Lex Luthor'
         result = self.modeladmin._characters(self.user_3)
         self.assertEqual(result, expected)
-    
-    def test_groups_u1(self):        
+
+    def test_groups_u1(self):
         expected = 'Group 1'
         result = self.modeladmin._groups(self.user_1)
         self.assertEqual(result, expected)
 
-    def test_groups_u2(self):        
+    def test_groups_u2(self):
         expected = 'Group 2'
         result = self.modeladmin._groups(self.user_2)
         self.assertEqual(result, expected)
-    
-    def test_groups_u3(self):                
+
+    def test_groups_u3(self):
         result = self.modeladmin._groups(self.user_3)
         self.assertIsNone(result)
 
@@ -387,7 +387,7 @@ class TestUserAdmin(TestCaseWithTestData):
         expected = None
         result = self.modeladmin._list_2_html_w_tooltips(items, 5)
         self.assertEqual(expected, result)
-    
+
     # actions
 
     @patch(MODULE_PATH + '.UserAdmin.message_user', auto_spec=True)
@@ -401,14 +401,14 @@ class TestUserAdmin(TestCaseWithTestData):
         )
         self.assertEqual(mock_task.delay.call_count, 2)
         self.assertTrue(mock_message_user.called)
-    
+
     # filters
-    
+
     def test_filter_main_corporations(self):
-        
-        class UserAdminTest(BaseUserAdmin): 
+
+        class UserAdminTest(BaseUserAdmin):
             list_filter = (MainCorporationsFilter,)
-                
+
         my_modeladmin = UserAdminTest(User, AdminSite())
 
         # Make sure the lookups are correct
@@ -417,7 +417,7 @@ class TestUserAdmin(TestCaseWithTestData):
         changelist = my_modeladmin.get_changelist_instance(request)
         filters = changelist.get_filters(request)
         filterspec = filters[0][0]
-        expected = [            
+        expected = [
             (2002, 'Daily Planet'),
             (2001, 'Wayne Technologies'),
         ]
@@ -425,20 +425,20 @@ class TestUserAdmin(TestCaseWithTestData):
 
         # Make sure the correct queryset is returned
         request = self.factory.get(
-            '/', 
+            '/',
             {'main_corporation_id__exact': self.character_1.corporation_id}
         )
-        request.user = self.user_1                
+        request.user = self.user_1
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1]
         self.assertSetEqual(set(queryset), set(expected))
 
     def test_filter_main_alliances(self):
-        
-        class UserAdminTest(BaseUserAdmin): 
+
+        class UserAdminTest(BaseUserAdmin):
             list_filter = (MainAllianceFilter,)
-                
+
         my_modeladmin = UserAdminTest(User, AdminSite())
 
         # Make sure the lookups are correct
@@ -447,17 +447,17 @@ class TestUserAdmin(TestCaseWithTestData):
         changelist = my_modeladmin.get_changelist_instance(request)
         filters = changelist.get_filters(request)
         filterspec = filters[0][0]
-        expected = [            
-            (3001, 'Wayne Enterprises'),            
+        expected = [
+            (3001, 'Wayne Enterprises'),
         ]
         self.assertEqual(filterspec.lookup_choices, expected)
 
         # Make sure the correct queryset is returned
         request = self.factory.get(
-            '/', 
+            '/',
             {'main_alliance_id__exact': self.character_1.alliance_id}
         )
-        request.user = self.user_1                
+        request.user = self.user_1
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1]
@@ -468,7 +468,7 @@ class TestUserAdmin(TestCaseWithTestData):
             username='superuser', password='secret', email='admin@example.com'
         )
         c = Client()
-        c.login(username='superuser', password='secret')                
+        c.login(username='superuser', password='secret')
         response = c.get(get_admin_change_view_url(self.user_1))
         self.assertEqual(response.status_code, 200)
 
@@ -485,8 +485,8 @@ class TestMakeServicesHooksActions(TestCaseWithTestData):
 
         def __init__(self):
             super().__init__()
-            self.name = 'My Service A'            
-        
+            self.name = 'My Service A'
+
         def update_groups(self, user):
             pass
 
@@ -498,7 +498,7 @@ class TestMakeServicesHooksActions(TestCaseWithTestData):
         def __init__(self):
             super().__init__()
             self.name = 'My Service B'
-        
+
         def update_groups(self, user):
             pass
 
@@ -510,32 +510,32 @@ class TestMakeServicesHooksActions(TestCaseWithTestData):
 
         def sync_nicknames_bulk(self, user):
             pass
-         
-    def test_service_has_update_groups_only(self):        
+
+    def test_service_has_update_groups_only(self):
         service = self.MyServicesHookTypeA()
-        mock_service = MagicMock(spec=service)      
+        mock_service = MagicMock(spec=service)
         action = make_service_hooks_update_groups_action(mock_service)
         action(MagicMock(), MagicMock(), [self.user_1])
         self.assertTrue(mock_service.update_groups.called)
 
-    def test_service_has_update_groups_bulk(self):        
+    def test_service_has_update_groups_bulk(self):
         service = self.MyServicesHookTypeB()
-        mock_service = MagicMock(spec=service)      
+        mock_service = MagicMock(spec=service)
         action = make_service_hooks_update_groups_action(mock_service)
         action(MagicMock(), MagicMock(), [self.user_1])
         self.assertFalse(mock_service.update_groups.called)
         self.assertTrue(mock_service.update_groups_bulk.called)
 
-    def test_service_has_sync_nickname_only(self):        
+    def test_service_has_sync_nickname_only(self):
         service = self.MyServicesHookTypeA()
-        mock_service = MagicMock(spec=service)      
+        mock_service = MagicMock(spec=service)
         action = make_service_hooks_sync_nickname_action(mock_service)
         action(MagicMock(), MagicMock(), [self.user_1])
         self.assertTrue(mock_service.sync_nickname.called)
 
-    def test_service_has_sync_nicknames_bulk(self):        
+    def test_service_has_sync_nicknames_bulk(self):
         service = self.MyServicesHookTypeB()
-        mock_service = MagicMock(spec=service)      
+        mock_service = MagicMock(spec=service)
         action = make_service_hooks_sync_nickname_action(mock_service)
         action(MagicMock(), MagicMock(), [self.user_1])
         self.assertFalse(mock_service.sync_nickname.called)

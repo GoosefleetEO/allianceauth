@@ -46,7 +46,7 @@ class GroupManagementVisibilityTestCase(TestCase):
 
         self.assertIn(self.group1, groups)  #avail due to user
         self.assertNotIn(self.group2, groups)  #not avail due to group
-        self.assertNotIn(self.group3, groups)  #not avail at all 
+        self.assertNotIn(self.group3, groups)  #not avail at all
 
         self.user.groups.add(self.group1)
         self._refresh_user()
@@ -60,7 +60,7 @@ class GroupManagementVisibilityTestCase(TestCase):
         self.assertTrue(GroupManager.can_manage_group(self.user, self.group1))
         self.assertFalse(GroupManager.can_manage_group(self.user, self.group2))
         self.assertFalse(GroupManager.can_manage_group(self.user, self.group3))
-        
+
         self.group2.authgroup.group_leader_groups.add(self.group1)
         self.group1.authgroup.group_leaders.remove(self.user)
         self._refresh_user()
@@ -71,13 +71,13 @@ class GroupManagementVisibilityTestCase(TestCase):
 
 
 class TestGroupManager(TestCase):
-        
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
         # group 1
-        cls.group_default = Group.objects.create(name='default')        
+        cls.group_default = Group.objects.create(name='default')
         cls.group_default.authgroup.description = 'Default Group'
         cls.group_default.authgroup.internal = False
         cls.group_default.authgroup.hidden = False
@@ -86,7 +86,7 @@ class TestGroupManager(TestCase):
         # group 2
         cls.group_internal = Group.objects.create(name='internal')
         cls.group_internal.authgroup.description = 'Internal Group'
-        cls.group_internal.authgroup.internal = True        
+        cls.group_internal.authgroup.internal = True
         cls.group_internal.authgroup.save()
 
         # group 3
@@ -133,19 +133,19 @@ class TestGroupManager(TestCase):
             AuthUtils.get_member_state()
         )
         cls.group_default_member.authgroup.save()
-    
+
     def setUp(self):
         self.user = AuthUtils.create_user('Bruce Wayne')
 
-    def test_get_joinable_group_member(self):        
+    def test_get_joinable_group_member(self):
         result = GroupManager.get_joinable_groups(
             AuthUtils.get_member_state()
         )
         expected = {
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
             self.group_public_2,
             self.group_default_member
         }
@@ -156,10 +156,10 @@ class TestGroupManager(TestCase):
             AuthUtils.get_guest_state()
         )
         expected = {
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
             self.group_public_2
         }
         self.assertSetEqual(set(result), expected)
@@ -167,27 +167,27 @@ class TestGroupManager(TestCase):
     def test_joinable_group_member(self):
         member_state = AuthUtils.get_member_state()
         for x in [
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
             self.group_public_2,
             self.group_default_member
         ]:
             self.assertTrue(GroupManager.joinable_group(x, member_state))
 
         for x in [
-            self.group_internal,             
+            self.group_internal,
         ]:
             self.assertFalse(GroupManager.joinable_group(x, member_state))
 
     def test_joinable_group_guest(self):
         guest_state = AuthUtils.get_guest_state()
         for x in [
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
             self.group_public_2
         ]:
             self.assertTrue(GroupManager.joinable_group(x, guest_state))
@@ -201,11 +201,11 @@ class TestGroupManager(TestCase):
     def test_get_all_non_internal_groups(self):
         result = GroupManager.get_all_non_internal_groups()
         expected = {
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
-            self.group_public_2, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
+            self.group_public_2,
             self.group_default_member
         }
         self.assertSetEqual(set(result), expected)
@@ -231,10 +231,10 @@ class TestGroupManager(TestCase):
         )
         result = GroupManager.get_joinable_groups_for_user(self.user)
         expected = {
-            self.group_default, 
-            self.group_hidden, 
-            self.group_open, 
-            self.group_public_1, 
+            self.group_default,
+            self.group_hidden,
+            self.group_open,
+            self.group_public_1,
             self.group_public_2
         }
         self.assertSetEqual(set(result), expected)
@@ -265,69 +265,69 @@ class TestGroupManager(TestCase):
         )
         expected = {
             self.group_default,
-            self.group_open, 
-            self.group_public_1,            
+            self.group_open,
+            self.group_public_1,
             self.group_default_member
         }
         self.assertSetEqual(set(result), expected)
 
-    def test_has_management_permission(self):        
+    def test_has_management_permission(self):
         user = AuthUtils.create_user('Clark Kent')
         AuthUtils.add_permission_to_user_by_name(
             'auth.group_management', user
-        )        
+        )
         self.assertTrue(GroupManager.has_management_permission(user))
 
-    def test_can_manage_groups_no_perm_no_group(self):        
+    def test_can_manage_groups_no_perm_no_group(self):
         user = AuthUtils.create_user('Clark Kent')
         self.assertFalse(GroupManager.can_manage_groups(user))
 
-    def test_can_manage_groups_user_not_authenticated(self):        
+    def test_can_manage_groups_user_not_authenticated(self):
         user = MockUserNotAuthenticated()
         self.assertFalse(GroupManager.can_manage_groups(user))
 
-    def test_can_manage_groups_has_perm(self):        
+    def test_can_manage_groups_has_perm(self):
         user = AuthUtils.create_user('Clark Kent')
         AuthUtils.add_permission_to_user_by_name(
             'auth.group_management', user
-        )        
+        )
         self.assertTrue(GroupManager.can_manage_groups(user))
 
-    def test_can_manage_groups_no_perm_leads_group(self):        
+    def test_can_manage_groups_no_perm_leads_group(self):
         user = AuthUtils.create_user('Clark Kent')
         self.group_default.authgroup.group_leaders.add(user)
         self.assertTrue(GroupManager.can_manage_groups(user))
 
-    def test_can_manage_group_no_perm_no_group(self):        
+    def test_can_manage_group_no_perm_no_group(self):
         user = AuthUtils.create_user('Clark Kent')
         self.assertFalse(
             GroupManager.can_manage_group(user, self.group_default)
         )
 
-    def test_can_manage_group_has_perm(self):        
+    def test_can_manage_group_has_perm(self):
         user = AuthUtils.create_user('Clark Kent')
         AuthUtils.add_permission_to_user_by_name(
             'auth.group_management', user
-        )        
+        )
         self.assertTrue(
             GroupManager.can_manage_group(user, self.group_default)
         )
 
-    def test_can_manage_group_no_perm_leads_correct_group(self):        
+    def test_can_manage_group_no_perm_leads_correct_group(self):
         user = AuthUtils.create_user('Clark Kent')
         self.group_default.authgroup.group_leaders.add(user)
         self.assertTrue(
             GroupManager.can_manage_group(user, self.group_default)
         )
 
-    def test_can_manage_group_no_perm_leads_other_group(self):        
+    def test_can_manage_group_no_perm_leads_other_group(self):
         user = AuthUtils.create_user('Clark Kent')
         self.group_hidden.authgroup.group_leaders.add(user)
         self.assertFalse(
             GroupManager.can_manage_group(user, self.group_default)
         )
 
-    def test_can_manage_group_user_not_authenticated(self):        
+    def test_can_manage_group_user_not_authenticated(self):
         user = MockUserNotAuthenticated()
         self.assertFalse(
             GroupManager.can_manage_group(user, self.group_default)
@@ -335,7 +335,7 @@ class TestGroupManager(TestCase):
 
 
 class TestPendingRequestsCountForUser(TestCase):
-            
+
     def setUp(self) -> None:
         self.group_1 = Group.objects.create(name="Group 1")
         self.group_2 = Group.objects.create(name="Group 2")
@@ -345,8 +345,8 @@ class TestPendingRequestsCountForUser(TestCase):
         self.group_2.authgroup.group_leaders.add(self.user_leader_2)
         self.user_requestor = AuthUtils.create_member('Bruce Wayne')
 
-    def test_single_request_for_leader(self):        
-        # given user_leader_1 is leader of group_1 
+    def test_single_request_for_leader(self):
+        # given user_leader_1 is leader of group_1
         # and user_leader_2 is leader of group_2
         # when user_requestor is requesting access to group 1
         # then return 1 for user_leader 1 and 0 for user_leader_2
@@ -359,7 +359,7 @@ class TestPendingRequestsCountForUser(TestCase):
         self.assertEqual(
             GroupManager.pending_requests_count_for_user(self.user_leader_2), 0
         )
-  
+
     def test_return_none_for_none_leader(self):
         # given user_requestor is leader of no group
         # when user_requestor is requesting access to group 1
@@ -370,7 +370,7 @@ class TestPendingRequestsCountForUser(TestCase):
         self.assertEqual(
             GroupManager.pending_requests_count_for_user(self.user_requestor), 0
         )
-   
+
     def test_single_leave_request(self):
         # given user_leader_2 is leader of group_2
         # and user_requestor is member of group 2
@@ -379,9 +379,9 @@ class TestPendingRequestsCountForUser(TestCase):
         self.user_requestor.groups.add(self.group_2)
 
         GroupRequest.objects.create(
-            status="pending", 
-            user=self.user_requestor, 
-            group=self.group_2, 
+            status="pending",
+            user=self.user_requestor,
+            group=self.group_2,
             leave_request=True
         )
         self.assertEqual(
@@ -391,31 +391,31 @@ class TestPendingRequestsCountForUser(TestCase):
     def test_join_and_leave_request(self):
         # given user_leader_2 is leader of group_2
         # and user_requestor is member of group 2
-        # when user_requestor is requesting to leave group 2 
+        # when user_requestor is requesting to leave group 2
         # and user_requestor_2 is requesting to join group 2
         # then return 2 for user_leader_2
         self.user_requestor.groups.add(self.group_2)
         user_requestor_2 = AuthUtils.create_member("Lex Luther")
         GroupRequest.objects.create(
-            status="pending", 
-            user=user_requestor_2, 
-            group=self.group_2             
+            status="pending",
+            user=user_requestor_2,
+            group=self.group_2
         )
         GroupRequest.objects.create(
-            status="pending", 
-            user=self.user_requestor, 
-            group=self.group_2, 
+            status="pending",
+            user=self.user_requestor,
+            group=self.group_2,
             leave_request=True
         )
         self.assertEqual(
             GroupManager.pending_requests_count_for_user(self.user_leader_2), 2
         )
 
-    def test_single_request_for_user_with_management_perm(self):        
+    def test_single_request_for_user_with_management_perm(self):
         # given user_leader_4 which is leafer of no group
         # but has the management permissions
         # when user_requestor is requesting access to group 1
-        # then return 1 for user_leader_4        
+        # then return 1 for user_leader_4
         user_leader_4 = AuthUtils.create_member("Lex Luther")
         AuthUtils.add_permission_to_user_by_name("auth.group_management", user_leader_4)
         user_leader_4 = User.objects.get(pk=user_leader_4.pk)

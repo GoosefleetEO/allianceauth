@@ -159,7 +159,7 @@ class EveProvider(object):
 
 
 class EveSwaggerProvider(EveProvider):
-    def __init__(self, token=None, adapter=None):        
+    def __init__(self, token=None, adapter=None):
         if settings.DEBUG:
             self._client = None
             logger.info(

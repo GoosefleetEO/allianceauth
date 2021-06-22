@@ -43,7 +43,7 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     justify-content: center;
 }
 
-@media all {        
+@media all {
     /* style nav tabs in dark mode*/
     .template-dark-mode .nav-tabs > li.active > a {
         background-color: rgb(70, 69, 69)!important;
@@ -64,7 +64,7 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     .template-dark-mode .tr-group {
         font-weight: bold;
         background-color: rgb(105, 105, 105) !important;
-    }     
+    }
 
     /* default style for tables */
     .template-light-mode .table-aa > thead > tr > th{
@@ -112,12 +112,12 @@ ul.list-group.list-group-horizontal > li.list-group-item {
         display:  -ms-flexbox;
         display:         flex;
         flex-wrap: wrap;
-      }
+    }
 
-      .row.vertical-flexbox-row2 > [class*='col-'] {
+    .row.vertical-flexbox-row2 > [class*='col-'] {
         display: flex;
         flex-direction: column;
-      }
+    }
 }
 
 /* Extra Small devices (Phones, <768px) */

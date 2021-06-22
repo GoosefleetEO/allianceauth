@@ -45,7 +45,7 @@ Place your virtual host configuration in the appropriate section within `/etc/ht
 ```
 <VirtualHost *:80>
         ServerName auth.example.com
-    
+
         ProxyPassMatch ^/static !
         ProxyPassMatch ^/robots.txt !
 

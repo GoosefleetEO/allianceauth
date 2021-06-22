@@ -71,8 +71,7 @@ class AddTimerView(TimerManagementView, AddUpdateMixin, CreateView):
         result = super(AddTimerView, self).form_valid(form)
         timer = self.object
         logger.info("Created new timer in {} at {} by user {}".format(timer.system, timer.eve_time, self.request.user))
-        messages.success(self.request, _('Added new timer in %(system)s at %(time)s.') % {"system": timer.system,
-                                                                                          "time": timer.eve_time})
+        messages.success(self.request, _('Added new timer in %(system)s at %(time)s.') % {"system": timer.system, "time": timer.eve_time})
         return result
 
 

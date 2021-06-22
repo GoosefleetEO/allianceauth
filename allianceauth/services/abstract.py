@@ -72,8 +72,7 @@ class BaseCreatePasswordServiceAccountView(BaseServiceView, ServiceCredentialsVi
             messages.error(request, _("That service account already exists"))
             return redirect(self.index_redirect)
 
-        return render(request, self.template_name,
-                      context={'credentials': svc_obj.credentials, 'service': self.service_name, 'view': self})
+        return render(request, self.template_name, context={'credentials': svc_obj.credentials, 'service': self.service_name, 'view': self})
 
 
 class ServicesCRUDMixin(SingleObjectMixin):
@@ -112,5 +111,4 @@ class BaseResetPasswordServiceAccountView(ServicesCRUDMixin, BaseServiceView, Se
     def get(self, request):
         svc_obj = self.get_object()
         svc_obj.reset_password()
-        return render(request, self.template_name,
-                      context={'credentials': svc_obj.credentials, 'service': self.service_name, 'view': self})
+        return render(request, self.template_name, context={'credentials': svc_obj.credentials, 'service': self.service_name, 'view': self})

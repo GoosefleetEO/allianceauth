@@ -20,20 +20,20 @@ class TestUserNotificationCount(TestCase):
     def setUpTestData(cls):
         cls.user = AuthUtils.create_user('magic_mike')
         AuthUtils.add_main_character(
-            cls.user, 
-            'Magic Mike', 
-            '1', 
-            corp_id='2', 
-            corp_name='Pole Riders', 
-            corp_ticker='PRIDE', 
-            alliance_id='3', 
+            cls.user,
+            'Magic Mike',
+            '1',
+            corp_id='2',
+            corp_name='Pole Riders',
+            corp_ticker='PRIDE',
+            alliance_id='3',
             alliance_name='RIDERS'
         )
-    
+
     def test_return_normal(self, mock_user_unread_count):
         unread_count = 42
         mock_user_unread_count.return_value = unread_count
-                
+
         result = user_unread_notification_count(self.user)
         expected = unread_count
         self.assertEqual(result, expected)
@@ -43,7 +43,7 @@ class TestUserNotificationCount(TestCase):
     def test_return_error_if_non_user(self, mock_user_unread_count):
         unread_count = -1
         mock_user_unread_count.return_value = unread_count
-                
+
         result = user_unread_notification_count('invalid')
         expected = unread_count
         self.assertEqual(result, expected)
@@ -60,9 +60,9 @@ class TestNotificationsRefreshTime(TestCase):
         result = notifications_refresh_time()
         expected = MY_NOTIFICATIONS_REFRESH_TIME
         self.assertEqual(result, expected)
-    
+
     @override_settings(NOTIFICATIONS_REFRESH_TIME=0)
-    def test_refresh_time_can_be_zero(self):                
+    def test_refresh_time_can_be_zero(self):
         result = notifications_refresh_time()
         expected = 0
         self.assertEqual(result, expected)

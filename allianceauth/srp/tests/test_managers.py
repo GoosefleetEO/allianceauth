@@ -19,7 +19,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(
 )))
 
 
-def load_data(filename):    
+def load_data(filename):
     """loads given JSON file from `testdata` sub folder and returns content"""
     with open(
         currentdir + '/testdata/%s.json' % filename, 'r', encoding='utf-8'
@@ -30,7 +30,7 @@ def load_data(filename):
 
 
 class TestSrpManager(TestCase):
-    
+
     def test_can_extract_kill_id(self):
         link = 'https://zkillboard.com/kill/81973979/'
         expected = 81973979
@@ -52,11 +52,11 @@ class TestSrpManager(TestCase):
         self.assertEqual(ship_type, 19720)
         self.assertEqual(ship_value, 3177859026.86)
         self.assertEqual(victim_id, 93330670)
-    
+
     @patch(MODULE_PATH + '.requests.get')
     def test_invalid_id_for_zkb_raises_exception(self, mock_get):
         mock_get.return_value.json.return_value = ['']
-        
+
         with self.assertRaises(ValueError):
             SRPManager.get_kill_data(81973979)
 
@@ -77,7 +77,7 @@ class TestSrpManager(TestCase):
 
     def test_pending_requests_count_for_user(self):
         user = AuthUtils.create_member("Bruce Wayne")
-        
+
         # when no permission to approve SRP requests
         # then return None
         self.assertIsNone(SRPManager.pending_requests_count_for_user(user))
@@ -88,7 +88,7 @@ class TestSrpManager(TestCase):
         AuthUtils.add_permission_to_user_by_name("auth.srp_management", user)
         user = User.objects.get(pk=user.pk)
         self.assertEqual(SRPManager.pending_requests_count_for_user(user), 0)
-        
+
         # given permission to approve SRP requests
         # when 1 pending request
         # then return 1

@@ -4,7 +4,7 @@ The official installation guide will install a stable version of Alliance Auth t
 
 ```eval_rst
 .. warning::
-   Tuning usually has benefits and costs and should only be performed by experienced Linux administrators who understand the impact of tuning decisions on to their system.
+    Tuning usually has benefits and costs and should only be performed by experienced Linux administrators who understand the impact of tuning decisions on to their system.
 ```
 
 ```eval_rst

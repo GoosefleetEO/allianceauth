@@ -1,4 +1,5 @@
 stages:
+- pre-commit
 - gitlab
 - test
 - deploy
@@ -12,6 +13,18 @@ before_script:
   - redis-server --daemonize yes
   - python -V
   - pip install wheel tox
+
+pre-commit-check:
+  stage: pre-commit
+  image: python:3.6-buster
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
+  cache:
+    paths:
+      - ${PRE_COMMIT_HOME}
+  script:
+    - pip install pre-commit
+    - pre-commit run --all-files
 
 sast:
   stage: gitlab
@@ -27,7 +40,7 @@ dependency_scanning:
 
 test-3.7-core:
   image: python:3.7-buster
-  script:  
+  script:
   - tox -e py37-core
   artifacts:
     when: always
@@ -36,7 +49,7 @@ test-3.7-core:
 
 test-3.8-core:
   image: python:3.8-buster
-  script:  
+  script:
   - tox -e py38-core
   artifacts:
     when: always
@@ -45,7 +58,7 @@ test-3.8-core:
 
 test-3.9-core:
   image: python:3.9-buster
-  script:  
+  script:
   - tox -e py39-core
   artifacts:
     when: always
@@ -54,7 +67,7 @@ test-3.9-core:
 
 test-3.7-all:
   image: python:3.7-buster
-  script:  
+  script:
   - tox -e py37-all
   artifacts:
     when: always
@@ -63,7 +76,7 @@ test-3.7-all:
 
 test-3.8-all:
   image: python:3.8-buster
-  script:  
+  script:
   - tox -e py38-all
   artifacts:
     when: always
@@ -72,7 +85,7 @@ test-3.8-all:
 
 test-3.9-all:
   image: python:3.9-buster
-  script:  
+  script:
   - tox -e py39-all
   artifacts:
     when: always

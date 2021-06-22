@@ -6,8 +6,7 @@ from bravado.exception import HTTPForbidden
 from django.db import models
 from esi.errors import TokenError
 from esi.models import Token
-from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter,\
-     EveAllianceInfo
+from allianceauth.eveonline.models import EveCorporationInfo, EveCharacter, EveAllianceInfo
 from allianceauth.notifications import notify
 
 from allianceauth.corputils.managers import CorpStatsManager
@@ -49,8 +48,7 @@ class CorpStats(models.Model):
     def update(self):
         try:
             c = self.token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-            assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()[
-                       'corporation_id'] == int(self.corp.corporation_id)
+            assert c.Character.get_characters_character_id(character_id=self.token.character_id).result()['corporation_id'] == int(self.corp.corporation_id)
             member_ids = c.Corporation.get_corporations_corporation_id_members(
                 corporation_id=self.corp.corporation_id).result()
 
@@ -58,18 +56,15 @@ class CorpStats(models.Model):
             # the swagger spec doesn't have a maxItems count
             # manual testing says we can do over 350, but let's not risk it
             member_id_chunks = [member_ids[i:i + 255] for i in range(0, len(member_ids), 255)]
-            member_name_chunks = [c.Universe.post_universe_names(ids=id_chunk).result() for id_chunk in
-                                  member_id_chunks]
+            member_name_chunks = [c.Universe.post_universe_names(ids=id_chunk).result() for id_chunk in member_id_chunks]
             member_list = {}
             for name_chunk in member_name_chunks:
                 member_list.update({m['id']: m['name'] for m in name_chunk})
 
             # bulk create new member models
-            missing_members = [m_id for m_id in member_ids if
-                               not CorpMember.objects.filter(corpstats=self, character_id=m_id).exists()]
+            missing_members = [m_id for m_id in member_ids if not CorpMember.objects.filter(corpstats=self, character_id=m_id).exists()]
             CorpMember.objects.bulk_create(
-                [CorpMember(character_id=m_id, character_name=member_list[m_id], corpstats=self) for m_id in
-                 missing_members])
+                [CorpMember(character_id=m_id, character_name=member_list[m_id], corpstats=self) for m_id in missing_members])
 
             # purge old members
             self.members.exclude(character_id__in=member_ids).delete()
@@ -80,21 +75,22 @@ class CorpStats(models.Model):
         except TokenError as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
-                notify(self.token.user, "%s failed to update with your ESI token." % self,
-                       message="Your token has expired or is no longer valid. Please add a new one to create a new CorpStats.",
-                       level="error")
+                notify(
+                    self.token.user, "%s failed to update with your ESI token." % self,
+                    message="Your token has expired or is no longer valid. Please add a new one to create a new CorpStats.",
+                    level="error")
             self.delete()
         except HTTPForbidden as e:
             logger.warning("%s failed to update: %s" % (self, e))
             if self.token.user:
-                notify(self.token.user, "%s failed to update with your ESI token." % self,
-                       message="%s: %s" % (e.status_code, e.message), level="error")
+                notify(self.token.user, "%s failed to update with your ESI token." % self, message="%s: %s" % (e.status_code, e.message), level="error")
             self.delete()
         except AssertionError:
             logger.warning("%s token character no longer in corp." % self)
             if self.token.user:
-                notify(self.token.user, "%s cannot update with your ESI token." % self,
-                       message="%s cannot update with your ESI token as you have left corp." % self, level="error")
+                notify(
+                    self.token.user, "%s cannot update with your ESI token." % self,
+                    message="%s cannot update with your ESI token as you have left corp." % self, level="error")
             self.delete()
 
     @property
@@ -127,9 +123,7 @@ class CorpStats(models.Model):
 
     @property
     def mains(self):
-        return self.members.filter(pk__in=[m.pk for m in self.members.all() if
-                                           m.main_character and int(m.main_character.character_id) == int(
-                                               m.character_id)])
+        return self.members.filter(pk__in=[m.pk for m in self.members.all() if m.main_character and int(m.main_character.character_id) == int(m.character_id)])
 
     def visible_to(self, user):
         return CorpStats.objects.filter(pk=self.pk).visible_to(user).exists()

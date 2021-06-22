@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class GroupManager:
-    
+
     @classmethod
     def get_joinable_groups_for_user(
         cls, user: User, include_hidden = True
@@ -21,7 +21,7 @@ class GroupManager:
 
         if not user.has_perm('groupmanagement.request_groups'):
             groups_qs = groups_qs.filter(authgroup__public=True)
-        
+
         if not include_hidden:
             groups_qs = groups_qs.filter(authgroup__hidden=False)
 
@@ -45,7 +45,7 @@ class GroupManager:
     @staticmethod
     def get_group_leaders_groups(user: User):
         return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user]) | \
-               Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
+            Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
 
     @staticmethod
     def joinable_group(group: Group, state: State) -> bool:
@@ -57,7 +57,7 @@ class GroupManager:
         :param state: allianceauth.authentication.State object
         :return: bool True if its joinable, False otherwise
         """
-        if (len(group.authgroup.states.all()) != 0 
+        if (len(group.authgroup.states.all()) != 0
             and state not in group.authgroup.states.all()
         ):
             return False
@@ -106,7 +106,7 @@ class GroupManager:
     @classmethod
     def pending_requests_count_for_user(cls, user: User) -> int:
         """Returns the number of pending group requests for the given user"""
-        
+
         if cls.has_management_permission(user):
             return GroupRequest.objects.filter(status="pending").count()
         else:

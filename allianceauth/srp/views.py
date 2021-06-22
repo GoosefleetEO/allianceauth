@@ -53,8 +53,8 @@ def srp_fleet_view(request, fleet_id):
     except SrpFleetMain.DoesNotExist:
         raise Http404
     context = {"fleet_id": fleet_id, "fleet_status": fleet_main.fleet_srp_status,
-               "srpfleetrequests": fleet_main.srpuserrequest_set.select_related('character'),
-               "totalcost": fleet_main.total_cost}
+                "srpfleetrequests": fleet_main.srpuserrequest_set.select_related('character'),
+                "totalcost": fleet_main.total_cost}
 
     return render(request, 'srp/data.html', context=context)
 
@@ -137,7 +137,7 @@ def srp_fleet_mark_completed(request, fleet_id):
     srpfleetmain.save()
     logger.info("Marked SRP Fleet %s as completed by user %s" % (srpfleetmain.fleet_name, request.user))
     messages.success(request,
-                     _('Marked SRP fleet %(fleetname)s as completed.') % {"fleetname": srpfleetmain.fleet_name})
+                    _('Marked SRP fleet %(fleetname)s as completed.') % {"fleetname": srpfleetmain.fleet_name})
     return redirect("srp:fleet", fleet_id)
 
 
@@ -150,7 +150,7 @@ def srp_fleet_mark_uncompleted(request, fleet_id):
     srpfleetmain.save()
     logger.info("Marked SRP Fleet %s as incomplete for user %s" % (fleet_id, request.user))
     messages.success(request,
-                     _('Marked SRP fleet %(fleetname)s as incomplete.') % {"fleetname": srpfleetmain.fleet_name})
+                    _('Marked SRP fleet %(fleetname)s as incomplete.') % {"fleetname": srpfleetmain.fleet_name})
     return redirect("srp:fleet", fleet_id)
 
 
@@ -162,7 +162,7 @@ def srp_request_view(request, fleet_srp):
     if SrpFleetMain.objects.filter(fleet_srp_code=fleet_srp).exists() is False:
         logger.error("Unable to locate SRP Fleet using code %s for user %s" % (fleet_srp, request.user))
         messages.error(request,
-                       _('Unable to locate SRP code with ID %(srpfleetid)s') % {"srpfleetid": fleet_srp})
+                        _('Unable to locate SRP code with ID %(srpfleetid)s') % {"srpfleetid": fleet_srp})
         return redirect("srp:management")
 
     if request.method == 'POST':
@@ -172,7 +172,7 @@ def srp_request_view(request, fleet_srp):
         if form.is_valid():
             if SrpUserRequest.objects.filter(killboard_link=form.cleaned_data['killboard_link']).exists():
                 messages.error(request,
-                               _("This Killboard link has already been posted."))
+                                _("This Killboard link has already been posted."))
                 return redirect("srp:management")
 
             character = request.user.profile.main_character
@@ -193,8 +193,7 @@ def srp_request_view(request, fleet_srp):
                     request.user, srp_request.killboard_link))
                 # THIS SHOULD BE IN FORM VALIDATION
                 messages.error(request,
-                               _(
-                                   "Your SRP request Killmail link is invalid. Please make sure you are using zKillboard."))
+                                _("Your SRP request Killmail link is invalid. Please make sure you are using zKillboard."))
                 return redirect("srp:management")
 
             if request.user.character_ownerships.filter(character__character_id=str(victim_id)).exists():
@@ -205,13 +204,12 @@ def srp_request_view(request, fleet_srp):
                 logger.info("Created SRP Request on behalf of user %s for fleet name %s" % (
                     request.user, srp_fleet_main.fleet_name))
                 messages.success(request,
-                                 _('Submitted SRP request for your %(ship)s.') % {"ship": srp_request.srp_ship_name})
+                                _('Submitted SRP request for your %(ship)s.') % {"ship": srp_request.srp_ship_name})
                 return redirect("srp:management")
             else:
                 messages.error(request,
-                               _(
-                                   "Character %(charid)s does not belong to your Auth account. Please add the API key for this character and try again")
-                               % {"charid": victim_id})
+                                _("Character %(charid)s does not belong to your Auth account. Please add the API key for this character and try again")
+                                % {"charid": victim_id})
             return redirect("srp:management")
     else:
         logger.debug("Returning blank SrpFleetUserRequestForm")
@@ -330,7 +328,7 @@ def srp_request_update_amount(request, fleet_srp_request_id):
     if SrpUserRequest.objects.filter(id=fleet_srp_request_id).exists() is False:
         logger.error("Unable to locate SRP request id %s for user %s" % (fleet_srp_request_id, request.user))
         messages.error(request,
-                       _('Unable to locate SRP request with ID %(requestid)s') % {"requestid": fleet_srp_request_id})
+                        _('Unable to locate SRP request with ID %(requestid)s') % {"requestid": fleet_srp_request_id})
         return redirect("srp:management")
 
     srp_request = SrpUserRequest.objects.get(id=fleet_srp_request_id)
@@ -354,7 +352,7 @@ def srp_fleet_edit_view(request, fleet_id):
             srpfleetmain.save()
             logger.info("User %s edited SRP Fleet %s" % (request.user, srpfleetmain.fleet_name))
             messages.success(request,
-                             _('Saved changes to SRP fleet %(fleetname)s') % {"fleetname": srpfleetmain.fleet_name})
+                            _('Saved changes to SRP fleet %(fleetname)s') % {"fleetname": srpfleetmain.fleet_name})
             return redirect("srp:management")
     else:
         logger.debug("Returning blank SrpFleetMainUpdateForm")

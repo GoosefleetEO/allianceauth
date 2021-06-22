@@ -63,15 +63,13 @@ def hr_application_create_view(request, form_id=None):
                 application.save()
                 for question in app_form.questions.all():
                     response = ApplicationResponse(question=question, application=application)
-                    response.answer = "\n".join(request.POST.getlist(str(question.pk),
-                                                       ""))
+                    response.answer = "\n".join(request.POST.getlist(str(question.pk), ""))
                     response.save()
                 logger.info("%s created %s" % (request.user, application))
             return redirect('hrapplications:personal_view', application.id)
         else:
             questions = app_form.questions.all()
-            return render(request, 'hrapplications/create.html',
-                          context={'questions': questions, 'corp': app_form.corp})
+            return render(request, 'hrapplications/create.html', context={'questions': questions, 'corp': app_form.corp})
     else:
         choices = []
         for app_form in ApplicationForm.objects.all():
@@ -171,8 +169,7 @@ def hr_application_approve(request, app_id):
         logger.info("User %s approving %s" % (request.user, app))
         app.approved = True
         app.save()
-        notify(app.user, "Application Accepted", message="Your application to %s has been approved." % app.form.corp,
-               level="success")
+        notify(app.user, "Application Accepted", message="Your application to %s has been approved." % app.form.corp, level="success")
     else:
         logger.warn("User %s not authorized to approve %s" % (request.user, app))
     return redirect('hrapplications:index')
@@ -188,8 +185,7 @@ def hr_application_reject(request, app_id):
         logger.info("User %s rejecting %s" % (request.user, app))
         app.approved = False
         app.save()
-        notify(app.user, "Application Rejected", message="Your application to %s has been rejected." % app.form.corp,
-               level="danger")
+        notify(app.user, "Application Rejected", message="Your application to %s has been rejected." % app.form.corp, level="danger")
     else:
         logger.warn("User %s not authorized to reject %s" % (request.user, app))
     return redirect('hrapplications:index')
@@ -248,8 +244,7 @@ def hr_application_mark_in_progress(request, app_id):
         app.reviewer = request.user
         app.reviewer_character = request.user.profile.main_character
         app.save()
-        notify(app.user, "Application In Progress",
-               message="Your application to %s is being reviewed by %s" % (app.form.corp, app.reviewer_str))
+        notify(app.user, "Application In Progress", message="Your application to %s is being reviewed by %s" % (app.form.corp, app.reviewer_str))
     else:
         logger.warn(
             "User %s unable to mark %s in progress: already being reviewed by %s" % (request.user, app, app.reviewer))

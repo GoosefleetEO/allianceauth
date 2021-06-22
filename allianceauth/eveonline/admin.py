@@ -97,7 +97,7 @@ class EveAllianceForm(EveEntityForm):
 @admin.register(EveCorporationInfo)
 class EveCorporationInfoAdmin(admin.ModelAdmin):
     search_fields = ['corporation_name']
-    list_display = ('corporation_name', 'alliance')    
+    list_display = ('corporation_name', 'alliance')
     list_select_related = ('alliance',)
     list_filter = (('alliance', admin.RelatedOnlyFieldListFilter),)
     ordering = ('corporation_name',)
@@ -114,9 +114,9 @@ class EveCorporationInfoAdmin(admin.ModelAdmin):
 @admin.register(EveAllianceInfo)
 class EveAllianceInfoAdmin(admin.ModelAdmin):
     search_fields = ['alliance_name']
-    list_display = ('alliance_name',)        
+    list_display = ('alliance_name',)
     ordering = ('alliance_name',)
-    
+
     def has_change_permission(self, request, obj=None):
         return False
 
@@ -129,9 +129,9 @@ class EveAllianceInfoAdmin(admin.ModelAdmin):
 @admin.register(EveCharacter)
 class EveCharacterAdmin(admin.ModelAdmin):
     search_fields = [
-        'character_name', 
-        'corporation_name', 
-        'alliance_name', 
+        'character_name',
+        'corporation_name',
+        'alliance_name',
         'character_ownership__user__username'
     ]
     list_display = (
@@ -141,10 +141,10 @@ class EveCharacterAdmin(admin.ModelAdmin):
         'character_ownership', 'character_ownership__user__profile__main_character'
     )
     list_filter = (
-        'corporation_name', 
-        'alliance_name',         
+        'corporation_name',
+        'alliance_name',
         (
-            'character_ownership__user__profile__main_character', 
+            'character_ownership__user__profile__main_character',
             admin.RelatedOnlyFieldListFilter
         ),
     )

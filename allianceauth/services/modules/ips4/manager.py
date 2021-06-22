@@ -14,7 +14,7 @@ TABLE_PREFIX = getattr(settings, 'IPS4_TABLE_PREFIX', '')
 
 class Ips4Manager:
     SQL_ADD_USER = r"INSERT INTO %score_members (name, email, members_pass_hash, members_pass_salt, " \
-                   r"member_group_id) VALUES (%%s, %%s, %%s, %%s, %%s)" % TABLE_PREFIX
+                    r"member_group_id) VALUES (%%s, %%s, %%s, %%s, %%s)" % TABLE_PREFIX
     SQL_GET_ID = r"SELECT member_id FROM %score_members WHERE name = %%s" % TABLE_PREFIX
     SQL_UPDATE_PASSWORD = r"UPDATE %score_members SET members_pass_hash = %%s, members_pass_salt = %%s WHERE name = %%s" % TABLE_PREFIX
     SQL_DEL_USER = r"DELETE FROM %score_members WHERE member_id = %%s" % TABLE_PREFIX

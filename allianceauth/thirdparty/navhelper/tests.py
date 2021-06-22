@@ -34,15 +34,13 @@ class NavhelperTemplateTagTests(TestCase):
     def test_navactive(self):
         self._navactive_common('active', '')
 
-        with self.settings(NAVHELPER_ACTIVE_CLASS='my-active-class',
-                           NAVHELPER_NOT_ACTIVE_CLASS='my-not-active-class'):
+        with self.settings(NAVHELPER_ACTIVE_CLASS='my-active-class', NAVHELPER_NOT_ACTIVE_CLASS='my-not-active-class'):
             self._navactive_common('my-active-class', 'my-not-active-class')
 
     def test_renavactive(self):
         self._renavactive_common('active', '')
 
-        with self.settings(NAVHELPER_ACTIVE_CLASS='my-active-class',
-                           NAVHELPER_NOT_ACTIVE_CLASS='my-not-active-class'):
+        with self.settings(NAVHELPER_ACTIVE_CLASS='my-active-class', NAVHELPER_NOT_ACTIVE_CLASS='my-not-active-class'):
             self._renavactive_common('my-active-class', 'my-not-active-class')
 
     def _navactive_common(self, active, not_active):

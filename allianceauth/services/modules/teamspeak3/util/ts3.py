@@ -11,16 +11,18 @@ class ConnectionError:
         return 'Error connecting to host %s port %s' % (self.ip, self.port)
 
 
-ts3_escape = {'/': r"\/",
-              ' ': r'\s',
-              '|': r'\p',
-              "\a": r'\a',
-              "\b": r'\b',
-              "\f": r'\f',
-              "\n": r'\n',
-              "\r": r'\r',
-              "\t": r'\t',
-              "\v": r'\v'}
+ts3_escape = {
+    '/': r"\/",
+    ' ': r'\s',
+    '|': r'\p',
+    "\a": r'\a',
+    "\b": r'\b',
+    "\f": r'\f',
+    "\n": r'\n',
+    "\r": r'\r',
+    "\t": r'\t',
+    "\v": r'\v'
+}
 
 
 class TS3Proto:

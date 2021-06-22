@@ -36,8 +36,7 @@ def activate_forum(request):
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'services/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'Forum'})
+        return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'Forum'})
     else:
         logger.error("Unsuccessful attempt to activate forum for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your forum account.'))
@@ -73,8 +72,7 @@ def reset_forum_password(request):
                 'username': request.user.phpbb3.username,
                 'password': result,
             }
-            return render(request, 'services/service_credentials.html',
-                          context={'credentials': credentials, 'service': 'Forum'})
+            return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'Forum'})
 
     logger.error("Unsuccessful attempt to reset forum password for user %s" % request.user)
     messages.error(request, _('An error occurred while processing your forum account.'))

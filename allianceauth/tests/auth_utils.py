@@ -9,17 +9,17 @@ from allianceauth.authentication.models import (
 )
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.authentication.signals import (
-    state_member_alliances_changed, 
-    state_member_characters_changed, 
-    state_member_corporations_changed, 
+    state_member_alliances_changed,
+    state_member_characters_changed,
+    state_member_corporations_changed,
     state_saved,
     reassess_on_profile_save,
     assign_state_on_active_change,
     check_state_on_character_update
 )
 from allianceauth.services.signals import (
-    m2m_changed_group_permissions, 
-    m2m_changed_user_permissions, 
+    m2m_changed_group_permissions,
+    m2m_changed_user_permissions,
     m2m_changed_state_permissions,
     m2m_changed_user_groups, disable_services_on_inactive,
     process_main_character_change,
@@ -31,13 +31,13 @@ class AuthUtils:
     """Utilities for making it easier to create tests for Alliance Auth"""
 
     @staticmethod
-    def _create_user(username):        
+    def _create_user(username):
         return User.objects.create(username=username)
 
     @classmethod
     def create_user(cls, username, disconnect_signals=False):
         """create a new user
-        
+
         username: Name of the user
 
         disconnect_signals: whether to run process without signals
@@ -135,14 +135,14 @@ class AuthUtils:
         m2m_changed.connect(state_member_alliances_changed, sender=State.member_alliances.through)
         post_save.connect(state_saved, sender=State)
         post_save.connect(reassess_on_profile_save, sender=UserProfile)
-        pre_save.connect(assign_state_on_active_change, sender=User)        
+        pre_save.connect(assign_state_on_active_change, sender=User)
         pre_save.connect(process_main_character_change, sender=UserProfile)
         pre_save.connect(process_main_character_update, sender=EveCharacter)
         post_save.connect(check_state_on_character_update, sender=EveCharacter)
 
     @classmethod
     def add_main_character(cls, user, name, character_id, corp_id=2345, corp_name='', corp_ticker='', alliance_id=None,
-                           alliance_name=''):
+                            alliance_name=''):
         if alliance_id:
             try:
                 alliance_id = int(alliance_id)
@@ -161,15 +161,15 @@ class AuthUtils:
         UserProfile.objects.update_or_create(user=user, defaults={'main_character': char})
 
     @classmethod
-    def add_main_character_2(        
+    def add_main_character_2(
         cls,
-        user, 
-        name, 
-        character_id, 
-        corp_id=2345, 
-        corp_name='', 
-        corp_ticker='', 
-        alliance_id=None, 
+        user,
+        name,
+        character_id,
+        corp_id=2345,
+        corp_name='',
+        corp_ticker='',
+        alliance_id=None,
         alliance_name='',
         disconnect_signals=False
     ):
@@ -194,10 +194,10 @@ class AuthUtils:
         )
         user.profile.main_character = char
         user.profile.save()
-        
+
         if disconnect_signals:
             cls.connect_signals()
-        
+
         return char
 
     @classmethod
@@ -222,16 +222,16 @@ class AuthUtils:
     @classmethod
     def add_permissions_to_user(cls, perms, user, disconnect_signals=True) -> User:
         """add list of permissions to user
-        
+
         perms: list of Permission objects
-        
+
         user: user object
-        
+
         disconnect_signals: whether to run process without signals
         """
         if disconnect_signals:
             cls.disconnect_signals()
-        
+
         for perm in perms:
             user.user_permissions.add(perm)
 
@@ -244,7 +244,7 @@ class AuthUtils:
     @classmethod
     def add_permission_to_user_by_name(
         cls, perm, user, disconnect_signals=True
-    ) -> User:        
+    ) -> User:
         """returns permission specified by qualified name
 
         perm: Permission name as 'app_label.codename'
@@ -279,7 +279,7 @@ class BaseViewTestCase(TestCase):
         self.member.email = 'auth_member@example.com'
         self.member.save()
         AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
-                                     corp_ticker='TESTR')
+                                    corp_ticker='TESTR')
 
     def login(self):
         token = Token.objects.create(character_id='12345', character_name='auth_member', character_owner_hash='1', user=self.member, access_token='1')

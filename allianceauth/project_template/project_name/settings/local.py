@@ -19,7 +19,7 @@ DEBUG = False
 
 # Add any additional apps to this list.
 INSTALLED_APPS += [
-    
+
 ]
 
 # To change the logging level for extensions, uncomment the following line.
