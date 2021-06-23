@@ -10,7 +10,7 @@ module_urls = [
     url(r'^deactivate/$', views.deactivate_teamspeak3, name='deactivate'),
     url(r'^reset_perm/$', views.reset_teamspeak3_perm, name='reset_perm'),
     url(
-        r'^admin_update_ts3_groups/$', 
+        r'^admin_update_ts3_groups/$',
         views.admin_update_ts3_groups,
         name='admin_update_ts3_groups'
     ),
