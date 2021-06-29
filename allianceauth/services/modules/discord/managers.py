@@ -83,10 +83,31 @@ class DiscordUserManager(models.Manager):
             if created is not False:
                 if created is None:
                     logger.debug(
-                        "User %s with Discord ID %s is already a member.",
+                        "User %s with Discord ID %s is already a member. Forcing a Refresh",
                         user,
                         user_id,
                     )
+
+                    # Force an update cause the discord API won't do it for us.
+                    if role_ids:
+                        role_ids = list(role_ids)
+
+                    updated = bot_client.modify_guild_member(
+                        guild_id=DISCORD_GUILD_ID,
+                        user_id=user_id,
+                        role_ids=role_ids,
+                        nick=nickname
+                    )
+
+                    if not updated:
+                        # Could not update the new user so fail.
+                        logger.warning(
+                            "Failed to add user %s with Discord ID %s to Discord server",
+                            user,
+                            user_id,
+                        )
+                        return False
+
                 self.update_or_create(
                     user=user,
                     defaults={

@@ -111,6 +111,40 @@ class TestAddUser(TestCase):
         self.assertSetEqual(set(kwargs['role_ids']), {1, 2, 3})
         self.assertIsNone(kwargs['nick'])
 
+    def test_can_activate_existing_user_with_roles_no_nick(
+        self,
+        mock_user_formatted_nick,
+        mock_user_group_names,
+        mock_exchange_auth_code_for_token,
+        mock_DiscordClient
+    ):
+        roles = [
+            create_matched_role(ROLE_ALPHA),
+            create_matched_role(ROLE_BRAVO),
+            create_matched_role(ROLE_CHARLIE)
+        ]
+        mock_user_formatted_nick.return_value = None
+        mock_user_group_names.return_value = ['a', 'b', 'c']
+        mock_exchange_auth_code_for_token.return_value = self.access_token
+        mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = roles
+        mock_DiscordClient.return_value.add_guild_member.return_value = None
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+
+        result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
+        self.assertTrue(result)
+        self.assertTrue(
+            DiscordUser.objects.filter(user=self.user, uid=TEST_USER_ID).exists()
+        )
+        self.assertTrue(mock_DiscordClient.return_value.add_guild_member.called)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
+        self.assertEqual(kwargs['guild_id'], TEST_GUILD_ID)
+        self.assertEqual(kwargs['user_id'], TEST_USER_ID)
+        self.assertSetEqual(set(kwargs['role_ids']), {1, 2, 3})
+        self.assertIsNone(kwargs['nick'])
+
     @patch(MODULE_PATH + '.managers.DISCORD_SYNC_NAMES', True)
     def test_can_create_user_no_roles_with_nick(
         self,
@@ -137,6 +171,36 @@ class TestAddUser(TestCase):
         self.assertEqual(kwargs['guild_id'], TEST_GUILD_ID)
         self.assertEqual(kwargs['user_id'], TEST_USER_ID)
         self.assertEqual(kwargs['access_token'], self.access_token)
+        self.assertIsNone(kwargs['role_ids'])
+        self.assertEqual(kwargs['nick'], TEST_MAIN_NAME)
+
+    @patch(MODULE_PATH + '.managers.DISCORD_SYNC_NAMES', True)
+    def test_can_activate_existing_user_no_roles_with_nick(
+        self,
+        mock_user_formatted_nick,
+        mock_user_group_names,
+        mock_exchange_auth_code_for_token,
+        mock_DiscordClient
+    ):
+        mock_user_formatted_nick.return_value = TEST_MAIN_NAME
+        mock_user_group_names.return_value = []
+        mock_exchange_auth_code_for_token.return_value = self.access_token
+        mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
+        mock_DiscordClient.return_value.add_guild_member.return_value = None
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
+
+        result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
+        self.assertTrue(result)
+        self.assertTrue(
+            DiscordUser.objects.filter(user=self.user, uid=TEST_USER_ID).exists()
+        )
+        self.assertTrue(mock_DiscordClient.return_value.add_guild_member.called)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+        args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
+        self.assertEqual(kwargs['guild_id'], TEST_GUILD_ID)
+        self.assertEqual(kwargs['user_id'], TEST_USER_ID)
         self.assertIsNone(kwargs['role_ids'])
         self.assertEqual(kwargs['nick'], TEST_MAIN_NAME)
 
@@ -183,6 +247,7 @@ class TestAddUser(TestCase):
         mock_DiscordClient.return_value.match_or_create_roles_from_names\
             .return_value = []
         mock_DiscordClient.return_value.add_guild_member.return_value = None
+        mock_DiscordClient.return_value.modify_guild_member.return_value = True
 
         result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
         self.assertTrue(result)
@@ -190,6 +255,31 @@ class TestAddUser(TestCase):
             DiscordUser.objects.filter(user=self.user, uid=TEST_USER_ID).exists()
         )
         self.assertTrue(mock_DiscordClient.return_value.add_guild_member.called)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
+
+    def test_can_activate_existing_guild_member_failure(
+        self,
+        mock_user_formatted_nick,
+        mock_user_group_names,
+        mock_exchange_auth_code_for_token,
+        mock_DiscordClient
+    ):
+        mock_user_formatted_nick.return_value = None
+        mock_user_group_names.return_value = []
+        mock_exchange_auth_code_for_token.return_value = self.access_token
+        mock_DiscordClient.return_value.current_user.return_value = self.user_info
+        mock_DiscordClient.return_value.match_or_create_roles_from_names\
+            .return_value = []
+        mock_DiscordClient.return_value.add_guild_member.return_value = None
+        mock_DiscordClient.return_value.modify_guild_member.return_value = False
+
+        result = DiscordUser.objects.add_user(self.user, authorization_code='abcdef')
+        self.assertFalse(result)
+        self.assertFalse(
+            DiscordUser.objects.filter(user=self.user, uid=TEST_USER_ID).exists()
+        )
+        self.assertTrue(mock_DiscordClient.return_value.add_guild_member.called)
+        self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
 
     def test_return_false_when_user_creation_fails(
         self,
