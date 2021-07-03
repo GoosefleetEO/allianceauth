@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'allianceauth.groupmanagement',
     'allianceauth.notifications',
     'allianceauth.thirdparty.navhelper',
+    'allianceauth.analytics',
 ]
 
 SECRET_KEY = "wow I'm a really bad default secret key"
@@ -53,6 +54,10 @@ CELERYBEAT_SCHEDULE = {
     'check_all_character_ownership': {
         'task': 'allianceauth.authentication.tasks.check_all_character_ownership',
         'schedule': crontab(minute=0, hour='*/4'),
+    },
+    'analytics_daily_stats': {
+        'task': 'allianceauth.analytics.tasks.analytics_daily_stats',
+        'schedule': crontab(minute=0, hour=2),
     }
 }
 
@@ -69,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allianceauth.analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'allianceauth.urls'
