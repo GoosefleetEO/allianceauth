@@ -16,6 +16,7 @@ install_requires = [
     'requests-oauthlib',
     'semantic_version',
     'packaging>=20.1,<21',
+    'beautifulsoup4',
 
     'redis>=3.3.1,<4.0.0',
     'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency

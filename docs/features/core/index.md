@@ -10,5 +10,6 @@ Managing access to applications and services is one of the core functions of **A
     states
     groups
     groupmanagement
+    analytics
     notifications
 ```

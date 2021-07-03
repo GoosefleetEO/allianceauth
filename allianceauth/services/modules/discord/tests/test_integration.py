@@ -107,6 +107,8 @@ def reset_testdata():
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @requests_mock.Mocker()
 class TestServiceFeatures(TransactionTestCase):
+    fixtures = ['disable_analytics.json']
+
 
     @classmethod
     def setUpClass(cls):
@@ -434,6 +436,7 @@ class StateTestCase(TestCase):
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
 class TestUserFeatures(WebTest):
+    fixtures = ['disable_analytics.json']
 
     def setUp(self):
         clear_cache()
