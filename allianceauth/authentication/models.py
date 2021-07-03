@@ -77,6 +77,11 @@ class UserProfile(models.Model):
                     'info'
                 )
                 from allianceauth.authentication.signals import state_changed
+
+                # We need to ensure we get up to date perms here as they will have just changed.
+                # Clear all attribute caches and reload the model that will get passed to the signals!
+                self.refresh_from_db()
+
                 state_changed.send(
                     sender=self.__class__, user=self.user, state=self.state
                 )
