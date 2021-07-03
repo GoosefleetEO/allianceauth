@@ -18,7 +18,7 @@ install_requires = [
     'packaging>=20.1,<21',
 
     'redis>=3.3.1,<4.0.0',
-    'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
+    'celery>=4.3.0,<6.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once>=2.0.1',
 
     'django>=3.1.1,<4.0.0',
