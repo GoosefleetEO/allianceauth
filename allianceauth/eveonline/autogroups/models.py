@@ -6,8 +6,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCorporationInfo, EveAllianceInfo
 
-from allianceauth.groupmanagement.models import AuthGroup
-
 logger = logging.getLogger(__name__)
 
 
@@ -181,16 +179,12 @@ class AutogroupsConfig(models.Model):
     @transaction.atomic
     def create_alliance_group(self, alliance: EveAllianceInfo) -> Group:
         group, created = Group.objects.get_or_create(name=self.get_alliance_group_name(alliance))
-        if created:
-            AuthGroup.objects.create(group=group)
         ManagedAllianceGroup.objects.get_or_create(group=group, config=self, alliance=alliance)
         return group
 
     @transaction.atomic
     def create_corp_group(self, corp: EveCorporationInfo) -> Group:
         group, created = Group.objects.get_or_create(name=self.get_corp_group_name(corp))
-        if created:
-            AuthGroup.objects.create(group=group)
         ManagedCorpGroup.objects.get_or_create(group=group, config=self, corp=corp)
         return group
 
@@ -246,7 +240,6 @@ class ManagedGroup(models.Model):
 
     def __str__(self):
         return "Managed Group: %s" % self.group.name
-
 
 class ManagedCorpGroup(ManagedGroup):
     corp = models.ForeignKey(EveCorporationInfo, on_delete=models.CASCADE)
