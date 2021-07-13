@@ -7,7 +7,7 @@ from django.urls import reverse
 from allianceauth.eveonline.models import EveCorporationInfo, EveAllianceInfo
 from allianceauth.tests.auth_utils import AuthUtils
 
-from ..models import GroupRequest, AuthGroup
+from ..models import GroupRequest
 from ..managers import GroupManager
 
 
@@ -29,11 +29,8 @@ class GroupManagementVisibilityTestCase(TestCase):
             corporation_id='2', corporation_name='test corp', corporation_ticker='TEST', alliance=cls.alliance, member_count=1
         )
         cls.group1 = Group.objects.create(name='group1')
-        AuthGroup.objects.create(group=cls.group1)
         cls.group2 = Group.objects.create(name='group2')
-        AuthGroup.objects.create(group=cls.group2)
         cls.group3 = Group.objects.create(name='group3')
-        AuthGroup.objects.create(group=cls.group3)
 
     def setUp(self):
         self.user.refresh_from_db()
@@ -80,8 +77,7 @@ class TestGroupManager(TestCase):
         super().setUpClass()
 
         # group 1
-        cls.group_default = Group.objects.create(name='default')
-        AuthGroup.objects.create(group=cls.group_default)
+        cls.group_default = Group.objects.create(name='default')        
         cls.group_default.authgroup.description = 'Default Group'
         cls.group_default.authgroup.internal = False
         cls.group_default.authgroup.hidden = False
@@ -89,14 +85,12 @@ class TestGroupManager(TestCase):
 
         # group 2
         cls.group_internal = Group.objects.create(name='internal')
-        AuthGroup.objects.create(group=cls.group_internal)
         cls.group_internal.authgroup.description = 'Internal Group'
         cls.group_internal.authgroup.internal = True        
         cls.group_internal.authgroup.save()
 
         # group 3
         cls.group_hidden = Group.objects.create(name='hidden')
-        AuthGroup.objects.create(group=cls.group_hidden)
         cls.group_hidden.authgroup.description = 'Hidden Group'
         cls.group_hidden.authgroup.internal = False
         cls.group_hidden.authgroup.hidden = True
@@ -104,7 +98,6 @@ class TestGroupManager(TestCase):
 
         # group 4
         cls.group_open = Group.objects.create(name='open')
-        AuthGroup.objects.create(group=cls.group_open)
         cls.group_open.authgroup.description = 'Open Group'
         cls.group_open.authgroup.internal = False
         cls.group_open.authgroup.hidden = False
@@ -113,7 +106,6 @@ class TestGroupManager(TestCase):
 
         # group 5
         cls.group_public_1 = Group.objects.create(name='public 1')
-        AuthGroup.objects.create(group=cls.group_public_1)
         cls.group_public_1.authgroup.description = 'Public Group 1'
         cls.group_public_1.authgroup.internal = False
         cls.group_public_1.authgroup.hidden = False
@@ -122,7 +114,6 @@ class TestGroupManager(TestCase):
 
         # group 6
         cls.group_public_2 = Group.objects.create(name='public 2')
-        AuthGroup.objects.create(group=cls.group_public_2)
         cls.group_public_2.authgroup.description = 'Public Group 2'
         cls.group_public_2.authgroup.internal = False
         cls.group_public_2.authgroup.hidden = True
@@ -132,7 +123,6 @@ class TestGroupManager(TestCase):
 
         # group 7
         cls.group_default_member = Group.objects.create(name='default members')
-        AuthGroup.objects.create(group=cls.group_default_member)
         cls.group_default_member.authgroup.description = \
             'Default Group for members only'
         cls.group_default_member.authgroup.internal = False
@@ -348,9 +338,7 @@ class TestPendingRequestsCountForUser(TestCase):
             
     def setUp(self) -> None:
         self.group_1 = Group.objects.create(name="Group 1")
-        AuthGroup.objects.create(group=self.group_1)
         self.group_2 = Group.objects.create(name="Group 2")
-        AuthGroup.objects.create(group=self.group_2)
         self.user_leader_1 = AuthUtils.create_member('Clark Kent')
         self.group_1.authgroup.group_leaders.add(self.user_leader_1)
         self.user_leader_2 = AuthUtils.create_member('Peter Parker')
