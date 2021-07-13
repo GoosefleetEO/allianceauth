@@ -413,8 +413,8 @@ class TestUserGroupNames(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.group_1 = AuthUtils.create_group(group_name='Group 1')
-        cls.group_2 = AuthUtils.create_group(group_name='Group 2')
+        cls.group_1 = Group.objects.create(name='Group 1')
+        cls.group_2 = Group.objects.create(name='Group 2')
     
     def setUp(self):
         self.user = AuthUtils.create_member(TEST_USER_NAME)        
@@ -501,11 +501,11 @@ class TestRoleForGroup(TestCase):
     def test_return_role_if_found(self, mock_DiscordClient):
         mock_DiscordClient.return_value.match_role_from_name.return_value = ROLE_ALPHA
 
-        group = AuthUtils.create_group(group_name='alpha')
+        group = Group.objects.create(name='alpha')
         self.assertEqual(DiscordUser.objects.group_to_role(group), ROLE_ALPHA)
 
     def test_return_empty_dict_if_not_found(self, mock_DiscordClient):
         mock_DiscordClient.return_value.match_role_from_name.return_value = dict()
 
-        group = AuthUtils.create_group(group_name='unknown')
+        group = Group.objects.create(name='unknown')
         self.assertEqual(DiscordUser.objects.group_to_role(group), dict())

@@ -18,9 +18,9 @@ class PermissionsToolViewsTestCase(WebTest):
         self.no_perm_user = AuthUtils.create_user('no_perm_user', disconnect_signals=True)
 
         AuthUtils.disconnect_signals()
-        self.no_perm_group = AuthUtils.create_group(group_name="No Permission Group")
+        self.no_perm_group = Group.objects.create(name="No Permission Group")
 
-        self.test_group = AuthUtils.create_group(group_name="Test group")
+        self.test_group = Group.objects.create(name="Test group")
 
         self.test_group.user_set.add(self.none_user)
         self.test_group.user_set.add(self.none_user2)
