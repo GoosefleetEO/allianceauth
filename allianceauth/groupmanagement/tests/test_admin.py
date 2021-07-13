@@ -39,7 +39,8 @@ class TestGroupAdmin(TestCase):
         super().setUpClass()
 
         # group 1 - has leader
-        cls.group_1 = AuthUtils.create_group(group_name='Group 1')
+        cls.group_1 = Group.objects.create(name='Group 1')
+        AuthGroup.objects.create(group=cls.group_1)
         cls.group_1.authgroup.description = 'Default Group'
         cls.group_1.authgroup.internal = False
         cls.group_1.authgroup.hidden = False
