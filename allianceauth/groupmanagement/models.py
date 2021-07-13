@@ -117,3 +117,20 @@ class AuthGroup(models.Model):
             ("request_groups", u"Can request non-public groups"),
         )
         default_permissions = tuple()
+
+
+@receiver(post_save, sender=Group)
+def create_auth_group(sender, instance, created, **kwargs):
+    """
+    Creates the AuthGroup model when a group is created
+    """
+    if created:
+        AuthGroup.objects.create(group=instance)
+
+
+@receiver(post_save, sender=Group)
+def save_auth_group(sender, instance, **kwargs):
+    """
+    Ensures AuthGroup model is saved automatically
+    """
+    instance.authgroup.save()
