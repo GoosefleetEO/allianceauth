@@ -40,9 +40,6 @@ class AuthGroupInlineAdmin(admin.StackedInline):
             kwargs["queryset"] = Group.objects.order_by(Lower('name'))
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-    def has_add_permission(self, request, obj=None):
-        return False
-
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -172,6 +169,13 @@ class GroupAdmin(admin.ModelAdmin):
         if db_field.name == "permissions":
             kwargs["queryset"] = Permission.objects.select_related("content_type").all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+    def save_formset(self, request, form, formset, change):
+        for inline_form in formset:
+            ag_instance = inline_form.save(commit=False)
+            ag_instance.group = form.instance
+            ag_instance.save()
+        formset.save()
 
 
 class Group(BaseGroup):

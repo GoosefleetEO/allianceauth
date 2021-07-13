@@ -55,7 +55,6 @@ class RequestLog(models.Model):
         return user.profile.main_character
 
 
-
 class AuthGroup(models.Model):
     """
     Extends Django Group model with a one-to-one field
@@ -107,7 +106,8 @@ class AuthGroup(models.Model):
                                     help_text="States listed here will have the ability to join this group provided "
                                               "they have the proper permissions.")
 
-    description = models.TextField(max_length=512, blank=True, help_text="Short description <i>(max. 512 characters)</i> of the group shown to users.")
+    description = models.TextField(max_length=512, blank=True, help_text="Short description <i>(max. 512 characters)"
+                                                                         "</i> of the group shown to users.")
 
     def __str__(self):
         return self.group.name
@@ -117,20 +117,3 @@ class AuthGroup(models.Model):
             ("request_groups", u"Can request non-public groups"),
         )
         default_permissions = tuple()
-
-
-@receiver(post_save, sender=Group)
-def create_auth_group(sender, instance, created, **kwargs):
-    """
-    Creates the AuthGroup model when a group is created
-    """
-    if created:
-        AuthGroup.objects.create(group=instance)
-
-
-@receiver(post_save, sender=Group)
-def save_auth_group(sender, instance, **kwargs):
-    """
-    Ensures AuthGroup model is saved automatically
-    """
-    instance.authgroup.save()
