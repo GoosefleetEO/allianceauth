@@ -157,7 +157,7 @@ class TestRequestLog(TestCase):
 class TestAuthGroup(TestCase):
 
     def test_str(self):
-        group = Group.objects.create(name='Superheros')        
+        group = AuthUtils.create_group(group_name='Superheros')
         group.authgroup.description = 'Default Group'
         group.authgroup.internal = False
         group.authgroup.hidden = False
