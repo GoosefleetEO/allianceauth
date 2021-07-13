@@ -32,7 +32,7 @@ class ServicesSignalsTestCase(TestCase):
         # Overload transaction.on_commit so everything happens synchronously
         transaction.on_commit = lambda fn: fn()
 
-        test_group = AuthUtils.create_group(group_name="Test group")
+        test_group = Group.objects.create(name="Test group")
 
         # Act, should trigger m2m change
         self.member.groups.add(test_group)
@@ -97,7 +97,7 @@ class ServicesSignalsTestCase(TestCase):
         # Overload transaction.on_commit so everything happens synchronously
         transaction.on_commit = lambda fn: fn()
 
-        test_group = AuthUtils.create_group(group_name="Test group")
+        test_group = Group.objects.create(name="Test group")
         AuthUtils.disconnect_signals()
         self.member.groups.add(test_group)
         AuthUtils.connect_signals()

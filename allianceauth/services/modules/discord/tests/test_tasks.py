@@ -28,8 +28,8 @@ class TestUpdateGroups(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = AuthUtils.create_member(TEST_USER_NAME)
-        cls.group_1 = AuthUtils.create_group(group_name='Group 1')
-        cls.group_2 = AuthUtils.create_group(group_name='Group 2')
+        cls.group_1 = Group.objects.create(name='Group 1')
+        cls.group_2 = Group.objects.create(name='Group 2')
         cls.group_1.user_set.add(cls.user)
         cls.group_2.user_set.add(cls.user)
         

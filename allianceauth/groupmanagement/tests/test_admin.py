@@ -10,7 +10,6 @@ from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
-from allianceauth.tests.auth_utils import AuthUtils
 
 from ..admin import HasLeaderFilter, GroupAdmin, Group, AuthGroup
 from . import get_admin_change_view_url
@@ -47,20 +46,23 @@ class TestGroupAdmin(TestCase):
         cls.group_1.authgroup.save()
 
         # group 2 - no leader
-        cls.group_2 = AuthUtils.create_group(group_name='Group 2')
+        cls.group_2 = Group.objects.create(name='Group 2')
+        AuthGroup.objects.create(group=cls.group_2)
         cls.group_2.authgroup.description = 'Internal Group'
         cls.group_2.authgroup.internal = True        
         cls.group_2.authgroup.save()
 
         # group 3 - has leader
-        cls.group_3 = AuthUtils.create_group(group_name='Group 3')
+        cls.group_3 = Group.objects.create(name='Group 3')
+        AuthGroup.objects.create(group=cls.group_3)
         cls.group_3.authgroup.description = 'Hidden Group'
         cls.group_3.authgroup.internal = False
         cls.group_3.authgroup.hidden = True
         cls.group_3.authgroup.save()
 
         # group 4 - no leader
-        cls.group_4 = AuthUtils.create_group(group_name='Group 4')
+        cls.group_4 = Group.objects.create(name='Group 4')
+        AuthGroup.objects.create(group=cls.group_4)
         cls.group_4.authgroup.description = 'Open Group'
         cls.group_4.authgroup.internal = False
         cls.group_4.authgroup.hidden = False
@@ -68,7 +70,8 @@ class TestGroupAdmin(TestCase):
         cls.group_4.authgroup.save()
 
         # group 5 - no leader
-        cls.group_5 = AuthUtils.create_group(group_name='Group 5')
+        cls.group_5 = Group.objects.create(name='Group 5')
+        AuthGroup.objects.create(group=cls.group_5)
         cls.group_5.authgroup.description = 'Public Group'
         cls.group_5.authgroup.internal = False
         cls.group_5.authgroup.hidden = False
@@ -76,7 +79,8 @@ class TestGroupAdmin(TestCase):
         cls.group_5.authgroup.save()
 
         # group 6 - no leader
-        cls.group_6 = AuthUtils.create_group(group_name='Group 6')
+        cls.group_6 = Group.objects.create(name='Group 6')
+        AuthGroup.objects.create(group=cls.group_6)
         cls.group_6.authgroup.description = 'Mixed Group'
         cls.group_6.authgroup.internal = False
         cls.group_6.authgroup.hidden = True

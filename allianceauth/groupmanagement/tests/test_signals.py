@@ -41,14 +41,17 @@ class TestCheckGroupsOnStateChange(TestCase):
         and remains member of normal group and auto group
         """
         # setup
-        state_group = AuthUtils.create_group(group_name='state_group')
+        state_group = Group.objects.create(name='state_group')
+        AuthGroup.objects.create(group=state_group)
         state_group.authgroup.states.add(self.test_state_1)
         state_group.authgroup.internal = False
         state_group.save()
-        normal_group = AuthUtils.create_group(group_name='normal_group')
+        normal_group = Group.objects.create(name='normal_group')
+        AuthGroup.objects.create(group=normal_group)
         normal_group.authgroup.internal = False
         normal_group.save()
-        internal_group = AuthUtils.create_group(group_name='internal_group')
+        internal_group = Group.objects.create(name='internal_group')
+        AuthGroup.objects.create(group=internal_group)
         autogroup_config = AutogroupsConfig.objects.create(corp_groups=True)
         autogroup_config.states.add(self.test_state_1)
         autogroup_config.states.add(self.guest_state)
@@ -81,7 +84,8 @@ class TestCheckGroupsOnStateChange(TestCase):
         then user remains member of that group
         """
         # setup
-        state_group = AuthUtils.create_group(group_name='state_group')
+        state_group = Group.objects.create(name='state_group')
+        AuthGroup.objects.create(group=state_group)
         state_group.authgroup.states.add(self.test_state_1)
         state_group.authgroup.states.add(self.test_state_2)
                 
