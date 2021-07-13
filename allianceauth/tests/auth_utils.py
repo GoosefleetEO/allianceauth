@@ -25,7 +25,6 @@ from allianceauth.services.signals import (
     process_main_character_change,
     process_main_character_update
 )
-from allianceauth.groupmanagement.models import AuthGroup
 
 
 class AuthUtils:
@@ -69,28 +68,6 @@ class AuthUtils:
         if disconnect_signals:
             cls.connect_signals()
         return state
-
-    @classmethod
-    def _create_group(cls, group_name):
-        group = Group.objects.create(name=group_name)
-        AuthGroup.objects.create(group=group)
-        return group
-
-    @classmethod
-    def create_group(cls, group_name, disconnect_signals=False):
-        """
-        Create a new group and its authgroup.
-
-        Args:
-            group_name: name of the group
-            disconnect_signals: whether or not to run without signals.
-        """
-        if disconnect_signals:
-            cls.disconnect_signals()
-        group = cls._create_group(group_name)
-        if disconnect_signals:
-            cls.connect_signals()
-        return group
 
     @classmethod
     def get_member_state(cls):
