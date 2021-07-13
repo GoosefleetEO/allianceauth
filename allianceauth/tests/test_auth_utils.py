@@ -6,6 +6,7 @@ from django.test import TestCase
 from allianceauth.eveonline.models import (
     EveCorporationInfo, EveAllianceInfo, EveCharacter
 )
+from allianceauth.groupmanagement.models import AuthGroup
 
 from .auth_utils import AuthUtils
 
@@ -15,7 +16,12 @@ class TestAuthUtils(TestCase):
     def test_can_create_user(self):        
         user = AuthUtils.create_user('Bruce Wayne')
         self.assertTrue(User.objects.filter(username='Bruce Wayne').exists())
-    
+
+    def test_can_create_group(self):
+        group = AuthUtils.create_group('Test Group')
+        self.assertTrue(Group.objects.filter(name='Test Group').exists())
+        self.assertTrue(AuthGroup.objects.filter(group=group).exists())
+
     def test_can_add_main_character_2(self):
         user = AuthUtils.create_user('Bruce Wayne')
         character = AuthUtils.add_main_character_2(
