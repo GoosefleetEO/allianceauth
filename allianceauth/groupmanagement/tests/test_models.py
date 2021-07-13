@@ -8,7 +8,7 @@ from allianceauth.eveonline.models import (
     EveCorporationInfo, EveAllianceInfo, EveCharacter
 )
 
-from ..models import GroupRequest, RequestLog
+from ..models import GroupRequest, RequestLog, AuthGroup
 
 
 def create_testdata():    
@@ -20,7 +20,8 @@ def create_testdata():
     EveAllianceInfo.objects.all().delete()
 
     # group 1
-    group = Group.objects.create(name='Superheros')        
+    group = Group.objects.create(name='Superheros')
+    AuthGroup.objects.create(group=group)
     group.authgroup.description = 'Default Group'
     group.authgroup.internal = False
     group.authgroup.hidden = False
