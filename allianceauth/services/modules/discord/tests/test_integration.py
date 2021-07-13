@@ -119,7 +119,7 @@ class TestServiceFeatures(TransactionTestCase):
         """
         clear_cache()
         reset_testdata()
-        self.group_charlie = Group.objects.create(name='charlie')        
+        self.group_charlie = AuthUtils.create_group(group_name='charlie')
         
         # States
         self.member_state = AuthUtils.get_member_state()

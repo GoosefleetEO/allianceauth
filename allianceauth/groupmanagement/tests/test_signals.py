@@ -53,7 +53,7 @@ class TestCheckGroupsOnStateChange(TestCase):
         autogroup_config.states.add(self.test_state_1)
         autogroup_config.states.add(self.guest_state)
         auto_group = autogroup_config.corp_managed_groups.first()
-        internal_state_group = Group.objects.create(name='internal_state_group')        
+        internal_state_group = AuthUtils.create_group(group_name='internal_state_group')
         internal_state_group.authgroup.states.add(self.test_state_1)
         self.test_state_1.member_corporations.add(self.corp_1)
         self.user.groups.add(normal_group)

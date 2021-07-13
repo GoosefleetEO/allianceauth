@@ -23,8 +23,8 @@ class TestStatePermissions(TestCase):
         self.permission_2 = AuthUtils.get_permission_by_name(PERMISSION_2)
 
         # group
-        self.group_1 = Group.objects.create(name="Group 1")        
-        self.group_2 = Group.objects.create(name="Group 2")
+        self.group_1 = AuthUtils.create_group(group_name="Group 1")
+        self.group_2 = AuthUtils.create_group(group_name="Group 2")
 
         # state
         self.state_1 = AuthUtils.get_member_state()        
