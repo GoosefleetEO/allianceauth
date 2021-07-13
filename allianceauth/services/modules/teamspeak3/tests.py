@@ -287,7 +287,8 @@ class Teamspeak3SignalsTestCase(TestCase):
         # Overload transaction.on_commit so everything happens synchronously
         transaction.on_commit = lambda fn: fn()
 
-        AuthTS.objects.create(auth_group=Group.objects.create(name='Test Group'))  # Trigger signal (AuthTS creation)
+        # Trigger signal (AuthTS creation)
+        AuthTS.objects.create(auth_group=AuthUtils.create_group(group_name='Test Group'))
 
         self.assertTrue(trigger_all_ts_update.called)
 

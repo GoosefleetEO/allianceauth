@@ -20,8 +20,7 @@ def create_testdata():
     EveAllianceInfo.objects.all().delete()
 
     # group 1
-    group = Group.objects.create(name='Superheros')
-    AuthGroup.objects.create(group=group)
+    group = AuthUtils.create_group(group_name='Superheros')
     group.authgroup.description = 'Default Group'
     group.authgroup.internal = False
     group.authgroup.hidden = False
