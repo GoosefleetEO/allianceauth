@@ -138,7 +138,7 @@ class GroupAdmin(admin.ModelAdmin):
     _member_count.admin_order_field = 'member_count'
     
     def has_leader(self, obj):
-        return obj.authgroup.group_leaders.exists()
+        return obj.authgroup.group_leaders.exists() or obj.authgroup.group_leader_groups.exists()
     
     has_leader.boolean = True    
 
