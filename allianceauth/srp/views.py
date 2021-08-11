@@ -170,9 +170,13 @@ def srp_request_view(request, fleet_srp):
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
 
         if form.is_valid():
-            if SrpUserRequest.objects.filter(killboard_link=form.cleaned_data['killboard_link']).exists():
+            request_killboard_link = form.cleaned_data['killboard_link']
+            killmail_id = SRPManager.get_kill_id(killboard_link=request_killboard_link)
+
+            # check if the killmail_id is already present
+            if SrpUserRequest.objects.filter(killboard_link__icontains="/kill/" + killmail_id).exists():
                 messages.error(request,
-                                _("This Killboard link has already been posted."))
+                                _("This kill mail has already been posted."))
                 return redirect("srp:management")
 
             character = request.user.profile.main_character
@@ -180,7 +184,7 @@ def srp_request_view(request, fleet_srp):
             post_time = timezone.now()
 
             srp_request = SrpUserRequest()
-            srp_request.killboard_link = form.cleaned_data['killboard_link']
+            srp_request.killboard_link = request_killboard_link
             srp_request.additional_info = form.cleaned_data['additional_info']
             srp_request.character = character
             srp_request.srp_fleet_main = srp_fleet_main

@@ -13,7 +13,7 @@ class SrpFleetMainForm(forms.Form):
 class SrpFleetUserRequestForm(forms.Form):
     additional_info = forms.CharField(required=False, max_length=25, label=_("Additional Info"))
     killboard_link = forms.CharField(
-        label=_("zKillboard Link"),
+        label=_("Killboard Link (zkillboard.com or kb.evetools.org)"),
         max_length=255,
         required=True
 
@@ -21,13 +21,31 @@ class SrpFleetUserRequestForm(forms.Form):
 
     def clean_killboard_link(self):
         data = self.cleaned_data['killboard_link']
-        if "zkillboard.com" not in data:
-            raise forms.ValidationError(_("Invalid Link. Please use zKillboard.com"))
 
-        if not re.match(r"http[s]?://zkillboard\.com/kill/\d+\/", data):
+        # Check if it's a link from one of the accepted kill boards
+        if not any(
+            re.match(regex, data)
+            for regex in [
+                r"^http[s]?:\/\/zkillboard\.com\/",
+                r"^http[s]?:\/\/kb\.evetools\.org\/",
+            ]
+        ):
+            raise forms.ValidationError(
+                _("Invalid Link. Please use zkillboard.com or kb.evetools.org")
+            )
+
+        # Check if it's an actual kill mail
+        if not any(
+            re.match(regex, data)
+            for regex in [
+                r"^http[s]?:\/\/zkillboard\.com\/kill\/\d+\/",
+                r"^http[s]?:\/\/kb\.evetools\.org\/kill\/\d+",
+            ]
+        ):
             raise forms.ValidationError(
                 _("Invalid Link. Please post a direct link to a killmail.")
             )
+
         return data
 
 
