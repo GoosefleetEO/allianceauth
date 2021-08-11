@@ -64,6 +64,35 @@ class TestUserNotify(TestCase):
         self.assertEqual(obj.user, self.user)
         self.assertEqual(obj.title, title)
         self.assertEqual(obj.message, title)       
+
+    def test_should_use_default_level_when_not_specified(self):
+        # given
+        title = 'dummy_title'
+        message = 'dummy message'        
+        # when
+        Notification.objects.notify_user(self.user, title, message)
+        # then
+        self.assertEqual(Notification.objects.filter(user=self.user).count(), 1)
+        obj = Notification.objects.first()
+        self.assertEqual(obj.user, self.user)
+        self.assertEqual(obj.title, title)
+        self.assertEqual(obj.message, message)
+        self.assertEqual(obj.level, Notification.Level.INFO)
+
+    def test_should_use_default_level_when_invalid_level_given(self):
+        # given
+        title = 'dummy_title'
+        message = 'dummy message'        
+        level = "invalid"
+        # when
+        Notification.objects.notify_user(self.user, title, message, level)
+        # then
+        self.assertEqual(Notification.objects.filter(user=self.user).count(), 1)
+        obj = Notification.objects.first()
+        self.assertEqual(obj.user, self.user)
+        self.assertEqual(obj.title, title)
+        self.assertEqual(obj.message, message)
+        self.assertEqual(obj.level, Notification.Level.INFO)
             
     @override_settings(NOTIFICATIONS_MAX_PER_USER=3)
     def test_remove_when_too_many_notifications(self):

@@ -12,7 +12,7 @@ class NotificationQuerySet(models.QuerySet):
     """Custom QuerySet for Notification model"""
 
     def update(self, *args, **kwargs):
-        # overriden update to ensure cache is invaidated on very call
+        """Override update to ensure cache is invalidated on very call."""
         super().update(*args, **kwargs)
         user_pks = set(self.select_related("user").values_list('user__pk', flat=True))
         for user_pk in user_pks:
@@ -43,6 +43,8 @@ class NotificationManager(models.Manager):
         if not message:
             message = title
         
+        if level not in self.model.Level:
+            level = self.model.Level.INFO
         obj = self.create(user=user, title=title, message=message, level=level)
         logger.info("Created notification %s", obj)
         return obj
