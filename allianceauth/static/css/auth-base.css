@@ -91,7 +91,7 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 }
 
 /* highlight active menu items
---------------------------------------------------------------------------------------------------------------------- */
+------------------------------------------------------------------------------------- */
 @media all {
     .template-light-mode .nav-pills > li > a.active {
         background-color: rgb(236, 240, 241);
@@ -99,6 +99,65 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 
     .template-dark-mode .nav-pills > li > a.active {
         background-color: rgb(48, 48, 48);
+    }
+}
+
+/* user menu
+------------------------------------------------------------------------------------- */
+@media all {
+    img {
+        height: auto;
+        max-width: 100%;
+    }
+
+    .navbar-nav > li.top-user-menu.with-main-character > .dropdown-menu {
+        padding-top: 0.5rem;
+    }
+
+    .navbar-nav > li.top-user-menu.with-main-character a {
+        padding: 14px;
+    }
+
+    .dropdown-menu > li > a {
+        display: block;
+        padding: 3px 20px;
+        clear: both;
+        font-weight: 400;
+        line-height: 1.42857143;
+        color: rgb(123, 138, 139);
+        white-space: nowrap;
+    }
+
+    .top-user-menu .navbar-form {
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .navbar-nav .open .dropdown-menu .dropdown-header, .navbar-nav .open .dropdown-menu > li > a {
+        padding: 5px 15px 5px 25px;
+    }
+}
+
+/* eve time in navbar
+------------------------------------------------------------------------------------- */
+@media all {
+    .nav-item-eve-time .eve-time-wrapper {
+        color: rgb(255, 255, 255);
+        display: block;
+        line-height: 21px;
+        padding: 10px 15px;
+        position: relative;
+    }
+}
+
+/* eve time in navbar
+------------------------------------------------------------------------------------- */
+@media all and (min-width: 768px) {
+    .nav-item-eve-time .eve-time-wrapper {
+        padding-bottom: 19.5px;
+        padding-top: 19.5px;
     }
 }
 
