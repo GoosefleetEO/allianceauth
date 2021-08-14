@@ -6,12 +6,16 @@
         {% if request.user.profile.main_character %}
             {% with request.user.profile.main_character as main %}
                 <img class="img-rounded ra-avatar" src="{{ main.character_id|character_portrait_url:32 }}" alt="{{ main.character_name }}">
+                <span class="hidden-sm hidden-md hidden-lg">
+                    {{ main.character_name }} - {% translate "User Menu" %}
+                </span>
             {% endwith %}
         {% else %}
-            {% translate "Menu" %}
+            {% translate "User Menu" %}
         {% endif %}
         <span class="caret"></span>
     </a>
+
     <ul class="dropdown-menu top-user-menu" aria-labelledby="top-user-menu">
         <!-- user avatar -->
         {% if request.user.profile.main_character %}
