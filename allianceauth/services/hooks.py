@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.conf import settings
