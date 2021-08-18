@@ -3,7 +3,7 @@
 }
 
 .notification-bell-color {
-    color: #A88F1E;
+    color: #a88f1e;
 }
 
 .navbar-brand {
@@ -20,12 +20,12 @@
 }
 
 #wrapper {
-    width: 100%;
     padding: 0;
+    width: 100%;
 }
 
 #site-body-wrapper {
-    margin-right:0;
+    margin-right: 0;
 }
 
 /* Horizontal list group */
@@ -46,7 +46,7 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 @media all {
     /* style nav tabs in dark mode*/
     .template-dark-mode .nav-tabs > li.active > a {
-        background-color: rgb(70, 69, 69)!important;
+        background-color: rgb(70, 69, 69) !important;
         color: rgb(255, 255, 255) !important;
     }
 
@@ -58,33 +58,40 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 
     /* style group headers within a table */
     .template-light-mode .tr-group {
-        font-weight: bold;
         background-color: #e6e6e6 !important;
-    }
-    .template-dark-mode .tr-group {
         font-weight: bold;
+    }
+
+    .template-dark-mode .tr-group {
         background-color: rgb(105, 105, 105) !important;
+        font-weight: bold;
     }
 
     /* default style for tables */
-    .template-light-mode .table-aa > thead > tr > th{
+    .template-light-mode .table-aa > thead > tr > th {
         border-bottom: 1px solid #f2f2f2;
     }
-    .template-dark-mode .table-aa > thead > tr > th{
+
+    .template-dark-mode .table-aa > thead > tr > th {
         border-bottom: 1px solid rgb(70, 69, 69);
     }
-    .table-aa > thead > tr > th{
+
+    .table-aa > thead > tr > th {
         vertical-align: middle;
     }
-    .template-light-mode .table-aa > tbody > tr > td{
+
+    .template-light-mode .table-aa > tbody > tr > td {
         border-bottom: 1px solid #f2f2f2;
     }
-    .template-dark-mode .table-aa > tbody > tr > td{
+
+    .template-dark-mode .table-aa > tbody > tr > td {
         border-bottom: 1px solid rgb(70, 69, 69);
     }
+
     .table-aa > tbody > tr > td {
         vertical-align: middle;
     }
+
     .table-aa > tbody > tr:last-child {
         border-bottom: none;
     }
@@ -119,12 +126,12 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     }
 
     .dropdown-menu > li > a {
-        display: block;
-        padding: 3px 20px;
         clear: both;
+        color: rgb(123, 138, 139);
+        display: block;
         font-weight: 400;
         line-height: 1.42857143;
-        color: rgb(123, 138, 139);
+        padding: 3px 20px;
         white-space: nowrap;
     }
 
@@ -133,15 +140,15 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     }
 
     .top-menu-bar-language-select form {
-        padding: 10px 15px;
-        margin-left: 5px;
-        margin-right: 5px;
-        border-top: 1px solid transparent;
         border-bottom: 1px solid transparent;
+        border-top: 1px solid transparent;
         -webkit-box-shadow: inset 0 1px 0 rgb(255 255 255), 0 1px 0 rgb(255 255 255);
         box-shadow: inset 0 1px 0 rgb(255 255 255), 0 1px 0 rgb(255 255 255);
-        margin-top: 7.5px;
         margin-bottom: 7.5px;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-top: 7.5px;
+        padding: 10px 15px;
     }
 }
 
@@ -157,14 +164,14 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     }
 
     .top-menu-bar-language-select form {
-        width: auto;
-        padding-top: 0;
-        padding-bottom: 0;
-        margin-right: 0;
-        margin-left: 0;
         border: 0;
         -webkit-box-shadow: none;
         box-shadow: none;
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+        width: auto;
     }
 }
 
@@ -191,10 +198,10 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 @media (min-width: 768px) {
     /* class for vertically aligning columns in a bootstrap row */
     .row.vertical-flexbox-row2 {
-        display:  -webkit-box;
+        display: -webkit-box;
         display: -webkit-flex;
-        display:  -ms-flexbox;
-        display:         flex;
+        display: -ms-flexbox;
+        display: flex;
         flex-wrap: wrap;
     }
 
@@ -207,6 +214,6 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 /* Extra Small devices (Phones, <768px) */
 @media (max-width: 767px) {
     .button-wrapper .btn {
-        margin-bottom:5px;
+        margin-bottom: 5px;
     }
 }
