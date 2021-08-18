@@ -132,9 +132,16 @@ ul.list-group.list-group-horizontal > li.list-group-item {
         color: rgb(255, 255, 255);
     }
 
-    .top-user-menu .navbar-form {
+    .top-menu-bar-language-select form {
+        padding: 10px 15px;
         margin-left: 5px;
         margin-right: 5px;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
+        -webkit-box-shadow: inset 0 1px 0 rgb(255 255 255), 0 1px 0 rgb(255 255 255);
+        box-shadow: inset 0 1px 0 rgb(255 255 255), 0 1px 0 rgb(255 255 255);
+        margin-top: 7.5px;
+        margin-bottom: 7.5px;
     }
 }
 
@@ -147,6 +154,17 @@ ul.list-group.list-group-horizontal > li.list-group-item {
 @media all and (min-width: 768px) {
     .top-user-menu {
         color: rgb(123, 138, 139);
+    }
+
+    .top-menu-bar-language-select form {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-right: 0;
+        margin-left: 0;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
     }
 }
 

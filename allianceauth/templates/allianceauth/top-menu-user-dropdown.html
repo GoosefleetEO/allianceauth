@@ -38,23 +38,10 @@
             <li role="separator" class="divider"></li>
         {% endif %}
 
-        <li>
-            <form id="f-lang-select" class="navbar-form" action="{% url 'set_language' %}" method="post">
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <select onchange="this.form.submit()" class="form-control" id="lang-select" name="language">
-                        {% get_language_info_list for LANGUAGES as languages %}
-
-                        {% for language in languages %}
-                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
-                                {{ language.name_local }} ({{ language.code }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </form>
+        <li class="top-menu-bar-language-select">
+            {% include 'public/lang_select.html' %}
         </li>
+
         <li role="separator" class="divider"></li>
 
         <!-- night mode toggle -->
