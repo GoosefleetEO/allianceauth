@@ -12,21 +12,20 @@ class NotificationHandler(logging.Handler):
 
         try:
             perm = Permission.objects.get(codename="logging_notifications")
-
-            message = record.getMessage()
-            if record.exc_text:
-                message += "\n\n"
-                message = message + record.exc_text
-
-            users = User.objects.filter(
-                Q(groups__permissions=perm) | Q(user_permissions=perm) | Q(is_superuser=True)).distinct()
-
-            for user in users:
-                notify(
-                    user,
-                    "%s [%s:%s]" % (record.levelname, record.funcName, record.lineno),
-                    level=str([item[0] for item in Notification.LEVEL_CHOICES if item[1] == record.levelname][0]),
-                    message=message
-                )
         except Permission.DoesNotExist:
-            pass
+            return
+
+        message = record.getMessage()
+        if record.exc_text:
+            message += "\n\n"
+            message = message + record.exc_text
+
+        users = User.objects.filter(
+            Q(groups__permissions=perm) | Q(user_permissions=perm) | Q(is_superuser=True)).distinct()
+        for user in users:
+            notify(
+                user,
+                "%s [%s:%s]" % (record.levelname, record.funcName, record.lineno),
+                level=Notification.Level.from_old_name(record.levelname),
+                message=message
+            )

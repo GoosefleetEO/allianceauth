@@ -48,6 +48,7 @@ class TestGroupAdmin(TestCase):
         cls.group_2 = Group.objects.create(name='Group 2')
         cls.group_2.authgroup.description = 'Internal Group'
         cls.group_2.authgroup.internal = True
+        cls.group_2.authgroup.group_leader_groups.add(cls.group_1)
         cls.group_2.authgroup.save()
 
         # group 3 - has leader
@@ -237,8 +238,12 @@ class TestGroupAdmin(TestCase):
         result = self.modeladmin._member_count(obj)
         self.assertEqual(result, expected)
 
-    def test_has_leader(self):
+    def test_has_leader_user(self):
         result = self.modeladmin.has_leader(self.group_1)
+        self.assertTrue(result)
+
+    def test_has_leader_group(self):
+        result = self.modeladmin.has_leader(self.group_2)
         self.assertTrue(result)
 
     def test_properties_1(self):
