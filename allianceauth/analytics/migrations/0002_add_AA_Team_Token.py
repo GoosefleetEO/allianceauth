@@ -11,7 +11,7 @@ def add_aa_team_token(apps, schema_editor):
     token.type = 'GA-U'
     token.token = 'UA-186249766-2'
     token.send_page_views = True
-    token.send_celery_views = True
+    token.send_celery_tasks = True
     token.send_stats = True
     token.name = 'AA Team Public Google Analytics (Universal)'
     token.save()
