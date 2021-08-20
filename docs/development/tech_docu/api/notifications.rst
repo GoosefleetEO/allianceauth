@@ -7,13 +7,13 @@ The notifications package has an API for sending notifications.
 Location: ``allianceauth.notifications``
 
 .. automodule:: allianceauth.notifications.__init__
-    :members: notify    
+    :members: notify
 
 models
 ===========
 
 .. autoclass:: allianceauth.notifications.models.Notification
-    :members: Level, mark_viewed, set_level    
+    :members: Level, mark_viewed, set_level
 
 managers
 ===========

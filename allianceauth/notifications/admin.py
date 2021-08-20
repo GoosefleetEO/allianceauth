@@ -3,11 +3,11 @@ from .models import Notification
 
 
 @admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):        
+class NotificationAdmin(admin.ModelAdmin):
     list_display = ("timestamp", "_main", "_state", "title", "level", "viewed")
     list_select_related = ("user", "user__profile__main_character", "user__profile__state")
-    list_filter = (        
-        "level", 
+    list_filter = (
+        "level",
         "timestamp",
         "user__profile__state",
         ('user__profile__main_character', admin.RelatedOnlyFieldListFilter),
@@ -20,12 +20,12 @@ class NotificationAdmin(admin.ModelAdmin):
             return obj.user.profile.main_character
         except AttributeError:
             return obj.user
-    
+
     _main.admin_order_field = "user__profile__main_character__character_name"
 
     def _state(self, obj):
         return obj.user.profile.state
-    
+
     _state.admin_order_field = "user__profile__state__name"
 
     def has_change_permission(self, request, obj=None):
