@@ -12,6 +12,7 @@ from django.contrib import messages
 from celery.schedules import crontab
 
 INSTALLED_APPS = [
+    'allianceauth',  # needs to be on top of this list to support favicons in Django admin (see https://gitlab.com/allianceauth/allianceauth/-/issues/1301)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -23,7 +24,6 @@ INSTALLED_APPS = [
     'bootstrapform',
     'sortedm2m',
     'esi',
-    'allianceauth',
     'allianceauth.authentication',
     'allianceauth.services',
     'allianceauth.eveonline',
