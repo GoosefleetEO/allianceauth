@@ -53,15 +53,15 @@ sudo yum install gcc openssl-devel bzip2-devel libffi-devel wget
 ```
 
 ```bash
-wget https://www.python.org/ftp/python/3.7.10/Python-3.7.10.tgz
+wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz
 ```
 
 ```bash
-tar xvf Python-3.7.10.tgz
+tar xvf Python-3.7.11.tgz
 ```
 
 ```bash
-cd Python-3.7.10/
+cd Python-3.7.11/
 ```
 
 ```bash
@@ -182,7 +182,7 @@ mv /home/allianceserver/venv/auth /home/allianceserver/venv/auth_old
 
 ## Create your new venv
 
-Now let's create our new venv with Python 3.6 and activate it:
+Now let's create our new venv with Python 3.7 and activate it:
 
 ```bash
 python3.7 -m venv /home/allianceserver/venv/auth
