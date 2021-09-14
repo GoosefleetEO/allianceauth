@@ -18,28 +18,57 @@ This document describes how to install **Alliance Auth** from scratch.
 
 Alliance Auth can be installed on any Unix like operating system. Dependencies are provided below for two of the most popular Linux platforms: Ubuntu and CentOS. To install on your favorite flavour of Linux, identify and install equivalent packages to the ones listed here.
 
-```eval_rst
-.. hint::
-    CentOS: A few packages are included in a non-default repository. Add it and update the package lists. ::
-
-      yum -y install https://centos7.iuscommunity.org/ius-release.rpm
-      yum update
-```
-
 ### Python
 
-Alliance Auth requires Python 3.6 or higher. Ensure it is installed on your server before proceeding.
+Alliance Auth requires Python 3.7 or higher. Ensure it is installed on your server before proceeding.
 
-Ubuntu:
+Ubuntu 1604 1804:
 
-```bash
-apt-get install python3 python3-dev python3-venv python3-setuptools python3-pip
+```eval_rst
+.. note::
+    Ubuntu 2004 ships with Python 3.8, No updates required.
 ```
 
-CentOS:
+```bash
+add-apt-repository ppa:deadsnakes/ppa
+```
 
 ```bash
-yum install python36u python36u-devel python36u-setuptools python36u-pip
+apt-get update
+```
+
+```bash
+apt-get install python3.7 python3.7-dev python3.7-venv
+```
+
+CentOS 7/8:
+
+```bash
+cd ~
+```
+
+```bash
+sudo yum install gcc openssl-devel bzip2-devel libffi-devel wget
+```
+
+```bash
+wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz
+```
+
+```bash
+tar xvf Python-3.7.11.tgz
+```
+
+```bash
+cd Python-3.7.11/
+```
+
+```bash
+./configure --enable-optimizations --enable-shared
+```
+
+```bash
+make altinstall
 ```
 
 ### Database
@@ -155,7 +184,7 @@ python3 -m venv /home/allianceserver/venv/auth/
 
 ```eval_rst
 .. warning::
-    The python3 command may not be available on all installations. Try a specific version such as ``python3.6`` if this is the case.
+    The python3 command may not be available on all installations. Try a specific version such as ``python3.7`` if this is the case.
 ```
 
 ```eval_rst

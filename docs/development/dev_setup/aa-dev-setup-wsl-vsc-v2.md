@@ -16,8 +16,8 @@ In addition all tools described in this guide are open source or free software.
 The development environment consists of the following components:
 
 - Visual Studio Code with Remote WSL and Python extension
-- WSL with Ubunutu 18.04. LTS
-- Python 3.6 environment on WSL
+- WSL with Ubuntu 18.04. LTS
+- Python 3.7 environment on WSL
 - MySQL server on WSL
 - Redis on WSL
 - Alliance Auth on WSL
@@ -71,7 +71,7 @@ sudo apt-get install gettext
 
 ### Install Python
 
-For AA we want to develop with Python 3.6, because that provides the maximum compatibility with today's AA installations. This also happens to be the default Python 3 version for Ubuntu 18.04. at the point of this writing.
+For AA we want to develop with Python 3.7, because that provides the maximum compatibility with today's AA installations.
 
 ```eval_rst
 .. hint::
@@ -80,7 +80,7 @@ For AA we want to develop with Python 3.6, because that provides the maximum com
 
 ```eval_rst
 .. note::
-    Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version supported by AA, e.g Python 3.6
+    Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version supported by AA, e.g Python 3.7
     You an check out this `page <https://askubuntu.com/questions/682869/how-do-i-install-a-different-python-version-using-apt-get/1195153>`_ on how to install additional Python versions on Ubuntu.
 ```
 
