@@ -58,6 +58,6 @@ class SRPManager:
         """returns the number of open SRP requests for given user
         or None if user has no permission"""
         if user.has_perm("auth.srp_management"):
-            return SrpUserRequest.objects.filter(srp_status="pending").count()
+            return SrpUserRequest.objects.filter(srp_status="Pending").count()
         else:
             return None
