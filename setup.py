@@ -33,7 +33,7 @@ install_requires = [
     'sleekxmpp',
     'pydiscourse',
 
-    'django-esi>=2.0.4,<3.0'
+    'django-esi>=3.0.0,<4.0.0'
 ]
 
 testing_extras = [
