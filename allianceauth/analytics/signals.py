@@ -20,7 +20,7 @@ def process_failure_signal(
 
         action = sender.__name__
 
-        label = f"{exception.__class__.__name__}: {str(exception)}"
+        label = f"{exception.__class__.__name__}"
 
         analytics_event(category=category,
                         action=action,
