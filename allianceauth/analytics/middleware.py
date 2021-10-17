@@ -4,6 +4,8 @@ from django.utils.deprecation import MiddlewareMixin
 from .models import AnalyticsTokens, AnalyticsIdentifier
 from .tasks import send_ga_tracking_web_view
 
+import re
+
 
 class AnalyticsMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
@@ -20,7 +22,13 @@ class AnalyticsMiddleware(MiddlewareMixin):
             if token.send_page_views is False:
                 continue
             # Check Exclusions
-            if request.path in token.ignore_paths.all():
+            ignore = False
+            for ignore_path in token.ignore_paths.values():
+                ignore_path_regex = re.compile(ignore_path["ignore_path"])
+                if re.search(ignore_path_regex, request.path) is not None:
+                    ignore = True
+
+            if ignore is True:
                 continue
 
             tracking_id = token.token

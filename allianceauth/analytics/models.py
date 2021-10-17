@@ -20,7 +20,7 @@ class AnalyticsIdentifier(models.Model):
 
 
 class AnalyticsPath(models.Model):
-    ignore_path = models.CharField(max_length=254, default="/example/")
+    ignore_path = models.CharField(max_length=254, default="/example/", help_text="Regex Expression, If matched no Analytics Page View is sent")
 
 
 class AnalyticsTokens(models.Model):
