@@ -30,5 +30,9 @@ class DiscordUserAdmin(ServicesUserAdmin):
         else:
             return ''
 
+    def delete_queryset(self, request, queryset):
+        for user in queryset:
+            user.delete_user()
+
     _username.short_description = 'Discord Username'
     _username.admin_order_field = 'username'
