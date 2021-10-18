@@ -71,7 +71,6 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 3.1',
         'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -87,5 +86,4 @@ setup(
     project_urls={
         'Documentation': 'https://allianceauth.readthedocs.io/',
     },
-
 )
