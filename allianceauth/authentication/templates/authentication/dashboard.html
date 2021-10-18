@@ -63,7 +63,7 @@
                                         {% endif %}
                                     </div>
                                 </div>
-                                <div class="table visible-xs-block">                        
+                                <div class="table visible-xs-block">
                                     <p>
                                         <img class="ra-avatar" src="{{ main.portrait_url_64 }}">
                                         <img class="ra-avatar" src="{{ main.corporation_logo_url_64 }}">
@@ -74,7 +74,7 @@
                                         {{ main.corporation_name }}<br>
                                         {{ main.alliance_name }}
                                     </p>
-                                </div>                                
+                                </div>
                             {% endwith %}
                         {% else %}
                             <div class="alert alert-danger" role="alert">
@@ -121,7 +121,7 @@
                     {% trans 'Characters' %}
                 </h3>
             </div>
-            <div class="panel-body">                
+            <div class="panel-body">
                 <table class="table table-aa hidden-xs">
                     <thead>
                         <tr>
@@ -132,20 +132,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for char in characters %}                            
+                        {% for char in characters %}
                             <tr>
                                 <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
                                 </td>
                                 <td class="text-center">{{ char.character_name }}</td>
                                 <td class="text-center">{{ char.corporation_name }}</td>
                                 <td class="text-center">{{ char.alliance_name }}</td>
-                            </tr>                        
+                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 <table class="table table-aa visible-xs-block" style="width: 100%">
                     <tbody>
-                        {% for char in characters %}                            
+                        {% for char in characters %}
                             <tr>
                                 <td class="text-center" style="vertical-align: middle">
                                     <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
@@ -154,7 +154,7 @@
                                     <strong>{{ char.character_name }}</strong><br>
                                     {{ char.corporation_name }}<br>
                                     {{ char.alliance_name|default:"" }}
-                                </td> 
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

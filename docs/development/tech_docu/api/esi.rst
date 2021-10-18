@@ -12,13 +12,13 @@ clients
 ===========
 
 .. automodule:: esi.clients
-    :members: esi_client_factory    
+    :members: esi_client_factory
     :undoc-members:
 
 decorators
 ===========
 
-.. automodule:: esi.decorators    
+.. automodule:: esi.decorators
     :members:
     :undoc-members:
 

@@ -5,12 +5,12 @@ from ...admin import ServicesUserAdmin
 
 
 @admin.register(MumbleUser)
-class MumbleUserAdmin(ServicesUserAdmin):            
-    list_display = ServicesUserAdmin.list_display + (        
-        'username',        
+class MumbleUserAdmin(ServicesUserAdmin):
+    list_display = ServicesUserAdmin.list_display + (
+        'username',
         'groups',
-    )     
-    search_fields = ServicesUserAdmin.search_fields + (        
+    )
+    search_fields = ServicesUserAdmin.search_fields + (
         'username',
         'groups'
     )

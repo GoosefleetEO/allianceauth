@@ -74,10 +74,12 @@ def register_service():
 
 class JabberBroadcast(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self,
-                              _('Jabber Broadcast'),
-                              'fas fa-bullhorn fa-fw',
-                              'openfire:broadcast')
+        MenuItemHook.__init__(
+            self,
+            _('Jabber Broadcast'),
+            'fas fa-bullhorn fa-fw',
+            'openfire:broadcast'
+        )
 
     def render(self, request):
         if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):
@@ -87,10 +89,12 @@ class JabberBroadcast(MenuItemHook):
 
 class FleetBroadcastFormatter(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self,
-                              _('Fleet Broadcast Formatter'),
-                              'fas fa-space-shuttle fa-fw',
-                              'services:fleet_format_tool')
+        MenuItemHook.__init__(
+            self,
+            _('Fleet Broadcast Formatter'),
+            'fas fa-space-shuttle fa-fw',
+            'services:fleet_format_tool'
+        )
 
     def render(self, request):
         if request.user.has_perm('auth.jabber_broadcast') or request.user.has_perm('auth.jabber_broadcast_all'):

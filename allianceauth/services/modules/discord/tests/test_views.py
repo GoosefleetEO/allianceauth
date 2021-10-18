@@ -11,10 +11,10 @@ from ..discord_client import DiscordClient
 from ..models import DiscordUser
 from ..utils import set_logger_to_file
 from ..views import (
-    discord_callback, 
-    reset_discord, 
-    deactivate_discord, 
-    discord_add_bot, 
+    discord_callback,
+    reset_discord,
+    deactivate_discord,
+    discord_add_bot,
     activate_discord
 )
 
@@ -49,10 +49,10 @@ class TestActivateDiscord(SetupClassMixin, TestCase):
 @patch(MODULE_PATH + '.views.messages')
 @patch(MODULE_PATH + '.managers.DiscordClient', spec=DiscordClient)
 class TestDeactivateDiscord(SetupClassMixin, TestCase):
-    
+
     def setUp(self):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
-    
+
     def test_when_successful_show_success_message(
         self, mock_DiscordClient, mock_messages
     ):
@@ -81,7 +81,7 @@ class TestDeactivateDiscord(SetupClassMixin, TestCase):
 @patch(MODULE_PATH + '.views.messages')
 @patch(MODULE_PATH + '.managers.DiscordClient')
 class TestResetDiscord(SetupClassMixin, TestCase):
-    
+
     def setUp(self):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
 
@@ -93,7 +93,7 @@ class TestResetDiscord(SetupClassMixin, TestCase):
         request.user = self.user
         response = reset_discord(request)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("discord:activate"))        
+        self.assertEqual(response.url, reverse("discord:activate"))
         self.assertFalse(mock_messages.error.called)
 
     def test_when_unsuccessful_message_error_and_redirect_to_service(
@@ -111,7 +111,7 @@ class TestResetDiscord(SetupClassMixin, TestCase):
 @patch(MODULE_PATH + '.views.messages')
 @patch(MODULE_PATH + '.views.DiscordUser.objects.add_user')
 class TestDiscordCallback(SetupClassMixin, TestCase):
-    
+
     def setUp(self):
         DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
 
@@ -126,7 +126,7 @@ class TestDiscordCallback(SetupClassMixin, TestCase):
         self.assertEqual(response.url, self.services_url)
         self.assertTrue(mock_messages.success.called)
         self.assertFalse(mock_messages.error.called)
-    
+
     def test_handle_no_code(self, mock_add_user, mock_messages):
         mock_add_user.return_value = True
         request = self.factory.get(
@@ -138,7 +138,7 @@ class TestDiscordCallback(SetupClassMixin, TestCase):
         self.assertEqual(response.url, self.services_url)
         self.assertFalse(mock_messages.success.called)
         self.assertTrue(mock_messages.error.called)
-    
+
     def test_error_message_when_user_creation_failed(
         self, mock_add_user, mock_messages
     ):
@@ -156,7 +156,7 @@ class TestDiscordCallback(SetupClassMixin, TestCase):
 
 @patch(MODULE_PATH + '.views.DiscordUser.objects.generate_bot_add_url')
 class TestDiscordAddBot(TestCase):
-    
+
     def test_add_bot(self, mock_generate_bot_add_url):
         bot_url = 'https://www.example.com/bot'
         mock_generate_bot_add_url.return_value = bot_url

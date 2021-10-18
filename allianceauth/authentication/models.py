@@ -14,15 +14,11 @@ logger = logging.getLogger(__name__)
 class State(models.Model):
     name = models.CharField(max_length=20, unique=True)
     permissions = models.ManyToManyField(Permission, blank=True)
-    priority = models.IntegerField(unique=True,
-                                   help_text="Users get assigned the state with the highest priority available to them.")
+    priority = models.IntegerField(unique=True, help_text="Users get assigned the state with the highest priority available to them.")
 
-    member_characters = models.ManyToManyField(EveCharacter, blank=True,
-                                               help_text="Characters to which this state is available.")
-    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True,
-                                                 help_text="Corporations to whose members this state is available.")
-    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True,
-                                              help_text="Alliances to whose members this state is available.")
+    member_characters = models.ManyToManyField(EveCharacter, blank=True, help_text="Characters to which this state is available.")
+    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True, help_text="Corporations to whose members this state is available.")
+    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True, help_text="Alliances to whose members this state is available.")
     public = models.BooleanField(default=False, help_text="Make this state available to any character.")
 
     objects = StateManager()
@@ -74,13 +70,18 @@ class UserProfile(models.Model):
                 logger.info('Updating {} state to {}'.format(self.user, self.state))
                 self.save(update_fields=['state'])
                 notify(
-                    self.user, 
+                    self.user,
                     _('State changed to: %s' % state),
                     _('Your user\'s state is now: %(state)s')
                     % ({'state': state}),
                     'info'
                 )
                 from allianceauth.authentication.signals import state_changed
+
+                # We need to ensure we get up to date perms here as they will have just changed.
+                # Clear all attribute caches and reload the model that will get passed to the signals!
+                self.refresh_from_db()
+
                 state_changed.send(
                     sender=self.__class__, user=self.user, state=self.state
                 )

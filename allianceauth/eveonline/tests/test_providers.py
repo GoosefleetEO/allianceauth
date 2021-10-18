@@ -8,13 +8,13 @@ from django.test import TestCase
 
 from . import set_logger
 from ..providers import (
-    ObjectNotFound, 
-    Entity, 
-    Character, 
-    Corporation, 
-    Alliance, 
-    ItemType, 
-    EveProvider, 
+    ObjectNotFound,
+    Entity,
+    Character,
+    Corporation,
+    Alliance,
+    ItemType,
+    EveProvider,
     EveSwaggerProvider
 )
 
@@ -92,12 +92,12 @@ class TestCorporation(TestCase):
             executor_corp_id=2001
         )
         mock_provider_get_alliance.return_value = my_alliance
-        
+
         x = Corporation(alliance_id=3001)
         self.assertEqual(
             x.alliance,
             my_alliance
-        )        
+        )
         self.assertEqual(
             x.alliance,
             my_alliance
@@ -106,25 +106,25 @@ class TestCorporation(TestCase):
         self.assertEqual(mock_provider_get_alliance.call_count, 1)
 
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
-    def test_alliance_not_defined(self, mock_provider_get_alliance):        
+    def test_alliance_not_defined(self, mock_provider_get_alliance):
         mock_provider_get_alliance.return_value = None
-        
+
         x = Corporation()
         self.assertEqual(
             x.alliance,
             Entity(None, None)
         )
-        
+
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_character')
-    def test_ceo(self, mock_provider_get_character):        
+    def test_ceo(self, mock_provider_get_character):
         my_ceo = Character(
             id=1001,
             name='Bruce Wayne',
             corp_id=2001,
             alliance_id=3001
-        )        
+        )
         mock_provider_get_character.return_value = my_ceo
-                
+
         # fetch from provider if not defined
         x = Corporation()
         self.assertEqual(
@@ -142,7 +142,7 @@ class TestCorporation(TestCase):
 
         # bug in ceo(): will try to fetch character even if ceo_id is None
 
-    
+
 class TestAlliance(TestCase):
 
     def setUp(self):
@@ -155,48 +155,48 @@ class TestAlliance(TestCase):
         )
 
     @staticmethod
-    def _get_corp(corp_id):        
+    def _get_corp(corp_id):
         corps = {
             2001: Corporation(
                 id=2001,
                 name='Dummy Corp 1',
-                alliance_id=3001            
+                alliance_id=3001
             ),
             2002: Corporation(
                 id=2002,
                 name='Dummy Corp 2',
-                alliance_id=3001            
+                alliance_id=3001
             ),
             2003: Corporation(
                 id=2003,
                 name='Dummy Corp 3',
-                alliance_id=3001            
+                alliance_id=3001
             ),
         }
-        
-        if corp_id:                
+
+        if corp_id:
             return corps[int(corp_id)]
 
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
-    def test_corp(self, mock_provider_get_corp):                
+    def test_corp(self, mock_provider_get_corp):
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
-        
-        # should fetch corp if not in the object                
+
+        # should fetch corp if not in the object
         self.assertEqual(
             self.my_alliance.corp(2001),
             TestAlliance._get_corp(2001)
         )
-        # should fetch corp if not in the object                
+        # should fetch corp if not in the object
         self.assertEqual(
             self.my_alliance.corp(2002),
             TestAlliance._get_corp(2002)
         )
-        # should return from the object if its there        
+        # should return from the object if its there
         self.assertEqual(
             self.my_alliance.corp(2001),
             TestAlliance._get_corp(2001)
         )
-        # should return from the object if its there        
+        # should return from the object if its there
         self.assertEqual(
             self.my_alliance.corp(2002),
             TestAlliance._get_corp(2002)
@@ -220,7 +220,7 @@ class TestAlliance(TestCase):
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_executor_corp(self, mock_provider_get_corp):
         mock_provider_get_corp.side_effect = TestAlliance._get_corp
-        
+
         self.assertEqual(
             self.my_alliance.executor_corp,
             TestAlliance._get_corp(2001),
@@ -248,7 +248,7 @@ class TestCharacter(TestCase):
         my_corp = Corporation(
             id=2001,
             name='Dummy Corp 1'
-        )        
+        )
         mock_provider_get_corp.return_value = my_corp
 
         self.assertEqual(self.my_character.corp, my_corp)
@@ -256,11 +256,11 @@ class TestCharacter(TestCase):
 
         # should call the provider one time only
         self.assertEqual(mock_provider_get_corp.call_count, 1)
-    
+
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
     def test_alliance_has_one(
-        self, 
+        self,
         mock_provider_get_corp,
         mock_provider_get_alliance,
     ):
@@ -268,14 +268,14 @@ class TestCharacter(TestCase):
             id=2001,
             name='Dummy Corp 1',
             alliance_id=3001
-        )        
+        )
         mock_provider_get_corp.return_value = my_corp
         my_alliance = Alliance(
             id=3001,
             name='Dummy Alliance 1',
             executor_corp_id=2001,
             corp_ids=[2001, 2002]
-        )        
+        )
         mock_provider_get_alliance.return_value = my_alliance
 
         self.assertEqual(self.my_character.alliance, my_alliance)
@@ -301,7 +301,7 @@ class TestEveProvider(TestCase):
 
     def setUp(self):
         self.my_provider = EveProvider()
-    
+
     def test_get_alliance(self):
         with self.assertRaises(NotImplementedError):
             self.my_provider.get_alliance(3001)
@@ -315,7 +315,7 @@ class TestEveProvider(TestCase):
             self.my_provider.get_character(1001)
 
     # bug: should be calling NotImplementedError() not NotImplemented
-    """    
+    """
     def test_get_itemtype(self):
         with self.assertRaises(NotImplementedError):
             self.my_provider.get_itemtype(4001)
@@ -323,7 +323,7 @@ class TestEveProvider(TestCase):
 
 
 class TestEveSwaggerProvider(TestCase):
-    
+
     @staticmethod
     def esi_get_alliances_alliance_id(alliance_id):
         alliances = {
@@ -404,11 +404,11 @@ class TestEveSwaggerProvider(TestCase):
     @staticmethod
     def esi_post_characters_affiliation(characters):
         character_data = {
-            1001: {                
+            1001: {
                 'corporation_id': 2001,
                 'alliance_id': 3001
             },
-            1002: {                
+            1002: {
                 'corporation_id': 2101
             }
         }
@@ -424,7 +424,7 @@ class TestEveSwaggerProvider(TestCase):
             return mock_result
         else:
             raise TypeError()
-    
+
     @staticmethod
     def esi_get_universe_types_type_id(type_id):
         types = {
@@ -443,7 +443,7 @@ class TestEveSwaggerProvider(TestCase):
             raise HTTPNotFound(Mock())
 
     @patch(MODULE_PATH + '.esi_client_factory')
-    def test_str(self, mock_esi_client_factory):        
+    def test_str(self, mock_esi_client_factory):
         my_provider = EveSwaggerProvider()
         self.assertEqual(str(my_provider), 'esi')
 
@@ -457,7 +457,7 @@ class TestEveSwaggerProvider(TestCase):
             = TestEveSwaggerProvider.esi_get_alliances_alliance_id_corporations
 
         my_provider = EveSwaggerProvider()
-        
+
         # fully defined alliance
         my_alliance = my_provider.get_alliance(3001)
         self.assertEqual(my_alliance.id, 3001)
@@ -494,13 +494,13 @@ class TestEveSwaggerProvider(TestCase):
 
         # corporation wo/ alliance
         my_corp = my_provider.get_corp(2002)
-        self.assertEqual(my_corp.id, 2002)        
+        self.assertEqual(my_corp.id, 2002)
         self.assertEqual(my_corp.alliance_id, None)
 
         # corporation not found
         with self.assertRaises(ObjectNotFound):
             my_provider.get_corp(2999)
-        
+
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_character(self, mock_esi_client_factory):
         mock_esi_client_factory.return_value\
@@ -540,7 +540,7 @@ class TestEveSwaggerProvider(TestCase):
         my_type = my_provider.get_itemtype(4001)
         self.assertEqual(my_type.id, 4001)
         self.assertEqual(my_type.name, 'Dummy Type 1')
-        
+
         # type not found
         with self.assertRaises(ObjectNotFound):
             my_provider.get_itemtype(4999)
@@ -551,7 +551,7 @@ class TestEveSwaggerProvider(TestCase):
         my_provider = EveSwaggerProvider()
         self.assertTrue(mock_esi_client_factory.called)
         self.assertIsNotNone(my_provider._client)
-    
+
     @patch(MODULE_PATH + '.SWAGGER_SPEC_PATH', SWAGGER_OLD_SPEC_PATH)
     @patch(MODULE_PATH + '.settings.DEBUG', False)
     @patch('socket.socket')
@@ -559,8 +559,8 @@ class TestEveSwaggerProvider(TestCase):
         self, mock_socket
     ):
         mock_socket.side_effect = Exception('Network blocked for testing')
-        my_provider = EveSwaggerProvider()        
-        self.assertIsNone(my_provider._client)    
+        my_provider = EveSwaggerProvider()
+        self.assertIsNone(my_provider._client)
 
     @patch(MODULE_PATH + '.settings.DEBUG', True)
     @patch(MODULE_PATH + '.esi_client_factory')

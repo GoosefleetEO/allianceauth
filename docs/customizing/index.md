@@ -4,7 +4,7 @@ It is possible to customize your **Alliance Auth** instance.
 
 ```eval_rst
 .. warning::
-   Keep in mind that you may need to update some of your customizations manually after new Auth releases (e.g. when replacing templates).
+    Keep in mind that you may need to update some of your customizations manually after new Auth releases (e.g. when replacing templates).
 ```
 
 ## Site name

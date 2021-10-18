@@ -1,4 +1,4 @@
-.checkbox label:after, 
+.checkbox label:after,
 .radio label:after {
     content: '';
     display: table;

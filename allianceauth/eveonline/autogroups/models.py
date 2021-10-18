@@ -57,25 +57,21 @@ class AutogroupsConfig(models.Model):
 
     states = models.ManyToManyField(State, related_name='autogroups')
 
-    corp_groups = models.BooleanField(default=False,
-                                      help_text="Setting this to false will delete all the created groups.")
+    corp_groups = models.BooleanField(default=False, help_text="Setting this to false will delete all the created groups.")
     corp_group_prefix = models.CharField(max_length=50, default='Corp ', blank=True)
     corp_name_source = models.CharField(max_length=20, choices=NAME_OPTIONS, default=OPT_NAME)
 
-    alliance_groups = models.BooleanField(default=False,
-                                          help_text="Setting this to false will delete all the created groups.")
+    alliance_groups = models.BooleanField(default=False, help_text="Setting this to false will delete all the created groups.")
     alliance_group_prefix = models.CharField(max_length=50, default='Alliance ', blank=True)
     alliance_name_source = models.CharField(max_length=20, choices=NAME_OPTIONS, default=OPT_NAME)
 
     corp_managed_groups = models.ManyToManyField(
         Group, through='ManagedCorpGroup', related_name='corp_managed_config',
-        help_text='A list of corporation groups created and maintained by this AutogroupConfig. '
-                  'You should not edit this list unless you know what you\'re doing.')
+        help_text='A list of corporation groups created and maintained by this AutogroupConfig. You should not edit this list unless you know what you\'re doing.')
 
     alliance_managed_groups = models.ManyToManyField(
         Group, through='ManagedAllianceGroup', related_name='alliance_managed_config',
-        help_text='A list of alliance groups created and maintained by this AutogroupConfig. '
-                  'You should not edit this list unless you know what you\'re doing.')
+        help_text='A list of alliance groups created and maintained by this AutogroupConfig. You should not edit this list unless you know what you\'re doing.')
 
     replace_spaces = models.BooleanField(default=False)
     replace_spaces_with = models.CharField(

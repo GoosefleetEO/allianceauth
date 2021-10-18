@@ -37,8 +37,7 @@ def activate_jabber(request):
             'username': info[0],
             'password': info[1],
         }
-        return render(request, 'services/service_credentials.html',
-                      context={'credentials': credentials, 'service': 'Jabber'})
+        return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'Jabber'})
     else:
         logger.error("Unsuccessful attempt to activate jabber for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your jabber account.'))
@@ -72,8 +71,7 @@ def reset_jabber_password(request):
                 'username': request.user.openfire.username,
                 'password': result,
             }
-            return render(request, 'services/service_credentials.html',
-                          context={'credentials': credentials, 'service': 'Jabber'})
+            return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'Jabber'})
     logger.error("Unsuccessful attempt to reset jabber for user %s" % request.user)
     messages.error(request, _('An error occurred while processing your jabber account.'))
     return redirect("services:services")
@@ -100,18 +98,16 @@ def jabber_broadcast_view(request):
             logger.debug("Processing jabber broadcast for user %s with main character %s" % (request.user, main_char))
             try:
                 if main_char is not None:
-                    message_to_send = form.cleaned_data[
-                                          'message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + \
-                                      main_char.character_name + " TO: " + \
-                                      form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime(
-                        "%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
+                    message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + \
+                                        main_char.character_name + " TO: " + \
+                                        form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime(
+                                            "%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
                     group_to_send = form.cleaned_data['group']
 
                 else:
-                    message_to_send = form.cleaned_data[
-                        'message'] + "\n##### SENT BY: " + "No character but can send pings?" + " TO: " + \
-                        form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime(
-                        "%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
+                    message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "No character but can send pings?" + " TO: " + \
+                                        form.cleaned_data['group'] + " WHEN: " + datetime.datetime.utcnow().strftime(
+                                            "%Y-%m-%d %H:%M:%S") + " #####\n##### Replies are NOT monitored #####\n"
                     group_to_send = form.cleaned_data['group']
 
                 OpenfireManager.send_broadcast_message(group_to_send, message_to_send)

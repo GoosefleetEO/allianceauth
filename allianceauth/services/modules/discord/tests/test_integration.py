@@ -26,11 +26,11 @@ from allianceauth.tests.auth_utils import AuthUtils
 
 from . import (
     TEST_GUILD_ID,
-    TEST_USER_NAME, 
+    TEST_USER_NAME,
     TEST_USER_ID,
-    TEST_USER_DISCRIMINATOR, 
-    TEST_MAIN_NAME, 
-    TEST_MAIN_ID, 
+    TEST_USER_DISCRIMINATOR,
+    TEST_MAIN_NAME,
+    TEST_MAIN_ID,
     MODULE_PATH,
     add_permissions_to_members,
     ROLE_ALPHA,
@@ -75,11 +75,11 @@ guild_member_request = DiscordRequest(
 add_guild_member_request = DiscordRequest(
     method='PUT',
     url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
-)            
+)
 modify_guild_member_request = DiscordRequest(
     method='PATCH',
     url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
-)            
+)
 remove_guild_member_request = DiscordRequest(
     method='DELETE',
     url=f'{DISCORD_API_BASE_URL}guilds/{TEST_GUILD_ID}/members/{TEST_USER_ID}'
@@ -93,7 +93,7 @@ def clear_cache():
     logger.info('Cache flushed')
 
 
-def reset_testdata():    
+def reset_testdata():
     AuthUtils.disconnect_signals()
     Group.objects.all().delete()
     User.objects.all().delete()
@@ -107,20 +107,22 @@ def reset_testdata():
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @requests_mock.Mocker()
 class TestServiceFeatures(TransactionTestCase):
+    fixtures = ['disable_analytics.json']
+
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.maxDiff = None
-                
+
     def setUp(self):
-        """All tests: Given a user with member state, 
+        """All tests: Given a user with member state,
         service permission and active Discord account
         """
         clear_cache()
         reset_testdata()
-        self.group_charlie = Group.objects.create(name='charlie')        
-        
+        self.group_charlie = Group.objects.create(name='charlie')
+
         # States
         self.member_state = AuthUtils.get_member_state()
         self.guest_state = AuthUtils.get_guest_state()
@@ -132,64 +134,64 @@ class TestServiceFeatures(TransactionTestCase):
         # Test user
         self.user = AuthUtils.create_user(TEST_USER_NAME)
         self.main = AuthUtils.add_main_character_2(
-            self.user, 
-            TEST_MAIN_NAME, 
-            TEST_MAIN_ID, 
-            corp_id='2', 
-            corp_name='test_corp', 
+            self.user,
+            TEST_MAIN_NAME,
+            TEST_MAIN_ID,
+            corp_id='2',
+            corp_name='test_corp',
             corp_ticker='TEST',
             disconnect_signals=True
-        )                
+        )
         self.member_state.member_characters.add(self.main)
-        
+
         # verify user is a member and has an account
         self.user = User.objects.get(pk=self.user.pk)
         self.assertEqual(self.user.profile.state, self.member_state)
-        
+
         self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
-        
+
     def test_when_name_of_main_changes_then_discord_nick_is_updated(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
-        
+
         # changing nick to trigger signals
         new_nick = f'Testnick {uuid1().hex}'[:32]
         self.user.profile.main_character.character_name = new_nick
         self.user.profile.main_character.save()
-        
+
         # verify Discord nick was updates
         nick_updated = False
-        for r in requests_mocker.request_history:            
-            my_request = DiscordRequest(r.method, r.url)                        
+        for r in requests_mocker.request_history:
+            my_request = DiscordRequest(r.method, r.url)
             if my_request == modify_guild_member_request and "nick" in r.json():
                 nick_updated = True
                 self.assertEqual(r.json()["nick"], new_nick)
-        
+
         self.assertTrue(nick_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
     def test_when_name_of_main_changes_and_user_deleted_then_account_is_deleted(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.patch(
             modify_guild_member_request.url, status_code=404, json={'code': 10007}
-        )        
+        )
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
-        
+
         # changing nick to trigger signals
         new_nick = f'Testnick {uuid1().hex}'[:32]
         self.user.profile.main_character.character_name = new_nick
         self.user.profile.main_character.save()
-        
+
         self.assertFalse(DiscordUser.objects.user_has_account(self.user))
 
     def test_when_name_of_main_changes_and_and_rate_limited_then_dont_call_api(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
-        
+
         # exhausting rate limit
         client = DiscordUser.objects._bot_client()
         client._redis.set(
@@ -197,7 +199,7 @@ class TestServiceFeatures(TransactionTestCase):
             value=0,
             px=2000
         )
-        
+
         # changing nick to trigger signals
         new_nick = f'Testnick {uuid1().hex}'[:32]
         self.user.profile.main_character.character_name = new_nick
@@ -207,55 +209,55 @@ class TestServiceFeatures(TransactionTestCase):
         requests_made = [
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]
-                
+
         self.assertListEqual(requests_made, list())
-        
+
     def test_when_member_is_demoted_to_guest_then_his_account_is_deleted(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
-                
-        # our user is a member and has an account        
+
+        # our user is a member and has an account
         self.assertTrue(self.user.has_perm('discord.access_discord'))
-                
-        # now we demote him to guest        
+
+        # now we demote him to guest
         self.member_state.member_characters.remove(self.main)
-        
+
         # verify user is now guest
-        self.user = User.objects.get(pk=self.user.pk)        
+        self.user = User.objects.get(pk=self.user.pk)
         self.assertEqual(self.user.profile.state, AuthUtils.get_guest_state())
-        
+
         # verify user has no longer access to Discord and no account
         self.assertFalse(self.user.has_perm('discord.access_discord'))
-        self.assertFalse(DiscordUser.objects.user_has_account(self.user))        
-        
+        self.assertFalse(DiscordUser.objects.user_has_account(self.user))
+
         # verify account was actually deleted from Discord server
         requests_made = [
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
-        ]                                
+        ]
         self.assertIn(remove_guild_member_request, requests_made)
-        
+
         # verify user has been notified
         self.assertTrue(Notification.objects.filter(user=self.user).exists())
-        
+
     def test_when_member_changes_to_blue_state_then_roles_are_updated_accordingly(
         self, requests_mocker
-    ):        
+    ):
         # request mocks
         requests_mocker.get(
             guild_member_request.url,
             json={'user': create_user_info(), 'roles': ['3', '13', '99']}
-        )     
+        )
         requests_mocker.get(
             guild_roles_request.url,
             json=[
                 ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_MEMBER, ROLE_BLUE
             ]
-        )                
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE) 
+        )
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
-        
+
         AuthUtils.disconnect_signals()
         self.user.groups.add(self.group_charlie)
         AuthUtils.connect_signals()
@@ -264,101 +266,101 @@ class TestServiceFeatures(TransactionTestCase):
         self.blue_state.member_characters.add(self.main)
         self.member_state.member_characters.remove(self.main)
 
-        # verify roles for user where updated        
+        # verify roles for user where updated
         roles_updated = False
-        for r in requests_mocker.request_history:            
-            my_request = DiscordRequest(r.method, r.url)                        
+        for r in requests_mocker.request_history:
+            my_request = DiscordRequest(r.method, r.url)
             if my_request == modify_guild_member_request and "roles" in r.json():
                 roles_updated = True
                 self.assertSetEqual(set(r.json()["roles"]), {3, 13, 98})
                 break
-        
+
         self.assertTrue(roles_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
     def test_when_group_added_to_member_and_role_known_then_his_roles_are_updated(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.get(
             guild_member_request.url,
             json={
                 'user': create_user_info(),
                 'roles': ['13', '99']
             }
-        )              
+        )
         requests_mocker.get(
-            guild_roles_request.url, 
+            guild_roles_request.url,
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_MEMBER]
-        )                
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
+        )
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
-                
+
         # adding new group to trigger signals
         self.user.groups.add(self.group_charlie)
-                
+
         # verify roles for user where updated
         roles_updated = False
-        for r in requests_mocker.request_history:            
-            my_request = DiscordRequest(r.method, r.url)                        
+        for r in requests_mocker.request_history:
+            my_request = DiscordRequest(r.method, r.url)
             if my_request == modify_guild_member_request and "roles" in r.json():
                 roles_updated = True
                 self.assertSetEqual(set(r.json()["roles"]), {3, 13, 99})
                 break
-        
+
         self.assertTrue(roles_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
     def test_when_group_added_to_member_and_role_unknown_then_his_roles_are_updated(
         self, requests_mocker
-    ):        
+    ):
         requests_mocker.get(
             guild_member_request.url,
             json={
                 'user': {'id': str(TEST_USER_ID), 'username': TEST_MAIN_NAME},
                 'roles': ['13', '99']
             }
-        )              
+        )
         requests_mocker.get(
-            guild_roles_request.url, 
+            guild_roles_request.url,
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
-        )                
-        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)        
+        )
+        requests_mocker.post(create_guild_role_request.url, json=ROLE_CHARLIE)
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
-                
+
         # adding new group to trigger signals
         self.user.groups.add(self.group_charlie)
         self.user.refresh_from_db()
-        
+
         # verify roles for user where updated
         roles_updated = False
-        for r in requests_mocker.request_history:            
-            my_request = DiscordRequest(r.method, r.url)                        
+        for r in requests_mocker.request_history:
+            my_request = DiscordRequest(r.method, r.url)
             if my_request == modify_guild_member_request and "roles" in r.json():
                 roles_updated = True
                 self.assertSetEqual(set(r.json()["roles"]), {3, 13, 99})
                 break
-        
+
         self.assertTrue(roles_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
-    
+
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
 class StateTestCase(TestCase):
-    
-    def setUp(self):        
+
+    def setUp(self):
         clear_cache()
         reset_testdata()
-        
+
         self.user = AuthUtils.create_user('test_user', disconnect_signals=True)
         AuthUtils.add_main_character(
-            self.user, 
-            'Perm Test Character', '99', 
-            corp_id='100', 
+            self.user,
+            'Perm Test Character', '99',
+            corp_id='100',
             alliance_id='200',
-            corp_name='Perm Test Corp', 
+            corp_name='Perm Test Corp',
             alliance_name='Perm Test Alliance'
         )
         self.test_character = EveCharacter.objects.get(character_id='99')
@@ -369,7 +371,7 @@ class StateTestCase(TestCase):
         self.access_discord = AuthUtils.get_permission_by_name('discord.access_discord')
         self.member_state.permissions.add(self.access_discord)
         self.member_state.member_characters.add(self.test_character)
-    
+
     def _add_discord_user(self):
         self.discord_user = DiscordUser.objects.create(
             user=self.user, uid="12345678910"
@@ -434,57 +436,58 @@ class StateTestCase(TestCase):
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
 class TestUserFeatures(WebTest):
-    
+    fixtures = ['disable_analytics.json']
+
     def setUp(self):
         clear_cache()
         reset_testdata()
         self.member = AuthUtils.create_member(TEST_USER_NAME)
         AuthUtils.add_main_character_2(
-            self.member, 
-            TEST_MAIN_NAME, 
+            self.member,
+            TEST_MAIN_NAME,
             TEST_MAIN_ID,
             disconnect_signals=True
         )
         add_permissions_to_members()
 
-    @patch(MODULE_PATH + '.views.messages')    
+    @patch(MODULE_PATH + '.views.messages')
     @patch(MODULE_PATH + '.managers.OAuth2Session')
     def test_user_activation_normal(
         self, requests_mocker, mock_OAuth2Session, mock_messages
-    ): 
+    ):
         # setup
         requests_mocker.get(
             guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
-        )                
+        )
         requests_mocker.get(
-            user_get_current_request.url, 
+            user_get_current_request.url,
             json=create_user_info(
                 TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
             )
-        )                
+        )
         requests_mocker.get(
-            guild_roles_request.url, 
+            guild_roles_request.url,
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
-        )                
+        )
         requests_mocker.put(add_guild_member_request.url, status_code=201)
-        
-        authentication_code = 'auth_code'        
+
+        authentication_code = 'auth_code'
         oauth_url = 'https://www.example.com/oauth'
         state = ''
         mock_OAuth2Session.return_value.authorization_url.return_value = \
             oauth_url, state
-        
+
         # login
         self.app.set_user(self.member)
-        
+
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
 
-        # user clicks Discord service activation link on page        
+        # user clicks Discord service activation link on page
         response = services_page.click(href=reverse('discord:activate'))
-        
-        # check we got a redirect to Discord OAuth        
+
+        # check we got a redirect to Discord OAuth
         self.assertRedirects(
             response, expected_url=oauth_url, fetch_redirect_response=False
         )
@@ -493,66 +496,66 @@ class TestUserFeatures(WebTest):
         response = self.app.get(
             reverse('discord:callback'), params={'code': authentication_code}
         )
-        
+
         # user got a success message
         self.assertTrue(mock_messages.success.called)
         self.assertFalse(mock_messages.error.called)
-        
+
         requests_made = list()
-        for r in requests_mocker.request_history:            
-            obj = DiscordRequest(r.method, r.url)            
+        for r in requests_mocker.request_history:
+            obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
-                
+
         expected = [
-            guild_infos_request, 
-            user_get_current_request, 
-            guild_roles_request, 
+            guild_infos_request,
+            user_get_current_request,
+            guild_roles_request,
             add_guild_member_request
         ]
         self.assertListEqual(requests_made, expected)
 
-    @patch(MODULE_PATH + '.views.messages')    
+    @patch(MODULE_PATH + '.views.messages')
     @patch(MODULE_PATH + '.managers.OAuth2Session')
     def test_user_activation_failed(
         self, requests_mocker, mock_OAuth2Session, mock_messages
-    ): 
+    ):
         # setup
         requests_mocker.get(
             guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
         )
         requests_mocker.get(
-            user_get_current_request.url, 
+            user_get_current_request.url,
             json=create_user_info(
                 TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
             )
-        )                
+        )
         requests_mocker.get(
-            guild_roles_request.url, 
+            guild_roles_request.url,
             json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
-        )        
-        
+        )
+
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 503
         requests_mocker.put(add_guild_member_request.url, exc=mock_exception)
-        
-        authentication_code = 'auth_code'        
+
+        authentication_code = 'auth_code'
         oauth_url = 'https://www.example.com/oauth'
         state = ''
         mock_OAuth2Session.return_value.authorization_url.return_value = \
             oauth_url, state
-        
+
         # login
         self.app.set_user(self.member)
 
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
-        
+
         # click activate on the service page
         response = services_page.click(href=reverse('discord:activate'))
-        
-        # check we got a redirect to Discord OAuth        
+
+        # check we got a redirect to Discord OAuth
         self.assertRedirects(
             response, expected_url=oauth_url, fetch_redirect_response=False
         )
@@ -561,124 +564,124 @@ class TestUserFeatures(WebTest):
         response = self.app.get(
             reverse('discord:callback'), params={'code': authentication_code}
         )
-        
+
         # user got a success message
         self.assertFalse(mock_messages.success.called)
         self.assertTrue(mock_messages.error.called)
-        
+
         requests_made = list()
-        for r in requests_mocker.request_history:            
-            obj = DiscordRequest(r.method, r.url)            
+        for r in requests_mocker.request_history:
+            obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
-                
+
         expected = [
             guild_infos_request,
-            user_get_current_request, 
-            guild_roles_request, 
+            user_get_current_request,
+            guild_roles_request,
             add_guild_member_request
         ]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
-    def test_user_deactivation_normal(self, requests_mocker, mock_messages): 
+    def test_user_deactivation_normal(self, requests_mocker, mock_messages):
         # setup
         requests_mocker.get(
             guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
-        )        
+        )
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
         DiscordUser.objects.create(user=self.member, uid=TEST_USER_ID)
-        
+
         # login
         self.app.set_user(self.member)
-        
+
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
 
-        # click deactivate on the service page        
+        # click deactivate on the service page
         response = services_page.click(href=reverse('discord:deactivate'))
-        
+
         # check we got a redirect to service page
         self.assertRedirects(response, expected_url=reverse('services:services'))
 
         # user got a success message
         self.assertTrue(mock_messages.success.called)
         self.assertFalse(mock_messages.error.called)
-        
+
         requests_made = list()
-        for r in requests_mocker.request_history:            
-            obj = DiscordRequest(r.method, r.url)            
+        for r in requests_mocker.request_history:
+            obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
-                
+
         expected = [guild_infos_request, remove_guild_member_request]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
-    def test_user_deactivation_fails(self, requests_mocker, mock_messages): 
+    def test_user_deactivation_fails(self, requests_mocker, mock_messages):
         # setup
         requests_mocker.get(
             guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
-        )        
+        )
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
         mock_exception.response.status_code = 503
         requests_mocker.delete(remove_guild_member_request.url, exc=mock_exception)
-                
+
         DiscordUser.objects.create(user=self.member, uid=TEST_USER_ID)
-        
+
         # login
         self.app.set_user(self.member)
-        
+
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
 
-        # click deactivate on the service page        
+        # click deactivate on the service page
         response = services_page.click(href=reverse('discord:deactivate'))
-        
+
         # check we got a redirect to service page
         self.assertRedirects(response, expected_url=reverse('services:services'))
 
         # user got a success message
         self.assertFalse(mock_messages.success.called)
         self.assertTrue(mock_messages.error.called)
-        
+
         requests_made = list()
-        for r in requests_mocker.request_history:            
-            obj = DiscordRequest(r.method, r.url)            
+        for r in requests_mocker.request_history:
+            obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
-                
+
         expected = [guild_infos_request, remove_guild_member_request]
         self.assertListEqual(requests_made, expected)
 
     @patch(MODULE_PATH + '.views.messages')
-    def test_user_add_new_server(self, requests_mocker, mock_messages): 
-        # setup                
+    def test_user_add_new_server(self, requests_mocker, mock_messages):
+        # setup
         mock_exception = HTTPError(Mock(**{"response.status_code": 400}))
         requests_mocker.get(guild_infos_request.url, exc=mock_exception)
-        
-        # login        
+
+        # login
         self.member.is_superuser = True
         self.member.is_staff = True
         self.member.save()
         self.app.set_user(self.member)
-        
+
         # click deactivate on the service page
         response = self.app.get(reverse('services:services'))
-        
+
         # check we got can see the page and the "link server" button
         self.assertEqual(response.status_int, 200)
         self.assertIsNotNone(response.html.find(id='btnLinkDiscordServer'))
-    
+
     def test_when_server_name_fails_user_can_still_see_service_page(
         self, requests_mocker
-    ): 
+    ):
         # setup
         requests_mocker.get(guild_infos_request.url, exc=DiscordApiBackoff(1000))
-                
+
         # login
         self.app.set_user(self.member)
-        
+
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
@@ -686,7 +689,7 @@ class TestUserFeatures(WebTest):
     @override_settings(CELERY_ALWAYS_EAGER=True)
     def test_server_name_is_updated_by_task(
         self, requests_mocker
-    ): 
+    ):
         # setup
         requests_mocker.get(
             guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
@@ -696,11 +699,11 @@ class TestUserFeatures(WebTest):
 
         # login
         self.app.set_user(self.member)
-        
+
         # disable API call to make sure server name is not retrieved from API
         mock_exception = HTTPError(Mock(**{"response.status_code": 400}))
         requests_mocker.get(guild_infos_request.url, exc=mock_exception)
-        
+
         # user opens services page
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)

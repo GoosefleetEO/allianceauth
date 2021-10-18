@@ -78,4 +78,3 @@ class MumbleTasks:
         logger.debug("Updating ALL mumble display names")
         for mumble_user in MumbleUser.objects.exclude(username__exact=''):
             MumbleTasks.update_display_name.delay(mumble_user.user.pk)
-

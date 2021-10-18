@@ -26,7 +26,7 @@ MODULE_PATH = 'allianceauth.groupmanagement.admin'
 
 
 class MockRequest(object):
-    
+
     def __init__(self, user=None):
         self.user = user
 
@@ -38,7 +38,7 @@ class TestGroupAdmin(TestCase):
         super().setUpClass()
 
         # group 1 - has leader
-        cls.group_1 = Group.objects.create(name='Group 1')        
+        cls.group_1 = Group.objects.create(name='Group 1')
         cls.group_1.authgroup.description = 'Default Group'
         cls.group_1.authgroup.internal = False
         cls.group_1.authgroup.hidden = False
@@ -82,7 +82,7 @@ class TestGroupAdmin(TestCase):
         cls.group_6.authgroup.open = True
         cls.group_6.authgroup.public = True
         cls.group_6.authgroup.save()
-        
+
         # user 1 - corp and alliance, normal user
         cls.character_1 = EveCharacter.objects.create(
             character_id=1001,
@@ -107,16 +107,16 @@ class TestGroupAdmin(TestCase):
         alliance = EveAllianceInfo.objects.create(
             alliance_id=3001,
             alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',            
+            alliance_ticker='WE',
             executor_corp_id=2001
         )
         EveCorporationInfo.objects.create(
             corporation_id=2001,
             corporation_name='Wayne Technologies',
-            corporation_ticker='WT',            
+            corporation_ticker='WT',
             member_count=42,
             alliance=alliance
-        )        
+        )
         cls.user_1 = User.objects.create_user(
             cls.character_1.character_name.replace(' ', '_'),
             'abc@example.com',
@@ -149,7 +149,7 @@ class TestGroupAdmin(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2002,
             corporation_name='Daily Plane',
-            corporation_ticker='DP',            
+            corporation_ticker='DP',
             member_count=99,
             alliance=None
         )
@@ -168,7 +168,7 @@ class TestGroupAdmin(TestCase):
         cls.user_2.groups.add(cls.group_2)
         cls.user_2.is_staff = True
         cls.user_2.save()
-        
+
         # user 3 - no main, no group, superuser
         cls.character_3 = EveCharacter.objects.create(
             character_id=1101,
@@ -181,7 +181,7 @@ class TestGroupAdmin(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2101,
             corporation_name='Lex Corp',
-            corporation_ticker='LC',            
+            corporation_ticker='LC',
             member_count=666,
             alliance=None
         )
@@ -223,7 +223,7 @@ class TestGroupAdmin(TestCase):
             for state in State.objects.all():
                 autogroups_config.states.add(state)
             autogroups_config.update_corp_group_membership(self.user_1)
-    
+
     # column rendering
 
     def test_description(self):
@@ -231,7 +231,7 @@ class TestGroupAdmin(TestCase):
         result = self.modeladmin._description(self.group_1)
         self.assertEqual(result, expected)
 
-    def test_member_count(self):        
+    def test_member_count(self):
         expected = 1
         obj = self.modeladmin.get_queryset(MockRequest(user=self.user_1))\
             .get(pk=self.group_1.pk)
@@ -288,17 +288,17 @@ class TestGroupAdmin(TestCase):
             self.assertListEqual(result, expected)
 
     # actions
-   
+
     # filters
-    
+
     if _has_auto_groups:
         @patch(MODULE_PATH + '._has_auto_groups', True)
         def test_filter_is_auto_group(self):
-            
-            class GroupAdminTest(admin.ModelAdmin): 
+
+            class GroupAdminTest(admin.ModelAdmin):
                 list_filter = (IsAutoGroupFilter,)
-                    
-            self._create_autogroups()        
+
+            self._create_autogroups()
             my_modeladmin = GroupAdminTest(Group, AdminSite())
 
             # Make sure the lookups are correct
@@ -338,17 +338,17 @@ class TestGroupAdmin(TestCase):
             changelist = my_modeladmin.get_changelist_instance(request)
             queryset = changelist.get_queryset(request)
             expected = Group.objects.exclude(
-                managedalliancegroup__isnull=True, 
+                managedalliancegroup__isnull=True,
                 managedcorpgroup__isnull=True
             )
             self.assertSetEqual(set(queryset), set(expected))
-         
+
     def test_filter_has_leader(self):
-        
-        class GroupAdminTest(admin.ModelAdmin): 
+
+        class GroupAdminTest(admin.ModelAdmin):
             list_filter = (HasLeaderFilter,)
-                
-        self._create_autogroups()        
+
+        self._create_autogroups()
         my_modeladmin = GroupAdminTest(Group, AdminSite())
 
         # Make sure the lookups are correct
@@ -383,16 +383,16 @@ class TestGroupAdmin(TestCase):
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [
-            self.group_1,            
+            self.group_1,
             self.group_3
         ]
         self.assertSetEqual(set(queryset), set(expected))
-    
+
     def test_change_view_loads_normally(self):
         User.objects.create_superuser(
             username='superuser', password='secret', email='admin@example.com'
         )
         c = Client()
-        c.login(username='superuser', password='secret')                
+        c.login(username='superuser', password='secret')
         response = c.get(get_admin_change_view_url(self.group_1))
         self.assertEqual(response.status_code, 200)

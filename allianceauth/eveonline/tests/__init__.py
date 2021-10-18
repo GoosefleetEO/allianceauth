@@ -1,18 +1,18 @@
 import logging
 import os
-    
+
 
 def set_logger(logger_name: str, name: str) -> object:
     """set logger for current test module
-    
+
     Args:
     - logger: current logger object
     - name: name of current module, e.g. __file__
-    
+
     Returns:
     - amended logger
     """
-    
+
     # reconfigure logger so we get logging from tested module
     f_format = logging.Formatter(
         '%(asctime)s - %(levelname)s - %(module)s:%(funcName)s - %(message)s'

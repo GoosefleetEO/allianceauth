@@ -15,7 +15,7 @@ class LoggerAddTag(logging.LoggerAdapter):
 
     def process(self, msg, kwargs):
         return '[%s] %s' % (self.prefix, msg), kwargs
-        
+
 
 def clean_setting(
     name: str,
@@ -58,7 +58,7 @@ def clean_setting(
                 'You setting for %s it not valid. Please correct it. '
                 'Using default for now: %s',
                 name,
-                default_value                
+                default_value
             )
             cleaned_value = default_value
     return cleaned_value
@@ -66,15 +66,15 @@ def clean_setting(
 
 def set_logger_to_file(logger_name: str, name: str) -> object:
     """set logger for current module to log into a file. Useful for tests.
-    
+
     Args:
     - logger: current logger object
     - name: name of current module, e.g. __file__
-    
+
     Returns:
     - amended logger
     """
-    
+
     # reconfigure logger so we get logging from tested module
     f_format = logging.Formatter(
         '%(asctime)s - %(levelname)s - %(module)s:%(funcName)s - %(message)s'

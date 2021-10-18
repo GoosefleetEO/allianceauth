@@ -217,23 +217,23 @@ class Teamspeak3ViewsTestCase(TestCase):
         self.assertTrue(tasks_manager.return_value.__enter__.return_value.update_groups.called)
 
     @mock.patch(MODULE_PATH + '.views.Teamspeak3Tasks')
-    @mock.patch(MODULE_PATH + '.views.messages')    
+    @mock.patch(MODULE_PATH + '.views.messages')
     def test_should_update_ts_groups(self, messages, Teamspeak3Tasks):
-        # given        
+        # given
         self.member.is_superuser = True
         self.member.is_staff = True
         self.member.save()
         self.login()
         # when
         response = self.client.get(urls.reverse('teamspeak3:admin_update_ts3_groups'))
-        # then                        
+        # then
         self.assertRedirects(
-            response, urls.reverse('admin:teamspeak3_authts_changelist'), 
+            response, urls.reverse('admin:teamspeak3_authts_changelist'),
             target_status_code=200
         )
         self.assertTrue(messages.info.called)
         self.assertTrue(Teamspeak3Tasks.run_ts3_group_update.delay.called)
-        
+
 
 class Teamspeak3SignalsTestCase(TestCase):
     def setUp(self):
@@ -322,21 +322,20 @@ class Teamspeak3ManagerTestCase(TestCase):
 
     @mock.patch.object(Teamspeak3Manager, '_group_list')
     @mock.patch.object(Teamspeak3Manager, '_group_id_by_name')
-    def test_add_user_exception(self, _group_id_by_name, _group_list):  
+    def test_add_user_exception(self, _group_id_by_name, _group_list):
         """test 1st exception occuring in add_user()"""
         # set mocks in Teamspeak3Manager class
         _group_list.return_value = ['Member', 'Guest']
-        _group_id_by_name.return_value =  99        
+        _group_id_by_name.return_value =  99
         manager = Teamspeak3Manager()
         server = mock.MagicMock()
         server._connected.return_value = True
         server.send_command = mock.Mock(side_effect=Teamspeak3ManagerTestCase.my_side_effect)
         manager._server = server
 
-        # create test data                
+        # create test data
         user = User.objects.create_user("dummy")
         user.profile.state = State.objects.filter(name="Member").first()
-        
+
         # perform test
         manager.add_user(user, "Dummy User")
-    

@@ -23,7 +23,7 @@ class NotificationManager(models.Manager):
 
     USER_NOTIFICATION_COUNT_PREFIX = 'USER_NOTIFICATION_COUNT'
     USER_NOTIFICATION_COUNT_CACHE_DURATION = 86_400
-    
+
     def get_queryset(self):
         return NotificationQuerySet(self.model, using=self._db)
 
@@ -39,39 +39,39 @@ class NotificationManager(models.Manager):
             )[max_notifications - 1:]
             for notification in to_be_deleted_qs:
                 notification.delete()
-        
+
         if not message:
             message = title
-        
+
         if level not in self.model.Level:
             level = self.model.Level.INFO
         obj = self.create(user=user, title=title, message=message, level=level)
         logger.info("Created notification %s", obj)
         return obj
-    
+
     def _max_notifications_per_user(self):
         """return the maximum number of notifications allowed per user"""
         max_notifications = getattr(settings, 'NOTIFICATIONS_MAX_PER_USER', None)
         if (
-            max_notifications is None 
-            or not isinstance(max_notifications, int) 
+            max_notifications is None
+            or not isinstance(max_notifications, int)
             or max_notifications < 0
         ):
             logger.warning(
                 'NOTIFICATIONS_MAX_PER_USER setting is invalid. Using default.'
             )
             max_notifications = self.model.NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        
+
         return max_notifications
 
     def user_unread_count(self, user_pk: int) -> int:
         """returns the cached unread count for a user given by user PK
-        
+
         Will return -1 if user can not be found
         """
         cache_key = self._user_notification_cache_key(user_pk)
         unread_count = cache.get(key=cache_key)
-        if not unread_count:            
+        if not unread_count:
             try:
                 user = User.objects.get(pk=user_pk)
             except User.DoesNotExist:
@@ -82,8 +82,8 @@ class NotificationManager(models.Manager):
                 )
                 unread_count = user.notification_set.filter(viewed=False).count()
                 cache.set(
-                    key=cache_key, 
-                    value=unread_count, 
+                    key=cache_key,
+                    value=unread_count,
                     timeout=self.USER_NOTIFICATION_COUNT_CACHE_DURATION
                 )
         else:
@@ -94,7 +94,7 @@ class NotificationManager(models.Manager):
         return unread_count
 
     @classmethod
-    def invalidate_user_notification_cache(cls, user_pk: int) -> None:        
+    def invalidate_user_notification_cache(cls, user_pk: int) -> None:
         cache.delete(key=cls._user_notification_cache_key(user_pk))
         logger.debug('Invalided notification cache for user with pk %s', user_pk)
 

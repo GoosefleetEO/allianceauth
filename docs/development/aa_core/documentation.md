@@ -1,8 +1,8 @@
 # Alliance Auth documentation
 
 The documentation for Alliance Auth uses [Sphinx](http://www.sphinx-doc.org/) to build documentation. When a new commit
- to specific branches is made (master, primarily), the repository is automatically pulled, docs built and deployed on
- [readthedocs.org](https://readthedocs.org/).
+to specific branches is made (master, primarily), the repository is automatically pulled, docs built and deployed on
+[readthedocs.org](https://readthedocs.org/).
 
 
 Documentation was migrated from the GitHub wiki pages and into the repository to allow documentation changes to be

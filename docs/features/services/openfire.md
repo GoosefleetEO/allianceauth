@@ -1,6 +1,6 @@
 # Openfire
 
- Openfire is a Jabber (XMPP) server.
+Openfire is a Jabber (XMPP) server.
 
 ## Prepare Your Settings
 

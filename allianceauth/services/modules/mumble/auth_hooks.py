@@ -44,7 +44,7 @@ class MumbleService(ServicesHook):
         logger.debug("Updating %s nickname for %s" % (self.name, user))
         if MumbleTasks.has_account(user):
             MumbleTasks.update_display_name.apply_async(args=[user.pk], countdown=5) # cooldown on this task to ensure DB clean when syncing
-            
+
     def validate_user(self, user):
         if MumbleTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user, notify_user=True)

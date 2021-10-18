@@ -22,7 +22,7 @@ class DjangoBackend:
     @staticmethod
     def raise_or_lock(key, timeout):
         acquired = cache.add(key=key, value="lock", timeout=timeout)
-        if not acquired:            
+        if not acquired:
             raise AlreadyQueued(int(cache.ttl(key)))
 
     @staticmethod
@@ -47,4 +47,3 @@ def disable_user(user):
     for svc in ServicesHook.get_services():
         if svc.service_active_for_user(user):
             svc.delete_user(user)
-

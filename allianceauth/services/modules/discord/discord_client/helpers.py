@@ -3,10 +3,10 @@ from copy import copy
 
 class DiscordRoles:
     """Container class that helps dealing with Discord roles.
-    
+
     Objects of this class are immutable and work in many ways like sets.
-    
-    Ideally objects are initialized from raw API responses, 
+
+    Ideally objects are initialized from raw API responses,
     e.g. from DiscordClient.guild.roles()
     """
     _ROLE_NAME_MAX_CHARS = 100
@@ -21,7 +21,7 @@ class DiscordRoles:
             self._assert_valid_role(role)
             self._roles[int(role['id'])] = role
             self._roles_by_name[self.sanitize_role_name(role['name'])] = role
-        
+
     def __eq__(self, other):
         if isinstance(other, type(self)):
             return self.ids() == other.ids()
@@ -29,31 +29,31 @@ class DiscordRoles:
 
     def __hash__(self):
         return hash(tuple(sorted(self._roles.keys())))
-    
+
     def __iter__(self):
         for role in self._roles.values():
             yield role
 
-    def __contains__(self, item) -> bool:        
+    def __contains__(self, item) -> bool:
         return int(item) in self._roles
 
-    def __len__(self):        
+    def __len__(self):
         return len(self._roles.keys())
-    
+
     def has_roles(self, role_ids: set) -> bool:
         """returns true if this objects contains all roles defined by given role_ids
         incl. managed roles
         """
         role_ids = {int(id) for id in role_ids}
-        all_role_ids = self._roles.keys()        
+        all_role_ids = self._roles.keys()
         return role_ids.issubset(all_role_ids)
-    
+
     def ids(self) -> set:
         """return a set of all role IDs"""
         return set(self._roles.keys())
 
     def subset(self, role_ids: set = None, managed_only: bool = False) -> object:
-        """returns a new object containing the subset of roles as defined 
+        """returns a new object containing the subset of roles as defined
         by given role IDs and/or including managed roles only
         """
         if role_ids is not None:
@@ -68,23 +68,23 @@ class DiscordRoles:
             return type(self)([
                 role for _, role in self._roles.items() if role['managed']
             ])
-        
+
         elif role_ids is not None and managed_only:
             return type(self)([
-                role for role_id, role in self._roles.items() 
+                role for role_id, role in self._roles.items()
                 if role_id in role_ids and role['managed']
             ])
-        
+
         else:
             return copy(self)
 
     def union(self, other: object) -> object:
-        """returns a new roles object that is the union of this roles object 
+        """returns a new roles object that is the union of this roles object
         with other"""
         return type(self)(list(self) + list(other))
 
     def difference(self, other: object) -> object:
-        """returns a new roles object that only contains the roles 
+        """returns a new roles object that only contains the roles
         that exist in the current objects, but not in other
         """
         new_ids = self.ids().difference(other.ids())
@@ -97,11 +97,11 @@ class DiscordRoles:
             return self._roles_by_name[role_name]
         else:
             return dict()
-        
+
     @classmethod
     def create_from_matched_roles(cls, matched_roles: list) -> None:
         """returns a new object created from the given list of matches roles
-        
+
         matches_roles must be a list of tuples in the form: (role, created)
         """
         raw_roles = [x[0] for x in matched_roles]
@@ -111,10 +111,10 @@ class DiscordRoles:
     def _assert_valid_role(role: dict):
         if not isinstance(role, dict):
             raise TypeError('Roles must be of type dict: %s' % role)
-            
+
         if 'id' not in role or 'name' not in role or 'managed' not in role:
             raise ValueError('This role is not valid: %s' % role)
-    
+
     @classmethod
     def sanitize_role_name(cls, role_name: str) -> str:
         """shortens too long strings if necessary"""

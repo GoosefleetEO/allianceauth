@@ -20,7 +20,7 @@ register = template.Library()
 @register.filter
 def user_unread_notification_count(user: object) -> int:
     """returns the number of unread notifications for user
-    
+
     Will return -1 on error
     """
     if not isinstance(user, User):
@@ -29,10 +29,10 @@ def user_unread_notification_count(user: object) -> int:
         unread_count = Notification.objects.user_unread_count(user.pk)
 
     return unread_count
-    
+
 
 @register.simple_tag
-def notifications_refresh_time() -> int: 
+def notifications_refresh_time() -> int:
     refresh_time = getattr(settings, 'NOTIFICATIONS_REFRESH_TIME', Notification.NOTIFICATIONS_REFRESH_TIME_DEFAULT)
     if (not isinstance(refresh_time, int) or refresh_time < 0):
         logger.warning('NOTIFICATIONS_REFRESH_TIME setting is invalid. Using default.')

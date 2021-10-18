@@ -27,9 +27,9 @@ class EveCharacterManagerTestCase(TestCase):
         @property
         def corp(self):
             return Corporation(
-                id=2345, 
-                name='Test Corp', 
-                alliance_id=3456, 
+                id=2345,
+                name='Test Corp',
+                alliance_id=3456,
                 ticker='0BUGS' #lies, blatant lies!
             )
 
@@ -37,9 +37,9 @@ class EveCharacterManagerTestCase(TestCase):
     def test_create_character(self, provider):
         # Also covers create_character_obj
         expected = self.TestCharacter(
-            id=1234, 
-            name='Test Character', 
-            corp_id=2345, 
+            id=1234,
+            name='Test Character',
+            corp_id=2345,
             alliance_id=3456
         )
 
@@ -69,9 +69,9 @@ class EveCharacterManagerTestCase(TestCase):
         )
 
         expected = self.TestCharacter(
-            id=1234, 
-            name='Test Character', 
-            corp_id=2345, 
+            id=1234,
+            name='Test Character',
+            corp_id=2345,
             alliance_id=3456
         )
         provider.get_character.return_value = expected
@@ -104,7 +104,7 @@ class EveCharacterManagerTestCase(TestCase):
         self.assertEqual(result.character_id, 1234)
         self.assertEqual(result.character_name, 'character.name')
 
-        # try to get non existing character        
+        # try to get non existing character
         self.assertIsNone(EveCharacter.objects.get_character_by_id(9999))
 
 
@@ -130,10 +130,10 @@ class EveAllianceManagerTestCase(TestCase):
     def test_create_alliance(self, provider, populate_alliance):
         # Also covers create_alliance_obj
         expected = self.TestAlliance(
-            id=3456, 
-            name='Test Alliance', 
+            id=3456,
+            name='Test Alliance',
             ticker='TEST',
-            corp_ids=[2345], 
+            corp_ids=[2345],
             executor_corp_id=2345
         )
 
@@ -157,10 +157,10 @@ class EveAllianceManagerTestCase(TestCase):
             executor_corp_id=2345,
         )
         expected = self.TestAlliance(
-            id=3456, 
-            name='Test Alliance', 
+            id=3456,
+            name='Test Alliance',
             ticker='TEST',
-            corp_ids=[2345], 
+            corp_ids=[2345],
             executor_corp_id=2345
         )
 
@@ -189,19 +189,19 @@ class EveCorporationManagerTestCase(TestCase):
         @property
         def alliance(self):
             return EveAllianceManagerTestCase.TestAlliance(
-                id=3456, 
-                name='Test Alliance', 
+                id=3456,
+                name='Test Alliance',
                 ticker='TEST',
-                corp_ids=[2345], 
+                corp_ids=[2345],
                 executor_corp_id=2345
             )
 
         @property
         def ceo(self):
             return EveCharacterManagerTestCase.TestCharacter(
-                id=1234, 
+                id=1234,
                 name='Test Character',
-                corp_id=2345, 
+                corp_id=2345,
                 alliance_id=3456
             )
 
@@ -216,11 +216,11 @@ class EveCorporationManagerTestCase(TestCase):
         )
 
         expected = self.TestCorporation(
-            id=2345, 
-            name='Test Corp', 
+            id=2345,
+            name='Test Corp',
             ticker='0BUGS',
-            ceo_id=1234, 
-            members=1, 
+            ceo_id=1234,
+            members=1,
             alliance_id=3456
         )
 
@@ -237,13 +237,13 @@ class EveCorporationManagerTestCase(TestCase):
     @mock.patch('allianceauth.eveonline.managers.providers.provider')
     def test_create_corporation_no_alliance(self, provider):
         # variant to test no alliance case
-        # Also covers create_corp_obj        
+        # Also covers create_corp_obj
         expected = self.TestCorporation(
-            id=2345, 
-            name='Test Corp', 
+            id=2345,
+            name='Test Corp',
             ticker='0BUGS',
-            ceo_id=1234, 
-            members=1, 
+            ceo_id=1234,
+            members=1,
             alliance_id=3456
         )
 
@@ -276,11 +276,11 @@ class EveCorporationManagerTestCase(TestCase):
         )
 
         expected = self.TestCorporation(
-            id=2345, 
-            name='Test Corp', 
+            id=2345,
+            name='Test Corp',
             ticker='0BUGS',
-            ceo_id=1234, 
-            members=1, 
+            ceo_id=1234,
+            members=1,
             alliance_id=3456
         )
 

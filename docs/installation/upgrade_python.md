@@ -4,12 +4,12 @@ This guide describes how to upgrade an existing Alliance Auth (AA) installation 
 
 ```eval_rst
 .. hint::
-   In accordance with the installation guide we will assume you perform all actions as root. If you are not running as root you need to add ``sudo`` to some commands.
+    In accordance with the installation guide we will assume you perform all actions as root. If you are not running as root you need to add ``sudo`` to some commands.
 ```
 
 ```eval_rst
 .. note::
-   This guide will upgrade the software components only but not change any data or configuration.
+    This guide will upgrade the software components only but not change any data or configuration.
 ```
 
 ## Install a new Python version
@@ -18,12 +18,17 @@ To run AA with a newer Python 3 version than your system's default you need to i
 
 ```eval_rst
 .. note::
-   For stability and performance we currently recommend to run AA with Python 3.7. Since at the time of writing Python 3.7 was not available for CentOS through yum install this guide will upgrade to Python 3.6. For Ubuntu one can just replace "3.6" with "3.7" in the installation commands to get Python 3.7.
+    For stability and performance we currently recommend to run AA with Python 3.7. It has proven to be the fastest and most stable version in use currently.
 ```
 
-To install other Python versions than come with your distro you need to add a new installation repository. Then you can install the specific Python 3 to your system.
+To install other Python versions than those included with your distribution, you need to add a new installation repository. Then you can install the specific Python 3 to your system.
 
-Ubuntu:
+Ubuntu 1604 1804:
+
+```eval_rst
+.. note::
+    Ubuntu 2004 ships with Python 3.8, No updates required.
+```
 
 ```bash
 add-apt-repository ppa:deadsnakes/ppa
@@ -34,23 +39,38 @@ apt-get update
 ```
 
 ```bash
-apt-get install python3.6 python3.6-dev python3.6-venv
+apt-get install python3.7 python3.7-dev python3.7-venv
 ```
 
-CentOS:
+CentOS 7/8:
 
 ```bash
-yum install https://centos7.iuscommunity.org/ius-release.rpm
-```
-
-```bash
-yum update
+cd ~
 ```
 
 ```bash
-yum install python36u python36u-pip python36u-devel
+sudo yum install gcc openssl-devel bzip2-devel libffi-devel wget
 ```
 
+```bash
+wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz
+```
+
+```bash
+tar xvf Python-3.7.11.tgz
+```
+
+```bash
+cd Python-3.7.11/
+```
+
+```bash
+./configure --enable-optimizations --enable-shared
+```
+
+```bash
+make altinstall
+```
 ## Preparing your venv
 
 Before updating your venv it is important to make sure that your current installation is stable. Otherwise your new venv might not be consistent with your data, which might create problems.
@@ -97,12 +117,6 @@ If you unsure which apps you have installed from repos check `INSTALLED_APPS` in
 pip list
 ```
 
-Some AA installations might still be running an older version of django-celery-beat. We would recommend to upgrade to the current version before doing the Python update:
-
-```bash
-pip install -U 'django-celery-beat<2.00'
-```
-
 ```bash
 python manage.py migrate
 ```
@@ -129,7 +143,7 @@ System check identified no issues (0 silenced).
 
 Make sure you are in your venv!
 
-First we create a list of all installed packages in your venv. You can use this list later as reference to see what packages should be installed. 
+First we create a list of all installed packages in your venv. You can use this list later as reference to see what packages should be installed.
 
 ```bash
 pip freeze > requirements.txt
@@ -142,12 +156,12 @@ At this point we recommend creating a list of the additional packages that you n
 
 ```eval_rst
 .. hint::
-   While `requirements.txt` will contain a complete list of your packages, it will also contain many packages that are automatically installed as dependencies and don't need be manually reinstalled.
+    While `requirements.txt` will contain a complete list of your packages, it will also contain many packages that are automatically installed as dependencies and don't need be manually reinstalled.
 ```
 
 ```eval_rst
 .. note::
-   Some guide on the Internet will suggest to use use the requirements.txt file to recreate a venv. This is indeed possible, but only works if all packages can be installed from PyPI. Since most community apps are installed directly from repos this guide will not follow that approach.
+    Some guide on the Internet will suggest to use use the requirements.txt file to recreate a venv. This is indeed possible, but only works if all packages can be installed from PyPI. Since most community apps are installed directly from repos this guide will not follow that approach.
 ```
 
 Leave the venv and shutdown all AA services:
@@ -168,10 +182,10 @@ mv /home/allianceserver/venv/auth /home/allianceserver/venv/auth_old
 
 ## Create your new venv
 
-Now let's create our new venv with Python 3.6 and activate it:
+Now let's create our new venv with Python 3.7 and activate it:
 
 ```bash
-python3.6 -m venv /home/allianceserver/venv/auth
+python3.7 -m venv /home/allianceserver/venv/auth
 ```
 
 ```bash
@@ -248,7 +262,7 @@ ls /home/allianceserver/venv/auth /home/allianceserver/venv
 
 If the output shows these two folders you should be safe to proceed:
 
-- `auth` 
+- `auth`
 - `auth_old`
 
 Run these commands to remove your current venv and switch back to the old venv for auth:

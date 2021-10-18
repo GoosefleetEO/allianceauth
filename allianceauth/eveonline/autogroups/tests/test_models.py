@@ -52,8 +52,8 @@ class AutogroupsConfigTestCase(TestCase):
     @patch('.models.AutogroupsConfig.update_alliance_group_membership')
     @patch('.models.AutogroupsConfig.update_corp_group_membership')
     def test_update_group_membership_for_user(
-        self, 
-        update_corp, 
+        self,
+        update_corp,
         update_alliance
     ):
         agc = AutogroupsConfig.objects.create()
@@ -123,9 +123,9 @@ class AutogroupsConfigTestCase(TestCase):
                 alliance_ticker='alliance_ticker',
                 executor_corp_id='2345'
             )
-        
+
         mock_create_alliance.side_effect = mock_create_alliance_side_effect
-        
+
         obj = AutogroupsConfig.objects.create(alliance_groups=True)
         obj.states.add(AuthUtils.get_member_state())
         char = EveCharacter.objects.create(
@@ -140,7 +140,7 @@ class AutogroupsConfigTestCase(TestCase):
         self.member.profile.main_character = char
         self.member.profile.save()
 
-        # Act        
+        # Act
         obj.update_alliance_group_membership(self.member)
 
         group = obj.get_alliance_group(self.alliance)

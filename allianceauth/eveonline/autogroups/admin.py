@@ -31,12 +31,11 @@ class AutogroupsConfigAdmin(admin.ModelAdmin):
     def get_actions(self, request):
         actions = super(AutogroupsConfigAdmin, self).get_actions(request)
         actions['sync_user_groups'] = (sync_user_groups,
-                                       'sync_user_groups',
-                                       'Sync all users groups for this Autogroup Config')
+                                        'sync_user_groups',
+                                        'Sync all users groups for this Autogroup Config')
         return actions
 
 
 admin.site.register(AutogroupsConfig, AutogroupsConfigAdmin)
 admin.site.register(ManagedCorpGroup)
 admin.site.register(ManagedAllianceGroup)
-

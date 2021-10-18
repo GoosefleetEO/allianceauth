@@ -16,7 +16,7 @@ from .app_settings import (
     DISCORD_APP_SECRET,
     DISCORD_BOT_TOKEN,
     DISCORD_CALLBACK_URL,
-    DISCORD_GUILD_ID,    
+    DISCORD_GUILD_ID,
     DISCORD_SYNC_NAMES
 )
 from .discord_client import DiscordClient
@@ -41,9 +41,9 @@ class DiscordUserManager(models.Manager):
     ]
 
     def add_user(
-        self, 
-        user: User, 
-        authorization_code: str, 
+        self,
+        user: User,
+        authorization_code: str,
         is_rate_limited: bool = True
     ) -> bool:
         """adds a new Discord user
@@ -52,10 +52,10 @@ class DiscordUserManager(models.Manager):
         - user: Auth user to join
         - authorization_code: authorization code returns from oauth
         - is_rate_limited: When False will disable default rate limiting (use with care)
-        
+
         Returns: True on success, else False or raises exception
         """
-        try:        
+        try:
             nickname = self.user_formatted_nick(user) if DISCORD_SYNC_NAMES else None
             group_names = self.user_group_names(user)
             access_token = self._exchange_auth_code_for_token(authorization_code)
@@ -63,18 +63,18 @@ class DiscordUserManager(models.Manager):
             discord_user = user_client.current_user()
             user_id = discord_user['id']
             bot_client = self._bot_client(is_rate_limited=is_rate_limited)
-                
-            if group_names:                
+
+            if group_names:
                 role_ids = match_or_create_roles_from_names(
-                    client=bot_client, 
-                    guild_id=DISCORD_GUILD_ID, 
+                    client=bot_client,
+                    guild_id=DISCORD_GUILD_ID,
                     role_names=group_names
                 ).ids()
             else:
                 role_ids = None
-                        
+
             created = bot_client.add_guild_member(
-                guild_id=DISCORD_GUILD_ID, 
+                guild_id=DISCORD_GUILD_ID,
                 user_id=user_id,
                 access_token=access_token,
                 role_ids=role_ids,
@@ -87,13 +87,13 @@ class DiscordUserManager(models.Manager):
                         user,
                         user_id,
                     )
-                    
+
                     # Force an update cause the discord API won't do it for us.
                     if role_ids:
                         role_ids = list(role_ids)
 
                     updated = bot_client.modify_guild_member(
-                        guild_id=DISCORD_GUILD_ID, 
+                        guild_id=DISCORD_GUILD_ID,
                         user_id=user_id,
                         role_ids=role_ids,
                         nick=nickname
@@ -109,10 +109,10 @@ class DiscordUserManager(models.Manager):
                         return False
 
                 self.update_or_create(
-                    user=user, 
+                    user=user,
                     defaults={
-                        'uid': user_id, 
-                        'username': discord_user['username'][:32], 
+                        'uid': user_id,
+                        'username': discord_user['username'][:32],
                         'discriminator': discord_user['discriminator'][:4],
                         'activated': now()
                     }
@@ -142,7 +142,7 @@ class DiscordUserManager(models.Manager):
         or None if user has no main
         """
         from .auth_hooks import DiscordService
-        
+
         if user.profile.main_character:
             return NameFormatter(DiscordService(), user).format_name()
         else:
@@ -160,10 +160,10 @@ class DiscordUserManager(models.Manager):
             "Group names for roles updates of user %s are: %s", user, group_names
         )
         return group_names
-    
+
     def user_has_account(self, user: User) -> bool:
         """Returns True if the user has an Discord account, else False
-        
+
         only checks locally, does not hit the API
         """
         if not isinstance(user, User):
@@ -178,7 +178,7 @@ class DiscordUserManager(models.Manager):
             'permissions': str(cls.BOT_PERMISSIONS)
 
         })
-        return f'{DiscordClient.OAUTH_BASE_URL}?{params}'        
+        return f'{DiscordClient.OAUTH_BASE_URL}?{params}'
 
     @classmethod
     def generate_oauth_redirect_url(cls) -> str:
@@ -192,16 +192,16 @@ class DiscordUserManager(models.Manager):
     def _exchange_auth_code_for_token(authorization_code: str) -> str:
         oauth = OAuth2Session(DISCORD_APP_ID, redirect_uri=DISCORD_CALLBACK_URL)
         token = oauth.fetch_token(
-            DiscordClient.OAUTH_TOKEN_URL, 
-            client_secret=DISCORD_APP_SECRET, 
+            DiscordClient.OAUTH_TOKEN_URL,
+            client_secret=DISCORD_APP_SECRET,
             code=authorization_code
         )
         logger.debug("Received token from OAuth")
         return token['access_token']
-    
+
     @classmethod
     def server_name(cls, use_cache: bool = True) -> str:
-        """returns the name of the current Discord server 
+        """returns the name of the current Discord server
         or an empty string if the name could not be retrieved
 
         Params:
@@ -215,7 +215,7 @@ class DiscordUserManager(models.Manager):
             server_name = ""
         except Exception:
             logger.warning(
-                "Unexpected error when trying to retrieve the server name from Discord", 
+                "Unexpected error when trying to retrieve the server name from Discord",
                 exc_info=True
             )
             server_name = ""

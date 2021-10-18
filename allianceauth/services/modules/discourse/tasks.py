@@ -64,4 +64,3 @@ class DiscourseTasks:
     def get_username(user):
         from .auth_hooks import DiscourseService
         return NameFormatter(DiscourseService(), user).format_name()
-

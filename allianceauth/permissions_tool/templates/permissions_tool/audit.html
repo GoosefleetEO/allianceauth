@@ -24,7 +24,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for user in permission.users %}                    
+                {% for user in permission.users %}
                     {% include 'permissions_tool/audit_row.html' with type="User" name="Permission granted directlty" %}
                 {% endfor %}
                 {% for group in permission.groups %}
@@ -35,13 +35,13 @@
                 {% for state in permission.states %}
                     {% for profile in state.userprofile_set.all %}
                         {% with profile.user as user %}
-                            {% include 'permissions_tool/audit_row.html' with type="State" name=state%}                            
+                            {% include 'permissions_tool/audit_row.html' with type="State" name=state%}
                         {% endwith %}
                     {% endfor %}
                 {% endfor %}
                 </tbody>
             </table>
-        </div>        
+        </div>
     </div>
 {% endblock content %}
 
@@ -56,15 +56,16 @@
 
 {% block extra_script %}
     $(document).ready(function() {
-        var groupColumn = 0;
-        var table = $('#tab_permissions_audit').DataTable({
+        let groupColumn = 0;
+
+        $('#tab_permissions_audit').DataTable({
             columnDefs: [
                 { "visible": false, "targets": groupColumn }
             ],
             order: [[ groupColumn, 'asc' ], [ 2, 'asc' ] ],
             filterDropDown:
             {
-                columns: [                                       
+                columns: [
                     {
                         idx: 0,
                         title: 'Source'
@@ -73,16 +74,16 @@
                 bootstrap: true
             },
             drawCallback: function ( settings ) {
-                var api = this.api();
-                var rows = api.rows( {page:'current'} ).nodes();
-                var last=null;
-    
+                let api = this.api();
+                let rows = api.rows( {page:'current'} ).nodes();
+                let last = null;
+
                 api.column(groupColumn, {page:'current'} ).data().each( function ( group, i ) {
                     if ( last !== group ) {
                         $(rows).eq( i ).before(
                             '<tr class="tr-group"><td colspan="3">' + group + '</td></tr>'
                         );
-    
+
                         last = group;
                     }
                 } );

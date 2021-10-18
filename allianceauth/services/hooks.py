@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
 from django.conf import settings
@@ -139,11 +140,11 @@ class MenuItemHook:
         self.url_name = url_name
         self.template = 'public/menuitem.html'
         self.order = order if order is not None else 9999
-        
+
         # count is an integer shown next to the menu item as badge when count != None
         # apps need to set the count in their child class, e.g. in render() method
         self.count = None
-        
+
         navactive = navactive or []
         navactive.append(url_name)
         self.navactive = navactive
@@ -175,26 +176,47 @@ class NameFormatter:
         :return: str Generated name
         """
         format_data = self.get_format_data()
-        return Formatter().vformat(self.string_formatter, args=[], kwargs=format_data)
+        return Formatter().vformat(self.string_formatter, args=[], kwargs=format_data).strip()
 
     def get_format_data(self):
-        main_char = getattr(self.user.profile, 'main_character', None)
+        try:
+            character_name = self.user.profile.main_character.character_name
+            character_id = self.user.profile.main_character.character_id
+
+            corp_name = self.user.profile.main_character.corporation_name
+            corp_id = self.user.profile.main_character.corporation_id
+            corp_ticker = self.user.profile.main_character.corporation_ticker
+
+            alliance_name = self.user.profile.main_character.alliance_name
+            alliance_id = self.user.profile.main_character.alliance_id
+            alliance_ticker = self.user.profile.main_character.alliance_ticker
+        except (AttributeError, ObjectDoesNotExist):
+            character_name = self.user.username if self._default_to_username else ""
+            character_id = ""
+
+            corp_name = ""
+            corp_id = ""
+            corp_ticker = ""
+
+            alliance_name = ""
+            alliance_id = ""
+            alliance_ticker = ""
 
         format_data = {
-            'character_name': getattr(main_char, 'character_name',
-                                      self.user.username if self._default_to_username else None),
-            'character_id': getattr(main_char, 'character_id', None),
-            'corp_ticker': getattr(main_char, 'corporation_ticker', None),
-            'corp_name': getattr(main_char, 'corporation_name', None),
-            'corp_id': getattr(main_char, 'corporation_id', None),
-            'alliance_name': getattr(main_char, 'alliance_name', None),
-            'alliance_id': getattr(main_char, 'alliance_id', None),
-            'alliance_ticker': getattr(main_char, 'alliance_ticker', None),
+            'character_name': character_name,
+            'character_id': character_id if character_id else "",
+            'corp_ticker': corp_ticker if corp_ticker else "",
+            'corp_name': corp_name if corp_name else "",
+            'corp_id': corp_id if corp_id else "",
+            'alliance_name': alliance_name if alliance_name else "",
+            'alliance_id': alliance_id if alliance_id else "",
+            'alliance_ticker': alliance_ticker if alliance_ticker else "",
             'username': self.user.username,
         }
 
         format_data['alliance_or_corp_name'] = format_data['alliance_name'] or format_data['corp_name']
         format_data['alliance_or_corp_ticker'] = format_data['alliance_ticker'] or format_data['corp_ticker']
+
         return format_data
 
     @cached_property

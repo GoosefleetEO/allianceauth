@@ -12,19 +12,11 @@ import base64
 import hmac
 import hashlib
 
-try:
-    from urllib import unquote, urlencode
-except ImportError: #py3
-    from urllib.parse import unquote, urlencode
-try:
-    from urlparse import parse_qs
-except ImportError: #py3
-    from urllib.parse import parse_qs
+from urllib.parse import unquote, urlencode, parse_qs
 
 import logging
 
 logger = logging.getLogger(__name__)
-
 
 ACCESS_PERM = 'discourse.access_discourse'
 
@@ -55,7 +47,7 @@ def discourse_sso(request):
     # Validate the payload
     try:
         payload = unquote(payload).encode('utf-8')
-        decoded = base64.decodestring(payload).decode('utf-8')
+        decoded = base64.decodebytes(payload).decode('utf-8')
         assert 'nonce' in decoded
         assert len(payload) > 0
     except AssertionError:
@@ -86,7 +78,7 @@ def discourse_sso(request):
     if main_char:
         params['avatar_url'] = main_char.portrait_url(256)
 
-    return_payload = base64.encodestring(urlencode(params).encode('utf-8'))
+    return_payload = base64.encodebytes(urlencode(params).encode('utf-8'))
     h = hmac.new(key, return_payload, digestmod=hashlib.sha256)
     query_string = urlencode({'sso': return_payload, 'sig': h.hexdigest()})
 
@@ -102,4 +94,3 @@ def discourse_sso(request):
     # Redirect back to Discourse
     url = '%s/session/sso_login' % settings.DISCOURSE_URL
     return redirect('%s?%s' % (url, query_string))
-

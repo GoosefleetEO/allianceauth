@@ -49,8 +49,7 @@
                             {% for char in app.characters %}
                                 <tr>
                                     <td class="text-center">
-                                        <img class="ra-avatar img-responsive img-circle"
-                                             src="{{ char.portrait_url_32 }}">
+                                        <img class="ra-avatar img-responsive img-circle" src="{{ char.portrait_url_32 }}">
                                     </td>
                                     <td class="text-center">{{ char.character_name }}</td>
                                     <td class="text-center">{{ char.corporation_name }}</td>
@@ -77,25 +76,20 @@
                                     {% if app.approved == None %}
                                         {% if app.reviewer == user %}
                                             {% if perms.hrapplications.approve_application %}
-                                                <a href="{% url 'hrapplications:approve' app.id %}"
-                                                   class="btn btn-success">{% trans "Approve" %}</a>
+                                                <a href="{% url 'hrapplications:approve' app.id %}" class="btn btn-success">{% trans "Approve" %}</a>
                                             {% endif %}
                                             {% if perms.hrapplications.reject_application %}
-                                                <a href="{% url 'hrapplications:reject' app.id %}"
-                                                   class="btn btn-danger">{% trans "Reject" %}</a>
+                                                <a href="{% url 'hrapplications:reject' app.id %}" class="btn btn-danger">{% trans "Reject" %}</a>
                                             {% endif %}
                                             {% if perms.hrapplications.delete_application %}
-                                                <a href="{% url 'hrapplications:remove' app.id %}"
-                                                   class="btn btn-danger">{% trans "Delete" %}</a>
+                                                <a href="{% url 'hrapplications:remove' app.id %}" class="btn btn-danger">{% trans "Delete" %}</a>
                                             {% endif %}
                                         {% elif not app.reviewer %}
-                                            <a href="{% url 'hrapplications:mark_in_progress' app.id %}"
-                                               class="btn btn-warning">{% trans "Mark in Progress" %}</a>
+                                            <a href="{% url 'hrapplications:mark_in_progress' app.id %}" class="btn btn-warning">{% trans "Mark in Progress" %}</a>
                                         {% endif %}
                                     {% endif %}
                                     {% if perms.hrapplications.add_applicationcomment %}
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#myModal">{% trans "Comment" %}</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">{% trans "Comment" %}</button>
                                     {% endif %}
                                 </div>
                             </div>
@@ -104,15 +98,12 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading" role="tab" id="headingThree">
                                     <h4 class="panel-title">
-                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
-                                           href="#collapseThree" aria-expanded="false"
-                                           aria-controls="collapseThree">
+                                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                             {% trans 'Comments' %} ({{ comments.count }})
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                     aria-labelledby="headingThree">
+                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                                     <div class="panel-body">
                                         {% for comment in comments %}
                                             <div class="panel panel-default">
@@ -136,8 +127,7 @@
         </div>
     </div>
     {% if perms.hrapplications.add_applicationcomment %}
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

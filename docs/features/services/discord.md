@@ -32,7 +32,7 @@ CELERYBEAT_SCHEDULE['discord.update_all_usernames'] = {
 
 ```eval_rst
 .. note::
-   You will have to add most the values for these settings, e.g. your Discord server ID (aka guild ID), later in the setup process.
+    You will have to add most the values for these settings, e.g. your Discord server ID (aka guild ID), later in the setup process.
 ```
 
 ### Creating a Server
@@ -47,7 +47,7 @@ Update your auth project's settings file, inputting the server ID as `DISCORD_GU
 
 ```eval_rst
 .. note::
-   If you already have a Discord server skip the creation step, but be sure to retrieve the server ID
+    If you already have a Discord server skip the creation step, but be sure to retrieve the server ID
 ```
 
 ### Registering an Application
@@ -115,7 +115,7 @@ Name                     Description
 
 ```eval_rst
 .. note::
-   Depending on how many users you have, running these tasks can take considerable time to finish. You can calculate roughly 1 sec per user for all tasks, except update_all, which needs roughly 3 secs per user.
+    Depending on how many users you have, running these tasks can take considerable time to finish. You can calculate roughly 1 sec per user for all tasks, except update_all, which needs roughly 3 secs per user.
 ```
 
 ## Settings

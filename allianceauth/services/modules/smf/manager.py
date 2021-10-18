@@ -21,8 +21,8 @@ class SmfManager:
         pass
 
     SQL_ADD_USER = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
-                   r" buddy_list, message_labels, openid_uri, signature, ignore_boards) " \
-                   r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0, 0, 0)" % TABLE_PREFIX
+                    r" buddy_list, message_labels, openid_uri, signature, ignore_boards) " \
+                    r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0, 0, 0)" % TABLE_PREFIX
 
     SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
 
@@ -102,7 +102,7 @@ class SmfManager:
 
     @classmethod
     def add_avatar(cls, member_name, characterid):
-        logger.debug("Adding EVE character id %s portrait as smf avatar for user %s" % (characterid, member_name))        
+        logger.debug("Adding EVE character id %s portrait as smf avatar for user %s" % (characterid, member_name))
         avatar_url = EveCharacter.generic_portrait_url(characterid, 64)
         cursor = connections['smf'].cursor()
         id_member = cls.get_user_id(member_name)
@@ -159,7 +159,7 @@ class SmfManager:
         else:
             try:
                 cursor.execute(cls.SQL_ADD_USER,
-                               [username_clean, passwd, email_address, register_date, username_clean])
+                                [username_clean, passwd, email_address, register_date, username_clean])
                 cls.add_avatar(username_clean, characterid)
                 logger.info("Added smf member_name %s" % username_clean)
                 cls.update_groups(username_clean, groups)

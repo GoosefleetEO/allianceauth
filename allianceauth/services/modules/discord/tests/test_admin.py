@@ -9,9 +9,9 @@ from allianceauth.eveonline.models import (
 )
 
 from ....admin import (
-    user_profile_pic, 
-    user_username, 
-    user_main_organization, 
+    user_profile_pic,
+    user_username,
+    user_main_organization,
     ServicesUserAdmin,
     MainCorporationsFilter,
     MainAllianceFilter
@@ -31,7 +31,7 @@ class TestDataMixin(TestCase):
         EveAllianceInfo.objects.all().delete()
         User.objects.all().delete()
         DiscordUser.objects.all().delete()
-        
+
         # user 1 - corp and alliance, normal user
         cls.character_1 = EveCharacter.objects.create(
             character_id=1001,
@@ -56,16 +56,16 @@ class TestDataMixin(TestCase):
         alliance = EveAllianceInfo.objects.create(
             alliance_id=3001,
             alliance_name='Wayne Enterprises',
-            alliance_ticker='WE',            
+            alliance_ticker='WE',
             executor_corp_id=2001
         )
         EveCorporationInfo.objects.create(
             corporation_id=2001,
             corporation_name='Wayne Technologies',
-            corporation_ticker='WT',            
+            corporation_ticker='WT',
             member_count=42,
             alliance=alliance
-        )        
+        )
         cls.user_1 = User.objects.create_user(
             cls.character_1.character_name.replace(' ', '_'),
             'abc@example.com',
@@ -103,7 +103,7 @@ class TestDataMixin(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2002,
             corporation_name='Daily Plane',
-            corporation_ticker='DP',            
+            corporation_ticker='DP',
             member_count=99,
             alliance=None
         )
@@ -123,7 +123,7 @@ class TestDataMixin(TestCase):
             user=cls.user_2,
             uid=1002
         )
-        
+
         # user 3 - no main, no group, superuser
         cls.character_3 = EveCharacter.objects.create(
             character_id=1101,
@@ -136,7 +136,7 @@ class TestDataMixin(TestCase):
         EveCorporationInfo.objects.create(
             corporation_id=2101,
             corporation_name='Lex Corp',
-            corporation_ticker='LC',            
+            corporation_ticker='LC',
             member_count=666,
             alliance=None
         )
@@ -160,13 +160,13 @@ class TestDataMixin(TestCase):
             user=cls.user_3,
             uid=1003
         )
-        
+
     def setUp(self):
         self.factory = RequestFactory()
         self.modeladmin = DiscordUserAdmin(
             model=DiscordUser, admin_site=AdminSite()
-        )    
-    
+        )
+
 
 class TestColumnRendering(TestDataMixin, TestCase):
 
@@ -230,12 +230,12 @@ class TestColumnRendering(TestDataMixin, TestCase):
 
 
 class TestFilters(TestDataMixin, TestCase):
-    
+
     def test_filter_main_corporations(self):
-        
-        class DiscordUserAdminTest(ServicesUserAdmin): 
+
+        class DiscordUserAdminTest(ServicesUserAdmin):
             list_filter = (MainCorporationsFilter,)
-                
+
         my_modeladmin = DiscordUserAdminTest(DiscordUser, AdminSite())
 
         # Make sure the lookups are correct
@@ -244,7 +244,7 @@ class TestFilters(TestDataMixin, TestCase):
         changelist = my_modeladmin.get_changelist_instance(request)
         filters = changelist.get_filters(request)
         filterspec = filters[0][0]
-        expected = [            
+        expected = [
             (2002, 'Daily Planet'),
             (2001, 'Wayne Technologies'),
         ]
@@ -254,19 +254,19 @@ class TestFilters(TestDataMixin, TestCase):
         request = self.factory.get(
             '/', {'main_corporation_id__exact': self.character_1.corporation_id}
         )
-        request.user = self.user_1                
+        request.user = self.user_1
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1.discord]
         self.assertSetEqual(set(queryset), set(expected))
-    
+
     def test_filter_main_alliances(self):
-        
-        class DiscordUserAdminTest(ServicesUserAdmin): 
+
+        class DiscordUserAdminTest(ServicesUserAdmin):
             list_filter = (MainAllianceFilter,)
-                
+
         my_modeladmin = DiscordUserAdminTest(DiscordUser, AdminSite())
-       
+
         # Make sure the lookups are correct
         request = self.factory.get('/')
         request.user = self.user_1
@@ -282,7 +282,7 @@ class TestFilters(TestDataMixin, TestCase):
         request = self.factory.get(
             '/', {'main_alliance_id__exact': self.character_1.alliance_id}
         )
-        request.user = self.user_1                
+        request.user = self.user_1
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1.discord]

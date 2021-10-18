@@ -6,12 +6,14 @@ from allianceauth.services.hooks import MenuItemHook, UrlHook
 
 class PermissionsTool(MenuItemHook):
     def __init__(self):
-        MenuItemHook.__init__(self,
-                              'Permissions Audit',
-                              'fas fa-id-card fa-fw',
-                              'permissions_tool:overview',
-                              order=400,
-                              navactive=['permissions_tool:'])
+        MenuItemHook.__init__(
+            self,
+            'Permissions Audit',
+            'fas fa-id-card fa-fw',
+            'permissions_tool:overview',
+            order=400,
+            navactive=['permissions_tool:']
+        )
 
     def render(self, request):
         if request.user.has_perm('permissions_tool.audit_permissions'):

@@ -133,9 +133,9 @@ class EveCharacterTestCase(TestCase):
             name='Dummy Corp 2',
             ticker='DC2',
             ceo_id=1001,
-            members=34,            
+            members=34,
         )
-        
+
         my_character = EveCharacter.objects.create(
             character_id=1001,
             character_name='Bruce Wayne',
@@ -144,7 +144,7 @@ class EveCharacterTestCase(TestCase):
             corporation_ticker='DC1',
             alliance_id=3001,
             alliance_name='Dummy Alliance 1',
-        )        
+        )
         my_updated_character = Character(
             name='Bruce X. Wayne',
             corp_id=2002
@@ -169,8 +169,8 @@ class EveCharacterTestCase(TestCase):
             character_id=42,
             character_name='character.name',
             corporation_id=123,
-            corporation_name='corporation.name',            
-            corporation_ticker='ABC',            
+            corporation_name='corporation.name',
+            corporation_ticker='ABC',
         )
         self.assertEqual(
             x.portrait_url(),
@@ -179,7 +179,7 @@ class EveCharacterTestCase(TestCase):
         self.assertEqual(
             x.portrait_url(64),
             eveimageserver._eve_entity_image_url('character', 42, size=64)
-        )       
+        )
         self.assertEqual(
             x.portrait_url_32,
             eveimageserver._eve_entity_image_url('character', 42, size=32)
@@ -202,8 +202,8 @@ class EveCharacterTestCase(TestCase):
             character_id=42,
             character_name='character.name',
             corporation_id=123,
-            corporation_name='corporation.name',            
-            corporation_ticker='ABC',            
+            corporation_name='corporation.name',
+            corporation_ticker='ABC',
         )
         self.assertEqual(
             x.corporation_logo_url(),
@@ -235,9 +235,9 @@ class EveCharacterTestCase(TestCase):
             character_id=42,
             character_name='character.name',
             corporation_id=123,
-            corporation_name='corporation.name',            
-            corporation_ticker='ABC',            
-        )        
+            corporation_name='corporation.name',
+            corporation_ticker='ABC',
+        )
         self.assertEqual(
             x.alliance_logo_url(),
             ''
@@ -286,7 +286,7 @@ class EveCharacterTestCase(TestCase):
 
 
 class EveAllianceTestCase(TestCase):
-            
+
     def test_str(self):
         my_alliance = EveAllianceInfo(
             alliance_id=3001,
@@ -295,12 +295,12 @@ class EveAllianceTestCase(TestCase):
             executor_corp_id=2001
         )
         self.assertEqual(str(my_alliance), 'Dummy Alliance 1')
-    
+
     @patch(
         'allianceauth.eveonline.models.EveCorporationInfo.objects.create_corporation'
     )
     def test_populate_alliance(self, mock_create_corporation):
-        
+
         def create_corp(corp_id):
             if corp_id == 2002:
                 EveCorporationInfo.objects.create(
@@ -311,23 +311,23 @@ class EveAllianceTestCase(TestCase):
                 )
             else:
                 raise ValueError()
-        
+
         mock_EveAllianceProviderManager = Mock()
         mock_EveAllianceProviderManager.get_alliance.return_value = \
             Alliance(
-                id=3001, 
+                id=3001,
                 name='Dummy Alliance 1',
                 corp_ids=[2001, 2002]
             )
         mock_create_corporation.side_effect = create_corp
-        
+
         EveCorporationInfo.objects.create(
             corporation_id=2001,
             corporation_name='Dummy Corporation 1',
             corporation_ticker='DC1',
             member_count=42,
         )
-                
+
         my_alliance = EveAllianceInfo(
             alliance_id=3001,
             alliance_name='Dummy Alliance 1',
@@ -336,13 +336,13 @@ class EveAllianceTestCase(TestCase):
         )
         my_alliance.provider = mock_EveAllianceProviderManager
         my_alliance.save()
-        my_alliance.populate_alliance()        
+        my_alliance.populate_alliance()
 
         for corporation in EveCorporationInfo.objects\
             .filter(corporation_id__in=[2001, 2002]
         ):
             self.assertEqual(corporation.alliance, my_alliance)
-        
+
     def test_update_alliance_with_object(self):
         my_alliance = EveAllianceInfo.objects.create(
             alliance_id=3001,
@@ -351,9 +351,9 @@ class EveAllianceTestCase(TestCase):
             executor_corp_id=2001
         )
         updated_alliance = Alliance(
-            id=3002, 
+            id=3002,
             name='Dummy Alliance 2',
-            corp_ids=[2004],                
+            corp_ids=[2004],
             executor_corp_id=2004
         )
         my_alliance.update_alliance(updated_alliance)
@@ -367,7 +367,7 @@ class EveAllianceTestCase(TestCase):
         mock_EveAllianceProviderManager = Mock()
         mock_EveAllianceProviderManager.get_alliance.return_value = \
             Alliance(
-                id=3002, 
+                id=3002,
                 name='Dummy Alliance 2',
                 corp_ids=[2004],
                 executor_corp_id=2004
@@ -381,15 +381,15 @@ class EveAllianceTestCase(TestCase):
         )
         my_alliance.provider = mock_EveAllianceProviderManager
         my_alliance.save()
-        Alliance(                
+        Alliance(
             name='Dummy Alliance 2',
-            corp_ids=[2004],                
+            corp_ids=[2004],
             executor_corp_id=2004
         )
         my_alliance.update_alliance()
         my_alliance.refresh_from_db()
         self.assertEqual(int(my_alliance.executor_corp_id), 2004)
-        
+
         # potential bug
         # update_alliance() is only updateting executor_corp_id nothing else ???
 
@@ -417,7 +417,7 @@ class EveAllianceTestCase(TestCase):
         self.assertEqual(
             x.logo_url(64),
             'https://images.evetech.net/alliances/42/logo?size=64'
-        )        
+        )
         self.assertEqual(
             x.logo_url_32,
             'https://images.evetech.net/alliances/42/logo?size=32'
@@ -434,10 +434,10 @@ class EveAllianceTestCase(TestCase):
             x.logo_url_256,
             'https://images.evetech.net/alliances/42/logo?size=256'
         )
-        
+
 
 class EveCorporationTestCase(TestCase):
-    
+
     def setUp(self):
         my_alliance = EveAllianceInfo.objects.create(
             alliance_id=3001,
@@ -451,9 +451,9 @@ class EveCorporationTestCase(TestCase):
             corporation_ticker='DC1',
             member_count=42,
             alliance=my_alliance
-        )        
+        )
 
-    def test_str(self):        
+    def test_str(self):
         self.assertEqual(str(self.my_corp), 'Dummy Corporation 1')
 
     def test_update_corporation_from_object_w_alliance(self):
@@ -465,15 +465,15 @@ class EveCorporationTestCase(TestCase):
 
         # potential bug
         # update_corporation updates member_count only
-    
+
     def test_update_corporation_no_object_w_alliance(self):
         mock_provider = Mock()
         mock_provider.get_corporation.return_value = Corporation(members=87)
         self.my_corp.provider = mock_provider
-        
+
         self.my_corp.update_corporation()
         self.assertEqual(self.my_corp.member_count, 87)
-            
+
     def test_update_corporation_from_object_wo_alliance(self):
         my_corp2 = EveCorporationInfo(
             corporation_id=2011,
@@ -498,7 +498,7 @@ class EveCorporationTestCase(TestCase):
             eveimageserver._eve_entity_image_url('corporation', 42, 256)
         )
 
-    def test_logo_url(self):        
+    def test_logo_url(self):
         self.assertEqual(
             self.my_corp.logo_url(),
             'https://images.evetech.net/corporations/2001/logo?size=32'

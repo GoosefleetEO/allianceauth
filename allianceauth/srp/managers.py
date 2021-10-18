@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class SRPManager:
-    
+
     @staticmethod
     def get_kill_id(killboard_link):
         num_set = '0123456789'
@@ -55,9 +55,9 @@ class SRPManager:
 
     @staticmethod
     def pending_requests_count_for_user(user: User):
-        """returns the number of open SRP requests for given user 
+        """returns the number of open SRP requests for given user
         or None if user has no permission"""
         if user.has_perm("auth.srp_management"):
-            return SrpUserRequest.objects.filter(srp_status="pending").count()
+            return SrpUserRequest.objects.filter(srp_status="Pending").count()
         else:
             return None

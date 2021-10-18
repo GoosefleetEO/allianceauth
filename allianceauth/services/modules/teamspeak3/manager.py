@@ -85,14 +85,14 @@ class Teamspeak3Manager:
             self.__group_cache = None
             sgid = ret['keys']['sgid']
             self.server.send_command('servergroupaddperm',
-                                     {'sgid': sgid, 'permsid': 'i_group_needed_modify_power', 'permvalue': 75,
-                                      'permnegated': 0, 'permskip': 0})
+                                        {'sgid': sgid, 'permsid': 'i_group_needed_modify_power', 'permvalue': 75,
+                                            'permnegated': 0, 'permskip': 0})
             self.server.send_command('servergroupaddperm',
-                                     {'sgid': sgid, 'permsid': 'i_group_needed_member_add_power', 'permvalue': 100,
-                                      'permnegated': 0, 'permskip': 0})
+                                        {'sgid': sgid, 'permsid': 'i_group_needed_member_add_power', 'permvalue': 100,
+                                            'permnegated': 0, 'permskip': 0})
             self.server.send_command('servergroupaddperm',
-                                     {'sgid': sgid, 'permsid': 'i_group_needed_member_remove_power', 'permvalue': 100,
-                                      'permnegated': 0, 'permskip': 0})
+                                        {'sgid': sgid, 'permsid': 'i_group_needed_member_remove_power', 'permvalue': 100,
+                                            'permnegated': 0, 'permskip': 0})
         logger.info("Created group on TS3 server with name %s and id %s" % (groupname, sgid))
         return sgid
 
@@ -142,7 +142,7 @@ class Teamspeak3Manager:
         if groupid not in user_groups.values():
             logger.debug("User does not have group already. Issuing command to add.")
             self.server.send_command('servergroupaddclient',
-                                     {'sgid': str(groupid), 'cldbid': uid})
+                                        {'sgid': str(groupid), 'cldbid': uid})
             logger.info("Added user id %s to group id %s on TS3 server." % (uid, groupid))
 
     def _remove_user_from_group(self, uid, groupid):
@@ -152,7 +152,7 @@ class Teamspeak3Manager:
         if str(groupid) in user_groups.values():
             logger.debug("User is in group. Issuing command to remove.")
             self.server.send_command('servergroupdelclient',
-                                     {'sgid': str(groupid), 'cldbid': uid})
+                                        {'sgid': str(groupid), 'cldbid': uid})
             logger.info("Removed user id %s from group id %s on TS3 server." % (uid, groupid))
 
     def _sync_ts_group_db(self):
@@ -190,7 +190,7 @@ class Teamspeak3Manager:
 
         state = user.profile.state.name
         if state not in server_groups:
-             self._create_group(state)
+            self._create_group(state)
 
         state_group_id = self._group_id_by_name(state)
 

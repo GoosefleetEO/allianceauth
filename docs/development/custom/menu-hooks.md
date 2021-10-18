@@ -42,9 +42,9 @@ This is a great feature to signal the user, that he has some open issues to take
 
 ```eval_rst
 .. hint::
-   Here is how to stay consistent with the Auth design philosophy for using this feature:
-   1. Use it to display open items that the current user can close by himself only. Do not use it for items, that the user has no control over.
-   2. If there are currently no open items, do not show a badge at all.
+    Here is how to stay consistent with the Auth design philosophy for using this feature:
+    1. Use it to display open items that the current user can close by himself only. Do not use it for items, that the user has no control over.
+    2. If there are currently no open items, do not show a badge at all.
 ```
 
 To use it set count the `render()` function of your subclass in accordance to the current user. Here is an example:

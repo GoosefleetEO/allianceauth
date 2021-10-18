@@ -10,9 +10,9 @@ from django.test import TestCase
 from allianceauth.templatetags.admin_status import (
     status_overview,
     _fetch_list_from_gitlab,
-    _current_notifications, 
-    _current_version_summary, 
-    _fetch_notification_issues_from_gitlab,    
+    _current_notifications,
+    _current_version_summary,
+    _fetch_notification_issues_from_gitlab,
     _latests_versions
 )
 
@@ -58,10 +58,10 @@ class TestStatusOverviewTag(TestCase):
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status._fetch_celery_queue_length')
     @patch(MODULE_PATH + '.admin_status._current_version_summary')
-    @patch(MODULE_PATH + '.admin_status._current_notifications')    
+    @patch(MODULE_PATH + '.admin_status._current_notifications')
     def test_status_overview(
-        self, 
-        mock_current_notifications, 
+        self,
+        mock_current_notifications,
         mock_current_version_info,
         mock_fetch_celery_queue_length
     ):
@@ -82,7 +82,7 @@ class TestStatusOverviewTag(TestCase):
         }
         mock_current_version_info.return_value = version_info
         mock_fetch_celery_queue_length.return_value = 3
-                
+
         result = status_overview()
         expected = {
             'notifications': GITHUB_NOTIFICATION_ISSUES[:5],
@@ -111,7 +111,7 @@ class TestNotifications(TestCase):
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/issues'
             '?labels=announcement'
-        )        
+        )
         requests_mocker.get(url, json=GITHUB_NOTIFICATION_ISSUES)
         # when
         result = _fetch_notification_issues_from_gitlab()
@@ -127,13 +127,13 @@ class TestNotifications(TestCase):
         # then
         self.assertEqual(result['notifications'], GITHUB_NOTIFICATION_ISSUES[:5])
 
-    @requests_mock.mock()    
+    @requests_mock.mock()
     def test_current_notifications_failed(self, requests_mocker):
         # given
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth/issues'
             '?labels=announcement'
-        )        
+        )
         requests_mocker.get(url, status_code=404)
         # when
         result = _current_notifications()
@@ -163,7 +163,7 @@ class TestVersionTags(TestCase):
 
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status.cache')
-    def test_current_version_info_normal(self, mock_cache):        
+    def test_current_version_info_normal(self, mock_cache):
         # given
         mock_cache.get_or_set.return_value = GITHUB_TAGS
         # when
@@ -184,7 +184,7 @@ class TestVersionTags(TestCase):
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth'
             '/repository/tags'
-        )        
+        )
         requests_mocker.get(url, status_code=500)
         # when
         result = _current_version_summary()
@@ -197,7 +197,7 @@ class TestVersionTags(TestCase):
         url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth'
             '/repository/tags'
-        )        
+        )
         requests_mocker.get(url, json=GITHUB_TAGS)
         # when
         result = _current_version_summary()
@@ -208,7 +208,7 @@ class TestVersionTags(TestCase):
     @patch(MODULE_PATH + '.admin_status.cache')
     def test_current_version_info_return_no_data(self, mock_cache):
         # given
-        mock_cache.get_or_set.return_value = None                
+        mock_cache.get_or_set.return_value = None
         # when
         result = _current_version_summary()
         # then
@@ -218,7 +218,7 @@ class TestVersionTags(TestCase):
 class TestLatestsVersion(TestCase):
 
     def test_all_version_types_defined(self):
-        
+
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
@@ -229,7 +229,7 @@ class TestLatestsVersion(TestCase):
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
     def test_major_and_minor_not_defined_with_zero(self):
-        
+
         tags = create_tags_list(
             ['2.1.2', '2.1.1', '2.0.1', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
@@ -238,9 +238,9 @@ class TestLatestsVersion(TestCase):
         self.assertEqual(minor, Pep440Version('2.1.1'))
         self.assertEqual(patch, Pep440Version('2.1.2'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
-        
+
     def test_can_ignore_invalid_versions(self):
-        
+
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', 'invalid']
         )
@@ -252,9 +252,9 @@ class TestLatestsVersion(TestCase):
 
 
 class TestFetchListFromGitlab(TestCase):
-   
+
     page_size = 2
-    
+
     def setUp(self):
         self.url = (
             'https://gitlab.com/api/v4/projects/allianceauth%2Fallianceauth'
@@ -266,8 +266,8 @@ class TestFetchListFromGitlab(TestCase):
         page = int(request.qs['page'][0])
         start = (page - 1) * cls.page_size
         end = start + cls.page_size
-        return GITHUB_TAGS[start:end]        
-    
+        return GITHUB_TAGS[start:end]
+
     @requests_mock.mock()
     def test_can_fetch_one_page_with_header(self, requests_mocker):
         headers = {
@@ -279,7 +279,7 @@ class TestFetchListFromGitlab(TestCase):
         self.assertEqual(requests_mocker.call_count, 1)
 
     @requests_mock.mock()
-    def test_can_fetch_one_page_wo_header(self, requests_mocker):        
+    def test_can_fetch_one_page_wo_header(self, requests_mocker):
         requests_mocker.get(self.url, json=GITHUB_TAGS)
         result = _fetch_list_from_gitlab(self.url)
         self.assertEqual(result, GITHUB_TAGS)
@@ -296,7 +296,7 @@ class TestFetchListFromGitlab(TestCase):
         self.assertEqual(requests_mocker.call_count, 1)
 
     @requests_mock.mock()
-    def test_can_fetch_multiple_pages(self, requests_mocker):     
+    def test_can_fetch_multiple_pages(self, requests_mocker):
         total_pages = ceil(len(GITHUB_TAGS) / self.page_size)
         headers = {
             'x-total-pages': str(total_pages)
@@ -307,7 +307,7 @@ class TestFetchListFromGitlab(TestCase):
         self.assertEqual(requests_mocker.call_count, total_pages)
 
     @requests_mock.mock()
-    def test_can_fetch_given_number_of_pages_only(self, requests_mocker):     
+    def test_can_fetch_given_number_of_pages_only(self, requests_mocker):
         total_pages = ceil(len(GITHUB_TAGS) / self.page_size)
         headers = {
             'x-total-pages': str(total_pages)

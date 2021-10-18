@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 from setuptools import setup
 import allianceauth
@@ -17,23 +16,24 @@ install_requires = [
     'requests-oauthlib',
     'semantic_version',
     'packaging>=20.1,<21',
+    'beautifulsoup4',
 
     'redis>=3.3.1,<4.0.0',
-    'celery>=4.3.0,<5.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
+    'celery>=4.3.0,<6.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once>=2.0.1',
 
-    'django>=3.1.1,<3.2.0',
+    'django>=3.2.7,<4.0.0',
     'django-bootstrap-form',
     'django-registration>=3.1',
     'django-sortedm2m',
     'django-redis-cache>=3.0.0',
-    'django-celery-beat>=2.0.0,<2.2.1',
+    'django-celery-beat>=2.0.0',
 
     'openfire-restapi',
     'sleekxmpp',
     'pydiscourse',
 
-    'django-esi>=2.0.4,<3.0'
+    'django-esi>=3.0.0,<4.0.0'
 ]
 
 testing_extras = [
@@ -58,7 +58,7 @@ setup(
     extras_require={
         'testing': testing_extras
     },
-    python_requires='~=3.6',
+    python_requires='~=3.7',
     license='GPLv2',
     packages=['allianceauth'],
     url=allianceauth.__url__,
@@ -72,15 +72,20 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 3.1',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',        
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    project_urls={
+        'Documentation': 'https://allianceauth.readthedocs.io/',
+    },
+
 )

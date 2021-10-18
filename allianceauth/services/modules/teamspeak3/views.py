@@ -56,8 +56,7 @@ def verify_teamspeak3(request):
         form = TeamspeakJoinForm(initial={'username': request.user.teamspeak3.uid})
     context = {
         'form': form,
-        'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid,
-                     'teamspeak3_perm_key': request.user.teamspeak3.perm_key},
+        'authinfo': {'teamspeak3_uid': request.user.teamspeak3.uid, 'teamspeak3_perm_key': request.user.teamspeak3.perm_key},
         'public_url': settings.TEAMSPEAK3_PUBLIC_URL,
     }
     return render(request, 'services/teamspeak3/teamspeakjoin.html', context=context)

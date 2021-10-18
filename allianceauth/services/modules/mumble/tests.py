@@ -25,8 +25,7 @@ class MumbleHooksTestCase(TestCase):
     def setUp(self):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
-        AuthUtils.add_main_character(member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
-                                     corp_ticker='TESTR')
+        AuthUtils.add_main_character(member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation', corp_ticker='TESTR')
         member = User.objects.get(pk=member.pk)
         MumbleUser.objects.create(user=member)
         self.none_user = 'none_user'
@@ -123,8 +122,7 @@ class MumbleViewsTestCase(TestCase):
         self.member = AuthUtils.create_member('auth_member')
         self.member.email = 'auth_member@example.com'
         self.member.save()
-        AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation',
-                                     corp_ticker='TESTR')
+        AuthUtils.add_main_character(self.member, 'auth_member', '12345', corp_id='111', corp_name='Test Corporation', corp_ticker='TESTR')
         self.member = User.objects.get(pk=self.member.pk)
         add_permissions()
 

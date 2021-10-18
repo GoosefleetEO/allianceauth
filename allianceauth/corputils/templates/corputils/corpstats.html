@@ -58,8 +58,7 @@
                                                 {% for id, main in mains.items %}
                                                     <tr>
                                                         <td class="text-center" style="vertical-align:middle">
-                                                            <div class="thumbnail"
-                                                                 style="border: 0 none; box-shadow: none; background: transparent;">
+                                                            <div class="thumbnail" style="border: 0 none; box-shadow: none; background: transparent;">
                                                                 <img src="{{ main.main.portrait_url_64 }}" class="img-circle">
                                                                 <div class="caption text-center">
                                                                     {{ main.main }}
@@ -88,8 +87,7 @@
                                                                         <td class="text-center" style="width:30%">{{ alt.corporation_name }}</td>
                                                                         <td class="text-center" style="width:30%">{{ alt.alliance_name }}</td>
                                                                         <td class="text-center" style="width:5%">
-                                                                            <a href="https://zkillboard.com/character/{{ alt.character_id }}/"
-                                                                               class="label label-danger" target="_blank">
+                                                                            <a href="https://zkillboard.com/character/{{ alt.character_id }}/" class="label label-danger" target="_blank">
                                                                                 {% trans "Killboard" %}
                                                                             </a>
                                                                         </td>
@@ -123,10 +121,9 @@
                                                     <tr>
                                                         <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                         <td class="text-center">{{ member }}</td>
-                                                        <td class="text-center"><a
-                                                                href="https://zkillboard.com/character/{{ member.character_id }}/"
-                                                                class="label label-danger"
-                                                                target="_blank">{% trans "Killboard" %}</a></td>
+                                                        <td class="text-center">
+                                                            <a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a>
+                                                        </td>
                                                         <td class="text-center">{{ member.character_ownership.user.profile.main_character.character_name }}</td>
                                                         <td class="text-center">{{ member.character_ownership.user.profile.main_character.corporation_name }}</td>
                                                         <td class="text-center">{{ member.character_ownership.user.profile.main_character.alliance_name }}</td>
@@ -136,10 +133,9 @@
                                                     <tr class="danger">
                                                         <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                         <td class="text-center">{{ member.character_name }}</td>
-                                                        <td class="text-center"><a
-                                                                href="https://zkillboard.com/character/{{ member.character_id }}/"
-                                                                class="label label-danger"
-                                                                target="_blank">{% trans "Killboard" %}</a></td>
+                                                        <td class="text-center">
+                                                            <a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a>
+                                                        </td>
                                                         <td class="text-center"></td>
                                                         <td class="text-center"></td>
                                                         <td class="text-center"></td>
@@ -167,9 +163,7 @@
                                                         <td><img src="{{ member.portrait_url }}" class="img-circle"></td>
                                                         <td class="text-center">{{ member.character_name }}</td>
                                                         <td class="text-center">
-                                                            <a href="https://zkillboard.com/character/{{ member.character_id }}/"
-                                                               class="label label-danger"
-                                                               target="_blank">
+                                                            <a href="https://zkillboard.com/character/{{ member.character_id }}/" class="label label-danger" target="_blank">
                                                                 {% trans "Killboard" %}
                                                             </a>
                                                         </td>
