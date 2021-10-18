@@ -123,7 +123,7 @@ class DiscordUser(models.Model):
                 )
                 if not guild_roles.has_roles(member_info['roles']):
                     raise RuntimeError(
-                        'Member %s has unknown roles: %s' % (
+                        'Member {} has unknown roles: {}'.format(
                             self.user,
                             set(member_info['roles']).difference(guild_roles.ids())
                         )

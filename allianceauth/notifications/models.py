@@ -59,7 +59,7 @@ class Notification(models.Model):
     objects = NotificationManager()
 
     def __str__(self) -> str:
-        return "%s: %s" % (self.user, self.title)
+        return f"{self.user}: {self.title}"
 
     def save(self, *args, **kwargs):
         # overriden save to ensure cache is invaidated on very call

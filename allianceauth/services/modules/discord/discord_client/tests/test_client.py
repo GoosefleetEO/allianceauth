@@ -1400,7 +1400,7 @@ class TestRedisDecode(TestCase):
 
     def test_decode_string(self):
         self.assertEqual(
-            DiscordClient._redis_decode('MyTest123'.encode('utf8')), 'MyTest123'
+            DiscordClient._redis_decode(b'MyTest123'), 'MyTest123'
         )
 
     def test_decode_bool(self):

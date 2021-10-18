@@ -8,7 +8,7 @@ class ConnectionError:
         self.port = port
 
     def __str__(self):
-        return 'Error connecting to host %s port %s' % (self.ip, self.port)
+        return f'Error connecting to host {self.ip} port {self.port}'
 
 
 ts3_escape = {
@@ -32,7 +32,7 @@ class TS3Proto:
     EOL = b'\n\r'
 
     def __init__(self):
-        self._log = logging.getLogger('%s.%s' % (__name__, self.__class__.__name__))
+        self._log = logging.getLogger(f'{__name__}.{self.__class__.__name__}')
         self._conn = None
         self._connected = False
 
@@ -122,10 +122,10 @@ class TS3Proto:
                 if isinstance(keys[key], list):
                     ncstr = []
                     for nest in keys[key]:
-                        ncstr.append("%s=%s" % (key, self._escape_str(nest)))
+                        ncstr.append(f"{key}={self._escape_str(nest)}")
                     cstr.append("|".join(ncstr))
                 else:
-                    cstr.append("%s=%s" % (key, self._escape_str(keys[key])))
+                    cstr.append(f"{key}={self._escape_str(keys[key])}")
 
         # Add in options
         if opts:

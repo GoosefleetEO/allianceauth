@@ -39,7 +39,7 @@ class Ips4Manager:
         cursor.execute(Ips4Manager.SQL_GET_ID, [username])
         row = cursor.fetchone()
         if row is not None:
-            logger.debug("Got user id %s for username %s" % (row[0], username))
+            logger.debug(f"Got user id {row[0]} for username {username}")
             return row[0]
         else:
             logger.error("username %s not found. Unable to determine id." % username)

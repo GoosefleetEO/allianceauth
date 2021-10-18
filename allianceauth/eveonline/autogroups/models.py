@@ -26,7 +26,7 @@ class AutogroupsConfigManager(models.Manager):
         for config in self.filter(states=state):
             logger.debug("in state loop")
             for user in users:
-                logger.debug("in user loop for {}".format(user))
+                logger.debug(f"in user loop for {user}")
                 config.update_group_membership_for_user(user)
 
     def update_groups_for_user(self, user: User, state: State = None):
@@ -81,7 +81,7 @@ class AutogroupsConfig(models.Model):
     objects = AutogroupsConfigManager()
 
     def __init__(self, *args, **kwargs):
-        super(AutogroupsConfig, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
         return self.__class__.__name__
@@ -111,24 +111,24 @@ class AutogroupsConfig(models.Model):
         group = None
         try:
             if not self.alliance_groups or not self.user_entitled_to_groups(user):
-                logger.debug('User {} does not have required state for alliance group membership'.format(user))
+                logger.debug(f'User {user} does not have required state for alliance group membership')
                 return
             else:
                 alliance = user.profile.main_character.alliance
                 if alliance is None:
-                    logger.debug('User {} alliance is None, cannot update group membership'.format(user))
+                    logger.debug(f'User {user} alliance is None, cannot update group membership')
                     return
                 group = self.get_alliance_group(alliance)
         except EveAllianceInfo.DoesNotExist:
-            logger.debug('User {} main characters alliance does not exist in the database. Creating.'.format(user))
+            logger.debug(f'User {user} main characters alliance does not exist in the database. Creating.')
             alliance = EveAllianceInfo.objects.create_alliance(user.profile.main_character.alliance_id)
             group = self.get_alliance_group(alliance)
         except AttributeError:
-            logger.warning('User {} does not have a main character. Group membership not updated'.format(user))
+            logger.warning(f'User {user} does not have a main character. Group membership not updated')
         finally:
             self.remove_user_from_alliance_groups(user, except_group=group)
             if group is not None:
-                logger.debug('Adding user {} to alliance group {}'.format(user, group))
+                logger.debug(f'Adding user {user} to alliance group {group}')
                 user.groups.add(group)
 
     @transaction.atomic
@@ -136,20 +136,20 @@ class AutogroupsConfig(models.Model):
         group = None
         try:
             if not self.corp_groups or not self.user_entitled_to_groups(user):
-                logger.debug('User {} does not have required state for corp group membership'.format(user))
+                logger.debug(f'User {user} does not have required state for corp group membership')
             else:
                 corp = user.profile.main_character.corporation
                 group = self.get_corp_group(corp)
         except EveCorporationInfo.DoesNotExist:
-            logger.debug('User {} main characters corporation does not exist in the database. Creating.'.format(user))
+            logger.debug(f'User {user} main characters corporation does not exist in the database. Creating.')
             corp = EveCorporationInfo.objects.create_corporation(user.profile.main_character.corporation_id)
             group = self.get_corp_group(corp)
         except AttributeError:
-            logger.warning('User {} does not have a main character. Group membership not updated'.format(user))
+            logger.warning(f'User {user} does not have a main character. Group membership not updated')
         finally:
             self.remove_user_from_corp_groups(user, except_group=group)
             if group is not None:
-                logger.debug('Adding user {} to corp group {}'.format(user, group))
+                logger.debug(f'Adding user {user} to corp group {group}')
                 user.groups.add(group)
 
     @transaction.atomic

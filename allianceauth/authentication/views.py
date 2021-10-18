@@ -63,7 +63,7 @@ def dashboard(request):
 @login_required
 @token_required(scopes=settings.LOGIN_TOKEN_SCOPES)
 def main_character_change(request, token):
-    logger.debug("main_character_change called by user %s for character %s" % (request.user, token.character_name))
+    logger.debug(f"main_character_change called by user {request.user} for character {token.character_name}")
     try:
         co = CharacterOwnership.objects.get(character__character_id=token.character_id, user=request.user)
     except CharacterOwnership.DoesNotExist:
@@ -154,7 +154,7 @@ class RegistrationView(BaseRegistrationView):
         if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
             # Keep the request so the user can be automagically logged in.
             setattr(self, 'request', request)
-        return super(RegistrationView, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
     def register(self, form):
         user = User.objects.get(pk=self.request.session.get('registration_uid'))
@@ -173,7 +173,7 @@ class RegistrationView(BaseRegistrationView):
         return signing.dumps(obj=[getattr(user, User.USERNAME_FIELD), user.email], salt=REGISTRATION_SALT)
 
     def get_email_context(self, activation_key):
-        context = super(RegistrationView, self).get_email_context(activation_key)
+        context = super().get_email_context(activation_key)
         context['url'] = context['site'].domain + reverse('registration_activate', args=[activation_key])
         return context
 

@@ -26,7 +26,7 @@ class TestQuerySet(TestCase):
         Notification.objects.notify_user(self.user_1, 'dummy_1')
         Notification.objects.notify_user(self.user_2, 'dummy_2')
         Notification.objects.update(viewed=True)
-        self.assertEquals(mock_invalidate_user_notification_cache.call_count, 2)
+        self.assertEqual(mock_invalidate_user_notification_cache.call_count, 2)
 
 
 class TestUserNotify(TestCase):
@@ -123,19 +123,19 @@ class TestMaxNotificationsPerUser(TestCase):
     def test_reset_to_default_if_not_defined(self):
         result = Notification.objects._max_notifications_per_user()
         expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEquals(result, expected)
+        self.assertEqual(result, expected)
 
     @override_settings(NOTIFICATIONS_MAX_PER_USER='11')
     def test_reset_to_default_if_not_int(self):
         result = Notification.objects._max_notifications_per_user()
         expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEquals(result, expected)
+        self.assertEqual(result, expected)
 
     @override_settings(NOTIFICATIONS_MAX_PER_USER=-1)
     def test_reset_to_default_if_lt_zero(self):
         result = Notification.objects._max_notifications_per_user()
         expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEquals(result, expected)
+        self.assertEqual(result, expected)
 
 
 @patch('allianceauth.notifications.managers.cache')
@@ -219,7 +219,7 @@ class TestUnreadCount(TestCase):
 
     def test_return_error_code_when_user_not_found(self, mock_cache):
         mock_cache.get.return_value = None
-        invalid_user_id = max([user.pk for user in User.objects.all()]) + 1
+        invalid_user_id = max(user.pk for user in User.objects.all()) + 1
         result = Notification.objects.user_unread_count(invalid_user_id)
         expected = -1
         self.assertEqual(result, expected)

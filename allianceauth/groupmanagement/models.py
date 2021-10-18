@@ -113,7 +113,7 @@ class AuthGroup(models.Model):
 
     class Meta:
         permissions = (
-            ("request_groups", u"Can request non-public groups"),
+            ("request_groups", "Can request non-public groups"),
         )
         default_permissions = tuple()
 

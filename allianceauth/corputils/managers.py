@@ -29,7 +29,7 @@ class CorpStatsQuerySet(models.QuerySet):
             if user.has_perm('corputils.view_state_corpstats'):
                 queries.append(models.Q(corp__in=user.profile.state.member_corporations.all()))
                 queries.append(models.Q(corp__alliance__in=user.profile.state.member_alliances.all()))
-            logger.debug('%s queries for user %s visible corpstats.' % (len(queries), user))
+            logger.debug(f'{len(queries)} queries for user {user} visible corpstats.')
             # filter based on queries
             query = queries.pop()
             for q in queries:

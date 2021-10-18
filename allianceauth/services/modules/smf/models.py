@@ -13,5 +13,5 @@ class SmfUser(models.Model):
 
     class Meta:
         permissions = (
-            ("access_smf", u"Can access the SMF service"),
+            ("access_smf", "Can access the SMF service"),
         )

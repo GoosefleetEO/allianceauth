@@ -52,7 +52,7 @@ class ServicesUserAdmin(admin.ModelAdmin):
 
 class NameFormatConfigForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(NameFormatConfigForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         SERVICE_CHOICES = \
             [(s.name, s.name) for h in hooks.get_hooks('services_hook') for s in [h()]]
         if self.instance.id:

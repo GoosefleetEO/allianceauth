@@ -36,8 +36,8 @@ class CharacterOwnershipTestCase(TestCase):
             character_owner_hash='1',
         )
         co = CharacterOwnership.objects.get(character=self.character)
-        self.assertEquals(co.user, self.user)
-        self.assertEquals(co.owner_hash, '1')
+        self.assertEqual(co.user, self.user)
+        self.assertEqual(co.owner_hash, '1')
 
     def test_transfer_ownership(self):
         Token.objects.create(
@@ -54,7 +54,7 @@ class CharacterOwnershipTestCase(TestCase):
         )
         co = CharacterOwnership.objects.get(character=self.character)
         self.assertNotEqual(self.user, co.user)
-        self.assertEquals(self.alt_user, co.user)
+        self.assertEqual(self.alt_user, co.user)
 
     def test_clear_main_character(self):
         Token.objects.create(
@@ -98,29 +98,29 @@ class StateTestCase(TestCase):
     def test_state_assignment_on_character_change(self):
         self.member_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.member_state)
+        self.assertEqual(self.user.profile.state, self.member_state)
 
         self.member_state.member_characters.remove(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.guest_state)
+        self.assertEqual(self.user.profile.state, self.guest_state)
 
     def test_state_assignment_on_corporation_change(self):
         self.member_state.member_corporations.add(self.test_corporation)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.member_state)
+        self.assertEqual(self.user.profile.state, self.member_state)
 
         self.member_state.member_corporations.remove(self.test_corporation)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.guest_state)
+        self.assertEqual(self.user.profile.state, self.guest_state)
 
     def test_state_assignment_on_alliance_addition(self):
         self.member_state.member_alliances.add(self.test_alliance)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.member_state)
+        self.assertEqual(self.user.profile.state, self.member_state)
 
         self.member_state.member_alliances.remove(self.test_alliance)
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.guest_state)
+        self.assertEqual(self.user.profile.state, self.guest_state)
 
     def test_state_assignment_on_higher_priority_state_creation(self):
         self.member_state.member_characters.add(self.test_character)
@@ -130,10 +130,10 @@ class StateTestCase(TestCase):
         )
         higher_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(higher_state, self.user.profile.state)
+        self.assertEqual(higher_state, self.user.profile.state)
         higher_state.member_characters.clear()
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         self.member_state.member_characters.clear()
 
     def test_state_assignment_on_lower_priority_state_creation(self):
@@ -144,10 +144,10 @@ class StateTestCase(TestCase):
         )
         lower_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         lower_state.member_characters.clear()
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         self.member_state.member_characters.clear()
 
     def test_state_assignment_on_priority_change(self):
@@ -161,11 +161,11 @@ class StateTestCase(TestCase):
         lower_state.priority = 500
         lower_state.save()
         self._refresh_user()
-        self.assertEquals(lower_state, self.user.profile.state)
+        self.assertEqual(lower_state, self.user.profile.state)
         lower_state.priority = 125
         lower_state.save()
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
 
     def test_state_assignment_on_state_deletion(self):
         self.member_state.member_characters.add(self.test_character)
@@ -175,11 +175,11 @@ class StateTestCase(TestCase):
         )
         higher_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(higher_state, self.user.profile.state)
+        self.assertEqual(higher_state, self.user.profile.state)
         higher_state.delete()
         self.assertFalse(State.objects.filter(name='Higher State').count())
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
 
     def test_state_assignment_on_public_toggle(self):
         self.member_state.member_characters.add(self.test_character)
@@ -188,26 +188,26 @@ class StateTestCase(TestCase):
             priority=200,
         )
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         higher_state.public = True
         higher_state.save()
         self._refresh_user()
-        self.assertEquals(higher_state, self.user.profile.state)
+        self.assertEqual(higher_state, self.user.profile.state)
         higher_state.public = False
         higher_state.save()
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
 
     def test_state_assignment_on_active_changed(self):
         self.member_state.member_characters.add(self.test_character)
         self.user.is_active = False
         self.user.save()
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.guest_state)
+        self.assertEqual(self.user.profile.state, self.guest_state)
         self.user.is_active = True
         self.user.save()
         self._refresh_user()
-        self.assertEquals(self.user.profile.state, self.member_state)
+        self.assertEqual(self.user.profile.state, self.member_state)
 
 
 class CharacterOwnershipCheckTestCase(TestCase):

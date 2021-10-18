@@ -36,7 +36,7 @@ from . import get_admin_change_view_url, get_admin_search_url
 MODULE_PATH = 'allianceauth.authentication.admin'
 
 
-class MockRequest(object):
+class MockRequest:
     def __init__(self, user=None):
         self.user = user
 
@@ -188,7 +188,7 @@ def make_generic_search_request(ModelClass: type, search_term: str):
     c = Client()
     c.login(username='superuser', password='secret')
     return c.get(
-        '%s?q=%s' % (get_admin_search_url(ModelClass), quote(search_term))
+        f'{get_admin_search_url(ModelClass)}?q={quote(search_term)}'
     )
 
 

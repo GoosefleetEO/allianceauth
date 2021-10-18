@@ -195,7 +195,7 @@ class OpenfireManagerTestCase(TestCase):
         password = self.manager._OpenfireManager__generate_random_pass()
 
         self.assertEqual(len(password), 16)
-        self.assertIsInstance(password, type(''))
+        self.assertIsInstance(password, str)
 
     def test__sanitize_username(self):
         test_username = " My_Test User\"'&/:<>@name\\20name"

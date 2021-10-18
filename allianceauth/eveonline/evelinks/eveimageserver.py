@@ -56,15 +56,15 @@ def _eve_entity_image_url(
     tenants = ['tranquility', 'singularity']
 
     if not entity_id:
-        raise ValueError('Invalid entity_id: {}'.format(entity_id))
+        raise ValueError(f'Invalid entity_id: {entity_id}')
     else:
         entity_id = int(entity_id)
 
     if not size or size < 32 or size > 1024 or (size & (size - 1) != 0):
-        raise ValueError('Invalid size: {}'.format(size))
+        raise ValueError(f'Invalid size: {size}')
 
     if category not in categories:
-        raise ValueError('Invalid category {}'.format(category))
+        raise ValueError(f'Invalid category {category}')
     else:
         endpoint = categories[category]['endpoint']
 
@@ -78,7 +78,7 @@ def _eve_entity_image_url(
         variant = categories[category]['variants'][0]
 
     if tenant and tenant not in tenants:
-        raise ValueError('Invalid tenant {}'.format(tenant))
+        raise ValueError(f'Invalid tenant {tenant}')
 
     # compose result URL
     result = '{}/{}/{}/{}?size={}'.format(
@@ -89,7 +89,7 @@ def _eve_entity_image_url(
         size
     )
     if tenant:
-        result += '&tenant={}'.format(tenant)
+        result += f'&tenant={tenant}'
 
     return result
 

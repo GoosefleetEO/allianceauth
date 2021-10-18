@@ -51,13 +51,13 @@ def navactive(request, urls):
     if resolved.url_name:
         resolved_urls.add(resolved.url_name)
     if resolved.namespaces:
-        resolved_urls = resolved_urls.union(["{}:{}".format(namespace, resolved.url_name) for namespace in resolved.namespaces])
-        resolved_urls = resolved_urls.union(["{}:".format(namespace) for namespace in resolved.namespaces])
+        resolved_urls = resolved_urls.union([f"{namespace}:{resolved.url_name}" for namespace in resolved.namespaces])
+        resolved_urls = resolved_urls.union([f"{namespace}:" for namespace in resolved.namespaces])
     if getattr(resolved, 'app_name', None):
-        resolved_urls = resolved_urls.union(["{}:{}".format(resolved.app_name, resolved.url_name), "{}:".format(resolved.app_name)])
+        resolved_urls = resolved_urls.union([f"{resolved.app_name}:{resolved.url_name}", f"{resolved.app_name}:"])
     if getattr(resolved, 'app_names', []):
-        resolved_urls = resolved_urls.union(["{}:{}".format(app_name, resolved.url_name) for app_name in resolved.app_names])
-        resolved_urls = resolved_urls.union(["{}:".format(app_name) for app_name in resolved.app_names])
+        resolved_urls = resolved_urls.union([f"{app_name}:{resolved.url_name}" for app_name in resolved.app_names])
+        resolved_urls = resolved_urls.union([f"{app_name}:" for app_name in resolved.app_names])
     if url_list and resolved_urls and bool(resolved_urls & url_list):
         return getattr(settings, "NAVHELPER_ACTIVE_CLASS", "active")
     return getattr(settings, "NAVHELPER_NOT_ACTIVE_CLASS", "")

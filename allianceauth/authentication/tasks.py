@@ -22,13 +22,13 @@ def check_character_ownership(owner_hash):
                 continue
             except (KeyError, IncompleteResponseError):
                 # We can't validate the hash hasn't changed but also can't assume it has. Abort for now.
-                logger.warning("Failed to validate owner hash of {0} due to problems contacting SSO servers.".format(
+                logger.warning("Failed to validate owner hash of {} due to problems contacting SSO servers.".format(
                     tokens[0].character_name))
                 break
 
             if not t.character_owner_hash == old_hash:
                 logger.info(
-                    'Character %s has changed ownership. Revoking %s tokens.' % (t.character_name, tokens.count()))
+                    f'Character {t.character_name} has changed ownership. Revoking {tokens.count()} tokens.')
                 tokens.delete()
             break
 

@@ -21,7 +21,7 @@ ACCESS_PERM = 'xenforo.access_xenforo'
 def activate_xenforo_forum(request):
     logger.debug("activate_xenforo_forum called by user %s" % request.user)
     character = request.user.profile.main_character
-    logger.debug("Adding XenForo user for user %s with main character %s" % (request.user, character))
+    logger.debug(f"Adding XenForo user for user {request.user} with main character {character}")
     result = XenForoManager.add_user(XenforoTasks.get_username(request.user), request.user.email)
     # Based on XenAPI's response codes
     if result['response']['status_code'] == 200:

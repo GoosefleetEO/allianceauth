@@ -58,7 +58,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def __add_avatar(username, characterid):
-        logger.debug("Adding EVE character id %s portrait as phpbb avater for user %s" % (characterid, username))
+        logger.debug(f"Adding EVE character id {characterid} portrait as phpbb avater for user {username}")
         avatar_url = EveCharacter.generic_portrait_url(characterid, 64)
         cursor = connections['phpbb3'].cursor()
         userid = Phpbb3Manager.__get_user_id(username)
@@ -81,7 +81,7 @@ class Phpbb3Manager:
     @staticmethod
     def _sanitize_groupname(name):
         name = name.strip(' _')
-        return re.sub('[^\w.-]', '', name)
+        return re.sub(r'[^\w.-]', '', name)
 
     @staticmethod
     def __get_group_id(groupname):
@@ -89,7 +89,7 @@ class Phpbb3Manager:
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_GET_GROUP_ID, [groupname])
         row = cursor.fetchone()
-        logger.debug("Got phpbb group id %s for groupname %s" % (row[0], groupname))
+        logger.debug(f"Got phpbb group id {row[0]} for groupname {groupname}")
         return row[0]
 
     @staticmethod
@@ -99,7 +99,7 @@ class Phpbb3Manager:
         cursor.execute(Phpbb3Manager.SQL_USER_ID_FROM_USERNAME, [username])
         row = cursor.fetchone()
         if row is not None:
-            logger.debug("Got phpbb user id %s for username %s" % (row[0], username))
+            logger.debug(f"Got phpbb user id {row[0]} for username {username}")
             return row[0]
         else:
             logger.error("Username %s not found on phpbb. Unable to determine user id." % username)
@@ -123,7 +123,7 @@ class Phpbb3Manager:
         cursor = connections['phpbb3'].cursor()
         cursor.execute(Phpbb3Manager.SQL_GET_USER_GROUPS, [userid])
         out = [row[0] for row in cursor.fetchall()]
-        logger.debug("Got user %s phpbb groups %s" % (userid, out))
+        logger.debug(f"Got user {userid} phpbb groups {out}")
         return out
 
     @staticmethod
@@ -142,38 +142,38 @@ class Phpbb3Manager:
 
     @staticmethod
     def __add_user_to_group(userid, groupid):
-        logger.debug("Adding phpbb3 user id %s to group id %s" % (userid, groupid))
+        logger.debug(f"Adding phpbb3 user id {userid} to group id {groupid}")
         try:
             cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_ADD_USER_GROUP, [groupid, userid, 0])
             cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
-            logger.info("Added phpbb user id %s to group id %s" % (userid, groupid))
+            logger.info(f"Added phpbb user id {userid} to group id {groupid}")
         except:
-            logger.exception("Unable to add phpbb user id %s to group id %s" % (userid, groupid))
+            logger.exception(f"Unable to add phpbb user id {userid} to group id {groupid}")
             pass
 
     @staticmethod
     def __remove_user_from_group(userid, groupid):
-        logger.debug("Removing phpbb3 user id %s from group id %s" % (userid, groupid))
+        logger.debug(f"Removing phpbb3 user id {userid} from group id {groupid}")
         try:
             cursor = connections['phpbb3'].cursor()
             cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
             cursor.execute(Phpbb3Manager.SQL_CLEAR_USER_PERMISSIONS, [userid])
-            logger.info("Removed phpbb user id %s from group id %s" % (userid, groupid))
+            logger.info(f"Removed phpbb user id {userid} from group id {groupid}")
         except:
-            logger.exception("Unable to remove phpbb user id %s from group id %s" % (userid, groupid))
+            logger.exception(f"Unable to remove phpbb user id {userid} from group id {groupid}")
             pass
 
     @staticmethod
     def add_user(username, email, groups, characterid):
-        logger.debug("Adding phpbb user with username %s, email %s, groups %s, characterid %s" % (
+        logger.debug("Adding phpbb user with username {}, email {}, groups {}, characterid {}".format(
             username, email, groups, characterid))
         cursor = connections['phpbb3'].cursor()
 
         username_clean = Phpbb3Manager.__santatize_username(username)
         password = Phpbb3Manager.__generate_random_pass()
         pwhash = Phpbb3Manager.__gen_hash(password)
-        logger.debug("Proceeding to add phpbb user %s and pwhash starting with %s" % (username_clean, pwhash[0:5]))
+        logger.debug(f"Proceeding to add phpbb user {username_clean} and pwhash starting with {pwhash[0:5]}")
         # check if the username was simply revoked
         if Phpbb3Manager.check_user(username_clean):
             logger.warn("Unable to add phpbb user with username %s - already exists. Updating user instead." % username)
@@ -228,14 +228,14 @@ class Phpbb3Manager:
     @staticmethod
     def update_groups(username, groups):
         userid = Phpbb3Manager.__get_user_id(username)
-        logger.debug("Updating phpbb user %s with id %s groups %s" % (username, userid, groups))
+        logger.debug(f"Updating phpbb user {username} with id {userid} groups {groups}")
         if userid is not None:
             forum_groups = Phpbb3Manager.__get_all_groups()
             user_groups = set(Phpbb3Manager.__get_user_groups(userid))
-            act_groups = set([Phpbb3Manager._sanitize_groupname(g) for g in groups])
+            act_groups = {Phpbb3Manager._sanitize_groupname(g) for g in groups}
             addgroups = act_groups - user_groups
             remgroups = user_groups - act_groups
-            logger.info("Updating phpbb user %s groups - adding %s, removing %s" % (username, addgroups, remgroups))
+            logger.info(f"Updating phpbb user {username} groups - adding {addgroups}, removing {remgroups}")
             for g in addgroups:
                 if not g in forum_groups:
                     forum_groups[g] = Phpbb3Manager.__create_group(g)
@@ -246,7 +246,7 @@ class Phpbb3Manager:
 
     @staticmethod
     def remove_group(username, group):
-        logger.debug("Removing phpbb user %s from group %s" % (username, group))
+        logger.debug(f"Removing phpbb user {username} from group {group}")
         cursor = connections['phpbb3'].cursor()
         userid = Phpbb3Manager.__get_user_id(username)
         if userid is not None:
@@ -256,10 +256,10 @@ class Phpbb3Manager:
                 if groupid:
                     try:
                         cursor.execute(Phpbb3Manager.SQL_REMOVE_USER_GROUP, [userid, groupid])
-                        logger.info("Removed phpbb user %s from group %s" % (username, group))
+                        logger.info(f"Removed phpbb user {username} from group {group}")
                     except:
                         logger.exception(
-                            "Exception prevented removal of phpbb user %s with id %s from group %s with id %s" % (
+                            "Exception prevented removal of phpbb user {} with id {} from group {} with id {}".format(
                                 username, userid, group, groupid))
                         pass
 
@@ -284,7 +284,7 @@ class Phpbb3Manager:
         if Phpbb3Manager.check_user(username):
             pwhash = Phpbb3Manager.__gen_hash(password)
             logger.debug(
-                "Proceeding to update phpbb user %s password with pwhash starting with %s" % (username, pwhash[0:5]))
+                f"Proceeding to update phpbb user {username} password with pwhash starting with {pwhash[0:5]}")
             cursor.execute(Phpbb3Manager.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
             Phpbb3Manager.__add_avatar(username, characterid)
             logger.info("Updated phpbb user %s password." % username)
@@ -295,7 +295,7 @@ class Phpbb3Manager:
     @staticmethod
     def __update_user_info(username, email, password):
         logger.debug(
-            "Updating phpbb user %s info: username %s password of length %s" % (username, email, len(password)))
+            f"Updating phpbb user {username} info: username {email} password of length {len(password)}")
         cursor = connections['phpbb3'].cursor()
         try:
             cursor.execute(Phpbb3Manager.SQL_DIS_USER, [email, password, username])

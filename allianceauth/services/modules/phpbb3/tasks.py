@@ -19,7 +19,7 @@ class Phpbb3Tasks:
     @classmethod
     def delete_user(cls, user, notify_user=False):
         if cls.has_account(user):
-            logger.debug("User %s has forum account %s. Deleting." % (user, user.phpbb3.username))
+            logger.debug(f"User {user} has forum account {user.phpbb3.username}. Deleting.")
             if Phpbb3Manager.disable_user(user.phpbb3.username):
                 user.phpbb3.delete()
                 if notify_user:
@@ -43,7 +43,7 @@ class Phpbb3Tasks:
             groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            logger.debug("Updating user %s phpbb3 groups to %s" % (user, groups))
+            logger.debug(f"Updating user {user} phpbb3 groups to {groups}")
             try:
                 Phpbb3Manager.update_groups(user.phpbb3.username, groups)
             except:

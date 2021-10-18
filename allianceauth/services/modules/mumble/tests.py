@@ -203,7 +203,7 @@ class MumbleManagerTestCase(TestCase):
         password = self.manager.generate_random_pass()
 
         self.assertEqual(len(password), 16)
-        self.assertIsInstance(password, type(''))
+        self.assertIsInstance(password, str)
 
     def test_gen_pwhash(self):
         pwhash = self.manager.gen_pwhash('test')

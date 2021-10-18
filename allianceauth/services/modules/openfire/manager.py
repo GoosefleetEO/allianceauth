@@ -56,7 +56,7 @@ class OpenfireManager:
     @staticmethod
     def _sanitize_groupname(name):
         name = name.strip(' _').lower()
-        return re.sub('[^\w.-]', '', name)
+        return re.sub(r'[^\w.-]', '', name)
 
     @staticmethod
     def add_user(username):
@@ -116,7 +116,7 @@ class OpenfireManager:
 
     @classmethod
     def update_user_groups(cls, username, groups):
-        logger.debug("Updating openfire user %s groups %s" % (username, groups))
+        logger.debug(f"Updating openfire user {username} groups {groups}")
         s_groups = list(map(cls._sanitize_groupname, groups))  # Sanitized group names
         api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         response = api.get_user_groups(username)
@@ -126,7 +126,7 @@ class OpenfireManager:
             if isinstance(remote_groups, str):
                 remote_groups = [remote_groups]
         remote_groups = list(map(cls._sanitize_groupname, remote_groups))
-        logger.debug("Openfire user %s has groups %s" % (username, remote_groups))
+        logger.debug(f"Openfire user {username} has groups {remote_groups}")
         add_groups = []
         del_groups = []
         for g in s_groups:
@@ -136,7 +136,7 @@ class OpenfireManager:
             if g not in s_groups:
                 del_groups.append(g)
         logger.info(
-            "Updating openfire groups for user %s - adding %s, removing %s" % (username, add_groups, del_groups))
+            f"Updating openfire groups for user {username} - adding {add_groups}, removing {del_groups}")
         if add_groups:
             api.add_user_groups(username, add_groups)
         if del_groups:
@@ -144,15 +144,15 @@ class OpenfireManager:
 
     @staticmethod
     def delete_user_groups(username, groups):
-        logger.debug("Deleting openfire groups %s from user %s" % (groups, username))
+        logger.debug(f"Deleting openfire groups {groups} from user {username}")
         api = ofUsers(settings.OPENFIRE_ADDRESS, settings.OPENFIRE_SECRET_KEY)
         api.delete_user_groups(username, groups)
-        logger.info("Deleted groups %s from openfire user %s" % (groups, username))
+        logger.info(f"Deleted groups {groups} from openfire user {username}")
 
     @classmethod
     def send_broadcast_message(cls, group_name, broadcast_message):
         s_group_name = cls._sanitize_groupname(group_name)
-        logger.debug("Sending jabber ping to group %s with message %s" % (s_group_name, broadcast_message))
+        logger.debug(f"Sending jabber ping to group {s_group_name} with message {broadcast_message}")
         to_address = s_group_name + '@' + settings.BROADCAST_SERVICE_NAME + '.' + settings.JABBER_URL
         xmpp = PingBot(settings.BROADCAST_USER, settings.BROADCAST_USER_PASSWORD, to_address, broadcast_message)
         xmpp.register_plugin('xep_0030')  # Service Discovery

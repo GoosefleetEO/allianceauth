@@ -26,7 +26,7 @@ class TimerView(BaseTimerView):
     permission_required = 'auth.timer_view'
 
     def get(self, request):
-        logger.debug("timer_view called by user {}".format(request.user))
+        logger.debug(f"timer_view called by user {request.user}")
         char = request.user.profile.main_character
         if char:
             corp = char.corporation
@@ -59,7 +59,7 @@ class AddUpdateMixin:
         """
         Inject the request user into the kwargs passed to the form
         """
-        kwargs = super(AddUpdateMixin, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
 
@@ -68,9 +68,9 @@ class AddTimerView(TimerManagementView, AddUpdateMixin, CreateView):
     template_name_suffix = '_create_form'
 
     def form_valid(self, form):
-        result = super(AddTimerView, self).form_valid(form)
+        result = super().form_valid(form)
         timer = self.object
-        logger.info("Created new timer in {} at {} by user {}".format(timer.system, timer.eve_time, self.request.user))
+        logger.info(f"Created new timer in {timer.system} at {timer.eve_time} by user {self.request.user}")
         messages.success(self.request, _('Added new timer in %(system)s at %(time)s.') % {"system": timer.system, "time": timer.eve_time})
         return result
 
@@ -80,7 +80,7 @@ class EditTimerView(TimerManagementView, AddUpdateMixin, UpdateView):
 
     def form_valid(self, form):
         messages.success(self.request, _('Saved changes to the timer.'))
-        return super(EditTimerView, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class RemoveTimerView(TimerManagementView, DeleteView):

@@ -25,7 +25,7 @@ else:
 MODULE_PATH = 'allianceauth.groupmanagement.admin'
 
 
-class MockRequest(object):
+class MockRequest:
 
     def __init__(self, user=None):
         self.user = user

@@ -51,7 +51,7 @@ def add_optimer_view(request):
             op.create_time = post_time
             op.eve_character = character
             op.save()
-            logger.info("User %s created op timer with name %s" % (request.user, op.operation_name))
+            logger.info(f"User {request.user} created op timer with name {op.operation_name}")
             messages.success(request, _('Created operation timer for %(opname)s.') % {"opname": op.operation_name})
             return redirect("optimer:view")
     else:
@@ -66,10 +66,10 @@ def add_optimer_view(request):
 @login_required
 @permission_required('auth.optimer_management')
 def remove_optimer(request, optimer_id):
-    logger.debug("remove_optimer called by user %s for operation id %s" % (request.user, optimer_id))
+    logger.debug(f"remove_optimer called by user {request.user} for operation id {optimer_id}")
     op = get_object_or_404(OpTimer, id=optimer_id)
     op.delete()
-    logger.info("Deleting optimer id %s by user %s" % (optimer_id, request.user))
+    logger.info(f"Deleting optimer id {optimer_id} by user {request.user}")
     messages.success(request, _('Removed operation timer for %(opname)s.') % {"opname": op.operation_name})
     return redirect("optimer:view")
 
@@ -77,7 +77,7 @@ def remove_optimer(request, optimer_id):
 @login_required
 @permission_required('auth.optimer_management')
 def edit_optimer(request, optimer_id):
-    logger.debug("edit_optimer called by user %s for optimer id %s" % (request.user, optimer_id))
+    logger.debug(f"edit_optimer called by user {request.user} for optimer id {optimer_id}")
     op = get_object_or_404(OpTimer, id=optimer_id)
     if request.method == 'POST':
         form = OpForm(request.POST)
@@ -91,7 +91,7 @@ def edit_optimer(request, optimer_id):
             op.operation_name = form.cleaned_data['operation_name']
             op.fc = form.cleaned_data['fc']
             op.eve_character = character
-            logger.info("User %s updating optimer id %s " % (request.user, optimer_id))
+            logger.info(f"User {request.user} updating optimer id {optimer_id} ")
             op.save()
             messages.success(request, _('Saved changes to operation timer for %(opname)s.') % {"opname": op.operation_name})
             return redirect("optimer:view")
