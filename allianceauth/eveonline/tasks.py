@@ -43,58 +43,71 @@ def run_model_update():
 
     # update existing corp models
     for corp in EveCorporationInfo.objects.all().values('corporation_id'):
-        update_corp.apply_async(
-            args=[corp['corporation_id']], priority=TASK_PRIORITY
-        )
+        update_corp.apply_async(args=[corp['corporation_id']], priority=TASK_PRIORITY)
 
     # update existing alliance models
     for alliance in EveAllianceInfo.objects.all().values('alliance_id'):
-        update_alliance.apply_async(
-            args=[alliance['alliance_id']], priority=TASK_PRIORITY
-        )
+        update_alliance.apply_async(args=[alliance['alliance_id']], priority=TASK_PRIORITY)
 
+    #update existing character models if required
     # update existing character models
     character_ids = EveCharacter.objects.all().values_list('character_id', flat=True)
     for character_ids_chunk in chunks(character_ids, CHUNK_SIZE):
+        update_character_chunk.apply_async(
+            args=[character_ids_chunk], priority=TASK_PRIORITY
+        )
+
+
+@shared_task
+def update_character_chunk(character_ids_chunk: list):
+    """Update a list of character from ESI"""
+    try:
         affiliations_raw = providers.provider.client.Character\
             .post_characters_affiliation(characters=character_ids_chunk).result()
         character_names = providers.provider.client.Universe\
             .post_universe_names(ids=character_ids_chunk).result()
+    except:
+        logger.error("Failed to bulk update characters. Attempting single updates")
+        for character_id in character_ids_chunk:
+            update_character.apply_async(
+                        args=[character_id], priority=TASK_PRIORITY
+                    )
+        return
 
-        affiliations = {
+    affiliations = {
             affiliation.get('character_id'): affiliation
             for affiliation in affiliations_raw
-        }
-        # add character names to affiliations
-        for character in character_names:
-            character_id = character.get('id')
-            if character_id in affiliations:
-                affiliations[character_id]['name'] = character.get('name')
+    }
+    # add character names to affiliations
+    for character in character_names:
+        character_id = character.get('id')
+        if character_id in affiliations:
+            affiliations[character_id]['name'] = character.get('name')
 
-        # fetch current characters
-        characters = EveCharacter.objects.filter(character_id__in=character_ids_chunk)\
-            .values('character_id', 'corporation_id', 'alliance_id', 'character_name')
+    # fetch current characters
+    characters = EveCharacter.objects.filter(character_id__in=character_ids_chunk)\
+        .values('character_id', 'corporation_id', 'alliance_id', 'character_name')
 
-        for character in characters:
-            character_id = character.get('character_id')
-            if character_id in affiliations:
-                affiliation = affiliations[character_id]
+    for character in characters:
+        character_id = character.get('character_id')
+        if character_id in affiliations:
+            affiliation = affiliations[character_id]
 
-                corp_changed = (
-                    character.get('corporation_id') != affiliation.get('corporation_id')
-                )
+            corp_changed = (
+                character.get('corporation_id') != affiliation.get('corporation_id')
+            )
 
-                alliance_id = character.get('alliance_id')
-                if not alliance_id:
-                    alliance_id = None
-                alliance_changed = alliance_id != affiliation.get('alliance_id')
+            alliance_id = character.get('alliance_id')
+            if not alliance_id:
+                alliance_id = None
+            alliance_changed = alliance_id != affiliation.get('alliance_id')
 
-                name_changed = False
-                fetched_name = affiliation.get('name', False)
-                if fetched_name:
-                    name_changed = character.get('character_name') != fetched_name
+            name_changed = False
+            fetched_name = affiliation.get('name', False)
+            if fetched_name:
+                name_changed = character.get('character_name') != fetched_name
 
-                if corp_changed or alliance_changed or name_changed:
-                    update_character.apply_async(
+            if corp_changed or alliance_changed or name_changed:
+                update_character.apply_async(
                         args=[character.get('character_id')], priority=TASK_PRIORITY
                     )
