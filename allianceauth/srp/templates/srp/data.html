@@ -49,16 +49,16 @@
 {% block content %}
     <div class="col-lg-12">
         <div class="row">
-            <h1 class="page-header text-center">{% trans "SRP Fleet Data" %}
+            <h1 class="page-header text-center">{% translate "SRP Fleet Data" %}
                 <div class="text-right">
                     {% if perms.auth.srp_management %}
                         {% if fleet_status == "Completed" %}
                             <a href="{% url 'srp:mark_uncompleted' fleet_id %}" class="btn btn-warning">
-                                {% trans "Mark Incomplete" %}
+                                {% translate "Mark Incomplete" %}
                             </a>
                         {% else %}
                             <a href="{% url 'srp:mark_completed' fleet_id %}" class="btn btn-success">
-                                {% trans "Mark Completed" %}
+                                {% translate "Mark Completed" %}
                             </a>
                         {% endif %}
                     {% endif %}
@@ -70,8 +70,8 @@
                     {% csrf_token %}
                     <div class="alert alert-info" role="alert">
                         <div class="text-right">
-                            <b><span style="padding-right:2.5em">{% trans "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
-                            <b><span style="padding-right:2.5em">{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
+                            <b><span style="padding-right:2.5em">{% translate "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
+                            <b><span style="padding-right:2.5em">{% translate "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
                             {% if perms.auth.srp_management %}
                                 <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'srp:request_approve' %}">
                                     <span class="glyphicon glyphicon-ok"></span>
@@ -79,7 +79,7 @@
                                 <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'srp:request_reject' %}">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </button>
-                                <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
+                                <button type="submit" title="Remove" onclick="return confirm('{% translate "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                             {% endif %}
@@ -88,19 +88,19 @@
                     <div class="table-responsive">
                         <table class="table srplist">
                             <thead>
-                                <th class="text-center">{% trans "Pilot Name" %}</th>
-                                <th class="text-center">{% trans "Killboard Link" %}</th>
-                                <th class="text-center">{% trans "Additional Info" %}</th>
-                                <th class="text-center">{% trans "Ship Type" %}</th>
-                                <th class="text-center">{% trans "Killboard Loss Amt" %}</th>
-                                <th class="text-center">{% trans "SRP ISK Cost" %}
+                                <th class="text-center">{% translate "Pilot Name" %}</th>
+                                <th class="text-center">{% translate "Killboard Link" %}</th>
+                                <th class="text-center">{% translate "Additional Info" %}</th>
+                                <th class="text-center">{% translate "Ship Type" %}</th>
+                                <th class="text-center">{% translate "Killboard Loss Amt" %}</th>
+                                <th class="text-center">{% translate "SRP ISK Cost" %}
                                 <i class="glyphicon glyphicon-question-sign" rel="tooltip" title="{% blocktrans trimmed %}Click value to edit
 Enter to save & next
 ESC to cancel{% endblocktrans %}"id="blah"></i></th>
-                                <th class="text-center">{% trans "Post Time" %}</th>
-                                <th class="text-center">{% trans "Status" %}</th>
+                                <th class="text-center">{% translate "Post Time" %}</th>
+                                <th class="text-center">{% translate "Status" %}</th>
                                 {% if perms.auth.srp_management %}
-                                    <th class="text-center">{% trans "Actions" %}</th>
+                                    <th class="text-center">{% translate "Actions" %}</th>
                                 {% endif %}
                             </thead>
 
@@ -127,15 +127,15 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                     <td class="text-center">
                                         {% if srpfleetrequest.srp_status == "Approved" %}
                                             <div class="label label-success">
-                                                {% trans "Approved" %}
+                                                {% translate "Approved" %}
                                             </div>
                                         {% elif srpfleetrequest.srp_status == "Rejected" %}
                                             <div class="label label-danger">
-                                                {% trans "Rejected" %}
+                                                {% translate "Rejected" %}
                                             </div>
                                         {% else %}
                                             <div class="label label-warning">
-                                                {% trans "Pending" %}
+                                                {% translate "Pending" %}
                                             </div>
                                         {% endif %}
                                     </td>
@@ -157,8 +157,8 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                     </div>
                     <div class="alert alert-info" role="alert">
                         <div class="text-right">
-                            <b><span style="padding-right:2.5em">{% trans "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
-                            <b><span style="padding-right:2.5em">{% trans "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
+                            <b><span style="padding-right:2.5em">{% translate "Total Losses:" %} {{ srpfleetrequests.count }}</span></b>
+                            <b><span style="padding-right:2.5em">{% translate "Total ISK Cost:" %} {{ totalcost | intcomma }}</span></b>
                             {% if perms.auth.srp_management %}
                                 <button type="submit" title="Approve" class="btn btn-success" formaction="{% url 'srp:request_approve' %}">
                                     <span class="glyphicon glyphicon-ok"></span>
@@ -166,7 +166,7 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                                 <button type="submit" title="Reject" class="btn btn-warning" formaction="{% url 'srp:request_reject' %}">
                                     <span class="glyphicon glyphicon-remove"></span>
                                 </button>
-                                <button type="submit" title="Remove" onclick="return confirm('{% trans "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
+                                <button type="submit" title="Remove" onclick="return confirm('{% translate "Are you sure you want to delete SRP requests?" %}')" class="btn btn-danger" formaction="{% url 'srp:request_remove' %}">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                             {% endif %}
@@ -175,7 +175,7 @@ ESC to cancel{% endblocktrans %}"id="blah"></i></th>
                 </form>
             {% else %}
                 <div class="alert alert-warning text-center">
-                    {% trans "No SRP requests for this fleet." %}
+                    {% translate "No SRP requests for this fleet." %}
                 </div>
             {% endif %}
         </div>

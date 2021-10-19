@@ -4,40 +4,40 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "Structure Timer Management" %}{% endblock page_title %}
+{% block page_title %}{% translate "Structure Timer Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% trans "Structure Timers" %}
+        <h1 class="page-header text-center">{% translate "Structure Timers" %}
             <div class="text-right">
                 {% if perms.auth.timer_management %}
                     <a href="{% url 'timerboard:add' %}" class="btn btn-success">
-                        {% trans "Create Structure Timer" %}
+                        {% translate "Create Structure Timer" %}
                     </a>
                 {% endif %}
             </div>
         </h1>
         <div class="col-lg-12 text-center">
             <div class="label label-info text-left">
-                <b>{% trans "Current Eve Time:" %} </b>
+                <b>{% translate "Current Eve Time:" %} </b>
             </div>
             <strong class="label label-info text-left" id="current-time"></strong>
         </div>
         {% if corp_timers %}
-            <h4><b>{% trans "Corp Timers" %}</b></h4>
+            <h4><b>{% translate "Corp Timers" %}</b></h4>
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <th style="width:150px" class="text-center">{% trans "Details" %}</th>
-                        <th class="text-center">{% trans "Objective" %}</th>
-                        <th class="text-center">{% trans "System" %}</th>
-                        <th class="text-center">{% trans "Structure" %}</th>
-                        <th class="text-center">{% trans "Eve Time" %}</th>
-                        <th class="text-center">{% trans "Local Time" %}</th>
-                        <th class="text-center">{% trans "Creator" %}</th>
+                        <th style="width:150px" class="text-center">{% translate "Details" %}</th>
+                        <th class="text-center">{% translate "Objective" %}</th>
+                        <th class="text-center">{% translate "System" %}</th>
+                        <th class="text-center">{% translate "Structure" %}</th>
+                        <th class="text-center">{% translate "Eve Time" %}</th>
+                        <th class="text-center">{% translate "Local Time" %}</th>
+                        <th class="text-center">{% translate "Creator" %}</th>
                         {% if perms.auth.timer_management %}
-                            <th class="text-center">{% trans "Action" %}</th>
+                            <th class="text-center">{% translate "Action" %}</th>
                         {% endif %}
                     </tr>
                     {% for timer in corp_timers %}
@@ -50,17 +50,17 @@
                     <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">
-                                {% trans "Hostile" %}
+                                {% translate "Hostile" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Friendly" %}
                             <div class="label label-primary">
-                                {% trans "Friendly" %}
+                                {% translate "Friendly" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Neutral" %}
                             <div class="label label-default">
-                                {% trans "Neutral" %}
+                                {% translate "Neutral" %}
                             </div>
                         {% endif %}
                     </td>
@@ -186,20 +186,20 @@
                 </table>
             </div>
         {% endif %}
-        <h4><b>{% trans "Next Timers" %}</b></h4>
+        <h4><b>{% translate "Next Timers" %}</b></h4>
         {% if future_timers %}
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <th style="width:150px" class="text-center">{% trans "Details" %}</th>
-                        <th class="text-center">{% trans "Objective" %}</th>
-                        <th class="text-center">{% trans "System" %}</th>
-                        <th class="text-center">{% trans "Structure" %}</th>
-                        <th class="text-center">{% trans "Eve Time" %}</th>
-                        <th class="text-center">{% trans "Local Time" %}</th>
-                        <th class="text-center">{% trans "Creator" %}</th>
+                        <th style="width:150px" class="text-center">{% translate "Details" %}</th>
+                        <th class="text-center">{% translate "Objective" %}</th>
+                        <th class="text-center">{% translate "System" %}</th>
+                        <th class="text-center">{% translate "Structure" %}</th>
+                        <th class="text-center">{% translate "Eve Time" %}</th>
+                        <th class="text-center">{% translate "Local Time" %}</th>
+                        <th class="text-center">{% translate "Creator" %}</th>
                         {% if perms.auth.timer_management %}
-                            <th class="text-center">{% trans "Action" %}</th>
+                            <th class="text-center">{% translate "Action" %}</th>
                         {% endif %}
                     </tr>
                     {% for timer in future_timers %}
@@ -212,17 +212,17 @@
                         <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">
-                                {% trans "Hostile" %}
+                                {% translate "Hostile" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Friendly" %}
                             <div class="label label-primary">
-                                {% trans "Friendly" %}
+                                {% translate "Friendly" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Neutral" %}
                             <div class="label label-default">
-                                {% trans "Neutral" %}
+                                {% translate "Neutral" %}
                             </div>
                         {% endif %}
                         </td>
@@ -350,24 +350,24 @@
             </div>
         {% else %}
             <div class="alert alert-warning text-center">
-                {% trans "No upcoming timers." %}
+                {% translate "No upcoming timers." %}
             </div>
         {% endif %}
 
-        <h4><b>{% trans "Past Timers" %}</b></h4>
+        <h4><b>{% translate "Past Timers" %}</b></h4>
         {% if past_timers %}
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <th style="width:150px" class="text-center">{% trans "Details" %}</th>
-                        <th class="text-center">{% trans "Objective" %}</th>
-                        <th class="text-center">{% trans "System" %}</th>
-                        <th class="text-center">{% trans "Structure" %}</th>
-                        <th class="text-center">{% trans "Eve Time" %}</th>
-                        <th class="text-center">{% trans "Local Time" %}</th>
-                        <th class="text-center">{% trans "Creator" %}</th>
+                        <th style="width:150px" class="text-center">{% translate "Details" %}</th>
+                        <th class="text-center">{% translate "Objective" %}</th>
+                        <th class="text-center">{% translate "System" %}</th>
+                        <th class="text-center">{% translate "Structure" %}</th>
+                        <th class="text-center">{% translate "Eve Time" %}</th>
+                        <th class="text-center">{% translate "Local Time" %}</th>
+                        <th class="text-center">{% translate "Creator" %}</th>
                         {% if perms.auth.timer_management %}
-                            <th class="text-center">{% trans "Action" %}</th>
+                            <th class="text-center">{% translate "Action" %}</th>
                         {% endif %}
                     </tr>
                     {% for timer in past_timers %}
@@ -380,17 +380,17 @@
                         <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">
-                                {% trans "Hostile" %}
+                                {% translate "Hostile" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Friendly" %}
                             <div class="label label-primary">
-                                {% trans "Friendly" %}
+                                {% translate "Friendly" %}
                             </div>
                         {% endif %}
                         {% if timer.objective == "Neutral" %}
                             <div class="label label-default">
-                                {% trans "Neutral" %}
+                                {% translate "Neutral" %}
                             </div>
                         {% endif %}
                         </td>
@@ -518,7 +518,7 @@
             </div>
         {% else %}
             <div class="alert alert-warning text-center">
-                {% trans "No past timers." %}
+                {% translate "No past timers." %}
             </div>
         {% endif %}
     </div>

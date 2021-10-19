@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block page_title %}{{ group }} {% trans "Audit Log" %}{% endblock page_title %}
+{% block page_title %}{{ group }} {% translate "Audit Log" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
@@ -11,13 +11,13 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{ group }} - {% trans "Audit Log" %}
+                {{ group }} - {% translate "Audit Log" %}
             </div>
 
             <div class="panel-body">
                 <p>
                     <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
-                        {% trans "Back" %}
+                        {% translate "Back" %}
                     </a>
                 </p>
 
@@ -25,13 +25,13 @@
                     <div class="table-responsive">
                         <table class="table table-striped" id="log-entries">
                             <thead>
-                                <th scope="col">{% trans "Date/Time" %}</th>
-                                <th scope="col">{% trans "Requestor" %}</th>
-                                <th scope="col">{% trans "Character" %}</th>
-                                <th scope="col">{% trans "Corporation" %}</th>
-                                <th scope="col">{% trans "Type" %}</th>
-                                <th scope="col">{% trans "Action" %}</th>
-                                <th scope="col">{% trans "Actor" %}</th>
+                                <th scope="col">{% translate "Date/Time" %}</th>
+                                <th scope="col">{% translate "Requestor" %}</th>
+                                <th scope="col">{% translate "Character" %}</th>
+                                <th scope="col">{% translate "Corporation" %}</th>
+                                <th scope="col">{% translate "Type" %}</th>
+                                <th scope="col">{% translate "Action" %}</th>
+                                <th scope="col">{% translate "Actor" %}</th>
                             </thead>
 
                             <tbody>
@@ -44,7 +44,7 @@
                                         <td>{{ entry.type_to_str }}</td>
 
                                         {% if entry.request_type is None %}
-                                            <td>{% trans "Removed" %}</td>
+                                            <td>{% translate "Removed" %}</td>
                                         {% else %}
                                             <td>{{ entry.action_to_str }}</td>
                                         {% endif %}
@@ -56,14 +56,14 @@
                         </table>
 
                         <p class="text-muted">
-                            {% trans "All times displayed are EVE/UTC." %}
+                            {% translate "All times displayed are EVE/UTC." %}
                         </p>
                     </div>
                 {% else %}
                     <div class="clearfix"></div>
                     <br>
                     <div class="alert alert-warning text-center">
-                        {% trans "No entries found for this group." %}
+                        {% translate "No entries found for this group." %}
                     </div>
                 {% endif %}
             </div>

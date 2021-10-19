@@ -3,15 +3,15 @@
 {% load static %}
 {% load i18n %}
 
-{% block page_title %}{% trans "Create Fatlink" %}{% endblock page_title %}
+{% block page_title %}{% translate "Create Fatlink" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% trans "Create Fleet Operation" %}</h1>
+        <h1 class="page-header text-center">{% translate "Create Fleet Operation" %}</h1>
 
         <div class="container-fluid">
             {% if badrequest %}
-            <div class="alert alert-danger" role="alert">{% trans "Bad request!" %}</div>
+            <div class="alert alert-danger" role="alert">{% translate "Bad request!" %}</div>
             {% endif %}
             {% for message in errormessages %}
             <div class="alert alert-danger" role="alert">{{ message }}</div>
@@ -22,7 +22,7 @@
                             {% csrf_token %}
                             {{ form|bootstrap }}
                             <br/>
-                            <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit_fat">{% trans "Create fatlink" %}</button>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit" name="submit_fat">{% translate "Create fatlink" %}</button>
                         </form>
                 </div>
             </div>

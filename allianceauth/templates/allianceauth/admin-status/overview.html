@@ -3,15 +3,15 @@
     <div class="row vertical-flexbox-row2">
         <div class="col-sm-6">
             <div class="panel panel-primary" style="height:100%;position:relative;">
-                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Alliance Auth Notifications" %}</h3></div>
+                <div class="panel-heading text-center"><h3 class="panel-title">{% translate "Alliance Auth Notifications" %}</h3></div>
                 <div class="panel-body">
                     <ul class="list-group">
                         {% for notif in notifications %}
                         <li class="list-group-item">
                             {% if notif.state == 'opened' %}
-                                <span class="label label-success">{% trans "Open" %}</span>
+                                <span class="label label-success">{% translate "Open" %}</span>
                             {% else %}
-                                <span class="label label-danger">{% trans "Closed" %}</span>
+                                <span class="label label-danger">{% translate "Closed" %}</span>
                             {% endif %}
                             <a href="{{ notif.web_url }}" target="_blank">#{{ notif.iid }} {{ notif.title }}</a>
                         </li>
@@ -38,34 +38,34 @@
         </div>
         <div class="col-sm-6">
             <div class="panel panel-primary" style="height:50%;">
-                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Software Version" %}</h3></div>
+                <div class="panel-heading text-center"><h3 class="panel-title">{% translate "Software Version" %}</h3></div>
                 <div class="panel-body flex-center-horizontal">
                     <ul class="list-group list-group-horizontal" style="margin-bottom: 0;">
                         <li class="list-group-item">
-                            <h5 class="list-group-item-heading">{% trans "Current" %}</h5>
+                            <h5 class="list-group-item-heading">{% translate "Current" %}</h5>
                             <p class="list-group-item-text">
                                 {{ current_version }}
                             </p>
                         </li>
                         <li class="list-group-item list-group-item-{% if latest_patch %}success{% elif latest_minor %}warning{% else %}danger{% endif %}">
-                            <h5 class="list-group-item-heading">{% trans "Latest Stable" %}</h5>
+                            <h5 class="list-group-item-heading">{% translate "Latest Stable" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
                                     <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
                                     {{ latest_patch_version }}
                                 </a>
-                                {% if not latest_patch %}<br>{% trans "Update available" %}{% endif %}
+                                {% if not latest_patch %}<br>{% translate "Update available" %}{% endif %}
                             </p>
                         </li>
                         {% if latest_beta %}
                         <li class="list-group-item list-group-item-info">
-                            <h5 class="list-group-item-heading">{% trans "Latest Pre-Release" %}</h5>
+                            <h5 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h5>
                             <p class="list-group-item-text">
                                 <a href="https://gitlab.com/allianceauth/allianceauth/tags" style="color:#000">
                                     <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
                                     {{ latest_beta_version }}
                                 </a>
-                                <br>{% trans "Pre-Release available" %}
+                                <br>{% translate "Pre-Release available" %}
                             </p>
                         </li>
                         {% endif %}
@@ -73,7 +73,7 @@
                 </div>
             </div>
             <div class="panel panel-primary" style="height:50%;">
-                <div class="panel-heading text-center"><h3 class="panel-title">{% trans "Task Queue" %}</h3></div>
+                <div class="panel-heading text-center"><h3 class="panel-title">{% translate "Task Queue" %}</h3></div>
                 <div class="panel-body flex-center-horizontal">
                     <div class="progress" style="height: 21px;">
                         <div class="progress-bar
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     {% if task_queue_length < 0 %}
-                        {% trans "Error retrieving task queue length" %}
+                        {% translate "Error retrieving task queue length" %}
                     {% else %}
                         {% blocktrans trimmed count tasks=task_queue_length %}
                         {{ tasks }} task
