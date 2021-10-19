@@ -49,7 +49,7 @@ class StateQuerySet(QuerySet):
             for state in self:
                 for profile in state.userprofile_set.all():
                     profile.assign_state(state=self.model.objects.exclude(pk=state.pk).get_for_user(profile.user))
-        super(StateQuerySet, self).delete()
+        super().delete()
 
 
 class StateManager(Manager):

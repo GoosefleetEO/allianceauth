@@ -34,10 +34,10 @@ class ObjectNotFound(Exception):
         self.type = type_name
 
     def __str__(self):
-        return '%s with ID %s not found.' % (self.type, self.id)
+        return f'{self.type} with ID {self.id} not found.'
 
 
-class Entity(object):
+class Entity:
     def __init__(self, id=None, name=None):
         self.id = id
         self.name = name
@@ -46,7 +46,7 @@ class Entity(object):
         return self.name
 
     def __repr__(self):
-        return "<{} ({}): {}>".format(self.__class__.__name__, self.id, self.name)
+        return f"<{self.__class__.__name__} ({self.id}): {self.name}>"
 
     def __bool__(self):
         return bool(self.id)
@@ -57,7 +57,7 @@ class Entity(object):
 
 class Corporation(Entity):
     def __init__(self, ticker=None, ceo_id=None, members=None, alliance_id=None, **kwargs):
-        super(Corporation, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.ticker = ticker
         self.ceo_id = ceo_id
         self.members = members
@@ -82,7 +82,7 @@ class Corporation(Entity):
 
 class Alliance(Entity):
     def __init__(self, ticker=None, corp_ids=None, executor_corp_id=None, **kwargs):
-        super(Alliance, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.ticker = ticker
         self.corp_ids = corp_ids
         self.executor_corp_id = executor_corp_id
@@ -97,7 +97,7 @@ class Alliance(Entity):
 
     @property
     def corps(self):
-        return sorted([self.corp(c_id) for c_id in self.corp_ids], key=lambda x: x.name)
+        return sorted((self.corp(c_id) for c_id in self.corp_ids), key=lambda x: x.name)
 
     @property
     def executor_corp(self):
@@ -108,7 +108,7 @@ class Alliance(Entity):
 
 class Character(Entity):
     def __init__(self, corp_id=None, alliance_id=None, **kwargs):
-        super(Character, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.corp_id = corp_id
         self.alliance_id = alliance_id
         self._corp = None
@@ -129,10 +129,10 @@ class Character(Entity):
 
 class ItemType(Entity):
     def __init__(self, **kwargs):
-        super(ItemType, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
 
-class EveProvider(object):
+class EveProvider:
     def get_alliance(self, alliance_id):
         """
         :return: an Alliance object for the given ID

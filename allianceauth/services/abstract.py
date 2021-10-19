@@ -34,7 +34,7 @@ class AbstractServiceModel(models.Model):
                                 )
 
     def __init__(self, *args, **kwargs):
-        super(AbstractServiceModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.credentials = OrderedDict()
         # Should be set with a dict of service credentials (username, password etc) when changed
 
@@ -65,7 +65,7 @@ class ServiceCredentialsViewMixin:
 
 class BaseCreatePasswordServiceAccountView(BaseServiceView, ServiceCredentialsViewMixin):
     def get(self, request):
-        logger.debug("{} called by user {}".format(self.__class__.__name__, request.user))
+        logger.debug(f"{self.__class__.__name__} called by user {request.user}")
         try:
             svc_obj = self.model.objects.create(user=request.user)
         except IntegrityError:
@@ -98,9 +98,9 @@ class BaseSetPasswordServiceAccountView(ServicesCRUDMixin, BaseServiceView, Upda
     form_class = ServicePasswordModelForm  # You should overload this with a subclass
 
     def post(self, request, *args, **kwargs):
-        result = super(BaseSetPasswordServiceAccountView, self).post(request, *args, **kwargs)
+        result = super().post(request, *args, **kwargs)
         if self.get_form().is_valid():
-            messages.success(request, _("Successfully set your {} password".format(self.service_name)))
+            messages.success(request, _(f"Successfully set your {self.service_name} password"))
         return result
 
 

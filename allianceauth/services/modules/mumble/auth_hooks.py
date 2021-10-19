@@ -25,7 +25,7 @@ class MumbleService(ServicesHook):
         self.name_format = '[{corp_ticker}]{character_name}'
 
     def delete_user(self, user, notify_user=False):
-        logging.debug("Deleting user %s %s account" % (user, self.name))
+        logging.debug(f"Deleting user {user} {self.name} account")
         try:
             if user.mumble.delete():
                 if notify_user:
@@ -36,12 +36,12 @@ class MumbleService(ServicesHook):
             logging.debug("User does not have a mumble account")
 
     def update_groups(self, user):
-        logger.debug("Updating %s groups for %s" % (self.name, user))
+        logger.debug(f"Updating {self.name} groups for {user}")
         if MumbleTasks.has_account(user):
             MumbleTasks.update_groups.delay(user.pk)
 
     def sync_nickname(self, user):
-        logger.debug("Updating %s nickname for %s" % (self.name, user))
+        logger.debug(f"Updating {self.name} nickname for {user}")
         if MumbleTasks.has_account(user):
             MumbleTasks.update_display_name.apply_async(args=[user.pk], countdown=5) # cooldown on this task to ensure DB clean when syncing
 

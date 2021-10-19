@@ -29,27 +29,27 @@ def trigger_state_check(state):
 @receiver(m2m_changed, sender=State.member_characters.through)
 def state_member_characters_changed(sender, instance, action, *args, **kwargs):
     if action.startswith('post_'):
-        logger.debug('State {} member characters changed. Re-evaluating membership.'.format(instance))
+        logger.debug(f'State {instance} member characters changed. Re-evaluating membership.')
         trigger_state_check(instance)
 
 
 @receiver(m2m_changed, sender=State.member_corporations.through)
 def state_member_corporations_changed(sender, instance, action, *args, **kwargs):
     if action.startswith('post_'):
-        logger.debug('State {} member corporations changed. Re-evaluating membership.'.format(instance))
+        logger.debug(f'State {instance} member corporations changed. Re-evaluating membership.')
         trigger_state_check(instance)
 
 
 @receiver(m2m_changed, sender=State.member_alliances.through)
 def state_member_alliances_changed(sender, instance, action, *args, **kwargs):
     if action.startswith('post_'):
-        logger.debug('State {} member alliances changed. Re-evaluating membership.'.format(instance))
+        logger.debug(f'State {instance} member alliances changed. Re-evaluating membership.')
         trigger_state_check(instance)
 
 
 @receiver(post_save, sender=State)
 def state_saved(sender, instance, *args, **kwargs):
-    logger.debug('State {} saved. Re-evaluating membership.'.format(instance))
+    logger.debug(f'State {instance} saved. Re-evaluating membership.')
     trigger_state_check(instance)
 
 
@@ -60,7 +60,7 @@ def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
     if not created:
         update_fields = kwargs.pop('update_fields', []) or []
         if 'state' not in update_fields:
-            logger.debug('Profile for {} saved without state change. Re-evaluating state.'.format(instance.user))
+            logger.debug(f'Profile for {instance.user} saved without state change. Re-evaluating state.')
             instance.assign_state()
 
 
@@ -68,14 +68,14 @@ def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
 def create_required_models(sender, instance, created, *args, **kwargs):
     # ensure all users have a model
     if created:
-        logger.debug('User {} created. Creating default UserProfile.'.format(instance))
+        logger.debug(f'User {instance} created. Creating default UserProfile.')
         UserProfile.objects.get_or_create(user=instance)
 
 
 @receiver(post_save, sender=Token)
 def record_character_ownership(sender, instance, created, *args, **kwargs):
     if created:
-        logger.debug('New token for {0} character {1} saved. Evaluating ownership.'.format(instance.user, instance.character_name))
+        logger.debug(f'New token for {instance.user} character {instance.character_name} saved. Evaluating ownership.')
         if instance.user:
             query = Q(owner_hash=instance.character_owner_hash) & Q(user=instance.user)
         else:
@@ -84,13 +84,13 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
         CharacterOwnership.objects.filter(character__character_id=instance.character_id).exclude(query).delete()
         # create character if needed
         if EveCharacter.objects.filter(character_id=instance.character_id).exists() is False:
-            logger.debug('Token is for a new character. Creating model for {0} ({1})'.format(instance.character_name, instance.character_id))
+            logger.debug(f'Token is for a new character. Creating model for {instance.character_name} ({instance.character_id})')
             EveCharacter.objects.create_character(instance.character_id)
         char = EveCharacter.objects.get(character_id=instance.character_id)
         # check if we need to create ownership
         if instance.user and not CharacterOwnership.objects.filter(
                 character__character_id=instance.character_id).exists():
-            logger.debug("Character {0} is not yet owned. Assigning ownership to {1}".format(instance.character_name, instance.user))
+            logger.debug(f"Character {instance.character_name} is not yet owned. Assigning ownership to {instance.user}")
             CharacterOwnership.objects.update_or_create(character=char, defaults={'owner_hash': instance.character_owner_hash, 'user': instance.user})
 
 
@@ -98,7 +98,7 @@ def record_character_ownership(sender, instance, created, *args, **kwargs):
 def validate_main_character(sender, instance, *args, **kwargs):
     try:
         if instance.user.profile.main_character == instance.character:
-            logger.info("Ownership of a main character {0} has been revoked. Resetting {1} main character.".format(
+            logger.info("Ownership of a main character {} has been revoked. Resetting {} main character.".format(
                 instance.character, instance.user))
             # clear main character as user no longer owns them
             instance.user.profile.main_character = None
@@ -111,7 +111,7 @@ def validate_main_character(sender, instance, *args, **kwargs):
 @receiver(post_delete, sender=Token)
 def validate_ownership(sender, instance, *args, **kwargs):
     if not Token.objects.filter(character_owner_hash=instance.character_owner_hash).filter(refresh_token__isnull=False).exists():
-        logger.info("No remaining tokens to validate ownership of character {0}. Revoking ownership.".format(instance.character_name))
+        logger.info(f"No remaining tokens to validate ownership of character {instance.character_name}. Revoking ownership.")
         CharacterOwnership.objects.filter(owner_hash=instance.character_owner_hash).delete()
 
 
@@ -122,11 +122,11 @@ def assign_state_on_active_change(sender, instance, *args, **kwargs):
         old_instance = User.objects.get(pk=instance.pk)
         if old_instance.is_active != instance.is_active:
             if instance.is_active:
-                logger.debug("User {0} has been activated. Assigning state.".format(instance))
+                logger.debug(f"User {instance} has been activated. Assigning state.")
                 instance.profile.assign_state()
             else:
                 logger.debug(
-                    "User {0} has been deactivated. Revoking state and assigning to guest state.".format(instance))
+                    f"User {instance} has been deactivated. Revoking state and assigning to guest state.")
                 instance.profile.state = get_guest_state()
                 instance.profile.save(update_fields=['state'])
 
@@ -135,10 +135,10 @@ def assign_state_on_active_change(sender, instance, *args, **kwargs):
 def check_state_on_character_update(sender, instance, *args, **kwargs):
     # if this is a main character updating, check that user's state
     try:
-        logger.debug("Character {0} has been saved. Assessing owner's state for changes.".format(instance))
+        logger.debug(f"Character {instance} has been saved. Assessing owner's state for changes.")
         instance.userprofile.assign_state()
     except UserProfile.DoesNotExist:
-        logger.debug("Character {0} is not a main character. No state assessment required.".format(instance))
+        logger.debug(f"Character {instance} is not a main character. No state assessment required.")
         pass
 
 
@@ -148,7 +148,7 @@ def ownership_record_creation(sender, instance, created, *args, **kwargs):
         records = OwnershipRecord.objects.filter(owner_hash=instance.owner_hash).filter(character=instance.character)
         if records.exists():
             if records[0].user == instance.user:  # most recent record is sorted first
-                logger.debug("Already have ownership record of {0} by user {1}".format(instance.character, instance.user))
+                logger.debug(f"Already have ownership record of {instance.character} by user {instance.user}")
                 return
-        logger.info("Character {0} has a new owner {1}. Creating ownership record.".format(instance.character, instance.user))
+        logger.info(f"Character {instance.character} has a new owner {instance.user}. Creating ownership record.")
         OwnershipRecord.objects.create(user=instance.user, character=instance.character, owner_hash=instance.owner_hash)

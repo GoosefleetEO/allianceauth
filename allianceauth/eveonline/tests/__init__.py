@@ -18,7 +18,7 @@ def set_logger(logger_name: str, name: str) -> object:
         '%(asctime)s - %(levelname)s - %(module)s:%(funcName)s - %(message)s'
     )
     f_handler = logging.FileHandler(
-        '{}.log'.format(os.path.splitext(name)[0]),
+        f'{os.path.splitext(name)[0]}.log',
         'w+'
     )
     f_handler.setFormatter(f_format)

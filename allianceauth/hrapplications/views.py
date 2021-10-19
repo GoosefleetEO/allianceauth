@@ -38,7 +38,7 @@ def hr_application_management_view(request):
             corp_applications = base_app_query.filter(form=app_form).filter(approved=None).order_by('-created')
             finished_corp_applications = base_app_query.filter(form=app_form).filter(
                 approved__in=[True, False]).order_by('-created')
-    logger.debug("Retrieved %s personal, %s corp applications for %s" % (
+    logger.debug("Retrieved {} personal, {} corp applications for {}".format(
         len(request.user.applications.all()), len(corp_applications), request.user))
     context = {
         'personal_apps': request.user.applications.all(),
@@ -57,7 +57,7 @@ def hr_application_create_view(request, form_id=None):
         app_form = get_object_or_404(ApplicationForm, id=form_id)
         if request.method == "POST":
             if Application.objects.filter(user=request.user).filter(form=app_form).exists():
-                logger.warn("User %s attempting to duplicate application to %s" % (request.user, app_form.corp))
+                logger.warn(f"User {request.user} attempting to duplicate application to {app_form.corp}")
             else:
                 application = Application(user=request.user, form=app_form)
                 application.save()
@@ -65,7 +65,7 @@ def hr_application_create_view(request, form_id=None):
                     response = ApplicationResponse(question=question, application=application)
                     response.answer = "\n".join(request.POST.getlist(str(question.pk), ""))
                     response.save()
-                logger.info("%s created %s" % (request.user, application))
+                logger.info(f"{request.user} created {application}")
             return redirect('hrapplications:personal_view', application.id)
         else:
             questions = app_form.questions.all()
@@ -80,7 +80,7 @@ def hr_application_create_view(request, form_id=None):
 
 @login_required
 def hr_application_personal_view(request, app_id):
-    logger.debug("hr_application_personal_view called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_personal_view called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
     if app.user == request.user:
         context = {
@@ -92,29 +92,29 @@ def hr_application_personal_view(request, app_id):
         }
         return render(request, 'hrapplications/view.html', context=context)
     else:
-        logger.warn("User %s not authorized to view %s" % (request.user, app))
+        logger.warn(f"User {request.user} not authorized to view {app}")
         return redirect('hrapplications:personal_view')
 
 
 @login_required
 def hr_application_personal_removal(request, app_id):
-    logger.debug("hr_application_personal_removal called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_personal_removal called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
     if app.user == request.user:
         if app.approved is None:
-            logger.info("User %s deleting %s" % (request.user, app))
+            logger.info(f"User {request.user} deleting {app}")
             app.delete()
         else:
-            logger.warn("User %s attempting to delete reviewed app %s" % (request.user, app))
+            logger.warn(f"User {request.user} attempting to delete reviewed app {app}")
     else:
-        logger.warn("User %s not authorized to delete %s" % (request.user, app))
+        logger.warn(f"User {request.user} not authorized to delete {app}")
     return redirect('hrapplications:index')
 
 
 @login_required
 @permission_required('auth.human_resources')
 def hr_application_view(request, app_id):
-    logger.debug("hr_application_view called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_view called by user {request.user} for app id {app_id}")
     try:
         app = Application.objects.prefetch_related('responses', 'comments', 'comments__user').get(pk=app_id)
     except Application.DoesNotExist:
@@ -129,7 +129,7 @@ def hr_application_view(request, app_id):
                 comment.user = request.user
                 comment.text = form.cleaned_data['comment']
                 comment.save()
-                logger.info("Saved comment by user %s to %s" % (request.user, app))
+                logger.info(f"Saved comment by user {request.user} to {app}")
                 return redirect('hrapplications:view', app_id)
         else:
             logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
@@ -151,9 +151,9 @@ def hr_application_view(request, app_id):
 @permission_required('auth.human_resources')
 @permission_required('hrapplications.delete_application')
 def hr_application_remove(request, app_id):
-    logger.debug("hr_application_remove called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_remove called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
-    logger.info("User %s deleting %s" % (request.user, app))
+    logger.info(f"User {request.user} deleting {app}")
     app.delete()
     notify(app.user, "Application Deleted", message="Your application to %s was deleted." % app.form.corp)
     return redirect('hrapplications:index')
@@ -163,15 +163,15 @@ def hr_application_remove(request, app_id):
 @permission_required('auth.human_resources')
 @permission_required('hrapplications.approve_application')
 def hr_application_approve(request, app_id):
-    logger.debug("hr_application_approve called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_approve called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
     if request.user.is_superuser or request.user == app.reviewer:
-        logger.info("User %s approving %s" % (request.user, app))
+        logger.info(f"User {request.user} approving {app}")
         app.approved = True
         app.save()
         notify(app.user, "Application Accepted", message="Your application to %s has been approved." % app.form.corp, level="success")
     else:
-        logger.warn("User %s not authorized to approve %s" % (request.user, app))
+        logger.warn(f"User {request.user} not authorized to approve {app}")
     return redirect('hrapplications:index')
 
 
@@ -179,15 +179,15 @@ def hr_application_approve(request, app_id):
 @permission_required('auth.human_resources')
 @permission_required('hrapplications.reject_application')
 def hr_application_reject(request, app_id):
-    logger.debug("hr_application_reject called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_reject called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
     if request.user.is_superuser or request.user == app.reviewer:
-        logger.info("User %s rejecting %s" % (request.user, app))
+        logger.info(f"User {request.user} rejecting {app}")
         app.approved = False
         app.save()
         notify(app.user, "Application Rejected", message="Your application to %s has been rejected." % app.form.corp, level="danger")
     else:
-        logger.warn("User %s not authorized to reject %s" % (request.user, app))
+        logger.warn(f"User {request.user} not authorized to reject {app}")
     return redirect('hrapplications:index')
 
 
@@ -200,8 +200,8 @@ def hr_application_search(request):
         logger.debug("Request type POST contains form valid: %s" % form.is_valid())
         if form.is_valid():
             searchstring = form.cleaned_data['search_string'].lower()
-            applications = set([])
-            logger.debug("Searching for application with character name %s for user %s" % (searchstring, request.user))
+            applications = set()
+            logger.debug(f"Searching for application with character name {searchstring} for user {request.user}")
             app_list = Application.objects.all()
             if not request.user.is_superuser:
                 try:
@@ -237,15 +237,15 @@ def hr_application_search(request):
 @login_required
 @permission_required('auth.human_resources')
 def hr_application_mark_in_progress(request, app_id):
-    logger.debug("hr_application_mark_in_progress called by user %s for app id %s" % (request.user, app_id))
+    logger.debug(f"hr_application_mark_in_progress called by user {request.user} for app id {app_id}")
     app = get_object_or_404(Application, pk=app_id)
     if not app.reviewer:
-        logger.info("User %s marking %s in progress" % (request.user, app))
+        logger.info(f"User {request.user} marking {app} in progress")
         app.reviewer = request.user
         app.reviewer_character = request.user.profile.main_character
         app.save()
-        notify(app.user, "Application In Progress", message="Your application to %s is being reviewed by %s" % (app.form.corp, app.reviewer_str))
+        notify(app.user, "Application In Progress", message=f"Your application to {app.form.corp} is being reviewed by {app.reviewer_str}")
     else:
         logger.warn(
-            "User %s unable to mark %s in progress: already being reviewed by %s" % (request.user, app, app.reviewer))
+            f"User {request.user} unable to mark {app} in progress: already being reviewed by {app.reviewer}")
     return redirect("hrapplications:view", app_id)

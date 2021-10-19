@@ -25,7 +25,7 @@ class NotificationHandler(logging.Handler):
         for user in users:
             notify(
                 user,
-                "%s [%s:%s]" % (record.levelname, record.funcName, record.lineno),
+                f"{record.levelname} [{record.funcName}:{record.lineno}]",
                 level=Notification.Level.from_old_name(record.levelname),
                 message=message
             )

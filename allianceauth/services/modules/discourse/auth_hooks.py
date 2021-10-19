@@ -21,16 +21,16 @@ class DiscourseService(ServicesHook):
         self.name_format = '{character_name}'
 
     def delete_user(self, user, notify_user=False):
-        logger.debug('Deleting user %s %s account' % (user, self.name))
+        logger.debug(f'Deleting user {user} {self.name} account')
         return DiscourseTasks.delete_user(user, notify_user=notify_user)
 
     def update_groups(self, user):
-        logger.debug('Processing %s groups for %s' % (self.name, user))
+        logger.debug(f'Processing {self.name} groups for {user}')
         if DiscourseTasks.has_account(user):
             DiscourseTasks.update_groups.delay(user.pk)
 
     def validate_user(self, user):
-        logger.debug('Validating user %s %s account' % (user, self.name))
+        logger.debug(f'Validating user {user} {self.name} account')
         if DiscourseTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user, notify_user=True)
 

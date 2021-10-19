@@ -19,7 +19,7 @@ class SmfTasks:
     @classmethod
     def delete_user(cls, user, notify_user=False):
         if cls.has_account(user):
-            logger.debug("User %s has a SMF account %s. Deleting." % (user, user.smf.username))
+            logger.debug(f"User {user} has a SMF account {user.smf.username}. Deleting.")
             SmfManager.disable_user(user.smf.username)
             user.smf.delete()
             if notify_user:
@@ -47,7 +47,7 @@ class SmfTasks:
             groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            logger.debug("Updating user %s smf groups to %s" % (user, groups))
+            logger.debug(f"Updating user {user} smf groups to {groups}")
             try:
                 SmfManager.update_groups(user.smf.username, groups)
             except:

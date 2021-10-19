@@ -41,7 +41,7 @@ def create_project(parser, options, args):
     # Call the command with extra context
     call_command(StartProject(), *args, **command_options)
 
-    print("Success! %(project_name)s has been created." % {'project_name': args[0]})  # noqa
+    print(f"Success! {args[0]} has been created.")  # noqa
 
 
 def update_settings(parser, options, args):
@@ -69,10 +69,10 @@ def update_settings(parser, options, args):
     template_settings_path = os.path.join(template_path, 'project_name/settings/base.py')
 
     # overwrite the local project's base settings
-    with open(template_settings_path, 'r') as template, open(settings_path, 'w') as target:
+    with open(template_settings_path) as template, open(settings_path, 'w') as target:
         target.write(template.read())
 
-    print("Successfully updated %(project_name)s settings." % {'project_name': project_name})
+    print(f"Successfully updated {project_name} settings.")
 
 
 COMMANDS = {

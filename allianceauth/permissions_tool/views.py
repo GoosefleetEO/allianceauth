@@ -43,7 +43,7 @@ def permissions_overview(request):
 @login_required
 @permission_required('permissions_tool.audit_permissions')
 def permissions_audit(request, app_label, model, codename):
-    logger.debug("permissions_audit called by user {} on {}:{}:{}".format(request.user, app_label, model, codename))
+    logger.debug(f"permissions_audit called by user {request.user} on {app_label}:{model}:{codename}")
     try:
         perm = Permission.objects\
             .prefetch_related('group_set', 'user_set', 'state_set',

@@ -42,11 +42,11 @@ class SRPManager:
         if km:
             ship_type = km['victim']['ship_type_id']
             logger.debug(
-                "Ship type for kill ID %s is %s" % (kill_id, ship_type)
+                f"Ship type for kill ID {kill_id} is {ship_type}"
             )
             ship_value = result['zkb']['totalValue']
             logger.debug(
-                "Total loss value for kill id %s is %s" % (kill_id, ship_value)
+                f"Total loss value for kill id {kill_id} is {ship_value}"
             )
             victim_id = km['victim']['character_id']
             return ship_type, ship_value, victim_id

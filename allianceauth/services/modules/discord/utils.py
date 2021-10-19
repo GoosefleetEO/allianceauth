@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 class LoggerAddTag(logging.LoggerAdapter):
     """add custom tag to a logger"""
     def __init__(self, logger, prefix):
-        super(LoggerAddTag, self).__init__(logger, {})
+        super().__init__(logger, {})
         self.prefix = prefix
 
     def process(self, msg, kwargs):
-        return '[%s] %s' % (self.prefix, msg), kwargs
+        return f'[{self.prefix}] {msg}', kwargs
 
 
 def clean_setting(
@@ -80,7 +80,7 @@ def set_logger_to_file(logger_name: str, name: str) -> object:
         '%(asctime)s - %(levelname)s - %(module)s:%(funcName)s - %(message)s'
     )
     path = os.path.splitext(name)[0]
-    f_handler = logging.FileHandler('{}.log'.format(path), 'w+')
+    f_handler = logging.FileHandler(f'{path}.log', 'w+')
     f_handler.setFormatter(f_format)
     logger = logging.getLogger(logger_name)
     logger.level = logging.DEBUG

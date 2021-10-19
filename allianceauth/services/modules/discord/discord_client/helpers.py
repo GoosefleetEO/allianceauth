@@ -31,8 +31,7 @@ class DiscordRoles:
         return hash(tuple(sorted(self._roles.keys())))
 
     def __iter__(self):
-        for role in self._roles.values():
-            yield role
+        yield from self._roles.values()
 
     def __contains__(self, item) -> bool:
         return int(item) in self._roles

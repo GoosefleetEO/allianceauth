@@ -39,7 +39,7 @@ class State(models.Model):
         with transaction.atomic():
             for profile in self.userprofile_set.all():
                 profile.assign_state(state=State.objects.exclude(pk=self.pk).get_for_user(profile.user))
-        super(State, self).delete(**kwargs)
+        super().delete(**kwargs)
 
 
 def get_guest_state():
@@ -67,7 +67,7 @@ class UserProfile(models.Model):
         if self.state != state:
             self.state = state
             if commit:
-                logger.info('Updating {} state to {}'.format(self.user, self.state))
+                logger.info(f'Updating {self.user} state to {self.state}')
                 self.save(update_fields=['state'])
                 notify(
                     self.user,
@@ -102,7 +102,7 @@ class CharacterOwnership(models.Model):
     objects = CharacterOwnershipManager()
 
     def __str__(self):
-        return "%s: %s" % (self.user, self.character)
+        return f"{self.user}: {self.character}"
 
 
 class OwnershipRecord(models.Model):
@@ -115,4 +115,4 @@ class OwnershipRecord(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return "%s: %s on %s" % (self.user, self.character, self.created)
+        return f"{self.user}: {self.character} on {self.created}"

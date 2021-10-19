@@ -22,7 +22,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(
 def load_data(filename):
     """loads given JSON file from `testdata` sub folder and returns content"""
     with open(
-        currentdir + '/testdata/%s.json' % filename, 'r', encoding='utf-8'
+        currentdir + '/testdata/%s.json' % filename, encoding='utf-8'
     ) as f:
         data = json.load(f)
 

@@ -10,14 +10,14 @@ from .models import EveCorporationInfo
 
 class EveEntityExistsError(forms.ValidationError):
     def __init__(self, entity_type_name, id):
-        super(EveEntityExistsError, self).__init__(
-            message='{} with ID {} already exists.'.format(entity_type_name, id))
+        super().__init__(
+            message=f'{entity_type_name} with ID {id} already exists.')
 
 
 class EveEntityNotFoundError(forms.ValidationError):
     def __init__(self, entity_type_name, id):
-        super(EveEntityNotFoundError, self).__init__(
-            message='{} with ID {} not found.'.format(entity_type_name, id))
+        super().__init__(
+            message=f'{entity_type_name} with ID {id} not found.')
 
 
 class EveEntityForm(forms.ModelForm):
@@ -170,4 +170,4 @@ class EveCharacterAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         if not obj or not obj.pk:
             return EveCharacterForm
-        return super(EveCharacterAdmin, self).get_form(request, obj=obj, **kwargs)
+        return super().get_form(request, obj=obj, **kwargs)

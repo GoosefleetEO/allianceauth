@@ -158,13 +158,13 @@ def _latests_versions(tags: list) -> tuple:
                 versions.append(version)
 
     latest_version = latest_patch_version = max(versions)
-    latest_major_version = min([
+    latest_major_version = min(
         v for v in versions if v.major == latest_version.major
-    ])
-    latest_minor_version = min([
+    )
+    latest_minor_version = min(
         v for v in versions
         if v.major == latest_version.major and v.minor == latest_version.minor
-    ])
+    )
     latest_beta_version = max(betas)
     return (
         latest_major_version,

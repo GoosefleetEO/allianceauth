@@ -67,7 +67,7 @@ def register(name, fn=None):
             logger.debug("Creating new hook %s" % name)
             _hooks[name] = []
 
-        logger.debug('Registering hook %s for function %s' % (name, fn))
+        logger.debug(f'Registering hook {name} for function {fn}')
         _hooks[name].append(func)
 
     if fn is None:
@@ -98,7 +98,7 @@ def get_app_submodules(module_name):
     """
     for name, module in get_app_modules():
         if module_has_submodule(module, module_name):
-            yield name, import_module('{0}.{1}'.format(name, module_name))
+            yield name, import_module(f'{name}.{module_name}')
 
 
 def register_all_hooks():

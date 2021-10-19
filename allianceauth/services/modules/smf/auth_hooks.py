@@ -25,16 +25,16 @@ class SmfService(ServicesHook):
         return 'SMF Forums'
 
     def delete_user(self, user, notify_user=False):
-        logger.debug('Deleting user %s %s account' % (user, self.name))
+        logger.debug(f'Deleting user {user} {self.name} account')
         return SmfTasks.delete_user(user, notify_user=notify_user)
 
     def validate_user(self, user):
-        logger.debug('Validating user %s %s account' % (user, self.name))
+        logger.debug(f'Validating user {user} {self.name} account')
         if SmfTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user)
 
     def update_groups(self, user):
-        logger.debug('Updating %s groups for %s' % (self.name, user))
+        logger.debug(f'Updating {self.name} groups for {user}')
         if SmfTasks.has_account(user):
             SmfTasks.update_groups.delay(user.pk)
 

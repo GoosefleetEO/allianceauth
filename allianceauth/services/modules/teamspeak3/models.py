@@ -16,7 +16,7 @@ class Teamspeak3User(models.Model):
 
     class Meta:
         permissions = (
-            ("access_teamspeak3", u"Can access the Teamspeak3 service"),
+            ("access_teamspeak3", "Can access the Teamspeak3 service"),
         )
 
 

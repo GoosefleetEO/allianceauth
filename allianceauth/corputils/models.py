@@ -43,7 +43,7 @@ class CorpStats(models.Model):
     objects = CorpStatsManager()
 
     def __str__(self):
-        return "%s for %s" % (self.__class__.__name__, self.corp)
+        return f"{self.__class__.__name__} for {self.corp}"
 
     def update(self):
         try:
@@ -73,7 +73,7 @@ class CorpStats(models.Model):
             self.save()
 
         except TokenError as e:
-            logger.warning("%s failed to update: %s" % (self, e))
+            logger.warning(f"{self} failed to update: {e}")
             if self.token.user:
                 notify(
                     self.token.user, "%s failed to update with your ESI token." % self,
@@ -81,9 +81,9 @@ class CorpStats(models.Model):
                     level="error")
             self.delete()
         except HTTPForbidden as e:
-            logger.warning("%s failed to update: %s" % (self, e))
+            logger.warning(f"{self} failed to update: {e}")
             if self.token.user:
-                notify(self.token.user, "%s failed to update with your ESI token." % self, message="%s: %s" % (e.status_code, e.message), level="error")
+                notify(self.token.user, "%s failed to update with your ESI token." % self, message=f"{e.status_code}: {e.message}", level="error")
             self.delete()
         except AssertionError:
             logger.warning("%s token character no longer in corp." % self)
@@ -99,7 +99,7 @@ class CorpStats(models.Model):
 
     @property
     def user_count(self):
-        return len(set([m.main_character for m in self.members.all() if m.main_character]))
+        return len({m.main_character for m in self.members.all() if m.main_character})
 
     @property
     def registered_member_count(self):

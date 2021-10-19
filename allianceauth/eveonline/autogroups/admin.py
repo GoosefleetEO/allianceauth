@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def sync_user_groups(modeladmin, request, queryset):
     for agc in queryset:
-        logger.debug("update_all_states_group_membership for {}".format(agc))
+        logger.debug(f"update_all_states_group_membership for {agc}")
         agc.update_all_states_group_membership()
 
 
@@ -29,7 +29,7 @@ class AutogroupsConfigAdmin(admin.ModelAdmin):
             return []
 
     def get_actions(self, request):
-        actions = super(AutogroupsConfigAdmin, self).get_actions(request)
+        actions = super().get_actions(request)
         actions['sync_user_groups'] = (sync_user_groups,
                                         'sync_user_groups',
                                         'Sync all users groups for this Autogroup Config')

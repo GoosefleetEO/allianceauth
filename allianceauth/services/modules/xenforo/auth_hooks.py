@@ -23,11 +23,11 @@ class XenforoService(ServicesHook):
         return 'XenForo Forums'
 
     def delete_user(self, user, notify_user=False):
-        logger.debug('Deleting user %s %s account' % (user, self.name))
+        logger.debug(f'Deleting user {user} {self.name} account')
         return XenforoTasks.delete_user(user, notify_user=notify_user)
 
     def validate_user(self, user):
-        logger.debug('Validating user %s %s account' % (user, self.name))
+        logger.debug(f'Validating user {user} {self.name} account')
         if XenforoTasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user, notify_user=True)
 

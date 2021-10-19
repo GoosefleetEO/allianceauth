@@ -33,13 +33,13 @@ class DjangoBackend:
 @shared_task(bind=True)
 def validate_services(self, pk):
     user = User.objects.get(pk=pk)
-    logger.debug('Ensuring user {} has permissions for active services'.format(user))
+    logger.debug(f'Ensuring user {user} has permissions for active services')
     # Iterate through services hooks and have them check the validity of the user
     for svc in ServicesHook.get_services():
         try:
             svc.validate_user(user)
         except:
-            logger.exception('Exception running validate_user for services module %s on user %s' % (svc, user))
+            logger.exception(f'Exception running validate_user for services module {svc} on user {user}')
 
 
 def disable_user(user):

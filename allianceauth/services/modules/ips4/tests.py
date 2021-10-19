@@ -143,7 +143,7 @@ class Ips4ManagerTestCase(TestCase):
         password = self.manager._Ips4Manager__generate_random_pass()
 
         self.assertEqual(len(password), 16)
-        self.assertIsInstance(password, type(''))
+        self.assertIsInstance(password, str)
 
     def test_gen_pwhash(self):
         pwhash = self.manager._gen_pwhash('test')
