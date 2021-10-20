@@ -49,7 +49,7 @@
                     <td style="width:150px" class="text-center">
                         {{ timer.details }}
                         {% if timer.timer_type != 'UNSPECIFIED' %}
-                            ({{ timer.get_timer_type_display }})
+                            <br>({{ timer.get_timer_type_display }})
                         {% endif %}
                     </td>
                     <td class="text-center">
@@ -216,7 +216,7 @@
                         <td style="width:150px" class="text-center">
                             {{ timer.details }}
                             {% if timer.timer_type != 'UNSPECIFIED' %}
-                                ({{ timer.get_timer_type_display }})
+                                <br>({{ timer.get_timer_type_display }})
                             {% endif %}
                         </td>
                         <td class="text-center">
@@ -389,7 +389,7 @@
                         <td style="width:150px" class="text-center">
                             {{ timer.details }}
                             {% if timer.timer_type != 'UNSPECIFIED' %}
-                                ({{ timer.get_timer_type_display }})
+                                <br>({{ timer.get_timer_type_display }})
                             {% endif %}
                         </td>
                         <td class="text-center">
