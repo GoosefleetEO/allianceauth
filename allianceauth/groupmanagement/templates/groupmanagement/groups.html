@@ -31,7 +31,7 @@
                                         </a>
                                     {% else %}
                                         <button type="button" class="btn btn-primary" disabled>
-                                            {{ g.request.status }}
+                                            {% translate "Pending" %}
                                         </button>
                                     {% endif %}
                                 {% elif not g.request %}
@@ -46,7 +46,7 @@
                                     {% endif %}
                                 {% else %}
                                     <button type="button" class="btn btn-primary" disabled>
-                                        {{ g.request.status }}
+                                        {% translate "Pending" %}
                                     </button>
                                 {% endif %}
                             </td>

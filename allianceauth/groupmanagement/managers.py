@@ -108,11 +108,10 @@ class GroupManager:
         """Returns the number of pending group requests for the given user"""
 
         if cls.has_management_permission(user):
-            return GroupRequest.objects.filter(status="pending").count()
+            return GroupRequest.objects.all().count()
         else:
             return (
                 GroupRequest.objects
-                .filter(status="pending")
                 .filter(group__authgroup__group_leaders__exact=user)
                 .select_related("group__authgroup__group_leaders")
                 .count()

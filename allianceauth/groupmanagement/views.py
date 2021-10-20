@@ -354,7 +354,6 @@ def group_request_add(request, group_id):
         messages.warning(request, _("You already have a pending application for that group."))
         return redirect("groupmanagement:groups")
     grouprequest = GroupRequest()
-    grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.leave_request = False
@@ -396,7 +395,6 @@ def group_request_leave(request, group_id):
         request.user.groups.remove(group)
         return redirect('groupmanagement:groups')
     grouprequest = GroupRequest()
-    grouprequest.status = _('Pending')
     grouprequest.group = group
     grouprequest.user = request.user
     grouprequest.leave_request = True
