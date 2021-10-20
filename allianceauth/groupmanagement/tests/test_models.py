@@ -60,7 +60,6 @@ class TestGroupRequest(TestCase):
 
     def test_main_char(self):
         group_request = GroupRequest.objects.create(
-            status='Pending',
             user=self.user_1,
             group=self.group
         )
@@ -69,7 +68,6 @@ class TestGroupRequest(TestCase):
 
     def test_str(self):
         group_request = GroupRequest.objects.create(
-            status='Pending',
             user=self.user_1,
             group=self.group
         )

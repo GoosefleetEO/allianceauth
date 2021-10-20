@@ -7,7 +7,6 @@ from allianceauth.authentication.models import State
 
 
 class GroupRequest(models.Model):
-    status = models.CharField(max_length=254)
     leave_request = models.BooleanField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)

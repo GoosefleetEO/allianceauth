@@ -195,12 +195,11 @@ finally:
 @admin.register(GroupRequest)
 class GroupRequestAdmin(admin.ModelAdmin):
     search_fields = ('user__username', )
-    list_display = ('id', 'group', 'user', '_leave_request', 'status')
+    list_display = ('id', 'group', 'user', '_leave_request')
     list_filter = (
         ('group', admin.RelatedOnlyFieldListFilter),
         ('user', admin.RelatedOnlyFieldListFilter),
         'leave_request',
-        'status'
     )
 
     def _leave_request(self, obj) -> True:
