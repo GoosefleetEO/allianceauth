@@ -6,8 +6,10 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
+from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -137,8 +139,51 @@ class RegistrationView(BaseRegistrationView):
     form_class = RegistrationForm
     template_name = "public/register.html"
     email_body_template = "registration/activation_email.txt"
+    email_body_template_html = "registration/activation_email_html.txt"
     email_subject_template = "registration/activation_email_subject.txt"
     success_url = reverse_lazy('registration_complete')
+
+    def send_activation_email(self, user):
+        """
+        Implement our own way to send a mail to make sure we
+        send a RFC conform multipart email
+        :param user:
+        :type user:
+        """
+
+        activation_key = self.get_activation_key(user)
+        context = self.get_email_context(activation_key)
+        context["user"] = user
+
+        # email subject
+        subject = render_to_string(
+            template_name=self.email_subject_template,
+            context=context,
+            request=self.request,
+        )
+        subject = "".join(subject.splitlines())
+
+        # plaintext email body part
+        message = render_to_string(
+            template_name=self.email_body_template,
+            context=context,
+            request=self.request,
+        )
+
+        # html email body part
+        message_html = render_to_string(
+            template_name=self.email_body_template_html,
+            context=context,
+            request=self.request,
+        )
+
+        # send it
+        user.email_user(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            **{'html_message': message_html},
+        )
 
     def get_success_url(self, user):
         if not getattr(settings, 'REGISTRATION_VERIFY_EMAIL', True):
