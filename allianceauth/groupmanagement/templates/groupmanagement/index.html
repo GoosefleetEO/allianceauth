@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "Groups Management" %}{% endblock page_title %}
+{% block page_title %}{% translate "Groups Management" %}{% endblock page_title %}
 
 {% block extra_css %}
     <style>
@@ -22,7 +22,7 @@
         <ul class="nav nav-tabs">
             <li class="active">
                 <a data-toggle="tab" href="#add">
-                    {% trans "Join Requests" %}
+                    {% translate "Join Requests" %}
 
                     {% if acceptrequests %}
                         <span class="badge">{{ acceptrequests|length }}</span>
@@ -31,7 +31,7 @@
             </li>
             <li>
                 <a data-toggle="tab" href="#leave">
-                    {% trans "Leave Requests" %}
+                    {% translate "Leave Requests" %}
 
                     {% if leaverequests %}
                         <span class="badge">{{ leaverequests|length }}</span>
@@ -50,9 +50,9 @@
                                 <table class="table table-aa">
                                     <thead>
                                         <tr>
-                                            <th>{% trans "Character" %}</th>
-                                            <th>{% trans "Organization" %}</th>
-                                            <th>{% trans "Group" %}</th>
+                                            <th>{% translate "Character" %}</th>
+                                            <th>{% translate "Organization" %}</th>
+                                            <th>{% translate "Group" %}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -77,17 +77,17 @@
                                                         </a><br>
                                                         {{ acceptrequest.main_char.alliance_name|default_if_none:"" }}
                                                     {% else %}
-                                                        {% trans "(unknown)" %}
+                                                        {% translate "(unknown)" %}
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ acceptrequest.group.name }}</td>
                                                 <td class="text-right">
                                                     <a href="{% url 'groupmanagement:accept_request' acceptrequest.id %}" class="btn btn-success">
-                                                        {% trans "Accept" %}
+                                                        {% translate "Accept" %}
                                                     </a>
 
                                                     <a href="{% url 'groupmanagement:reject_request' acceptrequest.id %}" class="btn btn-danger">
-                                                        {% trans "Reject" %}
+                                                        {% translate "Reject" %}
                                                     </a>
                                                 </td>
                                             </tr>
@@ -96,7 +96,7 @@
                                 </table>
                             </div>
                         {% else %}
-                            <div class="alert alert-warning text-center">{% trans "No group add requests." %}</div>
+                            <div class="alert alert-warning text-center">{% translate "No group add requests." %}</div>
                         {% endif %}
                     </div>
 
@@ -106,9 +106,9 @@
                                 <table class="table table-aa">
                                     <thead>
                                         <tr>
-                                            <th>{% trans "Character" %}</th>
-                                            <th>{% trans "Organization" %}</th>
-                                            <th>{% trans "Group" %}</th>
+                                            <th>{% translate "Character" %}</th>
+                                            <th>{% translate "Organization" %}</th>
+                                            <th>{% translate "Group" %}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -133,17 +133,17 @@
                                                         </a><br>
                                                         {{ leaverequest.main_char.alliance_name|default_if_none:"" }}
                                                     {% else %}
-                                                        {% trans "(unknown)" %}
+                                                        {% translate "(unknown)" %}
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ leaverequest.group.name }}</td>
                                                 <td class="text-right">
                                                     <a href="{% url 'groupmanagement:leave_accept_request' leaverequest.id %}" class="btn btn-success">
-                                                        {% trans "Accept" %}
+                                                        {% translate "Accept" %}
                                                     </a>
 
                                                     <a href="{% url 'groupmanagement:leave_reject_request' leaverequest.id %}" class="btn btn-danger">
-                                                        {% trans "Reject" %}
+                                                        {% translate "Reject" %}
                                                     </a>
                                                 </td>
                                             </tr>
@@ -152,7 +152,7 @@
                                 </table>
                             </div>
                         {% else %}
-                            <div class="alert alert-warning text-center">{% trans "No group leave requests." %}</div>
+                            <div class="alert alert-warning text-center">{% translate "No group leave requests." %}</div>
                         {% endif %}
                     </div>
                 </div>

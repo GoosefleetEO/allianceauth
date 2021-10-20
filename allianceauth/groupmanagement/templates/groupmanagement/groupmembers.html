@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load evelinks %}
 
-{% block page_title %}{% trans "Group Members" %}{% endblock page_title %}
+{% block page_title %}{% translate "Group Members" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
@@ -12,13 +12,13 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                {{ group.name }} - {% trans 'Members' %}
+                {{ group.name }} - {% translate 'Members' %}
             </div>
 
             <div class="panel-body">
                 <p>
                     <a class="btn btn-default" href="{% url 'groupmanagement:membership' %}" role="button">
-                        {% trans "Back" %}
+                        {% translate "Back" %}
                     </a>
                 </p>
 
@@ -27,8 +27,8 @@
                         <table class="table table-aa" id="tab_group_members">
                             <thead>
                                 <tr>
-                                    <th>{% trans "Character" %}</th>
-                                    <th>{% trans "Organization" %}</th>
+                                    <th>{% translate "Character" %}</th>
+                                    <th>{% translate "Organization" %}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -47,7 +47,7 @@
                                             {% endif %}
 
                                             {% if member.is_leader %}
-                                                <i class="fas fa-star" title="{% trans "Group leader" %}" style="margin-left: 1rem;"></i>&nbsp;
+                                                <i class="fas fa-star" title="{% translate "Group leader" %}" style="margin-left: 1rem;"></i>&nbsp;
                                             {% endif %}
                                         </td>
 
@@ -58,12 +58,12 @@
                                                 </a><br>
                                                 {{ member.main_char.alliance_name|default_if_none:"" }}
                                             {% else %}
-                                                {% trans "(unknown)" %}
+                                                {% translate "(unknown)" %}
                                             {% endif %}
                                         </td>
 
                                         <td class="text-right">
-                                            <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger" title="{% trans "Remove from group" %}">
+                                            <a href="{% url 'groupmanagement:membership_remove' group.id member.user.id %}" class="btn btn-danger" title="{% translate "Remove from group" %}">
                                                 <i class="glyphicon glyphicon-remove"></i>
                                             </a>
                                         </td>
@@ -73,12 +73,12 @@
                         </table>
 
                         <p class="text-muted">
-                            <i class="fas fa-star"></i>: {% trans "Group leader" %}
+                            <i class="fas fa-star"></i>: {% translate "Group leader" %}
                         </p>
                     </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
-                        {% trans "No group members to list." %}
+                        {% translate "No group members to list." %}
                     </div>
                 {% endif %}
             </div>

@@ -3,6 +3,6 @@
 <li>
     <a href="{% url 'nightmode' %}?next={{ request.path|urlencode }}">
         <i class="fas {% if NIGHT_MODE %}fa-toggle-on{% else %}fa-toggle-off{% endif %}" aria-hidden="true"></i>
-        {% trans "Night Mode" %}
+        {% translate "Night Mode" %}
     </a>
 </li>
