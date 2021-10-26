@@ -169,11 +169,7 @@ class TestVersionTags(TestCase):
         # when
         result = _current_version_summary()
         # then
-        self.assertTrue(result['latest_major'])
-        self.assertTrue(result['latest_minor'])
         self.assertTrue(result['latest_patch'])
-        self.assertEqual(result['latest_major_version'], '2.0.0')
-        self.assertEqual(result['latest_minor_version'], '2.4.0')
         self.assertEqual(result['latest_patch_version'], '2.4.5')
         self.assertEqual(result['latest_beta_version'], '2.4.6a1')
 
@@ -222,9 +218,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.0'))
-        self.assertEqual(minor, Pep440Version('2.1.0'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.1'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
@@ -233,9 +227,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.2', '2.1.1', '2.0.1', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.1'))
-        self.assertEqual(minor, Pep440Version('2.1.1'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.2'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
@@ -244,9 +236,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', 'invalid']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.0'))
-        self.assertEqual(minor, Pep440Version('2.1.0'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.1'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
