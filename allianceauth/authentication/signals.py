@@ -46,6 +46,11 @@ def state_member_alliances_changed(sender, instance, action, *args, **kwargs):
         logger.debug(f'State {instance} member alliances changed. Re-evaluating membership.')
         trigger_state_check(instance)
 
+@receiver(m2m_changed, sender=State.member_factions.through)
+def state_member_factions_changed(sender, instance, action, *args, **kwargs):
+    if action.startswith('post_'):
+        logger.debug(f'State {instance} member factions changed. Re-evaluating membership.')
+        trigger_state_check(instance)
 
 @receiver(post_save, sender=State)
 def state_saved(sender, instance, *args, **kwargs):

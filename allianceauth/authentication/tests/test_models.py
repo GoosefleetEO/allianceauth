@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
-    EveAllianceInfo
+    EveAllianceInfo, EveFactionInfo
 from allianceauth.tests.auth_utils import AuthUtils
 from esi.errors import IncompleteResponseError
 from esi.models import Token
@@ -80,13 +80,15 @@ class StateTestCase(TestCase):
     def setUpTestData(cls):
         cls.user = AuthUtils.create_user('test_user', disconnect_signals=True)
         AuthUtils.add_main_character(cls.user, 'Test Character', '1', corp_id='1', alliance_id='1',
-                                    corp_name='Test Corp', alliance_name='Test Alliance')
+                                    corp_name='Test Corp', alliance_name='Test Alliance', faction_id=1337,
+                                    faction_name='Permabanned')
         cls.guest_state = get_guest_state()
         cls.test_character = EveCharacter.objects.get(character_id='1')
         cls.test_corporation = EveCorporationInfo.objects.create(corporation_id='1', corporation_name='Test Corp',
                                                                 corporation_ticker='TEST', member_count=1)
         cls.test_alliance = EveAllianceInfo.objects.create(alliance_id='1', alliance_name='Test Alliance',
                                                             alliance_ticker='TEST', executor_corp_id='1')
+        cls.test_faction = EveFactionInfo.objects.create(faction_id=1337, faction_name='Permabanned')
         cls.member_state = State.objects.create(
             name='Test Member',
             priority=150,
@@ -119,6 +121,15 @@ class StateTestCase(TestCase):
         self.assertEqual(self.user.profile.state, self.member_state)
 
         self.member_state.member_alliances.remove(self.test_alliance)
+        self._refresh_user()
+        self.assertEqual(self.user.profile.state, self.guest_state)
+
+    def test_state_assignment_on_faction_change(self):
+        self.member_state.member_factions.add(self.test_faction)
+        self._refresh_user()
+        self.assertEqual(self.user.profile.state, self.member_state)
+
+        self.member_state.member_factions.remove(self.test_faction)
         self._refresh_user()
         self.assertEqual(self.user.profile.state, self.guest_state)
 

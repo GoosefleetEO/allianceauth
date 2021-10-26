@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User, Permission
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 from allianceauth.notifications import notify
 
 from .managers import CharacterOwnershipManager, StateManager
@@ -16,9 +16,14 @@ class State(models.Model):
     permissions = models.ManyToManyField(Permission, blank=True)
     priority = models.IntegerField(unique=True, help_text="Users get assigned the state with the highest priority available to them.")
 
-    member_characters = models.ManyToManyField(EveCharacter, blank=True, help_text="Characters to which this state is available.")
-    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True, help_text="Corporations to whose members this state is available.")
-    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True, help_text="Alliances to whose members this state is available.")
+    member_characters = models.ManyToManyField(EveCharacter, blank=True,
+                                               help_text="Characters to which this state is available.")
+    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True,
+                                                 help_text="Corporations to whose members this state is available.")
+    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True,
+                                              help_text="Alliances to whose members this state is available.")
+    member_factions = models.ManyToManyField(EveFactionInfo, blank=True,
+                                             help_text="Factions to whose members this state is available.")
     public = models.BooleanField(default=False, help_text="Make this state available to any character.")
 
     objects = StateManager()
