@@ -2,10 +2,6 @@ You're receiving this email because someone has entered this email address while
 
 If this was you, please click on the link below to confirm your email address:
 
-<a href="{{ scheme }}://{{ url }}">Confirm email address</a>
-
-Link not working? Try copy/pasting this URL into your browser:
-
 {{ scheme }}://{{ url }}
 
 This link will expire in {{ expiration_days }} day(s).
