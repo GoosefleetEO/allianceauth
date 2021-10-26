@@ -10,6 +10,47 @@ from .evelinks import eveimageserver
 _DEFAULT_IMAGE_SIZE = 32
 
 
+class EveFactionInfo(models.Model):
+    faction_id = models.PositiveIntegerField(unique=True, db_index=True)
+    faction_name = models.CharField(max_length=254, unique=True)
+
+    provider = providers.provider
+
+    def __str__(self):
+        return self.faction_name
+
+    @staticmethod
+    def generic_logo_url(
+        faction_id: int, size: int = _DEFAULT_IMAGE_SIZE
+    ) -> str:
+        """image URL for the given faction ID"""
+        return eveimageserver.corporation_logo_url(faction_id, size)
+
+    def logo_url(self, size: int = _DEFAULT_IMAGE_SIZE) -> str:
+        """image URL of this faction"""
+        return self.generic_logo_url(self.faction_id, size)
+
+    @property
+    def logo_url_32(self) -> str:
+        """image URL for this faction"""
+        return self.logo_url(32)
+
+    @property
+    def logo_url_64(self) -> str:
+        """image URL for this faction"""
+        return self.logo_url(64)
+
+    @property
+    def logo_url_128(self) -> str:
+        """image URL for this faction"""
+        return self.logo_url(128)
+
+    @property
+    def logo_url_256(self) -> str:
+        """image URL for this faction"""
+        return self.logo_url(256)
+
+
 class EveAllianceInfo(models.Model):
     alliance_id = models.PositiveIntegerField(unique=True)
     alliance_name = models.CharField(max_length=254, unique=True)
@@ -149,17 +190,20 @@ class EveCharacter(models.Model):
     alliance_id = models.PositiveIntegerField(blank=True, null=True, default=None)
     alliance_name = models.CharField(max_length=254, blank=True, null=True, default='')
     alliance_ticker = models.CharField(max_length=5, blank=True, null=True, default='')
+    faction_id = models.PositiveIntegerField(blank=True, null=True, default=None)
+    faction_name = models.CharField(max_length=254, blank=True, null=True, default='')
 
     objects = EveCharacterManager()
     provider = EveCharacterProviderManager()
 
     class Meta:
         indexes = [
-            models.Index(fields=['corporation_id',]),
-            models.Index(fields=['alliance_id',]),
-            models.Index(fields=['corporation_name',]),
-            models.Index(fields=['alliance_name',]),
-        ]
+                    models.Index(fields=['corporation_id',]),
+                    models.Index(fields=['alliance_id',]),
+                    models.Index(fields=['corporation_name',]),
+                    models.Index(fields=['alliance_name',]),
+                    models.Index(fields=['faction_id',]),
+                  ]
 
     @property
     def alliance(self) -> Union[EveAllianceInfo, None]:
@@ -181,6 +225,17 @@ class EveCharacter(models.Model):
         """
         return EveCorporationInfo.objects.get(corporation_id=self.corporation_id)
 
+    @property
+    def faction(self) -> Union[EveFactionInfo, None]:
+        """
+        Pseudo foreign key from faction_id to EveFactionInfo
+        :raises: EveFactionInfo.DoesNotExist
+        :return: EveFactionInfo
+        """
+        if self.faction_id is None:
+            return None
+        return EveFactionInfo.objects.get(faction_id=self.faction_id)
+
     def update_character(self, character: providers.Character = None):
         if character is None:
             character = self.provider.get_character(self.character_id)
@@ -191,6 +246,8 @@ class EveCharacter(models.Model):
         self.alliance_id = character.alliance.id
         self.alliance_name = character.alliance.name
         self.alliance_ticker = getattr(character.alliance, 'ticker', None)
+        self.faction_id = character.faction.id
+        self.faction_name = character.faction.name
         self.save()
         return self
 
@@ -278,3 +335,31 @@ class EveCharacter(models.Model):
     def alliance_logo_url_256(self) -> str:
         """image URL for alliance of this character or empty string"""
         return self.alliance_logo_url(256)
+
+
+    def faction_logo_url(self, size=_DEFAULT_IMAGE_SIZE) -> str:
+        """image URL for alliance of this character or empty string"""
+        if self.faction_id:
+            return EveFactionInfo.generic_logo_url(self.faction_id, size)
+        else:
+            return ''
+
+    @property
+    def faction_logo_url_32(self) -> str:
+        """image URL for alliance of this character or empty string"""
+        return self.faction_logo_url(32)
+
+    @property
+    def faction_logo_url_64(self) -> str:
+        """image URL for alliance of this character or empty string"""
+        return self.faction_logo_url(64)
+
+    @property
+    def faction_logo_url_128(self) -> str:
+        """image URL for alliance of this character or empty string"""
+        return self.faction_logo_url(128)
+
+    @property
+    def faction_logo_url_256(self) -> str:
+        """image URL for alliance of this character or empty string"""
+        return self.faction_logo_url(256)

@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 from django.test import TestCase
 
 from ..models import (
-    EveCharacter, EveCorporationInfo, EveAllianceInfo
+    EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 )
 from ..providers import Alliance, Corporation, Character
 from ..evelinks import eveimageserver
@@ -126,6 +126,66 @@ class EveCharacterTestCase(TestCase):
 
         self.assertIsNone(character.alliance)
 
+    def test_faction_prop(self):
+        """
+        Test that the correct faction is returned by the alliance property
+        """
+        character = EveCharacter.objects.create(
+            character_id=1234,
+            character_name='character.name',
+            corporation_id=2345,
+            corporation_name='character.corp.name',
+            corporation_ticker='cc1',
+            alliance_id=3456,
+            alliance_name='character.alliance.name',
+            faction_id=1337,
+            faction_name='character.faction.name'
+        )
+
+        expected = EveFactionInfo.objects.create(faction_id=1337, faction_name='faction.name')
+        incorrect = EveFactionInfo.objects.create(faction_id=8008, faction_name='faction.badname')
+
+        self.assertEqual(character.faction, expected)
+        self.assertNotEqual(character.faction, incorrect)
+
+    def test_faction_prop_exception(self):
+        """
+        Check that an exception is raised when the expected
+        object is not in the database
+        """
+        character = EveCharacter.objects.create(
+            character_id=1234,
+            character_name='character.name',
+            corporation_id=2345,
+            corporation_name='character.corp.name',
+            corporation_ticker='cc1',
+            alliance_id=3456,
+            alliance_name='character.alliance.name',
+            faction_id=1337,
+            faction_name='character.faction.name'
+        )
+
+        with self.assertRaises(EveFactionInfo.DoesNotExist):
+            character.faction
+
+    def test_faction_prop_none(self):
+        """
+        Check that None is returned when the character has no alliance
+        """
+        character = EveCharacter.objects.create(
+            character_id=1234,
+            character_name='character.name',
+            corporation_id=2345,
+            corporation_name='character.corp.name',
+            corporation_ticker='cc1',
+            alliance_id=None,
+            alliance_name=None,
+            faction_id=None,
+            faction_name=None,
+        )
+
+        self.assertIsNone(character.faction)
+
     @patch('allianceauth.eveonline.providers.provider')
     def test_update_character(self, mock_provider):
         mock_provider.get_corp.return_value = Corporation(
@@ -144,13 +204,17 @@ class EveCharacterTestCase(TestCase):
             corporation_ticker='DC1',
             alliance_id=3001,
             alliance_name='Dummy Alliance 1',
+            faction_id=1337,
+            faction_name='Dummy Faction 1',
         )
         my_updated_character = Character(
             name='Bruce X. Wayne',
-            corp_id=2002
+            corp_id=2002,
+            faction_id=None,
         )
         my_character.update_character(my_updated_character)
         self.assertEqual(my_character.character_name, 'Bruce X. Wayne')
+        self.assertFalse(my_character.faction_id)
 
         # todo: add test cases not yet covered, e.g. with alliance
 

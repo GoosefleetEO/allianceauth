@@ -17,7 +17,7 @@ from allianceauth.authentication.models import State, get_guest_state,\
     CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
-    EveAllianceInfo
+    EveAllianceInfo, EveFactionInfo
 from allianceauth.eveonline.tasks import update_character
 from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
     AUTHENTICATION_ADMIN_USERS_MAX_CHARS
@@ -159,18 +159,14 @@ def user_main_organization(obj):
     """
     user_obj = obj.user if hasattr(obj, 'user') else obj
     if not user_obj.profile.main_character:
-        result = None
+        result = ''
     else:
-        corporation = user_obj.profile.main_character.corporation_name
+        result = user_obj.profile.main_character.corporation_name
         if user_obj.profile.main_character.alliance_id:
-            result = format_html(
-                '{}<br>{}',
-                corporation,
-                user_obj.profile.main_character.alliance_name
-            )
-        else:
-            result = corporation
-    return result
+            result += f'<br>{user_obj.profile.main_character.alliance_name}'
+        elif user_obj.profile.main_character.faction_name:
+            result += f'<br>{user_obj.profile.main_character.faction_name}'
+    return format_html(result)
 
 
 user_main_organization.short_description = 'Corporation / Alliance (Main)'
@@ -240,6 +236,38 @@ class MainAllianceFilter(admin.SimpleListFilter):
             else:
                 return qs.filter(
                     user__profile__main_character__alliance_id=self.value()
+                )
+
+
+class MainFactionFilter(admin.SimpleListFilter):
+    """Custom filter to filter on factions from mains only
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """
+    title = 'faction'
+    parameter_name = 'main_faction_id__exact'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(faction_id=None)\
+            .exclude(userprofile=None)\
+            .values('faction_id', 'faction_name')\
+            .distinct()\
+            .order_by(Lower('faction_name'))
+        return tuple(
+            (x['faction_id'], x['faction_name']) for x in qs
+        )
+
+    def queryset(self, request, qs):
+        if self.value() is None:
+            return qs.all()
+        else:
+            if qs.model == User:
+                return qs.filter(profile__main_character__faction_id=self.value())
+            else:
+                return qs.filter(
+                    user__profile__main_character__faction_id=self.value()
                 )
 
 
@@ -342,6 +370,7 @@ class UserAdmin(BaseUserAdmin):
         'groups',
         MainCorporationsFilter,
         MainAllianceFilter,
+        MainFactionFilter,
         'is_active',
         'date_joined',
         'is_staff',
@@ -426,7 +455,8 @@ class StateAdmin(admin.ModelAdmin):
                 'public',
                 'member_characters',
                 'member_corporations',
-                'member_alliances'
+                'member_alliances',
+                'member_factions'
             ),
         })
     )
@@ -434,6 +464,7 @@ class StateAdmin(admin.ModelAdmin):
         'member_characters',
         'member_corporations',
         'member_alliances',
+        'member_factions',
         'permissions'
     ]
 
@@ -448,6 +479,9 @@ class StateAdmin(admin.ModelAdmin):
         elif db_field.name == "member_alliances":
             kwargs["queryset"] = EveAllianceInfo.objects.all()\
                 .order_by(Lower('alliance_name'))
+        elif db_field.name == "member_factions":
+            kwargs["queryset"] = EveFactionInfo.objects.all()\
+                .order_by(Lower('faction_name'))
         elif db_field.name == "permissions":
             kwargs["queryset"] = Permission.objects.select_related("content_type").all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
@@ -485,7 +519,8 @@ class BaseOwnershipAdmin(admin.ModelAdmin):
         'user__username',
         'character__character_name',
         'character__corporation_name',
-        'character__alliance_name'
+        'character__alliance_name',
+        'character__faction_name'
     )
     list_filter = (
         MainCorporationsFilter,

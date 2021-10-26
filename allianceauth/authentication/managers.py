@@ -16,6 +16,8 @@ def available_states_query(character):
         query |= Q(member_corporations__corporation_id=character.corporation_id)
     if character.alliance_id:
         query |= Q(member_alliances__alliance_id=character.alliance_id)
+    if character.faction_id:
+        query |= Q(member_factions__faction_id=character.faction_id)
     return query
 
 

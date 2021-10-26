@@ -60,6 +60,17 @@
                                                     <td class="text-center">{{ main.alliance_name }}</td>
                                                 <tr>
                                             </table>
+                                        {% elif main.faction_id %}
+                                            <table class="table">
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <img class="ra-avatar"src="{{ main.faction_logo_url_128 }}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-center">{{ main.faction_name }}</td>
+                                                <tr>
+                                            </table>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -67,12 +78,22 @@
                                     <p>
                                         <img class="ra-avatar" src="{{ main.portrait_url_64 }}">
                                         <img class="ra-avatar" src="{{ main.corporation_logo_url_64 }}">
-                                        <img class="ra-avatar" src="{{ main.alliance_logo_url_64 }}">
+                                        {% if main.alliance_id %}
+                                            <img class="ra-avatar" src="{{ main.alliance_logo_url_64 }}">
+                                        {% endif %}
+                                        {% if main.faction_id %}
+                                            <img class="ra-avatar" src="{{ main.faction_logo_url_64 }}">
+                                        {% endif %}
                                     </p>
                                     <p>
                                         <strong>{{ main.character_name }}</strong><br>
                                         {{ main.corporation_name }}<br>
-                                        {{ main.alliance_name }}
+                                        {% if main.alliance_id %}
+                                            {{ main.alliance_name }}<br>
+                                        {% endif %}
+                                        {% if main.faction_id %}
+                                            {{ main.faction_name }}
+                                        {% endif %}
                                     </p>
                                 </div>
                             {% endwith %}
