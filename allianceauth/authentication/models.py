@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class State(models.Model):
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=32, unique=True)
     permissions = models.ManyToManyField(Permission, blank=True)
     priority = models.IntegerField(unique=True, help_text="Users get assigned the state with the highest priority available to them.")
 
