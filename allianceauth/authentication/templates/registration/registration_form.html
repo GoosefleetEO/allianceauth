@@ -2,7 +2,7 @@
 {% load bootstrap %}
 {% load i18n %}
 {% load static %}
-{% block page_title %}Register{% endblock %}
+{% block page_title %}{% translate "Register" %}{% endblock %}
 {% block middle_box_content %}
     <form class="form-signin" role="form" action="" method="POST">
         {% csrf_token %}
