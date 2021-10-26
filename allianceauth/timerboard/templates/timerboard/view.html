@@ -46,7 +46,12 @@
                                 {% else %}
                             <tr class="info">
                         {% endif %}
-                    <td style="width:150px" class="text-center">{{ timer.details }}</td>
+                    <td style="width:150px" class="text-center">
+                        {{ timer.details }}
+                        {% if timer.timer_type != 'UNSPECIFIED' %}
+                            <br>({{ timer.get_timer_type_display }})
+                        {% endif %}
+                    </td>
                     <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">
@@ -208,7 +213,12 @@
                         {% else %}
                             <tr class="info">
                         {% endif %}
-                        <td style="width:150px" class="text-center">{{ timer.details }}</td>
+                        <td style="width:150px" class="text-center">
+                            {{ timer.details }}
+                            {% if timer.timer_type != 'UNSPECIFIED' %}
+                                <br>({{ timer.get_timer_type_display }})
+                            {% endif %}
+                        </td>
                         <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">
@@ -376,7 +386,12 @@
                                 {% else %}
                             <tr class="info">
                         {% endif %}
-                        <td style="width:150px" class="text-center">{{ timer.details }}</td>
+                        <td style="width:150px" class="text-center">
+                            {{ timer.details }}
+                            {% if timer.timer_type != 'UNSPECIFIED' %}
+                                <br>({{ timer.get_timer_type_display }})
+                            {% endif %}
+                        </td>
                         <td class="text-center">
                         {% if timer.objective == "Hostile" %}
                             <div class="label label-danger">

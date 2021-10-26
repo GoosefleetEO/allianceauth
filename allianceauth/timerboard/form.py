@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Timer
+from .models import Timer, TimerType
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class TimerForm(forms.ModelForm):
     class Meta:
         model = Timer
-        fields = ('details', 'system', 'planet_moon', 'structure', 'objective', 'important', 'corp_timer')
+        fields = ('details', 'system', 'planet_moon', 'structure', 'timer_type', 'objective', 'important', 'corp_timer')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -59,6 +59,7 @@ class TimerForm(forms.ModelForm):
     system = forms.CharField(max_length=254, required=True, label=_("System"))
     planet_moon = forms.CharField(max_length=254, label=_("Planet/Moon"), required=False, initial="")
     structure = forms.ChoiceField(choices=structure_choices, required=True, label=_("Structure Type"))
+    timer_type = forms.ChoiceField(choices=TimerType.choices, label=_("Timer Type"))
     objective = forms.ChoiceField(choices=objective_choices, required=True, label=_("Objective"))
     days_left = forms.IntegerField(required=True, label=_("Days Remaining"), validators=[MinValueValidator(0)])
     hours_left = forms.IntegerField(required=True, label=_("Hours Remaining"),
