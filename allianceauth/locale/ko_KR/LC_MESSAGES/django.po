@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 11:58+1000\n"
+"POT-Creation-Date: 2021-10-26 18:36+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/alliance-auth/teams/107430/ko_KR/)\n"
@@ -111,7 +111,17 @@ msgstr "콥"
 msgid "Alliance"
 msgstr "얼라이언스"
 
-#: allianceauth/authentication/templates/public/register.html:18
+#: allianceauth/authentication/templates/public/login.html:6
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
+msgid "Login"
+msgstr "로그인"
+
+#: allianceauth/authentication/templates/public/register.html:7
+msgid "Registration"
+msgstr ""
+
+#: allianceauth/authentication/templates/public/register.html:22
+#: allianceauth/authentication/templates/registration/registration_form.html:5
 msgid "Register"
 msgstr "등록"
 
@@ -146,47 +156,47 @@ msgstr "당신의 전산팀"
 msgid "Submit"
 msgstr "제출"
 
-#: allianceauth/authentication/views.py:75
+#: allianceauth/authentication/views.py:77
 #, python-format
 msgid ""
 "Cannot change main character to %(char)s: character owned by a different "
 "account."
 msgstr "%(char)s를 주캐릭터로 변경할 수 없습니다.: 다른 계장이 해당 캐릭터를 소유하고 있습니다."
 
-#: allianceauth/authentication/views.py:81
+#: allianceauth/authentication/views.py:83
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr "주 캐릭터가 %(char)s로 변경됨"
 
-#: allianceauth/authentication/views.py:90
+#: allianceauth/authentication/views.py:92
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr "계정에 %(name)s를 추가했습니다."
 
-#: allianceauth/authentication/views.py:92
+#: allianceauth/authentication/views.py:94
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 추가된 계정입니다."
 
-#: allianceauth/authentication/views.py:131
+#: allianceauth/authentication/views.py:133
 msgid "Unable to authenticate as the selected character."
 msgstr "선택한 캐릭터로 인증을 수행할 수 없음"
 
-#: allianceauth/authentication/views.py:152
+#: allianceauth/authentication/views.py:197
 msgid "Registration token has expired."
 msgstr "등록토큰 만료"
 
-#: allianceauth/authentication/views.py:207
+#: allianceauth/authentication/views.py:252
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "확인 메일 전송됨. 다음 링크를 눌러 이메일 주소를 확인하세요."
 
-#: allianceauth/authentication/views.py:212
+#: allianceauth/authentication/views.py:257
 msgid "Confirmed your email address. Please login to continue."
 msgstr "이메일 주소가 확인되었습니다. 로그인 해주세요."
 
-#: allianceauth/authentication/views.py:217
+#: allianceauth/authentication/views.py:262
 msgid "Registration of new accounts is not allowed at this time."
 msgstr "현재 새로운 계정 등록은 받지않습니다."
 
@@ -300,16 +310,16 @@ msgstr "선택한 토큰으로 콥 통계 수집 실패"
 msgid "Fleet Activity Tracking"
 msgstr "플릿활동 추적"
 
-#: allianceauth/fleetactivitytracking/forms.py:7 allianceauth/srp/form.py:8
+#: allianceauth/fleetactivitytracking/forms.py:6 allianceauth/srp/form.py:8
 #: allianceauth/srp/templates/srp/management.html:37
 msgid "Fleet Name"
 msgstr "플릿 이름"
 
-#: allianceauth/fleetactivitytracking/forms.py:8
+#: allianceauth/fleetactivitytracking/forms.py:7
 msgid "Duration of fat-link"
 msgstr "플릿활동추적 링크 주기"
 
-#: allianceauth/fleetactivitytracking/forms.py:8
+#: allianceauth/fleetactivitytracking/forms.py:7
 msgid "minutes"
 msgstr "분"
 
@@ -382,8 +392,8 @@ msgstr "유저"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:29
 #: allianceauth/optimer/form.py:7 allianceauth/timerboard/form.py:59
 #: allianceauth/timerboard/templates/timerboard/view.html:34
-#: allianceauth/timerboard/templates/timerboard/view.html:196
-#: allianceauth/timerboard/templates/timerboard/view.html:364
+#: allianceauth/timerboard/templates/timerboard/view.html:201
+#: allianceauth/timerboard/templates/timerboard/view.html:374
 msgid "System"
 msgstr "시스템"
 
@@ -397,9 +407,10 @@ msgstr "배"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:50
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:31
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:76
+#: allianceauth/templates/allianceauth/top-menu.html:23
 #: allianceauth/timerboard/templates/timerboard/view.html:36
-#: allianceauth/timerboard/templates/timerboard/view.html:198
-#: allianceauth/timerboard/templates/timerboard/view.html:366
+#: allianceauth/timerboard/templates/timerboard/view.html:203
+#: allianceauth/timerboard/templates/timerboard/view.html:376
 msgid "Eve Time"
 msgstr "이브 시간"
 
@@ -458,8 +469,8 @@ msgstr "함대"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:74
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:17
 #: allianceauth/timerboard/templates/timerboard/view.html:38
-#: allianceauth/timerboard/templates/timerboard/view.html:200
-#: allianceauth/timerboard/templates/timerboard/view.html:368
+#: allianceauth/timerboard/templates/timerboard/view.html:205
+#: allianceauth/timerboard/templates/timerboard/view.html:378
 msgid "Creator"
 msgstr "생성자"
 
@@ -564,6 +575,7 @@ msgstr "감사 기록"
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:20
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:21
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
+#: allianceauth/timerboard/templates/timerboard/index_button.html:3
 msgid "Back"
 msgstr "돌아가기"
 
@@ -585,8 +597,8 @@ msgstr "타입"
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:18
 #: allianceauth/services/templates/services/services.html:18
 #: allianceauth/timerboard/templates/timerboard/view.html:40
-#: allianceauth/timerboard/templates/timerboard/view.html:202
-#: allianceauth/timerboard/templates/timerboard/view.html:370
+#: allianceauth/timerboard/templates/timerboard/view.html:207
+#: allianceauth/timerboard/templates/timerboard/view.html:380
 msgid "Action"
 msgstr "활동"
 
@@ -702,6 +714,19 @@ msgstr "사용 가능한 그룹"
 msgid "Leave"
 msgstr "떠나기"
 
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:34
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:49
+#: allianceauth/hrapplications/templates/hrapplications/management.html:37
+#: allianceauth/hrapplications/templates/hrapplications/management.html:70
+#: allianceauth/hrapplications/templates/hrapplications/management.html:97
+#: allianceauth/hrapplications/templates/hrapplications/management.html:141
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
+#: allianceauth/hrapplications/templates/hrapplications/view.html:20
+#: allianceauth/srp/templates/srp/data.html:138
+#: allianceauth/srp/templates/srp/management.html:81
+msgid "Pending"
+msgstr "보류 중"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:40
 msgid "Join"
 msgstr "참여하기"
@@ -753,6 +778,7 @@ msgid "No group leave requests."
 msgstr "탈퇴 요청 없음"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:9
+#: allianceauth/templates/allianceauth/top-menu.html:8
 msgid "Toggle navigation"
 msgstr "네비게이션 전환"
 
@@ -826,37 +852,24 @@ msgstr "이미 해당 그룹에 가입되어 있습니다."
 msgid "You already have a pending application for that group."
 msgstr "해당 그룹에 대한 참여신청이 보류되었습니다."
 
-#: allianceauth/groupmanagement/views.py:357
-#: allianceauth/groupmanagement/views.py:399
-#: allianceauth/hrapplications/templates/hrapplications/management.html:37
-#: allianceauth/hrapplications/templates/hrapplications/management.html:70
-#: allianceauth/hrapplications/templates/hrapplications/management.html:97
-#: allianceauth/hrapplications/templates/hrapplications/management.html:141
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
-#: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:138
-#: allianceauth/srp/templates/srp/management.html:81
-msgid "Pending"
-msgstr "보류 중"
-
-#: allianceauth/groupmanagement/views.py:363
+#: allianceauth/groupmanagement/views.py:362
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr "%(group)s그룹에 지원하였음."
 
-#: allianceauth/groupmanagement/views.py:373
+#: allianceauth/groupmanagement/views.py:372
 msgid "You cannot leave that group"
 msgstr "해당 그룹을 떠날 수 없습니다."
 
-#: allianceauth/groupmanagement/views.py:377
+#: allianceauth/groupmanagement/views.py:376
 msgid "You are not a member of that group"
 msgstr "해당그룹의 멤버가 아닙니다."
 
-#: allianceauth/groupmanagement/views.py:389
+#: allianceauth/groupmanagement/views.py:388
 msgid "You already have a pending leave request for that group."
 msgstr "해당 그룹의 탈퇴 신청이 접수된 상태입니다."
 
-#: allianceauth/groupmanagement/views.py:405
+#: allianceauth/groupmanagement/views.py:403
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr "%(group)s그룹의 탈퇴가 신청됨."
@@ -893,6 +906,7 @@ msgid "Apply To"
 msgstr "지원서 제출"
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:6
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:6
 msgid "HR Application Management"
 msgstr "지원서 관리"
 
@@ -1049,6 +1063,7 @@ msgstr ""
 
 #: allianceauth/notifications/templates/notifications/list.html:5
 #: allianceauth/notifications/templates/notifications/list.html:9
+#: allianceauth/templates/allianceauth/notifications_menu_item.html:6
 msgid "Notifications"
 msgstr "알림"
 
@@ -1146,8 +1161,8 @@ msgstr "폼업 성계"
 
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:13
 #: allianceauth/timerboard/templates/timerboard/view.html:37
-#: allianceauth/timerboard/templates/timerboard/view.html:199
-#: allianceauth/timerboard/templates/timerboard/view.html:367
+#: allianceauth/timerboard/templates/timerboard/view.html:204
+#: allianceauth/timerboard/templates/timerboard/view.html:377
 msgid "Local Time"
 msgstr "현지 시간"
 
@@ -1169,22 +1184,22 @@ msgid "Current Eve Time:"
 msgstr "현재 이브 시간:"
 
 #: allianceauth/optimer/templates/optimer/management.html:27
-#: allianceauth/timerboard/templates/timerboard/view.html:189
+#: allianceauth/timerboard/templates/timerboard/view.html:194
 msgid "Next Timers"
 msgstr "다음 옵 타이머"
 
 #: allianceauth/optimer/templates/optimer/management.html:31
-#: allianceauth/timerboard/templates/timerboard/view.html:353
+#: allianceauth/timerboard/templates/timerboard/view.html:363
 msgid "No upcoming timers."
 msgstr "예정된 옵 타이머가 없습니다."
 
 #: allianceauth/optimer/templates/optimer/management.html:34
-#: allianceauth/timerboard/templates/timerboard/view.html:357
+#: allianceauth/timerboard/templates/timerboard/view.html:367
 msgid "Past Timers"
 msgstr "이전 옵 타이머"
 
 #: allianceauth/optimer/templates/optimer/management.html:38
-#: allianceauth/timerboard/templates/timerboard/view.html:521
+#: allianceauth/timerboard/templates/timerboard/view.html:536
 msgid "No past timers."
 msgstr "최근 지나간 옵 타이머가 없습니다."
 
@@ -1263,13 +1278,50 @@ msgstr "사용자"
 msgid "States"
 msgstr "상태"
 
+#: allianceauth/project_template/project_name/settings/base.py:88
+msgid "English"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:89
+msgid "German"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:90
+msgid "Spanish"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:91
+msgid "Chinese Simplified"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:92
+msgid "Russian"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:93
+msgid "Korean"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:94
+msgid "French"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:95
+msgid "Japanese"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:96
+msgid "Italian"
+msgstr ""
+
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
 msgstr "해당 서비스계정이 이미 존재합니다."
 
 #: allianceauth/services/abstract.py:103
-msgid "Successfully set your {} password"
-msgstr "{} 비밀번호 설정 완료"
+#, python-brace-format
+msgid "Successfully set your {self.service_name} password"
+msgstr ""
 
 #: allianceauth/services/auth_hooks.py:12
 msgid "Services"
@@ -1344,6 +1396,10 @@ msgid ""
 "Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr "Auth에 의해 자동으로 디스코드 계정이 비활성화됐습니다. 원치 않는 사항일 경우, 관리자에게 문의해 주세요."
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:5
+msgid "Discord"
+msgstr ""
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
 msgid "Join the Discord server"
@@ -1522,6 +1578,10 @@ msgstr "SMF 비밀번호 설정"
 #, python-format
 msgid "Unable to locate user %s on server"
 msgstr "사용자 %s을 서버에서 찾을 수 없습니다."
+
+#: allianceauth/services/modules/teamspeak3/templates/admin/teamspeak3/authts/change_list.html:9
+msgid "Update TS3 groups"
+msgstr ""
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:6
 msgid "Verify Teamspeak"
@@ -1999,39 +2059,35 @@ msgstr ""
 msgid "Logout"
 msgstr "로그아웃"
 
-#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
-msgid "Login"
-msgstr "로그인"
-
 #: allianceauth/timerboard/form.py:53
 msgid "Other"
 msgstr "기타"
 
 #: allianceauth/timerboard/form.py:54
-#: allianceauth/timerboard/templates/timerboard/view.html:58
-#: allianceauth/timerboard/templates/timerboard/view.html:220
-#: allianceauth/timerboard/templates/timerboard/view.html:388
+#: allianceauth/timerboard/templates/timerboard/view.html:63
+#: allianceauth/timerboard/templates/timerboard/view.html:230
+#: allianceauth/timerboard/templates/timerboard/view.html:403
 msgid "Friendly"
 msgstr "우호"
 
 #: allianceauth/timerboard/form.py:55
-#: allianceauth/timerboard/templates/timerboard/view.html:53
-#: allianceauth/timerboard/templates/timerboard/view.html:215
-#: allianceauth/timerboard/templates/timerboard/view.html:383
+#: allianceauth/timerboard/templates/timerboard/view.html:58
+#: allianceauth/timerboard/templates/timerboard/view.html:225
+#: allianceauth/timerboard/templates/timerboard/view.html:398
 msgid "Hostile"
 msgstr "적대"
 
 #: allianceauth/timerboard/form.py:56
-#: allianceauth/timerboard/templates/timerboard/view.html:63
-#: allianceauth/timerboard/templates/timerboard/view.html:225
-#: allianceauth/timerboard/templates/timerboard/view.html:393
+#: allianceauth/timerboard/templates/timerboard/view.html:68
+#: allianceauth/timerboard/templates/timerboard/view.html:235
+#: allianceauth/timerboard/templates/timerboard/view.html:408
 msgid "Neutral"
 msgstr "중립"
 
 #: allianceauth/timerboard/form.py:58
 #: allianceauth/timerboard/templates/timerboard/view.html:32
-#: allianceauth/timerboard/templates/timerboard/view.html:194
-#: allianceauth/timerboard/templates/timerboard/view.html:362
+#: allianceauth/timerboard/templates/timerboard/view.html:199
+#: allianceauth/timerboard/templates/timerboard/view.html:372
 msgid "Details"
 msgstr "설명"
 
@@ -2044,31 +2100,63 @@ msgid "Structure Type"
 msgstr "스트럭처 종류"
 
 #: allianceauth/timerboard/form.py:62
+msgid "Timer Type"
+msgstr ""
+
+#: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:33
-#: allianceauth/timerboard/templates/timerboard/view.html:195
-#: allianceauth/timerboard/templates/timerboard/view.html:363
+#: allianceauth/timerboard/templates/timerboard/view.html:200
+#: allianceauth/timerboard/templates/timerboard/view.html:373
 msgid "Objective"
 msgstr "목표 대상"
 
-#: allianceauth/timerboard/form.py:63
+#: allianceauth/timerboard/form.py:64
 msgid "Days Remaining"
 msgstr "남은 일수"
 
-#: allianceauth/timerboard/form.py:64
+#: allianceauth/timerboard/form.py:65
 msgid "Hours Remaining"
 msgstr "남은 시간"
 
-#: allianceauth/timerboard/form.py:66
+#: allianceauth/timerboard/form.py:67
 msgid "Minutes Remaining"
 msgstr "남은 분"
 
-#: allianceauth/timerboard/form.py:68
+#: allianceauth/timerboard/form.py:69
 msgid "Important"
 msgstr "중요"
 
-#: allianceauth/timerboard/form.py:69
+#: allianceauth/timerboard/form.py:70
 msgid "Corp-Restricted"
 msgstr "콥 제한"
+
+#: allianceauth/timerboard/models.py:14
+msgid "Not Specified"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:15
+msgid "Shield"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:16
+msgid "Armor"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:17
+msgid "Hull"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:18
+msgid "Final"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:19
+msgid "Anchoring"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:20
+msgid "Unanchoring"
+msgstr ""
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"
@@ -2108,8 +2196,8 @@ msgid "Corp Timers"
 msgstr "콥 타이머"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:35
-#: allianceauth/timerboard/templates/timerboard/view.html:197
-#: allianceauth/timerboard/templates/timerboard/view.html:365
+#: allianceauth/timerboard/templates/timerboard/view.html:202
+#: allianceauth/timerboard/templates/timerboard/view.html:375
 msgid "Structure"
 msgstr "스트럭처"
 
