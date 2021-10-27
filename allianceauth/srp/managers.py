@@ -5,7 +5,7 @@ import requests
 from django.contrib.auth.models import User
 
 from allianceauth import NAME
-from allianceauth.eveonline.providers import provider
+from allianceauth.srp.providers import esi
 
 from .models import SrpUserRequest
 
@@ -32,8 +32,7 @@ class SRPManager:
         if result:
             killmail_id = result['killmail_id']
             killmail_hash = result['zkb']['hash']
-            c = provider.client
-            km = c.Killmails.get_killmails_killmail_id_killmail_hash(
+            km = esi.client.Killmails.get_killmails_killmail_id_killmail_hash(
                 killmail_id=killmail_id,
                 killmail_hash=killmail_hash
             ).result()
