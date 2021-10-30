@@ -15,14 +15,14 @@ install_requires = [
     'python-slugify>=1.2',
     'requests-oauthlib',
     'semantic_version',
-    'packaging>=20.1,<21',
+    'packaging>=21.0,<22',
     'beautifulsoup4',
 
     'redis>=3.3.1,<4.0.0',
     'celery>=4.3.0,<6.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once>=2.0.1',
 
-    'django>=3.2.7,<4.0.0',
+    'django>=3.2.8,<4.0.0',
     'django-bootstrap-form',
     'django-registration>=3.1',
     'django-sortedm2m',
