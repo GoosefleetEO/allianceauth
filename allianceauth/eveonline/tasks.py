@@ -49,7 +49,6 @@ def run_model_update():
     for alliance in EveAllianceInfo.objects.all().values('alliance_id'):
         update_alliance.apply_async(args=[alliance['alliance_id']], priority=TASK_PRIORITY)
 
-    #update existing character models if required
     # update existing character models
     character_ids = EveCharacter.objects.all().values_list('character_id', flat=True)
     for character_ids_chunk in chunks(character_ids, CHUNK_SIZE):
@@ -67,7 +66,7 @@ def update_character_chunk(character_ids_chunk: list):
         character_names = providers.provider.client.Universe\
             .post_universe_names(ids=character_ids_chunk).result()
     except:
-        logger.error("Failed to bulk update characters. Attempting single updates")
+        logger.info("Failed to bulk update characters. Attempting single updates")
         for character_id in character_ids_chunk:
             update_character.apply_async(
                         args=[character_id], priority=TASK_PRIORITY
