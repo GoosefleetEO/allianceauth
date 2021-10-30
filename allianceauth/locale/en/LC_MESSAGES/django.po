@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-26 18:36+1000\n"
+"POT-Creation-Date: 2021-10-30 14:36+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,12 +34,12 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: allianceauth/authentication/models.py:74
+#: allianceauth/authentication/models.py:79
 #, python-format
 msgid "State changed to: %s"
 msgstr ""
 
-#: allianceauth/authentication/models.py:75
+#: allianceauth/authentication/models.py:80
 #, python-format
 msgid "Your user's state is now: %(state)s"
 msgstr ""
@@ -58,29 +58,29 @@ msgid ""
 "                            "
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:81
+#: allianceauth/authentication/templates/authentication/dashboard.html:102
 msgid "No main character set."
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:109
 msgid "Add Character"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:92
+#: allianceauth/authentication/templates/authentication/dashboard.html:113
 msgid "Change Main"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:101
+#: allianceauth/authentication/templates/authentication/dashboard.html:122
 msgid "Group Memberships"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:121
+#: allianceauth/authentication/templates/authentication/dashboard.html:142
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:129
+#: allianceauth/authentication/templates/authentication/dashboard.html:150
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -89,13 +89,13 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:130
+#: allianceauth/authentication/templates/authentication/dashboard.html:151
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:131
+#: allianceauth/authentication/templates/authentication/dashboard.html:152
 #: allianceauth/corputils/templates/corputils/corpstats.html:76
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
