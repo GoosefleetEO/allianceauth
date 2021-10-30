@@ -24,14 +24,14 @@
             <br  />
         </div>
 
-        <h4><b>{% translate "Next Timers" %}</b></h4>
+        <h4><b>{% translate "Next Fleet Operations" %}</b></h4>
         {% if future_timers %}
             {% include "optimer/fleetoptable.html" with timers=future_timers %}
         {% else %}
             <div class="alert alert-warning text-center">{% translate "No upcoming timers." %}</div>
         {% endif %}
 
-        <h4><b>{% translate "Past Timers" %}</b></h4>
+        <h4><b>{% translate "Past Fleet Operations" %}</b></h4>
         {% if past_timers %}
             {% include "optimer/fleetoptable.html" with timers=past_timers %}
         {% else %}
