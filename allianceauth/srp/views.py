@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Sum
 from allianceauth.authentication.decorators import permissions_required
-from allianceauth.eveonline.providers import provider
+from allianceauth.srp.providers import esi
 from allianceauth.notifications import notify
 from .form import SrpFleetMainForm
 from .form import SrpFleetMainUpdateForm
@@ -201,7 +201,8 @@ def srp_request_view(request, fleet_srp):
                 return redirect("srp:management")
 
             if request.user.character_ownerships.filter(character__character_id=str(victim_id)).exists():
-                srp_request.srp_ship_name = provider.get_itemtype(ship_type_id).name
+                item_type = esi.client.Universe.get_universe_types_type_id(type_id=ship_type_id).result()
+                srp_request.srp_ship_name = item_type['name']
                 srp_request.kb_total_loss = ship_value
                 srp_request.post_time = post_time
                 srp_request.save()
