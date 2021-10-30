@@ -2,12 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # François LACROIX-DURANT <umbre@fallenstarscreations.com>, 2020
 # Philippe Querin-Laporte <philippe.querin@hotmail.com>, 2020
 # Keven D. <theenarki@gmail.com>, 2020
-# 
+# Idea ., 2021
+# Mickael PATTE, 2021
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 18:36+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Keven D. <theenarki@gmail.com>, 2020\n"
+"Last-Translator: Mickael PATTE, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/alliance-auth/teams/107430/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,7 +71,7 @@ msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:81
 msgid "No main character set."
-msgstr "Aucun personnage principal choisi."
+msgstr "Aucun personnage principal sélectionné."
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:88
 msgid "Add Character"
@@ -77,7 +79,7 @@ msgstr "Ajouter un Personnage"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:92
 msgid "Change Main"
-msgstr "Changer Personnage Principal"
+msgstr "Changer de Personnage Principal"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "Group Memberships"
@@ -580,7 +582,7 @@ msgstr "Gestion de groupe"
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:14
 msgid "Audit Log"
-msgstr ""
+msgstr "Journal d'audit"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:20
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:21
@@ -618,11 +620,11 @@ msgstr "Acteur"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:47
 msgid "Removed"
-msgstr ""
+msgstr "Supprimé"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:59
 msgid "All times displayed are EVE/UTC."
-msgstr ""
+msgstr "Toutes les heures affichées sont EVE/UTC."
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:66
 msgid "No entries found for this group."
@@ -642,13 +644,13 @@ msgstr "Organisation"
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:50
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:76
 msgid "Group leader"
-msgstr ""
+msgstr "Chef de groupe"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:61
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:80
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:136
 msgid "(unknown)"
-msgstr ""
+msgstr "(inconnu)"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:66
 msgid "Remove from group"
@@ -1061,19 +1063,19 @@ msgstr "Ajouter un Commentaire"
 
 #: allianceauth/notifications/models.py:21
 msgid "danger"
-msgstr ""
+msgstr "danger"
 
 #: allianceauth/notifications/models.py:22
 msgid "warning"
-msgstr ""
+msgstr "attention"
 
 #: allianceauth/notifications/models.py:23
 msgid "info"
-msgstr ""
+msgstr "information"
 
 #: allianceauth/notifications/models.py:24
 msgid "success"
-msgstr ""
+msgstr "succès"
 
 #: allianceauth/notifications/templates/notifications/list.html:5
 #: allianceauth/notifications/templates/notifications/list.html:9
@@ -1134,7 +1136,7 @@ msgstr "Impossible de trouver l'alerte."
 
 #: allianceauth/notifications/views.py:83
 msgid "Marked all notifications as read."
-msgstr ""
+msgstr "Toutes les notifications ont été marquées comme lues."
 
 #: allianceauth/notifications/views.py:91
 msgid "Deleted all read notifications."
@@ -1182,7 +1184,7 @@ msgstr "Heure Locale"
 
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:15
 msgid "FC"
-msgstr ""
+msgstr "Commandant de flotte"
 
 #: allianceauth/optimer/templates/optimer/management.html:6
 msgid "Fleet Operation Management"
@@ -1294,39 +1296,39 @@ msgstr "États"
 
 #: allianceauth/project_template/project_name/settings/base.py:88
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #: allianceauth/project_template/project_name/settings/base.py:89
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #: allianceauth/project_template/project_name/settings/base.py:90
 msgid "Spanish"
-msgstr ""
+msgstr "Espagnol"
 
 #: allianceauth/project_template/project_name/settings/base.py:91
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "Chinois simplifié"
 
 #: allianceauth/project_template/project_name/settings/base.py:92
 msgid "Russian"
-msgstr ""
+msgstr "Russe"
 
 #: allianceauth/project_template/project_name/settings/base.py:93
 msgid "Korean"
-msgstr ""
+msgstr "Coréen"
 
 #: allianceauth/project_template/project_name/settings/base.py:94
 msgid "French"
-msgstr ""
+msgstr "Français"
 
 #: allianceauth/project_template/project_name/settings/base.py:95
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #: allianceauth/project_template/project_name/settings/base.py:96
 msgid "Italian"
-msgstr ""
+msgstr "Italien"
 
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
@@ -1335,7 +1337,7 @@ msgstr "Ce compte de service existe déjà."
 #: allianceauth/services/abstract.py:103
 #, python-brace-format
 msgid "Successfully set your {self.service_name} password"
-msgstr ""
+msgstr "Mot de passe {} créé avec succès."
 
 #: allianceauth/services/auth_hooks.py:12
 msgid "Services"
@@ -1415,7 +1417,7 @@ msgstr ""
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:5
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
 msgid "Join the Discord server"
@@ -1603,15 +1605,15 @@ msgstr "%s non trouvé sur le serveur."
 
 #: allianceauth/services/modules/teamspeak3/templates/admin/teamspeak3/authts/change_list.html:9
 msgid "Update TS3 groups"
-msgstr ""
+msgstr "Mise à jour des groupes TS3"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:6
 msgid "Verify Teamspeak"
-msgstr ""
+msgstr "Vérifier Teamspeak"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:11
 msgid "Verify Teamspeak Identity"
-msgstr ""
+msgstr "Vérifier l'identité Teamspeak"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:14
 msgid "Join Server"
@@ -1639,18 +1641,18 @@ msgstr "Compte TeamSpeak3 désactivé"
 
 #: allianceauth/services/modules/teamspeak3/views.py:97
 msgid "Reset TeamSpeak3 permission key."
-msgstr ""
+msgstr "Réinitialisez la clé d'autorisation TeamSpeak3."
 
 #: allianceauth/services/modules/xenforo/views.py:30
 msgid "Activated XenForo account."
-msgstr ""
+msgstr "Compte XenForo activé"
 
 #: allianceauth/services/modules/xenforo/views.py:40
 #: allianceauth/services/modules/xenforo/views.py:52
 #: allianceauth/services/modules/xenforo/views.py:73
 #: allianceauth/services/modules/xenforo/views.py:94
 msgid "An error occurred while processing your XenForo account."
-msgstr ""
+msgstr "Une erreur est survenue durant la gestion de votre compte XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:50
 msgid "Deactivated XenForo account."
@@ -1716,7 +1718,7 @@ msgstr ""
 
 #: allianceauth/services/templates/services/services.html:10
 msgid "Available Services"
-msgstr ""
+msgstr "Services disponibles"
 
 #: allianceauth/services/templates/services/services.html:15
 msgid "Service"
@@ -1746,15 +1748,15 @@ msgstr "Information additionnelle"
 
 #: allianceauth/srp/form.py:16
 msgid "Killboard Link (zkillboard.com or kb.evetools.org)"
-msgstr ""
+msgstr "Lien ZkillBoard ()"
 
 #: allianceauth/srp/form.py:34
 msgid "Invalid Link. Please use zkillboard.com or kb.evetools.org"
-msgstr ""
+msgstr "Lien non valide. Veuillez utiliser zkillboard.com ou kb.evetools.org"
 
 #: allianceauth/srp/form.py:46
 msgid "Invalid Link. Please post a direct link to a killmail."
-msgstr ""
+msgstr "Lien non valide. Veuillez poster un lien direct vers un Killmail."
 
 #: allianceauth/srp/form.py:53
 msgid "After Action Report Link"
@@ -1762,12 +1764,12 @@ msgstr ""
 
 #: allianceauth/srp/templates/srp/add.html:6
 msgid "SRP Fleet Create"
-msgstr ""
+msgstr "SRP de flotte crée"
 
 #: allianceauth/srp/templates/srp/add.html:14
 #: allianceauth/srp/templates/srp/add.html:24
 msgid "Create SRP Fleet"
-msgstr ""
+msgstr "Créer SRP de flotte"
 
 #: allianceauth/srp/templates/srp/add.html:27
 msgid "Give this link to the line members"
@@ -1775,15 +1777,15 @@ msgstr "Donner ce lien aux membres de la flotte"
 
 #: allianceauth/srp/templates/srp/data.html:52
 msgid "SRP Fleet Data"
-msgstr ""
+msgstr "Données de flotte SRP"
 
 #: allianceauth/srp/templates/srp/data.html:57
 msgid "Mark Incomplete"
-msgstr ""
+msgstr "Marquer incomplet"
 
 #: allianceauth/srp/templates/srp/data.html:61
 msgid "Mark Completed"
-msgstr ""
+msgstr "Marquer Complet"
 
 #: allianceauth/srp/templates/srp/data.html:73
 #: allianceauth/srp/templates/srp/data.html:160
@@ -1799,7 +1801,7 @@ msgstr "Coût en ISK total:"
 #: allianceauth/srp/templates/srp/data.html:82
 #: allianceauth/srp/templates/srp/data.html:169
 msgid "Are you sure you want to delete SRP requests?"
-msgstr ""
+msgstr "Êtes-vous sûr de vouloir supprimer la requête de SRP ?"
 
 #: allianceauth/srp/templates/srp/data.html:91
 msgid "Pilot Name"
@@ -1819,11 +1821,13 @@ msgstr "Valeur des pertes zKillboard"
 
 #: allianceauth/srp/templates/srp/data.html:96
 msgid "SRP ISK Cost"
-msgstr ""
+msgstr "Coût en ISK SRP"
 
 #: allianceauth/srp/templates/srp/data.html:97
 msgid "Click value to edit Enter to save & next ESC to cancel"
 msgstr ""
+"Cliquez sur la valeur pour modifier, Entrée pour enregistrer & Échap pour "
+"annuler"
 
 #: allianceauth/srp/templates/srp/data.html:100
 msgid "Post Time"
@@ -2045,11 +2049,13 @@ msgstr ""
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:76
 msgid "Task Queue"
-msgstr ""
+msgstr "File d'attente des tâches"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:93
 msgid "Error retrieving task queue length"
 msgstr ""
+"Erreur lors de la récupération de la longueur de la file d'attente des "
+"tâches"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
 #, python-format
@@ -2060,7 +2066,7 @@ msgstr[1] ""
 
 #: allianceauth/templates/allianceauth/night-toggle.html:6
 msgid "Night Mode"
-msgstr ""
+msgstr "Mode Nuit"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
 msgid "Admin"
@@ -2077,7 +2083,7 @@ msgstr ""
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:10
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:14
 msgid "User Menu"
-msgstr ""
+msgstr "Menu Utilisateur"
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:56
 msgid "Logout"
@@ -2125,7 +2131,7 @@ msgstr "Type de structure"
 
 #: allianceauth/timerboard/form.py:62
 msgid "Timer Type"
-msgstr ""
+msgstr "Type de timer"
 
 #: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:33
@@ -2156,31 +2162,31 @@ msgstr "Limité à la Corporation"
 
 #: allianceauth/timerboard/models.py:14
 msgid "Not Specified"
-msgstr ""
+msgstr "Non Spécifié"
 
 #: allianceauth/timerboard/models.py:15
 msgid "Shield"
-msgstr ""
+msgstr "Bouclier"
 
 #: allianceauth/timerboard/models.py:16
 msgid "Armor"
-msgstr ""
+msgstr "Armure"
 
 #: allianceauth/timerboard/models.py:17
 msgid "Hull"
-msgstr ""
+msgstr "Coque"
 
 #: allianceauth/timerboard/models.py:18
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 #: allianceauth/timerboard/models.py:19
 msgid "Anchoring"
-msgstr ""
+msgstr "Ancrage"
 
 #: allianceauth/timerboard/models.py:20
 msgid "Unanchoring"
-msgstr ""
+msgstr "Désancrage"
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"

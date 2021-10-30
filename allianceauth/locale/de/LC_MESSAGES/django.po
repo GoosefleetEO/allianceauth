@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Erik Kalkoken <erik.kalkoken@gmail.com>, 2020
-# Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2021
 # Joel Falknau <ozirascal@gmail.com>, 2021
-# 
+# Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2021
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-26 18:36+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2021\n"
+"Last-Translator: Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2021\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2132,7 +2132,7 @@ msgstr "Strukturen Typ"
 
 #: allianceauth/timerboard/form.py:62
 msgid "Timer Type"
-msgstr ""
+msgstr "Timer Typ"
 
 #: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:33
@@ -2163,15 +2163,15 @@ msgstr "Auf Corp beschränkt"
 
 #: allianceauth/timerboard/models.py:14
 msgid "Not Specified"
-msgstr ""
+msgstr "Keine Angabe"
 
 #: allianceauth/timerboard/models.py:15
 msgid "Shield"
-msgstr ""
+msgstr "Schild"
 
 #: allianceauth/timerboard/models.py:16
 msgid "Armor"
-msgstr ""
+msgstr "Panzerung"
 
 #: allianceauth/timerboard/models.py:17
 msgid "Hull"
@@ -2179,15 +2179,15 @@ msgstr "Hülle"
 
 #: allianceauth/timerboard/models.py:18
 msgid "Final"
-msgstr ""
+msgstr "Final"
 
 #: allianceauth/timerboard/models.py:19
 msgid "Anchoring"
-msgstr ""
+msgstr "Ankernd"
 
 #: allianceauth/timerboard/models.py:20
 msgid "Unanchoring"
-msgstr ""
+msgstr "Entankernd"
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"
