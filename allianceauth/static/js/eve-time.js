@@ -23,7 +23,6 @@ $(document).ready(function () {
         let today = new Date();
         let h = today.getUTCHours();
         let m = today.getUTCMinutes();
-        let s = today.getUTCSeconds();
 
         h = h + utcOffset;
 
@@ -37,10 +36,8 @@ $(document).ready(function () {
 
         h = checkTime(h);
         m = checkTime(m);
-        s = checkTime(s);
 
-        // document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
-        element.html(h + ':' + m + ':' + s);
+        element.html(h + ':' + m);
 
         setTimeout(function () {
             renderClock(element, 0);
