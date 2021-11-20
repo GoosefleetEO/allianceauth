@@ -14,8 +14,8 @@ class GroupManager:
 
     @classmethod
     def get_joinable_groups_for_user(
-        cls, user: User, include_hidden = True
-    ) -> QuerySet:
+        cls, user: User, include_hidden=True
+    ) -> QuerySet[Group]:
         """get groups a user could join incl. groups already joined"""
         groups_qs = cls.get_joinable_groups(user.profile.state)
 
@@ -28,24 +28,27 @@ class GroupManager:
         return groups_qs
 
     @staticmethod
-    def get_joinable_groups(state: State) -> QuerySet:
+    def get_joinable_groups(state: State) -> QuerySet[Group]:
         """get groups that can be joined by user with given state"""
-        return Group.objects\
-            .select_related('authgroup')\
-            .exclude(authgroup__internal=True)\
-            .filter(Q(authgroup__states=state) | Q(authgroup__states=None))
-
-    @staticmethod
-    def get_all_non_internal_groups() -> QuerySet:
-        """get groups that are not internal"""
-        return Group.objects\
-            .select_related('authgroup')\
+        return (
+            Group.objects
             .exclude(authgroup__internal=True)
+            .filter(Q(authgroup__states=state) | Q(authgroup__states=None))
+        )
 
     @staticmethod
-    def get_group_leaders_groups(user: User):
-        return Group.objects.select_related('authgroup').filter(authgroup__group_leaders__in=[user]) | \
-            Group.objects.select_related('authgroup').filter(authgroup__group_leader_groups__in=user.groups.all())
+    def get_all_non_internal_groups() -> QuerySet[Group]:
+        """get groups that are not internal"""
+        return Group.objects.exclude(authgroup__internal=True)
+
+    @staticmethod
+    def get_group_leaders_groups(user: User) -> QuerySet[Group]:
+        return (
+            Group.objects.filter(authgroup__group_leaders=user)
+            | Group.objects.filter(
+                authgroup__group_leader_groups__in=list(user.groups.all())
+            )
+        )
 
     @staticmethod
     def joinable_group(group: Group, state: State) -> bool:
@@ -57,12 +60,12 @@ class GroupManager:
         :param state: allianceauth.authentication.State object
         :return: bool True if its joinable, False otherwise
         """
-        if (len(group.authgroup.states.all()) != 0
+        if (
+            len(group.authgroup.states.all()) != 0
             and state not in group.authgroup.states.all()
         ):
             return False
-        else:
-            return not group.authgroup.internal
+        return not group.authgroup.internal
 
     @staticmethod
     def check_internal_group(group: Group) -> bool:
@@ -78,7 +81,7 @@ class GroupManager:
         return user.has_perm('auth.group_management')
 
     @classmethod
-    def can_manage_groups(cls, user:User ) -> bool:
+    def can_manage_groups(cls, user:User) -> bool:
         """
         For use with user_passes_test decorator.
         Check if the user can manage groups. Either has the
@@ -88,7 +91,10 @@ class GroupManager:
         :return: bool True if user can manage groups, False otherwise
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or cls.get_group_leaders_groups(user)
+            return (
+                cls.has_management_permission(user)
+                or cls.get_group_leaders_groups(user)
+            )
         return False
 
     @classmethod
@@ -100,19 +106,19 @@ class GroupManager:
         :return: True if the user can manage the group
         """
         if user.is_authenticated:
-            return cls.has_management_permission(user) or cls.get_group_leaders_groups(user).filter(pk=group.pk).exists()
+            return (
+                cls.has_management_permission(user)
+                or cls.get_group_leaders_groups(user).filter(pk=group.pk).exists()
+            )
         return False
 
     @classmethod
     def pending_requests_count_for_user(cls, user: User) -> int:
         """Returns the number of pending group requests for the given user"""
-
         if cls.has_management_permission(user):
             return GroupRequest.objects.all().count()
-        else:
-            return (
-                GroupRequest.objects
-                .filter(group__authgroup__group_leaders__exact=user)
-                .select_related("group__authgroup__group_leaders")
-                .count()
-            )
+        return (
+            GroupRequest.objects
+            .filter(group__in=list(cls.get_group_leaders_groups(user)))
+            .count()
+        )
