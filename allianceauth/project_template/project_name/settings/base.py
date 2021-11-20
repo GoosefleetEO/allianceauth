@@ -167,7 +167,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Bootstrap messaging css workaround
 MESSAGE_TAGS = {
-    messages.ERROR: 'danger'
+    messages.ERROR: 'danger error'
 }
 
 CACHES = {
