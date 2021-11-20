@@ -35,6 +35,19 @@ Group leaders have the same abilities as users with the `group_management` permi
 
 This allows you to more finely control who has access to manage which groups.
 
+## Settings
+
+Here is a list of available settings for Group Management. They can be configured by adding them to your AA settings file (``local.py``).
+Note that all settings are optional and the app will use the documented default settings if they are not used.
+
+```eval_rst
++---------------------------------------------+---------------------------------------------------------------------------+------------+
+| Name                                        | Description                                                               | Default    |
++=============================================+===========================================================================+============+
+| ``GROUPMANAGEMENT_REQUESTS_NOTIFICATION``   | Send Auth notifications to all group leaders for join and leave requests. | ``False``  |
++---------------------------------------------+---------------------------------------------------------------------------+------------+
+```
+
 ## Permissions
 
 Group Management should be mostly done using group leaders, a series of permissions are included below for thoroughness.

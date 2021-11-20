@@ -359,6 +359,7 @@ def group_request_add(request, group_id):
     grouprequest.leave_request = False
     grouprequest.save()
     logger.info(f"Created group request for user {request.user} to group {Group.objects.get(id=group_id)}")
+    grouprequest.notify_leaders()
     messages.success(request, _('Applied to group %(group)s.') % {"group": group})
     return redirect("groupmanagement:groups")
 
@@ -400,5 +401,6 @@ def group_request_leave(request, group_id):
     grouprequest.leave_request = True
     grouprequest.save()
     logger.info(f"Created group leave request for user {request.user} to group {Group.objects.get(id=group_id)}")
+    grouprequest.notify_leaders()
     messages.success(request, _('Applied to leave group %(group)s.') % {"group": group})
     return redirect("groupmanagement:groups")
