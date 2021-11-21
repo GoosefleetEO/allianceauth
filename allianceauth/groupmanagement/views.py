@@ -388,7 +388,7 @@ def group_request_leave(request, group_id):
         logger.info(f"{request.user} attempted to leave {group} but already has an pending leave request.")
         messages.warning(request, _("You already have a pending leave request for that group."))
         return redirect("groupmanagement:groups")
-    if getattr(settings, 'AUTO_LEAVE', False):
+    if getattr(settings, 'GROUPMANAGEMENT_AUTO_LEAVE', False):
         logger.info(f"{request.user} leaving joinable group {group} due to auto_leave")
         request_info = request.user.username + ":" + group.name
         log = RequestLog(request_type=True, group=group, request_info=request_info, action=1, request_actor=request.user)
