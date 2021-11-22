@@ -164,6 +164,7 @@ def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES) -> list:
             request = requests.get(
                 url, params={'page': page}, timeout=REQUESTS_TIMEOUT
             )
+            request.raise_for_status()
         except requests.exceptions.RequestException as e:
             error_str = str(e)
 
