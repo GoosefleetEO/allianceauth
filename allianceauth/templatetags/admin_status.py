@@ -168,7 +168,7 @@ def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES) -> list:
         except requests.exceptions.RequestException as e:
             error_str = str(e)
 
-            logger.error(
+            logger.warning(
                 f'Unable to fetch from GitLab API. Error: {error_str}',
                 exc_info=True,
             )
