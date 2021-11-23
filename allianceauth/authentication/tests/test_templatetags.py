@@ -1,6 +1,7 @@
 from math import ceil
 from unittest.mock import patch
 
+import requests
 import requests_mock
 from packaging.version import Version as Pep440Version
 
@@ -307,3 +308,9 @@ class TestFetchListFromGitlab(TestCase):
         result = _fetch_list_from_gitlab(self.url, max_pages=max_pages)
         self.assertEqual(result, GITHUB_TAGS[:4])
         self.assertEqual(requests_mocker.call_count, max_pages)
+
+    @requests_mock.mock()
+    def test_can_handle_connection_timeout(self, requests_mocker):
+        requests_mocker.get(self.url, exc=requests.exceptions.ConnectTimeout)
+        with self.assertRaises(requests.exceptions.ConnectTimeout):
+            result = _fetch_list_from_gitlab(self.url)
