@@ -39,7 +39,6 @@ install_requires = [
 testing_extras = [
     'coverage>=4.3.1',
     'requests-mock>=1.2.0',
-    'django-nose',
     'django-webtest',
 ]
 
@@ -80,6 +79,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
