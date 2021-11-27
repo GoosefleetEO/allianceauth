@@ -48,12 +48,3 @@ When a user loses this permission, they will be removed from all groups _except_
 .. note::
     By default, the ``groupmanagement.request_groups`` permission is applied to the ``Member`` group. In most instances this, and perhaps adding it to the ``Blue`` group, should be all that is ever needed. It is unsupported and NOT advisable to apply this permission to a public group. See #697 for more information.
 ```
-
-### Auto Leave
-
-By default in AA, Both requests and leaves for non-open groups must be approved by a group manager. If you wish to allow users to leave groups without requiring approvals, add the following lines to your `local.py`
-
-```python
-## Allows users to freely leave groups without requiring approval.
-AUTO_LEAVE = True
-```

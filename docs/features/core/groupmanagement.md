@@ -41,11 +41,13 @@ Here is a list of available settings for Group Management. They can be configure
 Note that all settings are optional and the app will use the documented default settings if they are not used.
 
 ```eval_rst
-+---------------------------------------------+---------------------------------------------------------------------------+------------+
-| Name                                        | Description                                                               | Default    |
-+=============================================+===========================================================================+============+
-| ``GROUPMANAGEMENT_REQUESTS_NOTIFICATION``   | Send Auth notifications to all group leaders for join and leave requests. | ``False``  |
-+---------------------------------------------+---------------------------------------------------------------------------+------------+
++---------------------------------------------+-------------------------------------------------------------------------------------------+------------+
+| Name                                        | Description                                                                               | Default    |
++=============================================+===========================================================================================+============+
+| ``GROUPMANAGEMENT_AUTO_LEAVE``              | Group members can leave their group without needing confirmation from their group leaders | ``False``  |
++---------------------------------------------+-------------------------------------------------------------------------------------------+------------+
+| ``GROUPMANAGEMENT_REQUESTS_NOTIFICATION``   | Send Auth notifications to all group leaders for join and leave requests.                 | ``False``  |
++---------------------------------------------+-------------------------------------------------------------------------------------------+------------+
 ```
 
 ## Permissions
