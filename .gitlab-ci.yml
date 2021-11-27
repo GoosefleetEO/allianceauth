@@ -65,6 +65,15 @@ test-3.9-core:
     reports:
       cobertura: coverage.xml
 
+test-3.10-core:
+  image: python:3.10-bullseye
+  script:
+  - tox -e py310-core
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+
 test-3.7-all:
   image: python:3.7-bullseye
   script:
@@ -92,9 +101,18 @@ test-3.9-all:
     reports:
       cobertura: coverage.xml
 
+test-3.10-all:
+  image: python:3.10-bullseye
+  script:
+  - tox -e py310-all
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+
 deploy_production:
   stage: deploy
-  image: python:3.9-bullseye
+  image: python:3.10-bullseye
 
   before_script:
     - pip install twine wheel
