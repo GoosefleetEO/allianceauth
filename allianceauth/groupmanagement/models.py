@@ -4,8 +4,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from allianceauth.authentication.models import State
@@ -181,18 +180,35 @@ class AuthGroup(models.Model):
         )
 
 
-@receiver(post_save, sender=Group)
-def create_auth_group(sender, instance, created, **kwargs):
-    """
-    Creates the AuthGroup model when a group is created
-    """
-    if created:
-        AuthGroup.objects.create(group=instance)
+class ReservedGroupName(models.Model):
+    """Name that can not be used for groups.
 
+    This enables AA to ignore groups on other services (e.g. Discord) with that name.
+    """
+    name = models.CharField(
+        _('name'),
+        max_length=150,
+        unique=True,
+        help_text=_("Name that can not be used for groups.")
+    )
+    reason = models.TextField(
+        _('reason'), help_text=_("Reason why this name is reserved.")
+    )
+    created_by = models.CharField(
+        _('created by'),
+        max_length=255,
+        help_text="Name of the user who created this entry."
+    )
+    created_at = models.DateTimeField(
+        _('created at'), default=now, help_text=_("Date when this entry was created")
+    )
 
-@receiver(post_save, sender=Group)
-def save_auth_group(sender, instance, **kwargs):
-    """
-    Ensures AuthGroup model is saved automatically
-    """
-    instance.authgroup.save()
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args, **kwargs) -> None:
+        if Group.objects.filter(name__iexact=self.name).exists():
+            raise RuntimeError(
+                f"Save failed. There already exists a group with the name: {self.name}."
+            )
+        super().save(*args, **kwargs)

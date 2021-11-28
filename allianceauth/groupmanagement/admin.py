@@ -1,14 +1,18 @@
+from django import forms
 from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.contrib import admin
 from django.contrib.auth.models import Group as BaseGroup, User
+from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.db.models.functions import Lower
 from django.db.models.signals import pre_save, post_save, pre_delete, \
     post_delete, m2m_changed
 from django.dispatch import receiver
+from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 
-from .models import AuthGroup
+from .models import AuthGroup, ReservedGroupName
 from .models import GroupRequest
 
 if 'eve_autogroups' in apps.app_configs:
@@ -70,8 +74,7 @@ if _has_auto_groups:
                     managedalliancegroup__isnull=True,
                     managedcorpgroup__isnull=True
                 )
-            else:
-                return queryset
+            return queryset
 
 
 class HasLeaderFilter(admin.SimpleListFilter):
@@ -90,11 +93,22 @@ class HasLeaderFilter(admin.SimpleListFilter):
             return queryset.filter(authgroup__group_leaders__isnull=False)
         elif value == 'no':
             return queryset.filter(authgroup__group_leaders__isnull=True)
-        else:
-            return queryset
+        return queryset
+
+
+class GroupAdminForm(forms.ModelForm):
+    def clean_name(self):
+        my_name = self.cleaned_data['name']
+        if ReservedGroupName.objects.filter(name__iexact=my_name).exists():
+            raise ValidationError(
+                _("This name has been reserved and can not be used for groups."),
+                code='reserved_name'
+            )
+        return my_name
 
 
 class GroupAdmin(admin.ModelAdmin):
+    form = GroupAdminForm
     list_select_related = ('authgroup',)
     ordering = ('name',)
     list_display = (
@@ -207,6 +221,41 @@ class GroupRequestAdmin(admin.ModelAdmin):
 
     _leave_request.short_description = 'is leave request'
     _leave_request.boolean = True
+
+
+class ReservedGroupNameAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['created_by'].initial = self.current_user.username
+        self.fields['created_at'].initial = _("(auto)")
+
+    created_by = forms.CharField(disabled=True)
+    created_at = forms.CharField(disabled=True)
+
+    def clean_name(self):
+        my_name = self.cleaned_data['name'].lower()
+        if Group.objects.filter(name__iexact=my_name).exists():
+            raise ValidationError(
+                _("There already exists a group with that name."), code='already_exists'
+            )
+        return my_name
+
+    def clean_created_at(self):
+        return now()
+
+
+@admin.register(ReservedGroupName)
+class ReservedGroupNameAdmin(admin.ModelAdmin):
+    form = ReservedGroupNameAdminForm
+    list_display = ("name", "created_by", "created_at")
+
+    def get_form(self, request, *args, **kwargs):
+        form = super().get_form(request, *args, **kwargs)
+        form.current_user = request.user
+        return form
+
+    def has_change_permission(self, *args, **kwargs) -> bool:
+        return False
 
 
 @receiver(pre_save, sender=Group)
