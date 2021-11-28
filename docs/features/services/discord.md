@@ -92,6 +92,28 @@ If you want users to have their Discord nickname changed to their in-game charac
 
 Once users link their accounts you’ll notice Roles get populated on Discord. These are the equivalent to groups on every other service. The default permissions should be enough for members to use text and audio communications. Add more permissions to the roles as desired through the server management window.
 
+By default Alliance Auth is taking over full control of role assignments on Discord. This means that users on Discord can in general only have roles that correlate to groups on Auth. However, there are two exceptions to this rule.
+
+### Internal Discord roles
+
+First, users will keep their so called "Discord managed roles". Those are internal roles created by Discord e.g. for Nitro.
+
+### Excluding roles from being managed by Auth
+
+Second, it is possible to exclude Discord roles from being managed by Auth at all. This can be useful if you have other bots on your Discord server that are using their own roles and which would otherwise conflict with Auth. This would also allow you to manage a role manually on Discord if you so chose.
+
+To exclude roles from being managed by Auth you only have to add them to the list of reserved group names in Group Management.
+
+```eval_rst
+.. note::
+    Role names on Discord are case sensitive, while reserved group names on Auth are not. Therefore reserved group names will cover all roles regardless of their case. For example if you have reserved the group name "alpha", then the Discord roles "alpha" and "Alpha" will both be persisted.
+```
+
+```eval_rst
+.. seealso::
+    For more information see :ref:`ref-reserved-group-names`.
+```
+
 ## Tasks
 
 The Discord service contains a number of tasks that can be run to manually perform updates to all users.
@@ -159,7 +181,7 @@ This indicates your callback URL doesn't match. Ensure the `DISCORD_CALLBACK_URL
 
 ### "Add/Remove" Errors in Discord Service
 
-If you are recieving errors in your Notifications after verifying that your settings are all correct try the following:
+If you are receiving errors in your Notifications after verifying that your settings are all correct try the following:
 
 - Ensure that the bot's role in Discord is at the top of the roles list. Each time you add it to your server you will need to do this again.
 - Make sure that the bot is not trying to modify the Owner of the discord, as it will fail. A holding discord account added with invite link will mitigate this.

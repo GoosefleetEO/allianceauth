@@ -5,6 +5,7 @@ from requests.exceptions import HTTPError
 from django.test import TestCase
 
 from allianceauth.tests.auth_utils import AuthUtils
+from allianceauth.groupmanagement.models import ReservedGroupName
 
 from . import (
     TEST_USER_NAME,
@@ -15,7 +16,8 @@ from . import (
     ROLE_ALPHA,
     ROLE_BRAVO,
     ROLE_CHARLIE,
-    ROLE_MIKE
+    ROLE_CHARLIE_2,
+    ROLE_MIKE,
 )
 from ..discord_client import DiscordClient, DiscordApiBackoff
 from ..discord_client.tests import create_matched_role
@@ -294,25 +296,33 @@ class TestUpdateGroups(TestCase):
         args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
         self.assertEqual(set(kwargs['role_ids']), {1, 2})
 
-    def test_update_if_needed_and_preserve_managed_roles(
+    def test_should_update_and_preserve_managed_and_reserved_roles(
         self,
         mock_user_group_names,
         mock_DiscordClient
     ):
-        roles_current = [1, 13]
+        # given
+        roles_current = [1, 3, 4, 13]
         mock_user_group_names.return_value = []
         mock_DiscordClient.return_value.match_or_create_roles_from_names\
             .return_value = self.roles_requested
-        mock_DiscordClient.return_value.guild_roles.return_value = self.guild_roles
-        mock_DiscordClient.return_value.guild_member.return_value = \
-            {'roles': roles_current}
+        mock_DiscordClient.return_value.guild_roles.return_value = [
+            ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_CHARLIE_2
+        ]
+        mock_DiscordClient.return_value.guild_member.return_value = {
+            'roles': roles_current
+        }
         mock_DiscordClient.return_value.modify_guild_member.return_value = True
-
+        ReservedGroupName.objects.create(
+            name="charlie", reason="dummy", created_by="xyz"
+        )
+        # when
         result = self.discord_user.update_groups()
+        # then
         self.assertTrue(result)
         self.assertTrue(mock_DiscordClient.return_value.modify_guild_member.called)
         args, kwargs = mock_DiscordClient.return_value.modify_guild_member.call_args
-        self.assertEqual(set(kwargs['role_ids']), {1, 2, 13})
+        self.assertEqual(set(kwargs['role_ids']), {1, 2, 3, 4, 13})
 
     def test_dont_update_if_not_needed(
         self,

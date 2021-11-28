@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 
 from allianceauth.tests.auth_utils import AuthUtils
 
-from ..models import GroupRequest, RequestLog
+from ..models import GroupRequest, RequestLog, ReservedGroupName
 
 MODULE_PATH = "allianceauth.groupmanagement.models"
 
@@ -284,3 +284,22 @@ class TestAuthGroupRequestApprovers(TestCase):
         leaders = child_group.authgroup.group_request_approvers()
         # then
         self.assertSetEqual(leaders, set())
+
+
+class TestReservedGroupName(TestCase):
+    def test_should_return_name(self):
+        # given
+        obj = ReservedGroupName(name="test", reason="abc", created_by="xxx")
+        # when
+        result = str(obj)
+        # then
+        self.assertEqual(result, "test")
+
+    def test_should_not_allow_creating_reserved_name_for_existing_group(self):
+        # given
+        Group.objects.create(name="Dummy")
+        # when
+        with self.assertRaises(RuntimeError):
+            ReservedGroupName.objects.create(
+                name="dummy", reason="abc", created_by="xxx"
+            )
