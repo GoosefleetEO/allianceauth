@@ -573,14 +573,15 @@ msgstr "FAT-Link ist abgelaufen."
 #: allianceauth/groupmanagement/admin.py:104
 msgid "This name has been reserved and can not be used for groups."
 msgstr ""
+"Dieser Name ist reserviert und kann nicht als Gruppenname genutzt werden."
 
 #: allianceauth/groupmanagement/admin.py:230
 msgid "(auto)"
-msgstr ""
+msgstr "(automatisch)"
 
 #: allianceauth/groupmanagement/admin.py:239
 msgid "There already exists a group with that name."
-msgstr ""
+msgstr "Es existiert bereits eine Gruppe mit diesem Namen."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:14
@@ -593,16 +594,24 @@ msgid ""
 "group.<br>Used for groups such as Members, Corp_*, Alliance_* "
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
+"Interne Gruppe. Nutzer können diese nicht sehen und dieser nicht beitreten. "
+"<br>Dies ist für Gruppen genutzt wie Mitglieder, Corp_*, Allianz_*, "
+"etc.<br><b>Überschreibt die Versteckt und Offen Option wenn gesetzt</b>"
 
 #: allianceauth/groupmanagement/models.py:110
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
+"Diese Gruppe ist nicht sichtbar, aber Nutzer können dennoch beitreten wenn "
+"diese den Link hierzu haben."
 
 #: allianceauth/groupmanagement/models.py:116
 msgid ""
 "Group is open and users will be automatically added upon request.<br>If the "
 "group is not open users will need their request manually approved."
 msgstr ""
+"Gruppe ist offen und Nutzer werden dieser automatisch hinzugefügt bei "
+"Anfrage.<br>Wenn die Gruppe nicht offen ist, müssen Anfragen manuell "
+"bestätigt werden."
 
 #: allianceauth/groupmanagement/models.py:123
 msgid ""
@@ -611,6 +620,10 @@ msgid ""
 "remove users from this group automatically when they are no longer "
 "authenticated."
 msgstr ""
+"Öffentliche Gruppe. Jeder registrierte Nutzer kann dieser Gruppe beitreten, "
+"he nach gesetzter Sichtbarkeit in den andern Optionen dieser Gruppe.<br>Auth"
+" wird Nutzer nicht von dieser Gruppe entfernen wenn diese nicht länger "
+"authentifiziert sind."
 
 #: allianceauth/groupmanagement/models.py:134
 msgid ""
@@ -618,6 +631,9 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"Gruppenleiter können Anfragen für diese Gruppe bearbeiten. Nutze die "
+"<code>auth.group_management</code> Berechtigung um Nutzern zu erlauben alle "
+"Gruppen zu verwalten<br>"
 
 #: allianceauth/groupmanagement/models.py:144
 msgid ""
@@ -625,49 +641,56 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"Mitglieder von Führungsgruppen können Anfragen für diese Gruppe bearbeiten. "
+"Nutze die <code>auth.group_management</code> Berechtigung um Nutzern zu "
+"erlauben alle Gruppen zu verwalten.<br>"
 
 #: allianceauth/groupmanagement/models.py:153
 msgid ""
 "States listed here will have the ability to join this group provided they "
 "have the proper permissions.<br>"
 msgstr ""
+"Hier gelistete Ränge können dieser Gruppe beitreten, vorausgesetzt sie haben"
+" die entsprechenden Berechtigungen.<br>"
 
 #: allianceauth/groupmanagement/models.py:161
 msgid ""
 "Short description <i>(max. 512 characters)</i> of the group shown to users."
 msgstr ""
+"Kurze Beschreibung <i>(max. 512 Zeichen)</i> der Gruppe die dem Nutzer "
+"angezeigt wird."
 
 #: allianceauth/groupmanagement/models.py:168
 msgid "Can request non-public groups"
-msgstr ""
+msgstr "Kann nicht öffentlichen Gruppen beitreten"
 
 #: allianceauth/groupmanagement/models.py:189
 msgid "name"
-msgstr ""
+msgstr "Name"
 
 #: allianceauth/groupmanagement/models.py:192
 msgid "Name that can not be used for groups."
-msgstr ""
+msgstr "Name kann nicht für Gruppen genutzt werden"
 
 #: allianceauth/groupmanagement/models.py:195
 msgid "reason"
-msgstr ""
+msgstr "Grund"
 
 #: allianceauth/groupmanagement/models.py:195
 msgid "Reason why this name is reserved."
-msgstr ""
+msgstr "Grund wieso dieser Name reserviert ist."
 
 #: allianceauth/groupmanagement/models.py:198
 msgid "created by"
-msgstr ""
+msgstr "Erstellt bei"
 
 #: allianceauth/groupmanagement/models.py:203
 msgid "created at"
-msgstr ""
+msgstr "Erstellt"
 
 #: allianceauth/groupmanagement/models.py:203
 msgid "Date when this entry was created"
-msgstr ""
+msgstr "Datum der Erstellung dieses Eintrags"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:14
@@ -1254,7 +1277,7 @@ msgstr "Operationsname"
 
 #: allianceauth/optimer/form.py:16
 msgid "Operation Type"
-msgstr ""
+msgstr "Operationsart"
 
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:40
@@ -1268,7 +1291,7 @@ msgstr "Zusätzliche Info"
 
 #: allianceauth/optimer/form.py:23
 msgid "(Optional) Describe the operation with a couple of short words."
-msgstr ""
+msgstr "(Optinal) Beschreibe die Operation mit ein paar Worten"
 
 #: allianceauth/optimer/templates/optimer/add.html:7
 #: allianceauth/optimer/templates/optimer/management.html:14
@@ -1305,7 +1328,7 @@ msgstr "Momentane Eve Zeit"
 
 #: allianceauth/optimer/templates/optimer/management.html:27
 msgid "Next Fleet Operations"
-msgstr ""
+msgstr "Anstehende Flottenoperationen"
 
 #: allianceauth/optimer/templates/optimer/management.html:31
 #: allianceauth/timerboard/templates/timerboard/view.html:363
@@ -1314,7 +1337,7 @@ msgstr "Keine kommenden Timer."
 
 #: allianceauth/optimer/templates/optimer/management.html:34
 msgid "Past Fleet Operations"
-msgstr ""
+msgstr "Vergangene Flottenoperationen"
 
 #: allianceauth/optimer/templates/optimer/management.html:38
 #: allianceauth/timerboard/templates/timerboard/view.html:536
