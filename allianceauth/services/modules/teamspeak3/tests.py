@@ -15,6 +15,7 @@ from .signals import m2m_changed_authts_group, post_save_authts, post_delete_aut
 from .manager import Teamspeak3Manager
 from .util.ts3 import TeamspeakError
 from allianceauth.authentication.models import State
+from allianceauth.groupmanagement.models import ReservedGroupName
 
 MODULE_PATH = 'allianceauth.services.modules.teamspeak3'
 DEFAULT_AUTH_GROUP = 'Member'
@@ -316,6 +317,9 @@ class Teamspeak3SignalsTestCase(TestCase):
 
 class Teamspeak3ManagerTestCase(TestCase):
 
+    def setUp(self):
+        self.reserved = ReservedGroupName.objects.create(name='reserved', reason='tests', created_by='Bob, praise be!')
+
     @staticmethod
     def my_side_effect(*args, **kwargs):
         raise TeamspeakError(1)
@@ -339,3 +343,48 @@ class Teamspeak3ManagerTestCase(TestCase):
 
         # perform test
         manager.add_user(user, "Dummy User")
+
+    @mock.patch.object(Teamspeak3Manager, '_get_userid')
+    @mock.patch.object(Teamspeak3Manager, '_user_group_list')
+    @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
+    @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
+    @mock.patch.object(Teamspeak3Manager, 'server')
+    def test_update_groups_add(self, server, remove, add, groups, userid):
+        """Add to one group"""
+        userid.return_value = 1
+        groups.return_value = {'test': 1}
+
+        Teamspeak3Manager().update_groups(1, {'test': 1, 'dummy': 2})
+        self.assertEqual(add.call_count, 1)
+        self.assertEqual(remove.call_count, 0)
+        self.assertEqual(add.call_args[0][1], 2)
+
+    @mock.patch.object(Teamspeak3Manager, '_get_userid')
+    @mock.patch.object(Teamspeak3Manager, '_user_group_list')
+    @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
+    @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
+    @mock.patch.object(Teamspeak3Manager, 'server')
+    def test_update_groups_remove(self, server, remove, add, groups, userid):
+        """Remove from one group"""
+        userid.return_value = 1
+        groups.return_value = {'test': 1, 'dummy': 2}
+
+        Teamspeak3Manager().update_groups(1, {'test': 1})
+        self.assertEqual(add.call_count, 0)
+        self.assertEqual(remove.call_count, 1)
+        self.assertEqual(remove.call_args[0][1], 2)
+
+    @mock.patch.object(Teamspeak3Manager, '_get_userid')
+    @mock.patch.object(Teamspeak3Manager, '_user_group_list')
+    @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
+    @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
+    @mock.patch.object(Teamspeak3Manager, 'server')
+    def test_update_groups_remove_reserved(self, server, remove, add, groups, userid):
+        """Remove from one group, but do not touch reserved group"""
+        userid.return_value = 1
+        groups.return_value = {'test': 1, 'dummy': 2, self.reserved.name: 3}
+
+        Teamspeak3Manager().update_groups(1, {'test': 1})
+        self.assertEqual(add.call_count, 0)
+        self.assertEqual(remove.call_count, 1)
+        self.assertEqual(remove.call_args[0][1], 2)

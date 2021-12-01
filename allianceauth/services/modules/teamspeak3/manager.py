@@ -4,6 +4,7 @@ from django.conf import settings
 
 from .util.ts3 import TS3Server, TeamspeakError
 from .models import TSgroup
+from allianceauth.groupmanagement.models import ReservedGroupName
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +271,8 @@ class Teamspeak3Manager:
                     addgroups.append(ts_groups[ts_group_key])
             for user_ts_group_key in user_ts_groups:
                 if user_ts_groups[user_ts_group_key] not in ts_groups.values():
-                    remgroups.append(user_ts_groups[user_ts_group_key])
+                    if not ReservedGroupName.objects.filter(name=user_ts_group_key).exists():
+                        remgroups.append(user_ts_groups[user_ts_group_key])
 
             for g in addgroups:
                 logger.info(f"Adding Teamspeak user {userid} into group {g}")
