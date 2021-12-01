@@ -207,7 +207,7 @@ class TestColumnRendering(TestDataMixin, TestCase):
         self.assertEqual(result, expected)
 
     def test_user_main_organization_u3(self):
-        expected = None
+        expected = ''
         result = user_main_organization(self.user_3.discord)
         self.assertEqual(result, expected)
 

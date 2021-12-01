@@ -11,10 +11,10 @@ class Command(BaseCommand):
         if profiles.exists():
             for profile in profiles:
                 self.stdout.write(self.style.ERROR(
-                    '{0} does not have an ownership. Resetting user {1} main character.'.format(profile.main_character,
+                    '{} does not have an ownership. Resetting user {} main character.'.format(profile.main_character,
                                                                                                 profile.user)))
                 profile.main_character = None
                 profile.save()
-            self.stdout.write(self.style.WARNING('Reset {0} main characters.'.format(profiles.count())))
+            self.stdout.write(self.style.WARNING(f'Reset {profiles.count()} main characters.'))
         else:
             self.stdout.write(self.style.SUCCESS('All main characters have active ownership.'))

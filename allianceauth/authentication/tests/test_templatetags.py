@@ -1,6 +1,7 @@
 from math import ceil
 from unittest.mock import patch
 
+import requests
 import requests_mock
 from packaging.version import Version as Pep440Version
 
@@ -169,11 +170,7 @@ class TestVersionTags(TestCase):
         # when
         result = _current_version_summary()
         # then
-        self.assertTrue(result['latest_major'])
-        self.assertTrue(result['latest_minor'])
         self.assertTrue(result['latest_patch'])
-        self.assertEqual(result['latest_major_version'], '2.0.0')
-        self.assertEqual(result['latest_minor_version'], '2.4.0')
         self.assertEqual(result['latest_patch_version'], '2.4.5')
         self.assertEqual(result['latest_beta_version'], '2.4.6a1')
 
@@ -222,9 +219,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.0'))
-        self.assertEqual(minor, Pep440Version('2.1.0'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.1'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
@@ -233,9 +228,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.2', '2.1.1', '2.0.1', '2.1.1a1', '1.1.1', '1.1.0', '1.0.0']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.1'))
-        self.assertEqual(minor, Pep440Version('2.1.1'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.2'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
@@ -244,9 +237,7 @@ class TestLatestsVersion(TestCase):
         tags = create_tags_list(
             ['2.1.1', '2.1.0', '2.0.0', '2.1.1a1', 'invalid']
         )
-        major, minor, patch, beta = _latests_versions(tags)
-        self.assertEqual(major, Pep440Version('2.0.0'))
-        self.assertEqual(minor, Pep440Version('2.1.0'))
+        patch, beta = _latests_versions(tags)
         self.assertEqual(patch, Pep440Version('2.1.1'))
         self.assertEqual(beta, Pep440Version('2.1.1a1'))
 
@@ -317,3 +308,25 @@ class TestFetchListFromGitlab(TestCase):
         result = _fetch_list_from_gitlab(self.url, max_pages=max_pages)
         self.assertEqual(result, GITHUB_TAGS[:4])
         self.assertEqual(requests_mocker.call_count, max_pages)
+
+    @requests_mock.mock()
+    @patch(MODULE_PATH + '.admin_status.logger')
+    def test_should_not_raise_any_exception_from_github_request_but_log_as_warning(
+        self, requests_mocker, mock_logger
+    ):
+        for my_exception in [
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError,
+            requests.exceptions.URLRequired,
+            requests.exceptions.TooManyRedirects,
+            requests.exceptions.ConnectTimeout,
+            requests.exceptions.Timeout,
+
+        ]:
+            requests_mocker.get(self.url, exc=my_exception)
+            try:
+                result = _fetch_list_from_gitlab(self.url)
+            except Exception as ex:
+                self.fail(f"Unexpected exception raised: {ex}")
+            self.assertTrue(mock_logger.warning.called)
+            self.assertListEqual(result, [])

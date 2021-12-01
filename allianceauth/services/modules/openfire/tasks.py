@@ -19,7 +19,7 @@ class OpenfireTasks:
     @classmethod
     def delete_user(cls, user, notify_user=False):
         if cls.has_account(user):
-            logger.debug("User %s has jabber account %s. Deleting." % (user, user.openfire.username))
+            logger.debug(f"User {user} has jabber account {user.openfire.username}. Deleting.")
             OpenfireManager.delete_user(user.openfire.username)
             user.openfire.delete()
             if notify_user:
@@ -48,7 +48,7 @@ class OpenfireTasks:
             groups = [user.profile.state.name]
             for group in user.groups.all():
                 groups.append(str(group.name))
-            logger.debug("Updating user %s jabber groups to %s" % (user, groups))
+            logger.debug(f"Updating user {user} jabber groups to {groups}")
             try:
                 OpenfireManager.update_user_groups(user.openfire.username, groups)
             except:

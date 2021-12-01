@@ -17,7 +17,7 @@ class XenforoTasks:
     @classmethod
     def delete_user(cls, user, notify_user=False):
         if cls.has_account(user):
-            logger.debug("User %s has a XenForo account %s. Deleting." % (user, user.xenforo.username))
+            logger.debug(f"User {user} has a XenForo account {user.xenforo.username}. Deleting.")
             if XenForoManager.disable_user(user.xenforo.username) == 200:
                 user.xenforo.delete()
                 if notify_user:

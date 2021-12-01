@@ -5,7 +5,7 @@ import requests
 from django.contrib.auth.models import User
 
 from allianceauth import NAME
-from allianceauth.eveonline.providers import provider
+from allianceauth.srp.providers import esi
 
 from .models import SrpUserRequest
 
@@ -32,8 +32,7 @@ class SRPManager:
         if result:
             killmail_id = result['killmail_id']
             killmail_hash = result['zkb']['hash']
-            c = provider.client
-            km = c.Killmails.get_killmails_killmail_id_killmail_hash(
+            km = esi.client.Killmails.get_killmails_killmail_id_killmail_hash(
                 killmail_id=killmail_id,
                 killmail_hash=killmail_hash
             ).result()
@@ -42,11 +41,11 @@ class SRPManager:
         if km:
             ship_type = km['victim']['ship_type_id']
             logger.debug(
-                "Ship type for kill ID %s is %s" % (kill_id, ship_type)
+                f"Ship type for kill ID {kill_id} is {ship_type}"
             )
             ship_value = result['zkb']['totalValue']
             logger.debug(
-                "Total loss value for kill id %s is %s" % (kill_id, ship_value)
+                f"Total loss value for kill id {kill_id} is {ship_value}"
             )
             victim_id = km['victim']['character_id']
             return ship_type, ship_value, victim_id

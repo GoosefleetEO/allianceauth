@@ -142,7 +142,7 @@ class AuthUtils:
 
     @classmethod
     def add_main_character(cls, user, name, character_id, corp_id=2345, corp_name='', corp_ticker='', alliance_id=None,
-                            alliance_name=''):
+                            alliance_name='', faction_id=None, faction_name=''):
         if alliance_id:
             try:
                 alliance_id = int(alliance_id)
@@ -157,6 +157,8 @@ class AuthUtils:
             corporation_ticker=corp_ticker,
             alliance_id=alliance_id,
             alliance_name=alliance_name,
+            faction_id=faction_id,
+            faction_name=faction_name
         )
         UserProfile.objects.update_or_create(user=user, defaults={'main_character': char})
 

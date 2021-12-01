@@ -15,14 +15,14 @@ install_requires = [
     'python-slugify>=1.2',
     'requests-oauthlib',
     'semantic_version',
-    'packaging>=20.1,<21',
+    'packaging>=21.0,<22',
     'beautifulsoup4',
 
     'redis>=3.3.1,<4.0.0',
     'celery>=4.3.0,<6.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
     'celery_once>=2.0.1',
 
-    'django>=3.2.7,<4.0.0',
+    'django>=3.2.9,<4.0.0',
     'django-bootstrap-form',
     'django-registration>=3.1',
     'django-sortedm2m',
@@ -39,7 +39,6 @@ install_requires = [
 testing_extras = [
     'coverage>=4.3.1',
     'requests-mock>=1.2.0',
-    'django-nose',
     'django-webtest',
 ]
 
@@ -71,7 +70,6 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 3.1',
         'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -81,11 +79,11 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     project_urls={
         'Documentation': 'https://allianceauth.readthedocs.io/',
     },
-
 )

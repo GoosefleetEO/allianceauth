@@ -10,9 +10,10 @@ from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
-
 from ..admin import HasLeaderFilter, GroupAdmin, Group
 from . import get_admin_change_view_url
+from ..models import ReservedGroupName
+
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -25,7 +26,7 @@ else:
 MODULE_PATH = 'allianceauth.groupmanagement.admin'
 
 
-class MockRequest(object):
+class MockRequest:
 
     def __init__(self, user=None):
         self.user = user
@@ -396,3 +397,108 @@ class TestGroupAdmin(TestCase):
         c.login(username='superuser', password='secret')
         response = c.get(get_admin_change_view_url(self.group_1))
         self.assertEqual(response.status_code, 200)
+
+    def test_should_create_new_group(self):
+        # given
+        user = User.objects.create_superuser("bruce")
+        self.client.force_login(user)
+        # when
+        response = self.client.post(
+            "/admin/groupmanagement/group/add/",
+            data={
+                "name": "new group",
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 0,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+            }
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/group/")
+        self.assertTrue(Group.objects.filter(name="new group").exists())
+
+    def test_should_not_allow_creating_new_group_with_reserved_name(self):
+        # given
+        ReservedGroupName.objects.create(
+            name="new group", reason="dummy", created_by="bruce"
+        )
+        user = User.objects.create_superuser("bruce")
+        self.client.force_login(user)
+        # when
+        response = self.client.post(
+            "/admin/groupmanagement/group/add/",
+            data={
+                "name": "New group",
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 0,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+            }
+        )
+        # then
+        self.assertContains(
+            response, "This name has been reserved and can not be used for groups"
+        )
+        self.assertFalse(Group.objects.filter(name="new group").exists())
+
+    def test_should_not_allow_changing_name_of_existing_group_to_reserved_name(self):
+        # given
+        ReservedGroupName.objects.create(
+            name="new group", reason="dummy", created_by="bruce"
+        )
+        group = Group.objects.create(name="dummy")
+        user = User.objects.create_superuser("bruce")
+        self.client.force_login(user)
+        # when
+        response = self.client.post(
+            f"/admin/groupmanagement/group/{group.pk}/change/",
+            data={
+                "name": "new group",
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 0,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+            }
+        )
+        # then
+        self.assertContains(
+            response, "This name has been reserved and can not be used for groups"
+        )
+        self.assertFalse(Group.objects.filter(name="new group").exists())
+
+
+class TestReservedGroupNameAdmin(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_superuser("bruce")
+
+    def test_should_create_new_entry(self):
+        # given
+        self.client.force_login(self.user)
+        # when
+        response = self.client.post(
+            "/admin/groupmanagement/reservedgroupname/add/",
+            data={"name": "Test", "reason": "dummy"}
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/reservedgroupname/")
+        obj = ReservedGroupName.objects.get(name="test")
+        self.assertEqual(obj.name, "test")
+        self.assertEqual(obj.created_by, self.user.username)
+        self.assertTrue(obj.created_at)
+
+    def test_should_not_allow_names_of_existing_groups(self):
+        # given
+        Group.objects.create(name="Already taken")
+        self.client.force_login(self.user)
+        # when
+        response = self.client.post(
+            "/admin/groupmanagement/reservedgroupname/add/",
+            data={"name": "already taken", "reason": "dummy"}
+        )
+        # then
+        self.assertContains(response, "There already exists a group with that name")
+        self.assertFalse(ReservedGroupName.objects.filter(name="already taken").exists())

@@ -18,7 +18,7 @@ class SrpFleetMain(models.Model):
 
     @property
     def total_cost(self):
-        return sum([int(r.srp_total_amount) for r in self.srpuserrequest_set.all()])
+        return sum(int(r.srp_total_amount) for r in self.srpuserrequest_set.all())
 
     @property
     def pending_requests(self):

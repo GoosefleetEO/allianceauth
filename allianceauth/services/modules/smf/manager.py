@@ -49,7 +49,7 @@ class SmfManager:
     @staticmethod
     def _sanitize_groupname(name):
         name = name.strip(' _')
-        return re.sub('[^\w.-]', '', name)
+        return re.sub(r'[^\w.-]', '', name)
 
     @staticmethod
     def generate_random_pass():
@@ -85,7 +85,7 @@ class SmfManager:
         cursor = connections['smf'].cursor()
         cursor.execute(cls.SQL_GET_GROUP_ID, [groupname])
         row = cursor.fetchone()
-        logger.debug("Got smf group id %s for groupname %s" % (row[0], groupname))
+        logger.debug(f"Got smf group id {row[0]} for groupname {groupname}")
         return row[0]
 
     @classmethod
@@ -102,7 +102,7 @@ class SmfManager:
 
     @classmethod
     def add_avatar(cls, member_name, characterid):
-        logger.debug("Adding EVE character id %s portrait as smf avatar for user %s" % (characterid, member_name))
+        logger.debug(f"Adding EVE character id {characterid} portrait as smf avatar for user {member_name}")
         avatar_url = EveCharacter.generic_portrait_url(characterid, 64)
         cursor = connections['smf'].cursor()
         id_member = cls.get_user_id(member_name)
@@ -115,7 +115,7 @@ class SmfManager:
         cursor.execute(cls.SQL_USER_ID_FROM_USERNAME, [username])
         row = cursor.fetchone()
         if row is not None:
-            logger.debug("Got smf user id %s for username %s" % (row[0], username))
+            logger.debug(f"Got smf user id {row[0]} for username {username}")
             return row[0]
         else:
             logger.error("username %s not found on smf. Unable to determine user id ." % username)
@@ -139,18 +139,18 @@ class SmfManager:
         cursor = connections['smf'].cursor()
         cursor.execute(cls.SQL_GET_USER_GROUPS, [userid])
         out = [row[0] for row in cursor.fetchall()]
-        logger.debug("Got user %s smf groups %s" % (userid, out))
+        logger.debug(f"Got user {userid} smf groups {out}")
         return out
 
     @classmethod
     def add_user(cls, username, email_address, groups, characterid):
-        logger.debug("Adding smf user with member_name %s, email_address %s, characterid %s" % (
+        logger.debug("Adding smf user with member_name {}, email_address {}, characterid {}".format(
             username, email_address, characterid))
         cursor = connections['smf'].cursor()
         username_clean = cls.santatize_username(username)
         passwd = cls.generate_random_pass()
         pwhash = cls.gen_hash(username_clean, passwd)
-        logger.debug("Proceeding to add smf user %s and pwhash starting with %s" % (username, pwhash[0:5]))
+        logger.debug(f"Proceeding to add smf user {username} and pwhash starting with {pwhash[0:5]}")
         register_date = cls.get_current_utc_date()
         # check if the username was simply revoked
         if cls.check_user(username) is True:
@@ -171,7 +171,7 @@ class SmfManager:
     @classmethod
     def __update_user_info(cls, username, email_address, passwd):
         logger.debug(
-            "Updating smf user %s info: username %s password of length %s" % (username, email_address, len(passwd)))
+            f"Updating smf user {username} info: username {email_address} password of length {len(passwd)}")
         cursor = connections['smf'].cursor()
         try:
             cursor.execute(cls.SQL_DIS_USER, [email_address, passwd, username])
@@ -195,14 +195,14 @@ class SmfManager:
     @classmethod
     def update_groups(cls, username, groups):
         userid = cls.get_user_id(username)
-        logger.debug("Updating smf user %s with id %s groups %s" % (username, userid, groups))
+        logger.debug(f"Updating smf user {username} with id {userid} groups {groups}")
         if userid is not None:
             forum_groups = cls.get_all_groups()
             user_groups = set(cls.get_user_groups(userid))
-            act_groups = set([cls._sanitize_groupname(g) for g in groups])
+            act_groups = {cls._sanitize_groupname(g) for g in groups}
             addgroups = act_groups - user_groups
             remgroups = user_groups - act_groups
-            logger.info("Updating smf user %s groups - adding %s, removing %s" % (username, addgroups, remgroups))
+            logger.info(f"Updating smf user {username} groups - adding {addgroups}, removing {remgroups}")
             act_group_id = set()
             for g in addgroups:
                 if g not in forum_groups:
@@ -213,24 +213,24 @@ class SmfManager:
 
     @classmethod
     def add_user_to_group(cls, userid, groupid):
-        logger.debug("Adding smf user id %s to group id %s" % (userid, groupid))
+        logger.debug(f"Adding smf user id {userid} to group id {groupid}")
         try:
             cursor = connections['smf'].cursor()
             cursor.execute(cls.SQL_ADD_USER_GROUP, [groupid, userid])
-            logger.info("Added smf user id %s to group id %s" % (userid, groupid))
+            logger.info(f"Added smf user id {userid} to group id {groupid}")
         except:
-            logger.exception("Unable to add smf user id %s to group id %s" % (userid, groupid))
+            logger.exception(f"Unable to add smf user id {userid} to group id {groupid}")
             pass
 
     @classmethod
     def remove_user_from_group(cls, userid, groupid):
-        logger.debug("Removing smf user id %s from group id %s" % (userid, groupid))
+        logger.debug(f"Removing smf user id {userid} from group id {groupid}")
         try:
             cursor = connections['smf'].cursor()
             cursor.execute(cls.SQL_REMOVE_USER_GROUP, [groupid, userid])
-            logger.info("Removed smf user id %s from group id %s" % (userid, groupid))
+            logger.info(f"Removed smf user id {userid} from group id {groupid}")
         except:
-            logger.exception("Unable to remove smf user id %s from group id %s" % (userid, groupid))
+            logger.exception(f"Unable to remove smf user id {userid} from group id {groupid}")
             pass
 
     @classmethod
@@ -261,7 +261,7 @@ class SmfManager:
             username_clean = cls.santatize_username(username)
             pwhash = cls.gen_hash(username_clean, password)
             logger.debug(
-                "Proceeding to update smf user %s password with pwhash starting with %s" % (username, pwhash[0:5]))
+                f"Proceeding to update smf user {username} password with pwhash starting with {pwhash[0:5]}")
             cursor.execute(cls.SQL_UPDATE_USER_PASSWORD, [pwhash, username])
             cls.add_avatar(username, characterid)
             logger.info("Updated smf user %s password." % username)

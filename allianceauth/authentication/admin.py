@@ -17,7 +17,7 @@ from allianceauth.authentication.models import State, get_guest_state,\
     CharacterOwnership, UserProfile, OwnershipRecord
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
-    EveAllianceInfo
+    EveAllianceInfo, EveFactionInfo
 from allianceauth.eveonline.tasks import update_character
 from .app_settings import AUTHENTICATION_ADMIN_USERS_MAX_GROUPS, \
     AUTHENTICATION_ADMIN_USERS_MAX_CHARS
@@ -36,8 +36,8 @@ def make_service_hooks_update_groups_action(service):
             for user in queryset:  # queryset filtering doesn't work here?
                 service.update_groups(user)
 
-    update_service_groups.__name__ = str('update_{}_groups'.format(slugify(service.name)))
-    update_service_groups.short_description = "Sync groups for selected {} accounts".format(service.title)
+    update_service_groups.__name__ = str(f'update_{slugify(service.name)}_groups')
+    update_service_groups.short_description = f"Sync groups for selected {service.title} accounts"
     return update_service_groups
 
 
@@ -54,8 +54,8 @@ def make_service_hooks_sync_nickname_action(service):
             for user in queryset:  # queryset filtering doesn't work here?
                 service.sync_nickname(user)
 
-    sync_nickname.__name__ = str('sync_{}_nickname'.format(slugify(service.name)))
-    sync_nickname.short_description = "Sync nicknames for selected {} accounts".format(service.title)
+    sync_nickname.__name__ = str(f'sync_{slugify(service.name)}_nickname')
+    sync_nickname.short_description = f"Sync nicknames for selected {service.title} accounts"
     return sync_nickname
 
 
@@ -159,18 +159,14 @@ def user_main_organization(obj):
     """
     user_obj = obj.user if hasattr(obj, 'user') else obj
     if not user_obj.profile.main_character:
-        result = None
+        result = ''
     else:
-        corporation = user_obj.profile.main_character.corporation_name
+        result = user_obj.profile.main_character.corporation_name
         if user_obj.profile.main_character.alliance_id:
-            result = format_html(
-                '{}<br>{}',
-                corporation,
-                user_obj.profile.main_character.alliance_name
-            )
-        else:
-            result = corporation
-    return result
+            result += f'<br>{user_obj.profile.main_character.alliance_name}'
+        elif user_obj.profile.main_character.faction_name:
+            result += f'<br>{user_obj.profile.main_character.faction_name}'
+    return format_html(result)
 
 
 user_main_organization.short_description = 'Corporation / Alliance (Main)'
@@ -194,7 +190,7 @@ class MainCorporationsFilter(admin.SimpleListFilter):
             .distinct()\
             .order_by(Lower('corporation_name'))
         return tuple(
-            [(x['corporation_id'], x['corporation_name']) for x in qs]
+            (x['corporation_id'], x['corporation_name']) for x in qs
         )
 
     def queryset(self, request, qs):
@@ -228,7 +224,7 @@ class MainAllianceFilter(admin.SimpleListFilter):
             .distinct()\
             .order_by(Lower('alliance_name'))
         return tuple(
-            [(x['alliance_id'], x['alliance_name']) for x in qs]
+            (x['alliance_id'], x['alliance_name']) for x in qs
         )
 
     def queryset(self, request, qs):
@@ -243,6 +239,38 @@ class MainAllianceFilter(admin.SimpleListFilter):
                 )
 
 
+class MainFactionFilter(admin.SimpleListFilter):
+    """Custom filter to filter on factions from mains only
+
+    works for both User objects and objects with `user` as FK to User
+    To be used for all user based admin lists
+    """
+    title = 'faction'
+    parameter_name = 'main_faction_id__exact'
+
+    def lookups(self, request, model_admin):
+        qs = EveCharacter.objects\
+            .exclude(faction_id=None)\
+            .exclude(userprofile=None)\
+            .values('faction_id', 'faction_name')\
+            .distinct()\
+            .order_by(Lower('faction_name'))
+        return tuple(
+            (x['faction_id'], x['faction_name']) for x in qs
+        )
+
+    def queryset(self, request, qs):
+        if self.value() is None:
+            return qs.all()
+        else:
+            if qs.model == User:
+                return qs.filter(profile__main_character__faction_id=self.value())
+            else:
+                return qs.filter(
+                    user__profile__main_character__faction_id=self.value()
+                )
+
+
 def update_main_character_model(modeladmin, request, queryset):
     tasks_count = 0
     for obj in queryset:
@@ -252,7 +280,7 @@ def update_main_character_model(modeladmin, request, queryset):
 
     modeladmin.message_user(
         request,
-        'Update from ESI started for {} characters'.format(tasks_count)
+        f'Update from ESI started for {tasks_count} characters'
     )
 
 
@@ -342,6 +370,7 @@ class UserAdmin(BaseUserAdmin):
         'groups',
         MainCorporationsFilter,
         MainAllianceFilter,
+        MainFactionFilter,
         'is_active',
         'date_joined',
         'is_staff',
@@ -369,7 +398,7 @@ class UserAdmin(BaseUserAdmin):
     _state.admin_order_field = 'profile__state'
 
     def _groups(self, obj):
-        my_groups = sorted([group.name for group in list(obj.groups.all())])
+        my_groups = sorted(group.name for group in list(obj.groups.all()))
         return self._list_2_html_w_tooltips(
             my_groups, AUTHENTICATION_ADMIN_USERS_MAX_GROUPS
         )
@@ -426,7 +455,8 @@ class StateAdmin(admin.ModelAdmin):
                 'public',
                 'member_characters',
                 'member_corporations',
-                'member_alliances'
+                'member_alliances',
+                'member_factions'
             ),
         })
     )
@@ -434,6 +464,7 @@ class StateAdmin(admin.ModelAdmin):
         'member_characters',
         'member_corporations',
         'member_alliances',
+        'member_factions',
         'permissions'
     ]
 
@@ -448,6 +479,9 @@ class StateAdmin(admin.ModelAdmin):
         elif db_field.name == "member_alliances":
             kwargs["queryset"] = EveAllianceInfo.objects.all()\
                 .order_by(Lower('alliance_name'))
+        elif db_field.name == "member_factions":
+            kwargs["queryset"] = EveFactionInfo.objects.all()\
+                .order_by(Lower('faction_name'))
         elif db_field.name == "permissions":
             kwargs["queryset"] = Permission.objects.select_related("content_type").all()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
@@ -455,7 +489,7 @@ class StateAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         if obj == get_guest_state():
             return False
-        return super(StateAdmin, self).has_delete_permission(request, obj=obj)
+        return super().has_delete_permission(request, obj=obj)
 
     def get_fieldsets(self, request, obj=None):
         if obj == get_guest_state():
@@ -464,7 +498,7 @@ class StateAdmin(admin.ModelAdmin):
                     'fields': ('permissions', 'priority'),
                 }),
             )
-        return super(StateAdmin, self).get_fieldsets(request, obj=obj)
+        return super().get_fieldsets(request, obj=obj)
 
 
 class BaseOwnershipAdmin(admin.ModelAdmin):
@@ -485,7 +519,8 @@ class BaseOwnershipAdmin(admin.ModelAdmin):
         'user__username',
         'character__character_name',
         'character__corporation_name',
-        'character__alliance_name'
+        'character__alliance_name',
+        'character__faction_name'
     )
     list_filter = (
         MainCorporationsFilter,

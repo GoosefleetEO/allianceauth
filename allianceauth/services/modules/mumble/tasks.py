@@ -37,7 +37,7 @@ class MumbleTasks:
                 logger.debug("Updated user %s mumble groups." % user)
                 return True
             except MumbleUser.DoesNotExist:
-                logger.info("Mumble group sync failed for {}, user does not have a mumble account".format(user))
+                logger.info(f"Mumble group sync failed for {user}, user does not have a mumble account")
             except:
                 logger.exception("Mumble group sync failed for %s, retrying in 10 mins" % user)
                 raise self.retry(countdown=60 * 10)
@@ -57,7 +57,7 @@ class MumbleTasks:
                 logger.debug("Updated user %s mumble display name." % user)
                 return True
             except MumbleUser.DoesNotExist:
-                logger.info("Mumble display name sync failed for {}, user does not have a mumble account".format(user))
+                logger.info(f"Mumble display name sync failed for {user}, user does not have a mumble account")
             except:
                 logger.exception("Mumble display name sync failed for %s, retrying in 10 mins" % user)
                 raise self.retry(countdown=60 * 10)

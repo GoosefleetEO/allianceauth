@@ -29,7 +29,7 @@ class TestUserNotify(TestCase):
     def test_save_will_invalidate_cache(self, mock_invalidate_user_notification_cache):
         obj = Notification.objects.notify_user(self.user, 'dummy')
         self.assertTrue(Notification.objects.filter(pk=obj.pk).exists())
-        self.assertEquals(mock_invalidate_user_notification_cache.call_count, 1)
+        self.assertEqual(mock_invalidate_user_notification_cache.call_count, 1)
 
     @patch(MODULE_PATH + '.Notification.objects.invalidate_user_notification_cache')
     def test_delete_will_invalidate_cache(
@@ -38,7 +38,7 @@ class TestUserNotify(TestCase):
         obj = Notification.objects.notify_user(self.user, 'dummy')
         obj.delete()
         self.assertFalse(Notification.objects.filter(pk=obj.pk).exists())
-        self.assertEquals(mock_invalidate_user_notification_cache.call_count, 2)
+        self.assertEqual(mock_invalidate_user_notification_cache.call_count, 2)
 
     def test_can_view(self):
         obj = Notification.objects.notify_user(self.user, 'dummy')

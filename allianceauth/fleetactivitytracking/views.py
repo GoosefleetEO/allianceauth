@@ -36,7 +36,7 @@ get_universe_structures_structure_id
 logger = logging.getLogger(__name__)
 
 
-class CorpStat(object):
+class CorpStat:
     def __init__(self, corp_id, start_of_month, start_of_next_month, corp=None):
         if corp:
             self.corp = corp
@@ -53,7 +53,7 @@ class CorpStat(object):
             return "%.2f" % 0
 
 
-class MemberStat(object):
+class MemberStat:
     def __init__(self, member, start_of_month, start_of_next_month, mainchid=None):
         if mainchid:
             self.mainchid = mainchid
@@ -215,7 +215,7 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
         user = EveCharacter.objects.get(character_id=char_id).user
     else:
         user = request.user
-    logger.debug("Personal monthly statistics view for user %s called by %s" % (user, request.user))
+    logger.debug(f"Personal monthly statistics view for user {user} called by {request.user}")
 
     personal_fats = Fat.objects.filter(user=user)\
         .filter(fatlink__fatdatetime__gte=start_of_month).filter(fatlink__fatdatetime__lt=start_of_next_month)
@@ -347,7 +347,7 @@ def modify_fatlink_view(request, fat_hash=None):
     if request.GET.get('removechar', None):
         character_id = request.GET.get('removechar')
         character = EveCharacter.objects.get(character_id=character_id)
-        logger.debug("Removing character %s from fleetactivitytracking  %s" % (character.character_name, fatlink))
+        logger.debug(f"Removing character {character.character_name} from fleetactivitytracking  {fatlink}")
 
         Fat.objects.filter(fatlink=fatlink).filter(character=character).delete()
 

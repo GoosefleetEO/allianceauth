@@ -37,7 +37,7 @@ class ServicePasswordModelForm(forms.ModelForm):
         return password
 
     def save(self, commit=True):
-        svc_obj = super(ServicePasswordModelForm, self).save(commit=False)
+        svc_obj = super().save(commit=False)
         svc_obj.update_password(self.cleaned_data['password'])
         if commit:
             svc_obj.save()

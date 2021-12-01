@@ -16,7 +16,7 @@ class DiscourseError(Exception):
         self.errors = errors
 
     def __str__(self):
-        return "API execution failed.\nErrors: %s\nEndpoint: %s" % (self.errors, self.endpoint)
+        return f"API execution failed.\nErrors: {self.errors}\nEndpoint: {self.endpoint}"
 
 
 class DiscourseManager:
@@ -165,7 +165,7 @@ class DiscourseManager:
 
     @staticmethod
     def _sanitize_groupname(name):
-        name = re.sub('[^\w]', '', name)
+        name = re.sub(r'[^\w]', '', name)
         name = DiscourseManager._sanitize_name(name)
         if len(name) < 3:
             name = "Group " + name
@@ -176,7 +176,7 @@ class DiscourseManager:
         groups = [DiscourseManager._sanitize_groupname(user.profile.state.name)]
         for g in user.groups.all():
             groups.append(DiscourseManager._sanitize_groupname(str(g)))
-        logger.debug("Updating discourse user %s groups to %s" % (user, groups))
+        logger.debug(f"Updating discourse user {user} groups to {groups}")
         group_dict = DiscourseManager.__generate_group_dict(groups)
         inv_group_dict = {v: k for k, v in group_dict.items()}
         discord_user = DiscourseManager.__get_user_by_external(user.pk)
@@ -187,12 +187,12 @@ class DiscourseManager:
         rem_groups = [x for x in user_groups if x not in inv_group_dict]
         if add_groups:
             logger.info(
-                "Updating discourse user %s groups: adding %s" % (username, add_groups))
+                f"Updating discourse user {username} groups: adding {add_groups}")
             for g in add_groups:
                 DiscourseManager.__add_user_to_group(g, username)
         if rem_groups:
             logger.info(
-                "Updating discourse user %s groups: removing %s" % (username, rem_groups))
+                f"Updating discourse user {username} groups: removing {rem_groups}")
             for g in rem_groups:
                 DiscourseManager.__remove_user_from_group(g, uid)
 

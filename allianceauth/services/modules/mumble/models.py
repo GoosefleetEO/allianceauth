@@ -38,16 +38,16 @@ class MumbleManager(models.Manager):
     def create(self, user):
         try:
             username = self.get_username(user)
-            logger.debug("Creating mumble user with username {}".format(username))
+            logger.debug(f"Creating mumble user with username {username}")
             username_clean = self.sanitise_username(username)
             display_name = self.get_display_name(user)
             password = self.generate_random_pass()
             pwhash = self.gen_pwhash(password)
             logger.debug("Proceeding with mumble user creation: clean username {}, pwhash starts with {}".format(
                 username_clean, pwhash[0:5]))
-            logger.info("Creating mumble user {}".format(username_clean))
+            logger.info(f"Creating mumble user {username_clean}")
 
-            result = super(MumbleManager, self).create(user=user, username=username_clean,
+            result = super().create(user=user, username=username_clean,
                                                     pwhash=pwhash, hashfn=self.HASH_FN,
                                                     display_name=display_name)
             result.update_groups()
@@ -117,7 +117,7 @@ class MumbleUser(AbstractServiceModel):
 
     def update_password(self, password=None):
         init_password = password
-        logger.debug("Updating mumble user %s password.".format(self.user))
+        logger.debug(f"Updating mumble user %s password.")
         if not password:
             password = MumbleManager.generate_random_pass()
         pwhash = MumbleManager.gen_pwhash(password)
@@ -138,19 +138,19 @@ class MumbleUser(AbstractServiceModel):
         groups_str = [self.user.profile.state.name]
         for group in groups:
             groups_str.append(str(group.name))
-        safe_groups = ','.join(set([g.replace(' ', '-') for g in groups_str]))
-        logger.info("Updating mumble user {} groups to {}".format(self.user, safe_groups))
+        safe_groups = ','.join({g.replace(' ', '-') for g in groups_str})
+        logger.info(f"Updating mumble user {self.user} groups to {safe_groups}")
         self.groups = safe_groups
         self.save()
         return True
 
     def update_display_name(self):
-        logger.info("Updating mumble user {} display name".format(self.user))
+        logger.info(f"Updating mumble user {self.user} display name")
         self.display_name = MumbleManager.get_display_name(self.user)
         self.save()
         return True
 
     class Meta:
         permissions = (
-            ("access_mumble", u"Can access the Mumble service"),
+            ("access_mumble", "Can access the Mumble service"),
         )

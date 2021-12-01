@@ -42,6 +42,10 @@ This lets you select which Corporations the state is available to. Corporations 
 
 This lets you select which Alliances the state is available to. Alliances can be added by selecting the green plus icon.
 
+### Member Factions
+
+This lets you select which factions the state is available to. Factions can be added by selecting the green plus icon, and are limited to those which can be enlisted in for faction warfare.
+
 ## Determining a User's State
 
 States are mutually exclusive, meaning a user can only be in one at a time.

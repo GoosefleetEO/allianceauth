@@ -20,7 +20,7 @@ class Teamspeak3Tasks:
     @classmethod
     def delete_user(cls, user, notify_user=False):
         if cls.has_account(user):
-            logger.debug("User %s has TS3 account %s. Deleting." % (user, user.teamspeak3.uid))
+            logger.debug(f"User {user} has TS3 account {user.teamspeak3.uid}. Deleting.")
             with Teamspeak3Manager() as ts3man:
                 if ts3man.delete_user(user.teamspeak3.uid):
                     user.teamspeak3.delete()
@@ -71,13 +71,13 @@ class Teamspeak3Tasks:
                             groups[ts_group.ts_group_name] = ts_group.ts_group_id
             for stategroup in user.profile.state.stategroup_set.all():
                 groups[stategroup.ts_group.ts_group_name] = stategroup.ts_group.ts_group_id
-            logger.debug("Updating user %s teamspeak3 groups to %s" % (user, groups))
+            logger.debug(f"Updating user {user} teamspeak3 groups to {groups}")
             try:
                 with Teamspeak3Manager() as ts3man:
                     ts3man.update_groups(user.teamspeak3.uid, groups)
                 logger.debug("Updated user %s teamspeak3 groups." % user)
             except TeamspeakError as e:
-                logger.error("Error occured while syncing TS groups for %s: %s" % (user, str(e)))
+                logger.error(f"Error occured while syncing TS groups for {user}: {str(e)}")
                 raise self.retry(countdown=60*10)
         else:
             logger.debug("User does not have a teamspeak3 account")

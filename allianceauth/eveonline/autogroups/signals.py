@@ -15,7 +15,7 @@ def pre_save_config(sender, instance, *args, **kwargs):
     Checks if enable was toggled on group config and
     deletes groups if necessary.
     """
-    logger.debug("Received pre_save from {}".format(instance))
+    logger.debug(f"Received pre_save from {instance}")
     if not instance.pk:
         # new model being created
         return

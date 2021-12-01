@@ -195,7 +195,7 @@ class Phpbb3ManagerTestCase(TestCase):
         password = self.manager._Phpbb3Manager__generate_random_pass()
 
         self.assertEqual(len(password), 16)
-        self.assertIsInstance(password, type(''))
+        self.assertIsInstance(password, str)
 
     def test_gen_pwhash(self):
         pwhash = self.manager._Phpbb3Manager__gen_hash('test')

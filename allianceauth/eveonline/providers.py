@@ -22,6 +22,7 @@ get_corporations_corporation_id
 get_characters_character_id
 get_universe_types_type_id
 post_character_affiliation
+get_universe_factions
 """
 
 
@@ -34,11 +35,12 @@ class ObjectNotFound(Exception):
         self.type = type_name
 
     def __str__(self):
-        return '%s with ID %s not found.' % (self.type, self.id)
+        return f'{self.type} with ID {self.id} not found.'
 
 
-class Entity(object):
-    def __init__(self, id=None, name=None):
+class Entity:
+    def __init__(self, id=None, name=None, **kwargs):
+        super().__init__(**kwargs)
         self.id = id
         self.name = name
 
@@ -46,7 +48,7 @@ class Entity(object):
         return self.name
 
     def __repr__(self):
-        return "<{} ({}): {}>".format(self.__class__.__name__, self.id, self.name)
+        return f"<{self.__class__.__name__} ({self.id}): {self.name}>"
 
     def __bool__(self):
         return bool(self.id)
@@ -55,15 +57,11 @@ class Entity(object):
         return self.id == other.id
 
 
-class Corporation(Entity):
-    def __init__(self, ticker=None, ceo_id=None, members=None, alliance_id=None, **kwargs):
-        super(Corporation, self).__init__(**kwargs)
-        self.ticker = ticker
-        self.ceo_id = ceo_id
-        self.members = members
+class AllianceMixin:
+    def __init__(self, alliance_id=None, **kwargs):
+        super().__init__(**kwargs)
         self.alliance_id = alliance_id
         self._alliance = None
-        self._ceo = None
 
     @property
     def alliance(self):
@@ -73,6 +71,30 @@ class Corporation(Entity):
             return self._alliance
         return Entity(None, None)
 
+
+class FactionMixin:
+    def __init__(self, faction_id=None, **kwargs):
+        super().__init__(**kwargs)
+        self.faction_id = faction_id
+        self._faction = None
+
+    @property
+    def faction(self):
+        if self.faction_id:
+            if not self._faction:
+                self._faction = provider.get_faction(self.faction_id)
+            return self._faction
+        return Entity(None, None)
+
+
+class Corporation(Entity, AllianceMixin, FactionMixin):
+    def __init__(self, ticker=None, ceo_id=None, members=None, **kwargs):
+        super().__init__(**kwargs)
+        self.ticker = ticker
+        self.ceo_id = ceo_id
+        self.members = members
+        self._ceo = None
+
     @property
     def ceo(self):
         if not self._ceo:
@@ -80,9 +102,9 @@ class Corporation(Entity):
         return self._ceo
 
 
-class Alliance(Entity):
+class Alliance(Entity, FactionMixin):
     def __init__(self, ticker=None, corp_ids=None, executor_corp_id=None, **kwargs):
-        super(Alliance, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.ticker = ticker
         self.corp_ids = corp_ids
         self.executor_corp_id = executor_corp_id
@@ -97,7 +119,7 @@ class Alliance(Entity):
 
     @property
     def corps(self):
-        return sorted([self.corp(c_id) for c_id in self.corp_ids], key=lambda x: x.name)
+        return sorted((self.corp(c_id) for c_id in self.corp_ids), key=lambda x: x.name)
 
     @property
     def executor_corp(self):
@@ -106,13 +128,11 @@ class Alliance(Entity):
         return Entity(None, None)
 
 
-class Character(Entity):
-    def __init__(self, corp_id=None, alliance_id=None, **kwargs):
-        super(Character, self).__init__(**kwargs)
+class Character(Entity, AllianceMixin, FactionMixin):
+    def __init__(self, corp_id=None, **kwargs):
+        super().__init__(**kwargs)
         self.corp_id = corp_id
-        self.alliance_id = alliance_id
         self._corp = None
-        self._alliance = None
 
     @property
     def corp(self):
@@ -120,19 +140,13 @@ class Character(Entity):
             self._corp = provider.get_corp(self.corp_id)
         return self._corp
 
-    @property
-    def alliance(self):
-        if self.alliance_id:
-            return self.corp.alliance
-        return Entity(None, None)
-
 
 class ItemType(Entity):
     def __init__(self, **kwargs):
-        super(ItemType, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
 
-class EveProvider(object):
+class EveProvider:
     def get_alliance(self, alliance_id):
         """
         :return: an Alliance object for the given ID
@@ -179,6 +193,7 @@ class EveSwaggerProvider(EveProvider):
 
         self._token = token
         self.adapter = adapter or self
+        self._faction_list = None  # what are the odds this will change? could cache forever!
 
     @property
     def client(self):
@@ -201,6 +216,7 @@ class EveSwaggerProvider(EveProvider):
                 ticker=data['ticker'],
                 corp_ids=corps,
                 executor_corp_id=data['executor_corporation_id'] if 'executor_corporation_id' in data else None,
+                faction_id=data['faction_id'] if 'faction_id' in data else None,
             )
             return model
         except HTTPNotFound:
@@ -216,6 +232,7 @@ class EveSwaggerProvider(EveProvider):
                 ceo_id=data['ceo_id'],
                 members=data['member_count'],
                 alliance_id=data['alliance_id'] if 'alliance_id' in data else None,
+                faction_id=data['faction_id'] if 'faction_id' in data else None,
             )
             return model
         except HTTPNotFound:
@@ -231,10 +248,29 @@ class EveSwaggerProvider(EveProvider):
                 name=data['name'],
                 corp_id=affiliation['corporation_id'],
                 alliance_id=affiliation['alliance_id'] if 'alliance_id' in affiliation else None,
+                faction_id=affiliation['faction_id'] if 'faction_id' in affiliation else None,
             )
             return model
         except (HTTPNotFound, HTTPUnprocessableEntity):
             raise ObjectNotFound(character_id, 'character')
+
+    def get_all_factions(self):
+        if not self._faction_list:
+            self._faction_list = self.client.Universe.get_universe_factions().result()
+        return self._faction_list
+
+    def get_faction(self, faction_id):
+        faction_id=int(faction_id)
+        try:
+            if not self._faction_list:
+                _ = self.get_all_factions()
+            for f in self._faction_list:
+                if f['faction_id'] == faction_id:
+                    return Entity(id=f['faction_id'], name=f['name'])
+            else:
+                raise KeyError()
+        except (HTTPNotFound, HTTPUnprocessableEntity, KeyError):
+            raise ObjectNotFound(faction_id, 'faction')
 
     def get_itemtype(self, type_id):
         try:

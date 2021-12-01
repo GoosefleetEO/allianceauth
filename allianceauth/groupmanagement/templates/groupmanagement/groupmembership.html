@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block page_title %}{% trans "Groups Membership" %}{% endblock page_title %}
+{% block page_title %}{% translate "Groups Membership" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
@@ -12,7 +12,7 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                {% trans "Groups" %}
+                {% translate "Groups" %}
             </div>
 
             <div class="panel-body">
@@ -21,10 +21,10 @@
                         <table class="table table-aa">
                             <thead>
                                 <tr>
-                                    <th>{% trans "Name" %}</th>
-                                    <th>{% trans "Description" %}</th>
-                                    <th>{% trans "Status" %}</th>
-                                    <th style="white-space: nowrap;">{% trans "Member Count" %}</th>
+                                    <th>{% translate "Name" %}</th>
+                                    <th>{% translate "Description" %}</th>
+                                    <th>{% translate "Status" %}</th>
+                                    <th style="white-space: nowrap;">{% translate "Member Count" %}</th>
                                     <th style="min-width: 170px;"></th>
                                 </tr>
                             </thead>
@@ -40,11 +40,11 @@
 
                                         <td>
                                             {% if group.authgroup.hidden %}
-                                                <span class="label label-info">{% trans "Hidden" %}</span>
+                                                <span class="label label-info">{% translate "Hidden" %}</span>
                                             {% elif group.authgroup.open %}
-                                                <span class="label label-success">{% trans "Open" %}</span>
+                                                <span class="label label-success">{% translate "Open" %}</span>
                                             {% else %}
-                                                <span class="label label-default">{% trans "Requestable" %}</span>
+                                                <span class="label label-default">{% translate "Requestable" %}</span>
                                             {% endif %}
                                         </td>
 
@@ -53,15 +53,15 @@
                                         </td>
 
                                         <td class="text-right">
-                                            <a href="{% url 'groupmanagement:membership' group.id %}" class="btn btn-primary" title="{% trans "View Members" %}">
+                                            <a href="{% url 'groupmanagement:membership' group.id %}" class="btn btn-primary" title="{% translate "View Members" %}">
                                                 <i class="glyphicon glyphicon-eye-open"></i>
                                             </a>
 
-                                            <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% trans "Audit Members" %}">
+                                            <a href="{% url "groupmanagement:audit_log" group.id %}" class="btn btn-info" title="{% translate "Audit Members" %}">
                                                 <i class="glyphicon glyphicon-list-alt"></i>
                                             </a>
 
-                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% trans "Copy Direct Join Link" %}">
+                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% translate "Copy Direct Join Link" %}">
                                                 <i class="glyphicon glyphicon-copy"></i>
                                             </a>
                                         </td>
@@ -72,7 +72,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
-                        {% trans "No groups to list." %}
+                        {% translate "No groups to list." %}
                     </div>
                 {% endif %}
             </div>

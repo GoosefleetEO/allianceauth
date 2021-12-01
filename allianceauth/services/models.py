@@ -27,6 +27,6 @@ class NameFormatConfig(models.Model):
     )
 
     def __str__(self):
-        return '%s: %s' % (
+        return '{}: {}'.format(
             self.service_name, ', '.join([str(x) for x in self.states.all()])
         )

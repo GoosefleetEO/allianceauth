@@ -3,39 +3,39 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-{% block page_title %}{% trans "Fleet Operation Management" %}{% endblock page_title %}
+{% block page_title %}{% translate "Fleet Operation Management" %}{% endblock page_title %}
 {% block extra_css %}{% endblock extra_css %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% trans "Fleet Operation Timers" %}
+        <h1 class="page-header text-center">{% translate "Fleet Operation Timers" %}
             <div class="text-right">
                 {% if perms.auth.optimer_management %}
-                    <a href="{% url 'optimer:add' %}" class="btn btn-success">{% trans "Create Operation" %}</a>
+                    <a href="{% url 'optimer:add' %}" class="btn btn-success">{% translate "Create Operation" %}</a>
                 {% endif %}
             </div>
         </h1>
 
         <div class="col-lg-12 text-center row">
             <div class="label label-info text-left">
-                <b>{% trans "Current Eve Time:" %} </b>
+                <b>{% translate "Current Eve Time:" %} </b>
             </div>
             <strong class="label label-info text-left" id="current-time"></strong>
             <br  />
         </div>
 
-        <h4><b>{% trans "Next Timers" %}</b></h4>
+        <h4><b>{% translate "Next Fleet Operations" %}</b></h4>
         {% if future_timers %}
             {% include "optimer/fleetoptable.html" with timers=future_timers %}
         {% else %}
-            <div class="alert alert-warning text-center">{% trans "No upcoming timers." %}</div>
+            <div class="alert alert-warning text-center">{% translate "No upcoming timers." %}</div>
         {% endif %}
 
-        <h4><b>{% trans "Past Timers" %}</b></h4>
+        <h4><b>{% translate "Past Fleet Operations" %}</b></h4>
         {% if past_timers %}
             {% include "optimer/fleetoptable.html" with timers=past_timers %}
         {% else %}
-            <div class="alert alert-warning text-center">{% trans "No past timers." %}</div>
+            <div class="alert alert-warning text-center">{% translate "No past timers." %}</div>
         {% endif %}
     </div>
 

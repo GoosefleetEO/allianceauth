@@ -20,7 +20,7 @@ ACCESS_PERM = 'ips4.access_ips4'
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     character = request.user.profile.main_character
-    logger.debug("Adding IPS4 user for user %s with main character %s" % (request.user, character))
+    logger.debug(f"Adding IPS4 user for user {request.user} with main character {character}")
     result = Ips4Manager.add_user(Ips4Tasks.get_username(request.user), request.user.email)
     # if empty we failed
     if result[0] != "" and not Ips4Tasks.has_account(request.user):

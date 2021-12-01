@@ -3,24 +3,24 @@
 {% load static %}
 {% load i18n %}
 
-{% block page_title %}{{ permission.permission.codename }} - {% trans "Permissions Audit" %}{% endblock page_title %}
+{% block page_title %}{{ permission.permission.codename }} - {% translate "Permissions Audit" %}{% endblock page_title %}
 
 {% block content %}
     <div>
-        <h1 class="page-header">{% trans "Permissions Audit" %}: {{ permission.permission.codename }}</h1>
+        <h1 class="page-header">{% translate "Permissions Audit" %}: {{ permission.permission.codename }}</h1>
         <p>
             <a href="{% url 'permissions_tool:overview' %}" class="btn btn-default">
-                <i class="glyphicon glyphicon-chevron-left"></i> {% trans "Back" %}
+                <i class="glyphicon glyphicon-chevron-left"></i> {% translate "Back" %}
             </a>
         </p>
         <div class="table-responsive">
             <table class="table table-striped" id="tab_permissions_audit">
                 <thead>
                     <tr>
-                        <th>{% trans "Group" %}</th>
+                        <th>{% translate "Group" %}</th>
                         <th></th>
-                        <th>{% trans "User / Character" %}</th>
-                        <th>{% trans "Organization" %}</th>
+                        <th>{% translate "User / Character" %}</th>
+                        <th>{% translate "Organization" %}</th>
                     </tr>
                 </thead>
                 <tbody>

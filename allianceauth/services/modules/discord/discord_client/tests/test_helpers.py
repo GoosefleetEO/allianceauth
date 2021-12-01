@@ -1,6 +1,14 @@
 from unittest import TestCase
 
-from . import ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ALL_ROLES, create_role
+from . import (
+    ROLE_ALPHA,
+    ROLE_BRAVO,
+    ROLE_CHARLIE,
+    ROLE_CHARLIE_2,
+    ROLE_MIKE,
+    ALL_ROLES,
+    create_role
+)
 from .. import DiscordRoles
 
 
@@ -142,6 +150,16 @@ class TestSubset(TestCase):
         roles = self.all_roles.subset()
         expected = {1, 2, 3, 13}
         self.assertSetEqual(roles.ids(), expected)
+
+    def test_should_return_role_names_only(self):
+        # given
+        all_roles = DiscordRoles([
+            ROLE_ALPHA, ROLE_BRAVO, ROLE_CHARLIE, ROLE_MIKE, ROLE_CHARLIE_2
+        ])
+        # when
+        roles = all_roles.subset(role_names={"bravo", "charlie"})
+        # then
+        self.assertSetEqual(roles.ids(), {2, 3, 4})
 
 
 class TestHasRoles(TestCase):

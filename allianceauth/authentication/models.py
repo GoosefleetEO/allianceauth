@@ -3,7 +3,7 @@ import logging
 from django.contrib.auth.models import User, Permission
 from django.db import models, transaction
 from django.utils.translation import ugettext_lazy as _
-from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo
+from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 from allianceauth.notifications import notify
 
 from .managers import CharacterOwnershipManager, StateManager
@@ -12,13 +12,18 @@ logger = logging.getLogger(__name__)
 
 
 class State(models.Model):
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=32, unique=True)
     permissions = models.ManyToManyField(Permission, blank=True)
     priority = models.IntegerField(unique=True, help_text="Users get assigned the state with the highest priority available to them.")
 
-    member_characters = models.ManyToManyField(EveCharacter, blank=True, help_text="Characters to which this state is available.")
-    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True, help_text="Corporations to whose members this state is available.")
-    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True, help_text="Alliances to whose members this state is available.")
+    member_characters = models.ManyToManyField(EveCharacter, blank=True,
+                                               help_text="Characters to which this state is available.")
+    member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True,
+                                                 help_text="Corporations to whose members this state is available.")
+    member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True,
+                                              help_text="Alliances to whose members this state is available.")
+    member_factions = models.ManyToManyField(EveFactionInfo, blank=True,
+                                             help_text="Factions to whose members this state is available.")
     public = models.BooleanField(default=False, help_text="Make this state available to any character.")
 
     objects = StateManager()
@@ -39,7 +44,7 @@ class State(models.Model):
         with transaction.atomic():
             for profile in self.userprofile_set.all():
                 profile.assign_state(state=State.objects.exclude(pk=self.pk).get_for_user(profile.user))
-        super(State, self).delete(**kwargs)
+        super().delete(**kwargs)
 
 
 def get_guest_state():
@@ -67,7 +72,7 @@ class UserProfile(models.Model):
         if self.state != state:
             self.state = state
             if commit:
-                logger.info('Updating {} state to {}'.format(self.user, self.state))
+                logger.info(f'Updating {self.user} state to {self.state}')
                 self.save(update_fields=['state'])
                 notify(
                     self.user,
@@ -102,7 +107,7 @@ class CharacterOwnership(models.Model):
     objects = CharacterOwnershipManager()
 
     def __str__(self):
-        return "%s: %s" % (self.user, self.character)
+        return f"{self.user}: {self.character}"
 
 
 class OwnershipRecord(models.Model):
@@ -115,4 +120,4 @@ class OwnershipRecord(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return "%s: %s on %s" % (self.user, self.character, self.created)
+        return f"{self.user}: {self.character} on {self.created}"

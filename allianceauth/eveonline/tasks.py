@@ -67,7 +67,7 @@ def update_character_chunk(character_ids_chunk: list):
         character_names = providers.provider.client.Universe\
             .post_universe_names(ids=character_ids_chunk).result()
     except:
-        logger.error("Failed to bulk update characters. Attempting single updates")
+        logger.info("Failed to bulk update characters. Attempting single updates")
         for character_id in character_ids_chunk:
             update_character.apply_async(
                         args=[character_id], priority=TASK_PRIORITY

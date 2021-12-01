@@ -114,12 +114,12 @@ class TestAuthenticate(TestCase):
     def test_authenticate_main_character(self):
         t = Token(character_id=self.main_character.character_id, character_owner_hash='1')
         user = StateBackend().authenticate(token=t)
-        self.assertEquals(user, self.user)
+        self.assertEqual(user, self.user)
 
     def test_authenticate_alt_character(self):
         t = Token(character_id=self.alt_character.character_id, character_owner_hash='2')
         user = StateBackend().authenticate(token=t)
-        self.assertEquals(user, self.user)
+        self.assertEqual(user, self.user)
 
     def test_authenticate_unclaimed_character(self):
         t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='3')

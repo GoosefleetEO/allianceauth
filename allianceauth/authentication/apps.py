@@ -7,6 +7,6 @@ class AuthenticationConfig(AppConfig):
     label = 'authentication'
 
     def ready(self):
-        super(AuthenticationConfig, self).ready()
+        super().ready()
         from allianceauth.authentication import checks, signals
         register(Tags.security)(checks.check_login_scopes_setting)

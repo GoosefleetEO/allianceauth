@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 @receiver(m2m_changed, sender=User.groups.through)
 def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
-    logger.debug("Received m2m_changed from %s groups with action %s" % (instance, action))
+    logger.debug(f"Received m2m_changed from {instance} groups with action {action}")
 
     def trigger_service_group_update():
         logger.debug("Triggering service group update for %s" % instance)
@@ -29,7 +29,7 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
                 svc.validate_user(instance)
                 svc.update_groups(instance)
             except:
-                logger.exception('Exception running update_groups for services module %s on user %s' % (svc, instance))
+                logger.exception(f'Exception running update_groups for services module {svc} on user {instance}')
 
     if instance.pk and (action == "post_add" or action == "post_remove" or action == "post_clear"):
         logger.debug("Waiting for commit to trigger service group update for %s" % instance)
@@ -38,30 +38,30 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
 
 @receiver(m2m_changed, sender=User.user_permissions.through)
 def m2m_changed_user_permissions(sender, instance, action, *args, **kwargs):
-    logger.debug("Received m2m_changed from user %s permissions with action %s" % (instance, action))
+    logger.debug(f"Received m2m_changed from user {instance} permissions with action {action}")
     logger.debug('sender: %s' % sender)
     if instance.pk and (action == "post_remove" or action == "post_clear"):
-        logger.debug("Permissions changed for user {}, re-validating services".format(instance))
+        logger.debug(f"Permissions changed for user {instance}, re-validating services")
         # Checking permissions for a single user is quite fast, so we don't need to validate
         # That the permissions is a service permission, unlike groups.
 
         def validate_all_services():
-            logger.debug("Validating all services for user {}".format(instance))
+            logger.debug(f"Validating all services for user {instance}")
             for svc in ServicesHook.get_services():
                 try:
                     svc.validate_user(instance)
                 except:
                     logger.exception(
-                        'Exception running validate_user for services module {} on user {}'.format(svc, instance))
+                        f'Exception running validate_user for services module {svc} on user {instance}')
 
         transaction.on_commit(lambda: validate_all_services())
 
 
 @receiver(m2m_changed, sender=Group.permissions.through)
 def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwargs):
-    logger.debug("Received m2m_changed from group %s permissions with action %s" % (instance, action))
+    logger.debug(f"Received m2m_changed from group {instance} permissions with action {action}")
     if instance.pk and (action == "post_remove" or action == "post_clear"):
-        logger.debug("Checking if service permission changed for group {}".format(instance))
+        logger.debug(f"Checking if service permission changed for group {instance}")
         # As validating an entire groups service could lead to many thousands of permission checks
         # first we check that one of the permissions changed is, in fact, a service permission.
         perms = Permission.objects.filter(pk__in=pk_set)
@@ -69,16 +69,16 @@ def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwa
         service_perms = [svc.access_perm for svc in ServicesHook.get_services()]
         for perm in perms:
             natural_key = perm.natural_key()
-            path_perm = "{}.{}".format(natural_key[1], natural_key[0])
+            path_perm = f"{natural_key[1]}.{natural_key[0]}"
             if path_perm not in service_perms:
                 # Not a service permission, keep searching
                 continue
             for svc in ServicesHook.get_services():
                 if svc.access_perm == path_perm:
-                    logger.debug("Permissions changed for group {} on service {}, re-validating services for groups users".format(instance, svc))
+                    logger.debug(f"Permissions changed for group {instance} on service {svc}, re-validating services for groups users")
 
                     def validate_all_groups_users_for_service():
-                        logger.debug("Performing validation for service {}".format(svc))
+                        logger.debug(f"Performing validation for service {svc}")
                         for user in instance.user_set.all():
                             svc.validate_user(user)
 
@@ -86,14 +86,14 @@ def m2m_changed_group_permissions(sender, instance, action, pk_set, *args, **kwa
                     got_change = True
                     break  # Found service, break out of services iteration and go back to permission iteration
         if not got_change:
-            logger.debug("Permission change for group {} was not service permission, ignoring".format(instance))
+            logger.debug(f"Permission change for group {instance} was not service permission, ignoring")
 
 
 @receiver(m2m_changed, sender=State.permissions.through)
 def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwargs):
-    logger.debug("Received m2m_changed from state %s permissions with action %s" % (instance, action))
+    logger.debug(f"Received m2m_changed from state {instance} permissions with action {action}")
     if instance.pk and (action == "post_remove" or action == "post_clear"):
-        logger.debug("Checking if service permission changed for state {}".format(instance))
+        logger.debug(f"Checking if service permission changed for state {instance}")
         # As validating an entire groups service could lead to many thousands of permission checks
         # first we check that one of the permissions changed is, in fact, a service permission.
         perms = Permission.objects.filter(pk__in=pk_set)
@@ -101,16 +101,16 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
         service_perms = [svc.access_perm for svc in ServicesHook.get_services()]
         for perm in perms:
             natural_key = perm.natural_key()
-            path_perm = "{}.{}".format(natural_key[1], natural_key[0])
+            path_perm = f"{natural_key[1]}.{natural_key[0]}"
             if path_perm not in service_perms:
                 # Not a service permission, keep searching
                 continue
             for svc in ServicesHook.get_services():
                 if svc.access_perm == path_perm:
-                    logger.debug("Permissions changed for state {} on service {}, re-validating services for state users".format(instance, svc))
+                    logger.debug(f"Permissions changed for state {instance} on service {svc}, re-validating services for state users")
 
                     def validate_all_state_users_for_service():
-                        logger.debug("Performing validation for service {}".format(svc))
+                        logger.debug(f"Performing validation for service {svc}")
                         for profile in instance.userprofile_set.all():
                             svc.validate_user(profile.user)
 
@@ -118,12 +118,12 @@ def m2m_changed_state_permissions(sender, instance, action, pk_set, *args, **kwa
                     got_change = True
                     break  # Found service, break out of services iteration and go back to permission iteration
         if not got_change:
-            logger.debug("Permission change for state {} was not service permission, ignoring".format(instance))
+            logger.debug(f"Permission change for state {instance} was not service permission, ignoring")
 
 
 @receiver(state_changed)
 def check_service_accounts_state_changed(sender, user, state, **kwargs):
-    logger.debug("Received state_changed from %s to state %s" % (user, state))
+    logger.debug(f"Received state_changed from {user} to state {state}")
     for svc in ServicesHook.get_services():
         svc.validate_user(user)
         svc.update_groups(user)
@@ -200,14 +200,14 @@ def process_main_character_update(sender, instance, *args, **kwargs):
             if not instance.character_name == old_instance.character_name or \
                 not instance.corporation_name == old_instance.corporation_name or \
                 not instance.alliance_name == old_instance.alliance_name:
-                logger.info("syncing service nickname for user {0}".format(instance.userprofile.user))
+                logger.info(f"syncing service nickname for user {instance.userprofile.user}")
 
                 for svc in ServicesHook.get_services():
                     try:
                         svc.validate_user(instance.userprofile.user)
                         svc.sync_nickname(instance.userprofile.user)
                     except:
-                        logger.exception('Exception running sync_nickname for services module %s on user %s' % (svc, instance))
+                        logger.exception(f'Exception running sync_nickname for services module {svc} on user {instance}')
 
     except ObjectDoesNotExist:  # not a main char ignore
         pass

@@ -31,7 +31,7 @@ def _build_url(category: str, eve_id: int) -> str:
 
     url = urljoin(
         _BASE_URL,
-        '{}/{}'.format(partial, int(eve_id))
+        f'{partial}/{int(eve_id)}'
     )
     return url
 

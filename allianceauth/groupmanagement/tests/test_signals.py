@@ -6,6 +6,27 @@ from allianceauth.eveonline.autogroups.models import AutogroupsConfig
 from allianceauth.tests.auth_utils import AuthUtils
 
 
+from ..models import ReservedGroupName
+
+
+class TestGroupSignals(TestCase):
+    def test_should_create_authgroup_when_group_is_created(self):
+        # when
+        group = Group.objects.create(name="test")
+        # then
+        self.assertEqual(group.authgroup.group, group)
+
+    def test_should_rename_group_that_conflicts_with_reserved_name(self):
+        # given
+        ReservedGroupName.objects.create(name="test", reason="dummy", created_by="xyz")
+        ReservedGroupName.objects.create(name="test_1", reason="dummy", created_by="xyz")
+        # when
+        group = Group.objects.create(name="Test")
+        # then
+        self.assertNotEqual(group.name, "test")
+        self.assertNotEqual(group.name, "test_1")
+
+
 class TestCheckGroupsOnStateChange(TestCase):
 
     @classmethod

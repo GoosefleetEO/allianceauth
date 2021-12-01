@@ -22,7 +22,7 @@ def activate_forum(request):
     logger.debug("activate_forum called by user %s" % request.user)
     # Valid now we get the main characters
     character = request.user.profile.main_character
-    logger.debug("Adding phpbb user for user %s with main character %s" % (request.user, character))
+    logger.debug(f"Adding phpbb user for user {request.user} with main character {character}")
     result = Phpbb3Manager.add_user(Phpbb3Tasks.get_username(request.user), request.user.email, ['REGISTERED'],
                                     character.character_id)
     # if empty we failed

@@ -7,12 +7,12 @@
         <ul class="nav nav-pills nav-stacked gray-icon-color" id="side-menu">
             <li>
                 <a class="{% navactive request 'authentication:dashboard' %}" href="{% url 'authentication:dashboard' %}">
-                    <i class="fas fa-tachometer-alt fa-fw"></i> {% trans "Dashboard" %}
+                    <i class="fas fa-tachometer-alt fa-fw"></i> {% translate "Dashboard" %}
                 </a>
             </li>
             <li>
                 <a class="{% navactive request 'groupmanagement:groups' %}" href="{% url 'groupmanagement:groups' %}">
-                    <i class="fas fa-users fa-fw"></i> {% trans "Groups" %}
+                    <i class="fas fa-users fa-fw"></i> {% translate "Groups" %}
                 </a>
             </li>
 

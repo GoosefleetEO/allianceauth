@@ -9,7 +9,7 @@ from allianceauth.authentication.models import (
     CharacterOwnership, State, OwnershipRecord
 )
 from allianceauth.eveonline.models import (
-    EveCharacter, EveCorporationInfo, EveAllianceInfo
+    EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 )
 from allianceauth.services.hooks import ServicesHook
 from allianceauth.tests.auth_utils import AuthUtils
@@ -20,6 +20,7 @@ from ..admin import (
     StateAdmin,
     MainCorporationsFilter,
     MainAllianceFilter,
+    MainFactionFilter,
     OwnershipRecordAdmin,
     User,
     UserAdmin,
@@ -36,7 +37,7 @@ from . import get_admin_change_view_url, get_admin_search_url
 MODULE_PATH = 'allianceauth.authentication.admin'
 
 
-class MockRequest(object):
+class MockRequest:
     def __init__(self, user=None):
         self.user = user
 
@@ -180,6 +181,30 @@ class TestCaseWithTestData(TestCase):
         cls.user_3.is_superuser = True
         cls.user_3.save()
 
+        # user 4 - corp and faction, no alliance
+        cls.character_4 = EveCharacter.objects.create(
+            character_id=4321,
+            character_name='Professor X',
+            corporation_id=5432,
+            corporation_name="Xavier's School for Gifted Youngsters",
+            corporation_ticker='MUTNT',
+            alliance_id = None,
+            faction_id=999,
+            faction_name='The X-Men',
+        )
+        cls.user_4 = User.objects.create_user(
+            cls.character_4.character_name.replace(' ', '_'),
+            'abc@example.com',
+            'password'
+        )
+        CharacterOwnership.objects.create(
+            character=cls.character_4,
+            owner_hash='x1' + cls.character_4.character_name,
+            user=cls.user_4
+        )
+        cls.user_4.profile.main_character = cls.character_4
+        cls.user_4.profile.save()
+        EveFactionInfo.objects.create(faction_id=999, faction_name='The X-Men')
 
 def make_generic_search_request(ModelClass: type, search_term: str):
     User.objects.create_superuser(
@@ -188,7 +213,7 @@ def make_generic_search_request(ModelClass: type, search_term: str):
     c = Client()
     c.login(username='superuser', password='secret')
     return c.get(
-        '%s?q=%s' % (get_admin_search_url(ModelClass), quote(search_term))
+        f'{get_admin_search_url(ModelClass)}?q={quote(search_term)}'
     )
 
 
@@ -315,8 +340,12 @@ class TestUserAdmin(TestCaseWithTestData):
         self.assertEqual(user_main_organization(self.user_2), expected)
 
     def test_user_main_organization_u3(self):
-        expected = None
+        expected = ''
         self.assertEqual(user_main_organization(self.user_3), expected)
+
+    def test_user_main_organization_u4(self):
+        expected="Xavier's School for Gifted Youngsters<br>The X-Men"
+        self.assertEqual(user_main_organization(self.user_4), expected)
 
     def test_characters_u1(self):
         expected = 'Batman, Bruce Wayne'
@@ -390,7 +419,7 @@ class TestUserAdmin(TestCaseWithTestData):
 
     # actions
 
-    @patch(MODULE_PATH + '.UserAdmin.message_user', auto_spec=True)
+    @patch(MODULE_PATH + '.UserAdmin.message_user', auto_spec=True, unsafe=True)
     @patch(MODULE_PATH + '.update_character')
     def test_action_update_main_character_model(
         self, mock_task, mock_message_user
@@ -420,6 +449,7 @@ class TestUserAdmin(TestCaseWithTestData):
         expected = [
             (2002, 'Daily Planet'),
             (2001, 'Wayne Technologies'),
+            (5432, "Xavier's School for Gifted Youngsters"),
         ]
         self.assertEqual(filterspec.lookup_choices, expected)
 
@@ -461,6 +491,34 @@ class TestUserAdmin(TestCaseWithTestData):
         changelist = my_modeladmin.get_changelist_instance(request)
         queryset = changelist.get_queryset(request)
         expected = [self.user_1]
+        self.assertSetEqual(set(queryset), set(expected))
+
+    def test_filter_main_factions(self):
+        class UserAdminTest(BaseUserAdmin):
+            list_filter = (MainFactionFilter,)
+
+        my_modeladmin = UserAdminTest(User, AdminSite())
+
+        # Make sure the lookups are correct
+        request = self.factory.get('/')
+        request.user = self.user_4
+        changelist = my_modeladmin.get_changelist_instance(request)
+        filters = changelist.get_filters(request)
+        filterspec = filters[0][0]
+        expected = [
+            (999, 'The X-Men'),
+        ]
+        self.assertEqual(filterspec.lookup_choices, expected)
+
+        # Make sure the correct queryset is returned
+        request = self.factory.get(
+            '/',
+            {'main_faction_id__exact': self.character_4.faction_id}
+        )
+        request.user = self.user_4
+        changelist = my_modeladmin.get_changelist_instance(request)
+        queryset = changelist.get_queryset(request)
+        expected = [self.user_4]
         self.assertSetEqual(set(queryset), set(expected))
 
     def test_change_view_loads_normally(self):

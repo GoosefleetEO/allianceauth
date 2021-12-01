@@ -25,16 +25,16 @@ class Phpbb3Service(ServicesHook):
         return 'phpBB3 Forum'
 
     def delete_user(self, user, notify_user=False):
-        logger.debug('Deleting user %s %s account' % (user, self.name))
+        logger.debug(f'Deleting user {user} {self.name} account')
         return Phpbb3Tasks.delete_user(user, notify_user=notify_user)
 
     def validate_user(self, user):
-        logger.debug('Validating user %s %s account' % (user, self.name))
+        logger.debug(f'Validating user {user} {self.name} account')
         if Phpbb3Tasks.has_account(user) and not self.service_active_for_user(user):
             self.delete_user(user, notify_user=True)
 
     def update_groups(self, user):
-        logger.debug('Updating %s groups for %s' % (self.name, user))
+        logger.debug(f'Updating {self.name} groups for {user}')
         if Phpbb3Tasks.has_account(user):
             Phpbb3Tasks.update_groups.delay(user.pk)
 

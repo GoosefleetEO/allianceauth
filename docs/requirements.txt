@@ -4,13 +4,12 @@ sphinx_rtd_theme==0.5.0
 recommonmark==0.6.0
 
 # Autodoc dependencies
-django>=3.1.1,<4.0.0
+django>=3.2,<4.0.0
 django-celery-beat>=2.0.0
 django-bootstrap-form
 django-sortedm2m
-django-esi>=1.5,<3.0
-celery>=4.3.0,<5.0.0,!=4.4.4
+django-esi>=3,<4
+celery>5,<6
 celery_once
 passlib
 redis>=3.3.1,<4.0.0
-django-nose

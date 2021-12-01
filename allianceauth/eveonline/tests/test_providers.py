@@ -10,6 +10,8 @@ from . import set_logger
 from ..providers import (
     ObjectNotFound,
     Entity,
+    AllianceMixin,
+    FactionMixin,
     Character,
     Corporation,
     Alliance,
@@ -17,7 +19,6 @@ from ..providers import (
     EveProvider,
     EveSwaggerProvider
 )
-
 
 MODULE_PATH = 'allianceauth.eveonline.providers'
 SWAGGER_OLD_SPEC_PATH = os.path.join(os.path.dirname(
@@ -80,6 +81,72 @@ class TestEntity(TestCase):
         # bug: missing _neq_ in Equity to compliment _eq_
 
 
+class TestAllianceMixin(TestCase):
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
+    def test_alliance_defined(self, mock_provider_get_alliance):
+        my_alliance = Alliance(
+            id=3001,
+            name='Dummy Alliance',
+            ticker='Dummy',
+            corp_ids=[2001, 2002, 2003],
+            executor_corp_id=2001
+        )
+        mock_provider_get_alliance.return_value = my_alliance
+
+        x = AllianceMixin(alliance_id=3001)
+        self.assertEqual(
+            x.alliance,
+            my_alliance
+        )
+        self.assertEqual(
+            x.alliance,
+            my_alliance
+        )
+        # should fetch alliance once only
+        self.assertEqual(mock_provider_get_alliance.call_count, 1)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
+    def test_alliance_not_defined(self, mock_provider_get_alliance):
+        mock_provider_get_alliance.return_value = None
+
+        x = AllianceMixin()
+        self.assertEqual(
+            x.alliance,
+            Entity(None, None)
+        )
+        self.assertEqual(mock_provider_get_alliance.call_count, 0)
+
+
+class TestFactionMixin(TestCase):
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_defined(self, mock_provider_get_faction):
+        my_faction = Entity(id=1337, name='Permabanned')
+        mock_provider_get_faction.return_value = my_faction
+
+        x = FactionMixin(faction_id=3001)
+        self.assertEqual(
+            x.faction,
+            my_faction
+        )
+        self.assertEqual(
+            x.faction,
+            my_faction
+        )
+        # should fetch alliance once only
+        self.assertEqual(mock_provider_get_faction.call_count, 1)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
+    def test_faction_not_defined(self, mock_provider_get_faction):
+        mock_provider_get_faction.return_value = None
+
+        x = FactionMixin()
+        self.assertEqual(
+            x.faction,
+            Entity(None, None)
+        )
+        self.assertEqual(mock_provider_get_faction.call_count, 0)
+
+
 class TestCorporation(TestCase):
 
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
@@ -114,6 +181,7 @@ class TestCorporation(TestCase):
             x.alliance,
             Entity(None, None)
         )
+        self.assertEqual(mock_provider_get_alliance.call_count, 0)
 
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_character')
     def test_ceo(self, mock_provider_get_character):
@@ -142,6 +210,26 @@ class TestCorporation(TestCase):
 
         # bug in ceo(): will try to fetch character even if ceo_id is None
 
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_defined(self, mock_provider_get_faction):
+        my_faction = Entity(id=1337, name='Permabanned')
+        mock_provider_get_faction.return_value = my_faction
+
+        # fetch from provider if not defined
+        x = Corporation(faction_id=1337)
+        self.assertEqual(x.faction, my_faction)
+
+        # return existing if defined
+        mock_provider_get_faction.return_value = None
+        self.assertEqual(x.faction, my_faction)
+        self.assertEqual(mock_provider_get_faction.call_count, 1)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_undefined(self, mock_provider_get_faction):
+        x = Corporation()
+        self.assertEqual(x.faction, Entity())
+        self.assertEqual(mock_provider_get_faction.call_count, 0)
+
 
 class TestAlliance(TestCase):
 
@@ -151,7 +239,8 @@ class TestAlliance(TestCase):
             name='Dummy Alliance',
             ticker='Dummy',
             corp_ids=[2001, 2002, 2003],
-            executor_corp_id=2001
+            executor_corp_id=2001,
+            faction_id=1337
         )
 
     @staticmethod
@@ -232,6 +321,25 @@ class TestAlliance(TestCase):
             Entity(None, None),
         )
 
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_defined(self, mock_provider_get_faction):
+        my_faction = Entity(id=1337, name='Permabanned')
+        mock_provider_get_faction.return_value = my_faction
+
+        # fetch from provider if not defined
+        self.assertEqual(self.my_alliance.faction, my_faction)
+
+        # return existing if defined
+        mock_provider_get_faction.return_value = None
+        self.assertEqual(self.my_alliance.faction, my_faction)
+        self.assertEqual(mock_provider_get_faction.call_count, 1)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_undefined(self, mock_provider_get_faction):
+        self.my_alliance.faction_id = None
+        self.assertEqual(self.my_alliance.faction, Entity())
+        self.assertEqual(mock_provider_get_faction.call_count, 0)
+
 
 class TestCharacter(TestCase):
 
@@ -240,7 +348,8 @@ class TestCharacter(TestCase):
             id=1001,
             name='Bruce Wayne',
             corp_id=2001,
-            alliance_id=3001
+            alliance_id=3001,
+            faction_id=1337,
         )
 
     @patch(MODULE_PATH + '.EveSwaggerProvider.get_corp')
@@ -282,12 +391,32 @@ class TestCharacter(TestCase):
         self.assertEqual(self.my_character.alliance, my_alliance)
 
         # should call the provider one time only
-        self.assertEqual(mock_provider_get_corp.call_count, 1)
         self.assertEqual(mock_provider_get_alliance.call_count, 1)
 
-    def test_alliance_has_none(self):
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_alliance')
+    def test_alliance_has_none(self, mock_provider_get_alliance):
         self.my_character.alliance_id = None
         self.assertEqual(self.my_character.alliance, Entity(None, None))
+        self.assertEqual(mock_provider_get_alliance.call_count, 0)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_defined(self, mock_provider_get_faction):
+        my_faction = Entity(id=1337, name='Permabanned')
+        mock_provider_get_faction.return_value = my_faction
+
+        # fetch from provider if not defined
+        self.assertEqual(self.my_character.faction, my_faction)
+
+        # return existing if defined
+        mock_provider_get_faction.return_value = None
+        self.assertEqual(self.my_character.faction, my_faction)
+        self.assertEqual(mock_provider_get_faction.call_count, 1)
+
+    @patch(MODULE_PATH + '.EveSwaggerProvider.get_faction')
+    def test_faction_undefined(self, mock_provider_get_faction):
+        self.my_character.faction_id = None
+        self.assertEqual(self.my_character.faction, Entity())
+        self.assertEqual(mock_provider_get_faction.call_count, 0)
 
 
 class TestItemType(TestCase):
@@ -449,10 +578,10 @@ class TestEveSwaggerProvider(TestCase):
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_alliance(self, mock_esi_client_factory):
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Alliance.get_alliances_alliance_id \
             = TestEveSwaggerProvider.esi_get_alliances_alliance_id
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Alliance.get_alliances_alliance_id_corporations \
             = TestEveSwaggerProvider.esi_get_alliances_alliance_id_corporations
 
@@ -477,7 +606,7 @@ class TestEveSwaggerProvider(TestCase):
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_corp(self, mock_esi_client_factory):
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Corporation.get_corporations_corporation_id \
             = TestEveSwaggerProvider.esi_get_corporations_corporation_id
 
@@ -503,10 +632,10 @@ class TestEveSwaggerProvider(TestCase):
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_character(self, mock_esi_client_factory):
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Character.get_characters_character_id \
             = TestEveSwaggerProvider.esi_get_characters_character_id
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Character.post_characters_affiliation \
             = TestEveSwaggerProvider.esi_post_characters_affiliation
 
@@ -530,7 +659,7 @@ class TestEveSwaggerProvider(TestCase):
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_itemtype(self, mock_esi_client_factory):
-        mock_esi_client_factory.return_value\
+        mock_esi_client_factory.return_value \
             .Universe.get_universe_types_type_id \
             = TestEveSwaggerProvider.esi_get_universe_types_type_id
 
@@ -556,7 +685,7 @@ class TestEveSwaggerProvider(TestCase):
     @patch(MODULE_PATH + '.settings.DEBUG', False)
     @patch('socket.socket')
     def test_create_client_on_normal_startup_w_old_swagger_spec(
-        self, mock_socket
+            self, mock_socket
     ):
         mock_socket.side_effect = Exception('Network blocked for testing')
         my_provider = EveSwaggerProvider()
@@ -572,7 +701,7 @@ class TestEveSwaggerProvider(TestCase):
     @patch(MODULE_PATH + '.settings.DEBUG', False)
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_dont_create_client_if_client_creation_fails_on_normal_startup(
-        self, mock_esi_client_factory
+            self, mock_esi_client_factory
     ):
         mock_esi_client_factory.side_effect = RefResolutionError(cause='Test')
         my_provider = EveSwaggerProvider()
@@ -582,7 +711,7 @@ class TestEveSwaggerProvider(TestCase):
     @patch(MODULE_PATH + '.settings.DEBUG', True)
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_client_loads_on_demand(
-        self, mock_esi_client_factory
+            self, mock_esi_client_factory
     ):
         mock_esi_client_factory.return_value = 'my_client'
         my_provider = EveSwaggerProvider()
@@ -597,7 +726,7 @@ class TestEveSwaggerProvider(TestCase):
     def test_user_agent_header(self):
         my_provider = EveSwaggerProvider()
         my_client = my_provider.client
-        operation = my_client.Status.get_status()
+        operation = my_client.Universe.get_universe_factions()
         self.assertEqual(
             operation.future.request.headers['User-Agent'], 'allianceauth v1.0.0'
         )

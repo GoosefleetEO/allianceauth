@@ -22,7 +22,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(
 def load_data(filename):
     """loads given JSON file from `testdata` sub folder and returns content"""
     with open(
-        currentdir + '/testdata/%s.json' % filename, 'r', encoding='utf-8'
+        currentdir + '/testdata/%s.json' % filename, encoding='utf-8'
     ) as f:
         data = json.load(f)
 
@@ -36,7 +36,7 @@ class TestSrpManager(TestCase):
         expected = 81973979
         self.assertEqual(int(SRPManager.get_kill_id(link)), expected)
 
-    @patch(MODULE_PATH + '.provider')
+    @patch(MODULE_PATH + '.esi')
     @patch(MODULE_PATH + '.requests.get')
     def test_can_get_kill_data(self, mock_get, mock_provider):
         mock_get.return_value.json.return_value = load_data(
@@ -60,7 +60,7 @@ class TestSrpManager(TestCase):
         with self.assertRaises(ValueError):
             SRPManager.get_kill_data(81973979)
 
-    @patch(MODULE_PATH + '.provider')
+    @patch(MODULE_PATH + '.esi')
     @patch(MODULE_PATH + '.requests.get')
     def test_invalid_id_for_esi_raises_exception(
         self, mock_get, mock_provider

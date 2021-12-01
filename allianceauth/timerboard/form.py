@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import ugettext_lazy as _
 
-from .models import Timer
+from .models import Timer, TimerType
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class TimerForm(forms.ModelForm):
     class Meta:
         model = Timer
-        fields = ('details', 'system', 'planet_moon', 'structure', 'objective', 'important', 'corp_timer')
+        fields = ('details', 'system', 'planet_moon', 'structure', 'timer_type', 'objective', 'important', 'corp_timer')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -30,7 +30,7 @@ class TimerForm(forms.ModelForm):
             if 'minutes_left' not in initial:
                 initial.update({'minutes_left': td.seconds // 60 % 60})
             kwargs.update({'initial': initial})
-        super(TimerForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     structure_choices = [('POCO', 'POCO'),
                             ('I-HUB', 'I-HUB'),
@@ -59,6 +59,7 @@ class TimerForm(forms.ModelForm):
     system = forms.CharField(max_length=254, required=True, label=_("System"))
     planet_moon = forms.CharField(max_length=254, label=_("Planet/Moon"), required=False, initial="")
     structure = forms.ChoiceField(choices=structure_choices, required=True, label=_("Structure Type"))
+    timer_type = forms.ChoiceField(choices=TimerType.choices, label=_("Timer Type"))
     objective = forms.ChoiceField(choices=objective_choices, required=True, label=_("Objective"))
     days_left = forms.IntegerField(required=True, label=_("Days Remaining"), validators=[MinValueValidator(0)])
     hours_left = forms.IntegerField(required=True, label=_("Hours Remaining"),
@@ -69,7 +70,7 @@ class TimerForm(forms.ModelForm):
     corp_timer = forms.BooleanField(label=_("Corp-Restricted"), required=False)
 
     def save(self, commit=True):
-        timer = super(TimerForm, self).save(commit=False)
+        timer = super().save(commit=False)
 
         # Get character
         character = self.user.profile.main_character
@@ -82,7 +83,7 @@ class TimerForm(forms.ModelForm):
         current_time = timezone.now()
         eve_time = current_time + future_time
         logger.debug(
-            "Determined timer eve time is %s - current time %s, adding %s" % (eve_time, current_time, future_time))
+            f"Determined timer eve time is {eve_time} - current time {current_time}, adding {future_time}")
 
         timer.eve_time = eve_time
         timer.eve_character = character

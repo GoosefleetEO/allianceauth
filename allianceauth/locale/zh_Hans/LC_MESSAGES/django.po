@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 11:58+1000\n"
+"POT-Creation-Date: 2021-11-29 01:03+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Aaron BuBu <351793078@qq.com>, 2020\n"
 "Language-Team: Chinese Simplified (https://www.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
@@ -39,12 +39,12 @@ msgstr "只有主要角色才能执行这个操作。在下面添加一个"
 msgid "Email"
 msgstr "电子邮箱"
 
-#: allianceauth/authentication/models.py:74
+#: allianceauth/authentication/models.py:79
 #, python-format
 msgid "State changed to: %s"
 msgstr ""
 
-#: allianceauth/authentication/models.py:75
+#: allianceauth/authentication/models.py:80
 #, python-format
 msgid "Your user's state is now: %(state)s"
 msgstr ""
@@ -63,29 +63,29 @@ msgid ""
 "                            "
 msgstr ""
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:81
+#: allianceauth/authentication/templates/authentication/dashboard.html:102
 msgid "No main character set."
 msgstr "没有主要角色组"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:88
+#: allianceauth/authentication/templates/authentication/dashboard.html:109
 msgid "Add Character"
 msgstr "添加角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:92
+#: allianceauth/authentication/templates/authentication/dashboard.html:113
 msgid "Change Main"
 msgstr "修改主要角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:101
+#: allianceauth/authentication/templates/authentication/dashboard.html:122
 msgid "Group Memberships"
 msgstr "用户组成员"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:121
+#: allianceauth/authentication/templates/authentication/dashboard.html:142
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:41
 msgid "Characters"
 msgstr "角色"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:129
+#: allianceauth/authentication/templates/authentication/dashboard.html:150
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:73
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:24
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:15
@@ -94,19 +94,29 @@ msgstr "角色"
 msgid "Name"
 msgstr "角色名"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:130
+#: allianceauth/authentication/templates/authentication/dashboard.html:151
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
 msgstr "所在公司"
 
-#: allianceauth/authentication/templates/authentication/dashboard.html:131
+#: allianceauth/authentication/templates/authentication/dashboard.html:152
 #: allianceauth/corputils/templates/corputils/corpstats.html:76
 #: allianceauth/hrapplications/templates/hrapplications/view.html:47
 msgid "Alliance"
 msgstr "所在联盟"
 
-#: allianceauth/authentication/templates/public/register.html:18
+#: allianceauth/authentication/templates/public/login.html:6
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
+msgid "Login"
+msgstr "登录"
+
+#: allianceauth/authentication/templates/public/register.html:7
+msgid "Registration"
+msgstr ""
+
+#: allianceauth/authentication/templates/public/register.html:22
+#: allianceauth/authentication/templates/registration/registration_form.html:5
 msgid "Register"
 msgstr "注册"
 
@@ -141,47 +151,47 @@ msgstr "您的IT团队"
 msgid "Submit"
 msgstr "提交"
 
-#: allianceauth/authentication/views.py:75
+#: allianceauth/authentication/views.py:77
 #, python-format
 msgid ""
 "Cannot change main character to %(char)s: character owned by a different "
 "account."
 msgstr "不能修改主角色为%(char)s：这个角色被另一个账户所拥有"
 
-#: allianceauth/authentication/views.py:81
+#: allianceauth/authentication/views.py:83
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr "修改主要角色为%(char)s"
 
-#: allianceauth/authentication/views.py:90
+#: allianceauth/authentication/views.py:92
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr "添加%(name)s到您的账户"
 
-#: allianceauth/authentication/views.py:92
+#: allianceauth/authentication/views.py:94
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr "添加%(name)s到您的账户失败：他们已经在一个账户中了"
 
-#: allianceauth/authentication/views.py:131
+#: allianceauth/authentication/views.py:133
 msgid "Unable to authenticate as the selected character."
 msgstr "无法作为选定的角色进行身份验证"
 
-#: allianceauth/authentication/views.py:152
+#: allianceauth/authentication/views.py:197
 msgid "Registration token has expired."
 msgstr "注册令牌过期。"
 
-#: allianceauth/authentication/views.py:207
+#: allianceauth/authentication/views.py:252
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr "已经发送了确认邮件。请按照链接确定您的电邮地址"
 
-#: allianceauth/authentication/views.py:212
+#: allianceauth/authentication/views.py:257
 msgid "Confirmed your email address. Please login to continue."
 msgstr "已确认您的电邮地址。请登录以继续"
 
-#: allianceauth/authentication/views.py:217
+#: allianceauth/authentication/views.py:262
 msgid "Registration of new accounts is not allowed at this time."
 msgstr ""
 
@@ -295,16 +305,16 @@ msgstr "未能使用指定的令牌收集军团信息"
 msgid "Fleet Activity Tracking"
 msgstr "舰队活动历史"
 
-#: allianceauth/fleetactivitytracking/forms.py:7 allianceauth/srp/form.py:8
+#: allianceauth/fleetactivitytracking/forms.py:6 allianceauth/srp/form.py:8
 #: allianceauth/srp/templates/srp/management.html:37
 msgid "Fleet Name"
 msgstr "舰队名"
 
-#: allianceauth/fleetactivitytracking/forms.py:8
+#: allianceauth/fleetactivitytracking/forms.py:7
 msgid "Duration of fat-link"
 msgstr "舰队点名发PAP链接"
 
-#: allianceauth/fleetactivitytracking/forms.py:8
+#: allianceauth/fleetactivitytracking/forms.py:7
 msgid "minutes"
 msgstr "分钟数"
 
@@ -375,10 +385,10 @@ msgstr "用户"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:25
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:29
-#: allianceauth/optimer/form.py:7 allianceauth/timerboard/form.py:59
+#: allianceauth/optimer/form.py:13 allianceauth/timerboard/form.py:59
 #: allianceauth/timerboard/templates/timerboard/view.html:34
-#: allianceauth/timerboard/templates/timerboard/view.html:196
-#: allianceauth/timerboard/templates/timerboard/view.html:364
+#: allianceauth/timerboard/templates/timerboard/view.html:201
+#: allianceauth/timerboard/templates/timerboard/view.html:374
 msgid "System"
 msgstr "星系"
 
@@ -392,9 +402,10 @@ msgstr "舰船"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:50
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:31
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:76
+#: allianceauth/templates/allianceauth/top-menu.html:23
 #: allianceauth/timerboard/templates/timerboard/view.html:36
-#: allianceauth/timerboard/templates/timerboard/view.html:198
-#: allianceauth/timerboard/templates/timerboard/view.html:366
+#: allianceauth/timerboard/templates/timerboard/view.html:203
+#: allianceauth/timerboard/templates/timerboard/view.html:376
 msgid "Eve Time"
 msgstr "EVE时间"
 
@@ -451,17 +462,16 @@ msgstr "舰队"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:49
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:74
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:17
 #: allianceauth/timerboard/templates/timerboard/view.html:38
-#: allianceauth/timerboard/templates/timerboard/view.html:200
-#: allianceauth/timerboard/templates/timerboard/view.html:368
+#: allianceauth/timerboard/templates/timerboard/view.html:205
+#: allianceauth/timerboard/templates/timerboard/view.html:378
 msgid "Creator"
 msgstr "创建者"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:51
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:77
-#: allianceauth/optimer/form.py:9
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:14
+#: allianceauth/optimer/form.py:18
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:15
 msgid "Duration"
 msgstr "持续时间"
 
@@ -546,10 +556,104 @@ msgstr "成功注册舰队PAP"
 msgid "FAT link has expired."
 msgstr "PAP链接已过期"
 
+#: allianceauth/groupmanagement/admin.py:104
+msgid "This name has been reserved and can not be used for groups."
+msgstr ""
+
+#: allianceauth/groupmanagement/admin.py:230
+msgid "(auto)"
+msgstr ""
+
+#: allianceauth/groupmanagement/admin.py:239
+msgid "There already exists a group with that name."
+msgstr ""
+
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:14
 msgid "Group Management"
 msgstr "用户组管理"
+
+#: allianceauth/groupmanagement/models.py:102
+msgid ""
+"Internal group, users cannot see, join or request to join this "
+"group.<br>Used for groups such as Members, Corp_*, Alliance_* "
+"etc.<br><b>Overrides Hidden and Open options when selected.</b>"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:110
+msgid "Group is hidden from users but can still join with the correct link."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:116
+msgid ""
+"Group is open and users will be automatically added upon request.<br>If the "
+"group is not open users will need their request manually approved."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:123
+msgid ""
+"Group is public. Any registered user is able to join this group, with "
+"visibility based on the other options set for this group.<br>Auth will not "
+"remove users from this group automatically when they are no longer "
+"authenticated."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:134
+msgid ""
+"Group leaders can process requests for this group. Use the "
+"<code>auth.group_management</code> permission to allow a user to manage all "
+"groups.<br>"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:144
+msgid ""
+"Members of leader groups can process requests for this group. Use the "
+"<code>auth.group_management</code> permission to allow a user to manage all "
+"groups.<br>"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:153
+msgid ""
+"States listed here will have the ability to join this group provided they "
+"have the proper permissions.<br>"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:161
+msgid ""
+"Short description <i>(max. 512 characters)</i> of the group shown to users."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:168
+msgid "Can request non-public groups"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:189
+msgid "name"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:192
+msgid "Name that can not be used for groups."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:195
+msgid "reason"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:195
+msgid "Reason why this name is reserved."
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:198
+msgid "created by"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:203
+msgid "created at"
+msgstr ""
+
+#: allianceauth/groupmanagement/models.py:203
+msgid "Date when this entry was created"
+msgstr ""
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:5
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:14
@@ -559,6 +663,7 @@ msgstr "审计日志"
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:20
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:21
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
+#: allianceauth/timerboard/templates/timerboard/index_button.html:3
 msgid "Back"
 msgstr "返回"
 
@@ -577,11 +682,11 @@ msgstr "类型"
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:33
 #: allianceauth/notifications/templates/notifications/list.html:35
 #: allianceauth/notifications/templates/notifications/list.html:65
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:18
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:19
 #: allianceauth/services/templates/services/services.html:18
 #: allianceauth/timerboard/templates/timerboard/view.html:40
-#: allianceauth/timerboard/templates/timerboard/view.html:202
-#: allianceauth/timerboard/templates/timerboard/view.html:370
+#: allianceauth/timerboard/templates/timerboard/view.html:207
+#: allianceauth/timerboard/templates/timerboard/view.html:380
 msgid "Action"
 msgstr "操作"
 
@@ -643,6 +748,7 @@ msgstr "群组"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:25
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:16
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:10
 msgid "Description"
 msgstr "描述"
 
@@ -697,6 +803,19 @@ msgstr "可用组"
 msgid "Leave"
 msgstr "离开"
 
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:34
+#: allianceauth/groupmanagement/templates/groupmanagement/groups.html:49
+#: allianceauth/hrapplications/templates/hrapplications/management.html:37
+#: allianceauth/hrapplications/templates/hrapplications/management.html:70
+#: allianceauth/hrapplications/templates/hrapplications/management.html:97
+#: allianceauth/hrapplications/templates/hrapplications/management.html:141
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
+#: allianceauth/hrapplications/templates/hrapplications/view.html:20
+#: allianceauth/srp/templates/srp/data.html:138
+#: allianceauth/srp/templates/srp/management.html:81
+msgid "Pending"
+msgstr "待定"
+
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:40
 msgid "Join"
 msgstr "加入"
@@ -748,6 +867,7 @@ msgid "No group leave requests."
 msgstr "没有离开用户组的请求，小老弟你人缘可以啊？"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:9
+#: allianceauth/templates/allianceauth/top-menu.html:8
 msgid "Toggle navigation"
 msgstr "打开导航栏"
 
@@ -821,19 +941,6 @@ msgstr "你已经是那个群组的一员了。"
 msgid "You already have a pending application for that group."
 msgstr "你已经有了该组的未决申请"
 
-#: allianceauth/groupmanagement/views.py:357
-#: allianceauth/groupmanagement/views.py:399
-#: allianceauth/hrapplications/templates/hrapplications/management.html:37
-#: allianceauth/hrapplications/templates/hrapplications/management.html:70
-#: allianceauth/hrapplications/templates/hrapplications/management.html:97
-#: allianceauth/hrapplications/templates/hrapplications/management.html:141
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:38
-#: allianceauth/hrapplications/templates/hrapplications/view.html:20
-#: allianceauth/srp/templates/srp/data.html:138
-#: allianceauth/srp/templates/srp/management.html:81
-msgid "Pending"
-msgstr "待定"
-
 #: allianceauth/groupmanagement/views.py:363
 #, python-format
 msgid "Applied to group %(group)s."
@@ -888,6 +995,7 @@ msgid "Apply To"
 msgstr "应用"
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:6
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:6
 msgid "HR Application Management"
 msgstr "管理人力资源申请"
 
@@ -1044,6 +1152,7 @@ msgstr ""
 
 #: allianceauth/notifications/templates/notifications/list.html:5
 #: allianceauth/notifications/templates/notifications/list.html:9
+#: allianceauth/templates/allianceauth/notifications_menu_item.html:6
 msgid "Notifications"
 msgstr "通知"
 
@@ -1110,43 +1219,56 @@ msgstr "删除所有已读通知"
 msgid "Fleet Operations"
 msgstr "起队搞事"
 
-#: allianceauth/optimer/form.py:6
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:10
+#: allianceauth/optimer/form.py:12
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:11
 msgid "Doctrine"
 msgstr "船型"
 
-#: allianceauth/optimer/form.py:8
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:12
+#: allianceauth/optimer/form.py:14
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:13
 msgid "Start Time"
 msgstr "集合时间"
 
-#: allianceauth/optimer/form.py:10
+#: allianceauth/optimer/form.py:15
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:9
 msgid "Operation Name"
 msgstr "搞事名目"
 
-#: allianceauth/optimer/form.py:11
+#: allianceauth/optimer/form.py:16
+msgid "Operation Type"
+msgstr ""
+
+#: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:40
 msgid "Fleet Commander"
 msgstr "FC"
+
+#: allianceauth/optimer/form.py:22 allianceauth/srp/form.py:14
+#: allianceauth/srp/templates/srp/data.html:93
+msgid "Additional Info"
+msgstr "其他信息"
+
+#: allianceauth/optimer/form.py:23
+msgid "(Optional) Describe the operation with a couple of short words."
+msgstr ""
 
 #: allianceauth/optimer/templates/optimer/add.html:7
 #: allianceauth/optimer/templates/optimer/management.html:14
 msgid "Create Operation"
 msgstr "起一个队"
 
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:11
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:12
 msgid "Form Up System"
 msgstr "集结点"
 
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:13
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:14
 #: allianceauth/timerboard/templates/timerboard/view.html:37
-#: allianceauth/timerboard/templates/timerboard/view.html:199
-#: allianceauth/timerboard/templates/timerboard/view.html:367
+#: allianceauth/timerboard/templates/timerboard/view.html:204
+#: allianceauth/timerboard/templates/timerboard/view.html:377
 msgid "Local Time"
 msgstr "本地时间"
 
-#: allianceauth/optimer/templates/optimer/fleetoptable.html:15
+#: allianceauth/optimer/templates/optimer/fleetoptable.html:16
 msgid "FC"
 msgstr "FC"
 
@@ -1164,22 +1286,20 @@ msgid "Current Eve Time:"
 msgstr "当前EVE游戏内时间"
 
 #: allianceauth/optimer/templates/optimer/management.html:27
-#: allianceauth/timerboard/templates/timerboard/view.html:189
-msgid "Next Timers"
-msgstr "接下来的时间节点"
+msgid "Next Fleet Operations"
+msgstr ""
 
 #: allianceauth/optimer/templates/optimer/management.html:31
-#: allianceauth/timerboard/templates/timerboard/view.html:353
+#: allianceauth/timerboard/templates/timerboard/view.html:363
 msgid "No upcoming timers."
 msgstr "没有快到的时间节点，歇一会吧"
 
 #: allianceauth/optimer/templates/optimer/management.html:34
-#: allianceauth/timerboard/templates/timerboard/view.html:357
-msgid "Past Timers"
-msgstr "已经过去的时间节点"
+msgid "Past Fleet Operations"
+msgstr ""
 
 #: allianceauth/optimer/templates/optimer/management.html:38
-#: allianceauth/timerboard/templates/timerboard/view.html:521
+#: allianceauth/timerboard/templates/timerboard/view.html:536
 msgid "No past timers."
 msgstr "没有已经结束的时间节点啦"
 
@@ -1193,17 +1313,17 @@ msgstr "更新搞事队"
 msgid "Fleet Operation Does Not Exist"
 msgstr "这搞事队不存在啊，你会不会搞事啊"
 
-#: allianceauth/optimer/views.py:55
+#: allianceauth/optimer/views.py:69
 #, python-format
 msgid "Created operation timer for %(opname)s."
 msgstr "为%(opname)s创建了搞事时间节点，冲鸭"
 
-#: allianceauth/optimer/views.py:73
+#: allianceauth/optimer/views.py:87
 #, python-format
 msgid "Removed operation timer for %(opname)s."
 msgstr "移除了%(opname)s的搞事时间节点，咕咕咕？"
 
-#: allianceauth/optimer/views.py:96
+#: allianceauth/optimer/views.py:125
 #, python-format
 msgid "Saved changes to operation timer for %(opname)s."
 msgstr "对搞事时间节点%(opname)s的修改保存了，朝令夕改你是不是合格FC啊？"
@@ -1258,13 +1378,50 @@ msgstr "用户"
 msgid "States"
 msgstr "声望"
 
+#: allianceauth/project_template/project_name/settings/base.py:88
+msgid "English"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:89
+msgid "German"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:90
+msgid "Spanish"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:91
+msgid "Chinese Simplified"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:92
+msgid "Russian"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:93
+msgid "Korean"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:94
+msgid "French"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:95
+msgid "Japanese"
+msgstr ""
+
+#: allianceauth/project_template/project_name/settings/base.py:96
+msgid "Italian"
+msgstr ""
+
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
 msgstr "该服务账户仍然存在"
 
 #: allianceauth/services/abstract.py:103
-msgid "Successfully set your {} password"
-msgstr "成功修改了你的[]密码"
+#, python-brace-format
+msgid "Successfully set your {self.service_name} password"
+msgstr ""
 
 #: allianceauth/services/auth_hooks.py:12
 msgid "Services"
@@ -1330,14 +1487,18 @@ msgstr "密码"
 msgid "Password must be at least 8 characters long."
 msgstr "密码至少要有8个字符啊，你也太不注重安全啦"
 
-#: allianceauth/services/modules/discord/models.py:225
+#: allianceauth/services/modules/discord/models.py:234
 msgid "Discord Account Disabled"
 msgstr ""
 
-#: allianceauth/services/modules/discord/models.py:227
+#: allianceauth/services/modules/discord/models.py:236
 msgid ""
 "Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
+msgstr ""
+
+#: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:5
+msgid "Discord"
 msgstr ""
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
@@ -1518,6 +1679,10 @@ msgstr "修改SMF论坛密码"
 msgid "Unable to locate user %s on server"
 msgstr "服务器上找不到%s这个用户呀，老哥你再看看？"
 
+#: allianceauth/services/modules/teamspeak3/templates/admin/teamspeak3/authts/change_list.html:9
+msgid "Update TS3 groups"
+msgstr ""
+
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:6
 msgid "Verify Teamspeak"
 msgstr "确认TS"
@@ -1650,10 +1815,6 @@ msgstr "集结时间"
 #: allianceauth/srp/templates/srp/management.html:39
 msgid "Fleet Doctrine"
 msgstr "舰队船型"
-
-#: allianceauth/srp/form.py:14 allianceauth/srp/templates/srp/data.html:93
-msgid "Additional Info"
-msgstr "其他信息"
 
 #: allianceauth/srp/form.py:16
 msgid "Killboard Link (zkillboard.com or kb.evetools.org)"
@@ -1864,52 +2025,52 @@ msgid ""
 "zKillboard."
 msgstr "小老弟，你这个补损用的KB链接不对劲儿啊，你是不是没用zKillboard啊？"
 
-#: allianceauth/srp/views.py:211
+#: allianceauth/srp/views.py:212
 #, python-format
 msgid "Submitted SRP request for your %(ship)s."
 msgstr "你的%(ship)s的补损申请好啦"
 
-#: allianceauth/srp/views.py:215
+#: allianceauth/srp/views.py:216
 #, python-format
 msgid ""
 "Character %(charid)s does not belong to your Auth account. Please add the "
 "API key for this character and try again"
 msgstr "%(charid)s这个角色好像不在你的账号里啊，你交没交ESI啊？交过再试一次吧"
 
-#: allianceauth/srp/views.py:235 allianceauth/srp/views.py:261
-#: allianceauth/srp/views.py:299
+#: allianceauth/srp/views.py:236 allianceauth/srp/views.py:262
+#: allianceauth/srp/views.py:300
 msgid "No SRP requests selected"
 msgstr "你没选中任何补损请求哦"
 
-#: allianceauth/srp/views.py:246 allianceauth/srp/views.py:284
+#: allianceauth/srp/views.py:247 allianceauth/srp/views.py:285
 msgid "Unable to locate selected SRP request."
 msgstr "你选的这条补损请求找不到呀"
 
-#: allianceauth/srp/views.py:249
+#: allianceauth/srp/views.py:250
 #, python-format
 msgid "Deleted %(numrequests)s SRP requests"
 msgstr "删了%(numrequests)s条补损请求，你是不是准备赖账啊？"
 
-#: allianceauth/srp/views.py:287
+#: allianceauth/srp/views.py:288
 #, python-format
 msgid "Approved %(numrequests)s SRP requests"
 msgstr "通过了%(numrequests)s条补损请求，钱包大出血？"
 
-#: allianceauth/srp/views.py:319
+#: allianceauth/srp/views.py:320
 msgid "Unable to locate selected SRP request"
 msgstr "你选的这条补损请求找不到呀"
 
-#: allianceauth/srp/views.py:322
+#: allianceauth/srp/views.py:323
 #, python-format
 msgid "Rejected %(numrequests)s SRP requests."
 msgstr "已拒绝%(numrequests)s个补损申请，小老弟你这是想赖账？"
 
-#: allianceauth/srp/views.py:335
+#: allianceauth/srp/views.py:336
 #, python-format
 msgid "Unable to locate SRP request with ID %(requestid)s"
 msgstr "找不到ID是%(requestid)s的补损申请呀，老哥眼花了？"
 
-#: allianceauth/srp/views.py:359
+#: allianceauth/srp/views.py:360
 #, python-format
 msgid "Saved changes to SRP fleet %(fleetname)s"
 msgstr "你做的修改已经保存到%(fleetname)s这个补损舰队啦，尽情白给吧！"
@@ -1993,39 +2154,35 @@ msgstr ""
 msgid "Logout"
 msgstr "登出"
 
-#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
-msgid "Login"
-msgstr "登录"
-
 #: allianceauth/timerboard/form.py:53
 msgid "Other"
 msgstr "其他"
 
 #: allianceauth/timerboard/form.py:54
-#: allianceauth/timerboard/templates/timerboard/view.html:58
-#: allianceauth/timerboard/templates/timerboard/view.html:220
-#: allianceauth/timerboard/templates/timerboard/view.html:388
+#: allianceauth/timerboard/templates/timerboard/view.html:63
+#: allianceauth/timerboard/templates/timerboard/view.html:230
+#: allianceauth/timerboard/templates/timerboard/view.html:403
 msgid "Friendly"
 msgstr "蓝加"
 
 #: allianceauth/timerboard/form.py:55
-#: allianceauth/timerboard/templates/timerboard/view.html:53
-#: allianceauth/timerboard/templates/timerboard/view.html:215
-#: allianceauth/timerboard/templates/timerboard/view.html:383
+#: allianceauth/timerboard/templates/timerboard/view.html:58
+#: allianceauth/timerboard/templates/timerboard/view.html:225
+#: allianceauth/timerboard/templates/timerboard/view.html:398
 msgid "Hostile"
 msgstr "红减"
 
 #: allianceauth/timerboard/form.py:56
-#: allianceauth/timerboard/templates/timerboard/view.html:63
-#: allianceauth/timerboard/templates/timerboard/view.html:225
-#: allianceauth/timerboard/templates/timerboard/view.html:393
+#: allianceauth/timerboard/templates/timerboard/view.html:68
+#: allianceauth/timerboard/templates/timerboard/view.html:235
+#: allianceauth/timerboard/templates/timerboard/view.html:408
 msgid "Neutral"
 msgstr "白名"
 
 #: allianceauth/timerboard/form.py:58
 #: allianceauth/timerboard/templates/timerboard/view.html:32
-#: allianceauth/timerboard/templates/timerboard/view.html:194
-#: allianceauth/timerboard/templates/timerboard/view.html:362
+#: allianceauth/timerboard/templates/timerboard/view.html:199
+#: allianceauth/timerboard/templates/timerboard/view.html:372
 msgid "Details"
 msgstr "详细信息"
 
@@ -2038,31 +2195,63 @@ msgid "Structure Type"
 msgstr "建筑类型"
 
 #: allianceauth/timerboard/form.py:62
+msgid "Timer Type"
+msgstr ""
+
+#: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:33
-#: allianceauth/timerboard/templates/timerboard/view.html:195
-#: allianceauth/timerboard/templates/timerboard/view.html:363
+#: allianceauth/timerboard/templates/timerboard/view.html:200
+#: allianceauth/timerboard/templates/timerboard/view.html:373
 msgid "Objective"
 msgstr "声望"
 
-#: allianceauth/timerboard/form.py:63
+#: allianceauth/timerboard/form.py:64
 msgid "Days Remaining"
 msgstr "剩余天数"
 
-#: allianceauth/timerboard/form.py:64
+#: allianceauth/timerboard/form.py:65
 msgid "Hours Remaining"
 msgstr "剩余小时数"
 
-#: allianceauth/timerboard/form.py:66
+#: allianceauth/timerboard/form.py:67
 msgid "Minutes Remaining"
 msgstr "剩余分钟"
 
-#: allianceauth/timerboard/form.py:68
+#: allianceauth/timerboard/form.py:69
 msgid "Important"
 msgstr "重要信息"
 
-#: allianceauth/timerboard/form.py:69
+#: allianceauth/timerboard/form.py:70
 msgid "Corp-Restricted"
 msgstr "受限制的公司"
+
+#: allianceauth/timerboard/models.py:14
+msgid "Not Specified"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:15
+msgid "Shield"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:16
+msgid "Armor"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:17
+msgid "Hull"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:18
+msgid "Final"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:19
+msgid "Anchoring"
+msgstr ""
+
+#: allianceauth/timerboard/models.py:20
+msgid "Unanchoring"
+msgstr ""
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"
@@ -2102,10 +2291,18 @@ msgid "Corp Timers"
 msgstr "公司时间表"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:35
-#: allianceauth/timerboard/templates/timerboard/view.html:197
-#: allianceauth/timerboard/templates/timerboard/view.html:365
+#: allianceauth/timerboard/templates/timerboard/view.html:202
+#: allianceauth/timerboard/templates/timerboard/view.html:375
 msgid "Structure"
 msgstr "建筑"
+
+#: allianceauth/timerboard/templates/timerboard/view.html:194
+msgid "Next Timers"
+msgstr "接下来的时间节点"
+
+#: allianceauth/timerboard/templates/timerboard/view.html:367
+msgid "Past Timers"
+msgstr "已经过去的时间节点"
 
 #: allianceauth/timerboard/views.py:74
 #, python-format

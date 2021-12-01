@@ -180,4 +180,4 @@ class XenforoManagerTestCase(TestCase):
         password = self.manager._XenForoManager__generate_password()
 
         self.assertEqual(len(password), 16)
-        self.assertIsInstance(password, type(''))
+        self.assertIsInstance(password, str)

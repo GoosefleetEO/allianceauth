@@ -2,29 +2,29 @@
 {% load bootstrap %}
 {% load static %}
 {% load i18n %}
-{% block page_title %}{% trans "Fatlink view" %}{% endblock page_title %}
+{% block page_title %}{% translate "Fatlink view" %}{% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% trans "Edit fatlink" %} "{{ fatlink }}"
+        <h1 class="page-header text-center">{% translate "Edit fatlink" %} "{{ fatlink }}"
             <div class="text-right">
                 <form>
                     <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" name="deletefat" value="True">
-                        {% trans "Delete fat" %}
+                        {% translate "Delete fat" %}
                     </button>
                 </form>
             </div>
         </h1>
         <div class="panel panel-default">
-            <div class="panel-heading">{% trans "Registered characters" %}</div>
+            <div class="panel-heading">{% translate "Registered characters" %}</div>
             <div class="panel-body">
                 <table class="table table-responsive table-hover">
                     <tr>
-                        <th class="text-center">{% trans "User" %}</th>
-                        <th class="text-center">{% trans "Character" %}</th>
-                        <th class="text-center">{% trans "System" %}</th>
-                        <th class="text-center">{% trans "Ship" %}</th>
-                        <th class="text-center">{% trans "Eve Time" %}</th>
+                        <th class="text-center">{% translate "User" %}</th>
+                        <th class="text-center">{% translate "Character" %}</th>
+                        <th class="text-center">{% translate "System" %}</th>
+                        <th class="text-center">{% translate "Ship" %}</th>
+                        <th class="text-center">{% translate "Eve Time" %}</th>
                         <th></th>
                     </tr>
                     {% for fat in registered_fats %}

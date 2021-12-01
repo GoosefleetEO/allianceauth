@@ -13,5 +13,5 @@ class Phpbb3User(models.Model):
 
     class Meta:
         permissions = (
-            ("access_phpbb3", u"Can access the phpBB3 service"),
+            ("access_phpbb3", "Can access the phpBB3 service"),
         )

@@ -19,7 +19,7 @@ def trigger_all_ts_update():
 
 @receiver(m2m_changed, sender=AuthTS.ts_group.through)
 def m2m_changed_authts_group(sender, instance, action, *args, **kwargs):
-    logger.debug("Received m2m_changed from %s ts_group with action %s" % (instance, action))
+    logger.debug(f"Received m2m_changed from {instance} ts_group with action {action}")
     if action == "post_add" or action == "post_remove":
         transaction.on_commit(trigger_all_ts_update)
 
@@ -45,5 +45,5 @@ post_delete.connect(post_delete_authts, sender=StateGroup)
 def check_groups_on_state_change(sender, user, state, **kwargs):
     def trigger_update():
         Teamspeak3Tasks.update_groups.delay(user.pk)
-    logger.debug("Received state_changed signal from {}".format(user))
+    logger.debug(f"Received state_changed signal from {user}")
     transaction.on_commit(trigger_update)

@@ -16,7 +16,7 @@ class AnalyticsIdentifier(models.Model):
             raise ValidationError('There is can be only one \
                                    AnalyticsIdentifier instance')
         self.pk = self.id = 1 # If this happens to be deleted and recreated, force it to be 1
-        return super(AnalyticsIdentifier, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class AnalyticsPath(models.Model):

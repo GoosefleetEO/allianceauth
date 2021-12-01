@@ -1,4 +1,5 @@
 from copy import copy
+from typing import Set, Iterable
 
 
 class DiscordRoles:
@@ -31,8 +32,7 @@ class DiscordRoles:
         return hash(tuple(sorted(self._roles.keys())))
 
     def __iter__(self):
-        for role in self._roles.values():
-            yield role
+        yield from self._roles.values()
 
     def __contains__(self, item) -> bool:
         return int(item) in self._roles
@@ -40,7 +40,7 @@ class DiscordRoles:
     def __len__(self):
         return len(self._roles.keys())
 
-    def has_roles(self, role_ids: set) -> bool:
+    def has_roles(self, role_ids: Set[int]) -> bool:
         """returns true if this objects contains all roles defined by given role_ids
         incl. managed roles
         """
@@ -48,13 +48,22 @@ class DiscordRoles:
         all_role_ids = self._roles.keys()
         return role_ids.issubset(all_role_ids)
 
-    def ids(self) -> set:
+    def ids(self) -> Set[int]:
         """return a set of all role IDs"""
         return set(self._roles.keys())
 
-    def subset(self, role_ids: set = None, managed_only: bool = False) -> object:
-        """returns a new object containing the subset of roles as defined
-        by given role IDs and/or including managed roles only
+    def subset(
+        self,
+        role_ids: Iterable[int] = None,
+        managed_only: bool = False,
+        role_names: Iterable[str] = None
+    ) -> "DiscordRoles":
+        """returns a new object containing the subset of roles
+
+        Args:
+        - role_ids: role ids must be in the provided list
+        - managed_only: roles must be managed
+        - role_names: role names must match provided list (not case sensitive)
         """
         if role_ids is not None:
             role_ids = {int(id) for id in role_ids}
@@ -75,15 +84,21 @@ class DiscordRoles:
                 if role_id in role_ids and role['managed']
             ])
 
-        else:
-            return copy(self)
+        elif role_ids is None and managed_only is False and role_names is not None:
+            role_names = {self.sanitize_role_name(name).lower() for name in role_names}
+            return type(self)([
+                role for role in self._roles.values()
+                if role["name"].lower() in role_names
+            ])
 
-    def union(self, other: object) -> object:
+        return copy(self)
+
+    def union(self, other: object) -> "DiscordRoles":
         """returns a new roles object that is the union of this roles object
         with other"""
         return type(self)(list(self) + list(other))
 
-    def difference(self, other: object) -> object:
+    def difference(self, other: object) -> "DiscordRoles":
         """returns a new roles object that only contains the roles
         that exist in the current objects, but not in other
         """
@@ -95,11 +110,10 @@ class DiscordRoles:
         role_name = self.sanitize_role_name(role_name)
         if role_name in self._roles_by_name:
             return self._roles_by_name[role_name]
-        else:
-            return dict()
+        return dict()
 
     @classmethod
-    def create_from_matched_roles(cls, matched_roles: list) -> None:
+    def create_from_matched_roles(cls, matched_roles: list) -> "DiscordRoles":
         """returns a new object created from the given list of matches roles
 
         matches_roles must be a list of tuples in the form: (role, created)
@@ -108,7 +122,7 @@ class DiscordRoles:
         return cls(raw_roles)
 
     @staticmethod
-    def _assert_valid_role(role: dict):
+    def _assert_valid_role(role: dict) -> None:
         if not isinstance(role, dict):
             raise TypeError('Roles must be of type dict: %s' % role)
 

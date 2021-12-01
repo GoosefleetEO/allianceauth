@@ -9,7 +9,7 @@ MODULE_PATH = 'allianceauth.eveonline.autogroups'
 
 
 def patch(target, *args, **kwargs):
-    return mock.patch('{}{}'.format(MODULE_PATH, target), *args, **kwargs)
+    return mock.patch(f'{MODULE_PATH}{target}', *args, **kwargs)
 
 
 def connect_signals():

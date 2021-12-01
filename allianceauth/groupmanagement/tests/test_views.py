@@ -1,10 +1,7 @@
-from unittest.mock import Mock, patch
-
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from allianceauth.tests.auth_utils import AuthUtils
-from esi.models import Token
 
 from .. import views
 

@@ -24,7 +24,7 @@ ACCESS_PERM = 'openfire.access_openfire'
 def activate_jabber(request):
     logger.debug("activate_jabber called by user %s" % request.user)
     character = request.user.profile.main_character
-    logger.debug("Adding jabber user for user %s with main character %s" % (request.user, character))
+    logger.debug(f"Adding jabber user for user {request.user} with main character {character}")
     info = OpenfireManager.add_user(OpenfireTasks.get_username(request.user))
     # If our username is blank means we already had a user
     if info[0] != "":
@@ -95,7 +95,7 @@ def jabber_broadcast_view(request):
         logger.debug("Received POST request containing form, valid: %s" % form.is_valid())
         if form.is_valid():
             main_char = request.user.profile.main_character
-            logger.debug("Processing jabber broadcast for user %s with main character %s" % (request.user, main_char))
+            logger.debug(f"Processing jabber broadcast for user {request.user} with main character {main_char}")
             try:
                 if main_char is not None:
                     message_to_send = form.cleaned_data['message'] + "\n##### SENT BY: " + "[" + main_char.corporation_ticker + "]" + \
@@ -120,7 +120,7 @@ def jabber_broadcast_view(request):
     else:
         form = JabberBroadcastForm()
         form.fields['group'].choices = allchoices
-        logger.debug("Generated broadcast form for user %s containing %s groups" % (
+        logger.debug("Generated broadcast form for user {} containing {} groups".format(
             request.user, len(form.fields['group'].choices)))
 
     context = {'form': form}

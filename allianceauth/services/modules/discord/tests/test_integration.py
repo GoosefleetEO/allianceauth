@@ -395,12 +395,12 @@ class StateTestCase(TestCase):
         self.assertIsNotNone(self.user.discord)
         higher_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(higher_state, self.user.profile.state)
+        self.assertEqual(higher_state, self.user.profile.state)
         with self.assertRaises(DiscordUser.DoesNotExist):
             self.user.discord
         higher_state.member_characters.clear()
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         with self.assertRaises(DiscordUser.DoesNotExist):
             self.user.discord
 
@@ -419,15 +419,15 @@ class StateTestCase(TestCase):
         self.assertIsNotNone(self.user.discord)
         lower_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         self.member_state.member_characters.clear()
         self._refresh_user()
-        self.assertEquals(lower_state, self.user.profile.state)
+        self.assertEqual(lower_state, self.user.profile.state)
         with self.assertRaises(DiscordUser.DoesNotExist):
             self.user.discord
         self.member_state.member_characters.add(self.test_character)
         self._refresh_user()
-        self.assertEquals(self.member_state, self.user.profile.state)
+        self.assertEqual(self.member_state, self.user.profile.state)
         with self.assertRaises(DiscordUser.DoesNotExist):
             self.user.discord
 

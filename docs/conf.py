@@ -58,16 +58,16 @@ source_suffix = ['.md', '.rst']
 master_doc = 'index'
 
 # General information about the project.
-project = u'Alliance Auth'
-copyright = u'2018-2020, Alliance Auth'
-author = u'R4stl1n'
+project = 'Alliance Auth'
+copyright = '2018-2020, Alliance Auth'
+author = 'R4stl1n'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = u'2.0'
+version = '2.0'
 # The full version, including alpha/beta/rc tags.
 # release = u'1.14.0'
 
@@ -142,7 +142,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AllianceAuth.tex', u'Alliance Auth Documentation', u'R4stl1n', 'manual'),
+    (master_doc, 'AllianceAuth.tex', 'Alliance Auth Documentation', 'R4stl1n', 'manual'),
 ]
 
 
@@ -151,7 +151,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'allianceauth', u'Alliance Auth Documentation',
+    (master_doc, 'allianceauth', 'Alliance Auth Documentation',
     [author], 1)
 ]
 
@@ -165,7 +165,7 @@ add_module_names = False
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'AllianceAuth', u'Alliance Auth Documentation',
+    (master_doc, 'AllianceAuth', 'Alliance Auth Documentation',
     author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
     'Miscellaneous'),
 ]

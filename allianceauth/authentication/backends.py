@@ -36,17 +36,17 @@ class StateBackend(ModelBackend):
         try:
             ownership = CharacterOwnership.objects.get(character__character_id=token.character_id)
             if ownership.owner_hash == token.character_owner_hash:
-                logger.debug('Authenticating {0} by ownership of character {1}'.format(ownership.user, token.character_name))
+                logger.debug(f'Authenticating {ownership.user} by ownership of character {token.character_name}')
                 return ownership.user
             else:
-                logger.debug('{0} has changed ownership. Creating new user account.'.format(token.character_name))
+                logger.debug(f'{token.character_name} has changed ownership. Creating new user account.')
                 ownership.delete()
                 return self.create_user(token)
         except CharacterOwnership.DoesNotExist:
             try:
                 # insecure legacy main check for pre-sso registration auth installs
                 profile = UserProfile.objects.get(main_character__character_id=token.character_id)
-                logger.debug('Authenticating {0} by their main character {1} without active ownership.'.format(profile.user, profile.main_character))
+                logger.debug(f'Authenticating {profile.user} by their main character {profile.main_character} without active ownership.')
                 # attach an ownership
                 token.user = profile.user
                 CharacterOwnership.objects.create_by_token(token)
@@ -59,13 +59,13 @@ class StateBackend(ModelBackend):
                     user = records[0].user
                     token.user = user
                     co = CharacterOwnership.objects.create_by_token(token)
-                    logger.debug('Authenticating {0} by matching owner hash record of character {1}'.format(user, co.character))
+                    logger.debug(f'Authenticating {user} by matching owner hash record of character {co.character}')
                     if not user.profile.main_character:
                         # set this as their main by default if they have none
                         user.profile.main_character = co.character
                         user.profile.save()
                     return user
-            logger.debug('Unable to authenticate character {0}. Creating new user.'.format(token.character_name))
+            logger.debug(f'Unable to authenticate character {token.character_name}. Creating new user.')
             return self.create_user(token)
 
     def create_user(self, token):
@@ -77,7 +77,7 @@ class StateBackend(ModelBackend):
         co = CharacterOwnership.objects.create_by_token(token)  # assign ownership to this user
         user.profile.main_character = co.character  # assign main character as token character
         user.profile.save()
-        logger.debug('Created new user {0}'.format(user))
+        logger.debug(f'Created new user {user}')
         return user
 
     @staticmethod
@@ -87,10 +87,10 @@ class StateBackend(ModelBackend):
         if User.objects.filter(username__startswith=name).exists():
             u = User.objects.filter(username__startswith=name)
             num = len(u)
-            username = "%s_%s" % (name, num)
+            username = f"{name}_{num}"
             while u.filter(username=username).exists():
                 num += 1
-                username = "%s_%s" % (name, num)
+                username = f"{name}_{num}"
         else:
             username = name
         return username

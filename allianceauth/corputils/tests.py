@@ -243,7 +243,7 @@ class CorpMemberTestCase(TestCase):
         CharacterOwnership.objects.create(character=character, user=self.user, owner_hash='b')
         self.member.refresh_from_db()
         self.assertNotEqual(self.member.main_character, self.member.character)
-        self.assertEquals(self.member.main_character, self.user.profile.main_character)
+        self.assertEqual(self.member.main_character, self.user.profile.main_character)
 
         # test when is main
         old_main = self.user.profile.main_character
@@ -274,7 +274,7 @@ class CorpMemberTestCase(TestCase):
         AuthUtils.connect_signals()
 
     def test_portrait_url(self):
-        self.assertEquals(self.member.portrait_url(size=32), 'https://images.evetech.net/characters/2/portrait?size=32')
-        self.assertEquals(self.member.portrait_url(size=32), self.member.portrait_url_32)
-        self.assertEquals(self.member.portrait_url(size=64), self.member.portrait_url_64)
-        self.assertEquals(self.member.portrait_url(size=128), self.member.portrait_url_128)
+        self.assertEqual(self.member.portrait_url(size=32), 'https://images.evetech.net/characters/2/portrait?size=32')
+        self.assertEqual(self.member.portrait_url(size=32), self.member.portrait_url_32)
+        self.assertEqual(self.member.portrait_url(size=64), self.member.portrait_url_64)
+        self.assertEqual(self.member.portrait_url(size=128), self.member.portrait_url_128)
