@@ -157,32 +157,25 @@ class Teamspeak3Manager:
             logger.info(f"Removed user id {uid} from group id {groupid} on TS3 server.")
 
     def _sync_ts_group_db(self):
-        logger.debug("_sync_ts_group_db function called.")
         try:
             remote_groups = self._group_list()
-            local_groups = TSgroup.objects.all()
-            logger.debug("Comparing remote groups to TSgroup objects: %s" % local_groups)
-            for key in remote_groups:
-                logger.debug(f"Typecasting remote_group value at position {key} to int: {remote_groups[key]}")
-                remote_groups[key] = int(remote_groups[key])
+            managed_groups = {g:remote_groups[g] for g in remote_groups if g in set(remote_groups.keys()) - set(ReservedGroupName.objects.values_list('name', flat=True))}
+            remove = TSgroup.objects.exclude(ts_group_id__in=managed_groups.values())
 
-            for group in local_groups:
-                logger.debug("Checking local group %s" % group)
-                if group.ts_group_id not in remote_groups.values():
-                    logger.debug(
-                        f"Local group id {group.ts_group_id} not found on server. Deleting model {group}")
-                    TSgroup.objects.filter(ts_group_id=group.ts_group_id).delete()
-            for key in remote_groups:
-                g = TSgroup(ts_group_id=remote_groups[key], ts_group_name=key)
-                q = TSgroup.objects.filter(ts_group_id=g.ts_group_id)
-                if not q:
-                    logger.debug("Local group does not exist for TS group {}. Creating TSgroup model {}".format(
-                        remote_groups[key], g))
-                    g.save()
+            if remove:
+                logger.debug(f"Deleting {remove.count()} TSgroup models: not found on server, or reserved name.")
+                remove.delete()
+
+            add = {g:managed_groups[g] for g in managed_groups if managed_groups[g] in set(managed_groups.values()) - set(TSgroup.objects.values_list("ts_group_id", flat=True))}
+            if add:
+                logger.debug(f"Adding {len(add)} new TSgroup models.")
+                models = [TSgroup(ts_group_name=name, ts_group_id=add[name]) for name in add]
+                TSgroup.objects.bulk_create(models)
+
         except TeamspeakError as e:
-            logger.error("Error occured while syncing TS group db: %s" % str(e))
+            logger.error(f"Error occurred while syncing TS group db: {str(e)}")
         except:
-            logger.exception("An unhandled exception has occured while syncing TS groups.")
+            logger.exception("An unhandled exception has occurred while syncing TS groups.")
 
     def add_user(self, user, fmt_name):
         username_clean = self.__santatize_username(fmt_name[:30])

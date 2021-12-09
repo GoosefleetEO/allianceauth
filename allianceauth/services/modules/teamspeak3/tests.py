@@ -5,16 +5,17 @@ from django import urls
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import signals
+from django.contrib.admin import AdminSite
 
 from allianceauth.tests.auth_utils import AuthUtils
 from .auth_hooks import Teamspeak3Service
 from .models import Teamspeak3User, AuthTS, TSgroup, StateGroup
 from .tasks import Teamspeak3Tasks
 from .signals import m2m_changed_authts_group, post_save_authts, post_delete_authts
+from .admin import AuthTSgroupAdmin
 
 from .manager import Teamspeak3Manager
 from .util.ts3 import TeamspeakError
-from allianceauth.authentication.models import State
 from allianceauth.groupmanagement.models import ReservedGroupName
 
 MODULE_PATH = 'allianceauth.services.modules.teamspeak3'
@@ -316,9 +317,9 @@ class Teamspeak3SignalsTestCase(TestCase):
 
 
 class Teamspeak3ManagerTestCase(TestCase):
-
-    def setUp(self):
-        self.reserved = ReservedGroupName.objects.create(name='reserved', reason='tests', created_by='Bob, praise be!')
+    @classmethod
+    def setUpTestData(cls):
+        cls.reserved = ReservedGroupName.objects.create(name='reserved', reason='tests', created_by='Bob, praise be!')
 
     @staticmethod
     def my_side_effect(*args, **kwargs):
@@ -338,8 +339,8 @@ class Teamspeak3ManagerTestCase(TestCase):
         manager._server = server
 
         # create test data
-        user = User.objects.create_user("dummy")
-        user.profile.state = State.objects.filter(name="Member").first()
+        user = AuthUtils.create_user("dummy")
+        AuthUtils.assign_state(user, AuthUtils.get_member_state())
 
         # perform test
         manager.add_user(user, "Dummy User")
@@ -348,8 +349,7 @@ class Teamspeak3ManagerTestCase(TestCase):
     @mock.patch.object(Teamspeak3Manager, '_user_group_list')
     @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
     @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
-    @mock.patch.object(Teamspeak3Manager, 'server')
-    def test_update_groups_add(self, server, remove, add, groups, userid):
+    def test_update_groups_add(self, remove, add, groups, userid):
         """Add to one group"""
         userid.return_value = 1
         groups.return_value = {'test': 1}
@@ -363,8 +363,7 @@ class Teamspeak3ManagerTestCase(TestCase):
     @mock.patch.object(Teamspeak3Manager, '_user_group_list')
     @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
     @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
-    @mock.patch.object(Teamspeak3Manager, 'server')
-    def test_update_groups_remove(self, server, remove, add, groups, userid):
+    def test_update_groups_remove(self, remove, add, groups, userid):
         """Remove from one group"""
         userid.return_value = 1
         groups.return_value = {'test': 1, 'dummy': 2}
@@ -378,8 +377,7 @@ class Teamspeak3ManagerTestCase(TestCase):
     @mock.patch.object(Teamspeak3Manager, '_user_group_list')
     @mock.patch.object(Teamspeak3Manager, '_add_user_to_group')
     @mock.patch.object(Teamspeak3Manager, '_remove_user_from_group')
-    @mock.patch.object(Teamspeak3Manager, 'server')
-    def test_update_groups_remove_reserved(self, server, remove, add, groups, userid):
+    def test_update_groups_remove_reserved(self, remove, add, groups, userid):
         """Remove from one group, but do not touch reserved group"""
         userid.return_value = 1
         groups.return_value = {'test': 1, 'dummy': 2, self.reserved.name: 3}
@@ -388,3 +386,71 @@ class Teamspeak3ManagerTestCase(TestCase):
         self.assertEqual(add.call_count, 0)
         self.assertEqual(remove.call_count, 1)
         self.assertEqual(remove.call_args[0][1], 2)
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_create(self, group_list):
+        """Populate the list of all TSgroups"""
+        group_list.return_value = {'allowed':1, 'also allowed': 2}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 2)
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_delete(self, group_list):
+        """Populate the list of all TSgroups, and delete one which no longer exists"""
+        TSgroup.objects.create(ts_group_name='deleted', ts_group_id=3)
+        group_list.return_value = {'allowed': 1, 'also allowed': 2}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 2)
+        self.assertFalse(TSgroup.objects.filter(ts_group_name='deleted').exists())
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_dont_create_reserved(self, group_list):
+        """Populate the list of all TSgroups, ignoring a reserved group name"""
+        group_list.return_value = {'allowed': 1, 'reserved': 4}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 1)
+        self.assertFalse(TSgroup.objects.filter(ts_group_name='reserved').exists())
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_delete_reserved(self, group_list):
+        """Populate the list of all TSgroups, deleting the TSgroup model for one which has become reserved"""
+        TSgroup.objects.create(ts_group_name='reserved', ts_group_id=4)
+        group_list.return_value = {'allowed': 1, 'reserved': 4}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 1)
+        self.assertFalse(TSgroup.objects.filter(ts_group_name='reserved').exists())
+
+
+class MockRequest:
+    pass
+
+
+class MockSuperUser:
+    def has_perm(self, perm, obj=None):
+        return True
+
+
+request = MockRequest()
+request.user = MockSuperUser()
+
+
+class Teamspeak3AdminTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.site = AdminSite()
+        cls.admin = AuthTSgroupAdmin(AuthTS, cls.site)
+        cls.group = Group.objects.create(name='test')
+        cls.ts_group = TSgroup.objects.create(ts_group_name='test')
+
+    def test_field_queryset_no_reserved_names(self):
+        """Ensure all groups are listed when no reserved names"""
+        form = self.admin.get_form(request)
+        self.assertEqual(form.base_fields['auth_group']._get_queryset().count(), 1)
+        self.assertEqual(form.base_fields['ts_group']._get_queryset().count(), 1)
+
+    def test_field_queryset_reserved_names(self):
+        """Ensure reserved group names are filtered out"""
+        ReservedGroupName.objects.bulk_create([ReservedGroupName(name='test', reason='tests', created_by='Bob')])
+        form = self.admin.get_form(request)
+        self.assertEqual(form.base_fields['auth_group']._get_queryset().count(), 0)
+        self.assertEqual(form.base_fields['ts_group']._get_queryset().count(), 0)
