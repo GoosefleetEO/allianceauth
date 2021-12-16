@@ -366,7 +366,7 @@ class Teamspeak3ManagerTestCase(TestCase):
     def test_update_groups_remove(self, remove, add, groups, userid):
         """Remove from one group"""
         userid.return_value = 1
-        groups.return_value = {'test': 1, 'dummy': 2}
+        groups.return_value = {'test': '1', 'dummy': '2'}
 
         Teamspeak3Manager().update_groups(1, {'test': 1})
         self.assertEqual(add.call_count, 0)
@@ -390,7 +390,7 @@ class Teamspeak3ManagerTestCase(TestCase):
     @mock.patch.object(Teamspeak3Manager, '_group_list')
     def test_sync_group_db_create(self, group_list):
         """Populate the list of all TSgroups"""
-        group_list.return_value = {'allowed':1, 'also allowed': 2}
+        group_list.return_value = {'allowed':'1', 'also allowed':'2'}
         Teamspeak3Manager()._sync_ts_group_db()
         self.assertEqual(TSgroup.objects.all().count(), 2)
 
@@ -398,15 +398,15 @@ class Teamspeak3ManagerTestCase(TestCase):
     def test_sync_group_db_delete(self, group_list):
         """Populate the list of all TSgroups, and delete one which no longer exists"""
         TSgroup.objects.create(ts_group_name='deleted', ts_group_id=3)
-        group_list.return_value = {'allowed': 1, 'also allowed': 2}
+        group_list.return_value = {'allowed': '1'}
         Teamspeak3Manager()._sync_ts_group_db()
-        self.assertEqual(TSgroup.objects.all().count(), 2)
+        self.assertEqual(TSgroup.objects.all().count(), 1)
         self.assertFalse(TSgroup.objects.filter(ts_group_name='deleted').exists())
 
     @mock.patch.object(Teamspeak3Manager, '_group_list')
     def test_sync_group_db_dont_create_reserved(self, group_list):
         """Populate the list of all TSgroups, ignoring a reserved group name"""
-        group_list.return_value = {'allowed': 1, 'reserved': 4}
+        group_list.return_value = {'allowed': '1', 'reserved': '4'}
         Teamspeak3Manager()._sync_ts_group_db()
         self.assertEqual(TSgroup.objects.all().count(), 1)
         self.assertFalse(TSgroup.objects.filter(ts_group_name='reserved').exists())
@@ -415,10 +415,27 @@ class Teamspeak3ManagerTestCase(TestCase):
     def test_sync_group_db_delete_reserved(self, group_list):
         """Populate the list of all TSgroups, deleting the TSgroup model for one which has become reserved"""
         TSgroup.objects.create(ts_group_name='reserved', ts_group_id=4)
-        group_list.return_value = {'allowed': 1, 'reserved': 4}
+        group_list.return_value = {'allowed': '1', 'reserved': '4'}
         Teamspeak3Manager()._sync_ts_group_db()
         self.assertEqual(TSgroup.objects.all().count(), 1)
         self.assertFalse(TSgroup.objects.filter(ts_group_name='reserved').exists())
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_partial_addition(self, group_list):
+        """Some TSgroups already exist in database, add new ones"""
+        TSgroup.objects.create(ts_group_name='allowed', ts_group_id=1)
+        group_list.return_value = {'allowed': '1', 'also allowed': '2'}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 2)
+
+    @mock.patch.object(Teamspeak3Manager, '_group_list')
+    def test_sync_group_db_partial_removal(self, group_list):
+        """One TSgroup has been deleted on server, so remove its model"""
+        TSgroup.objects.create(ts_group_name='allowed', ts_group_id=1)
+        TSgroup.objects.create(ts_group_name='also allowed', ts_group_id=2)
+        group_list.return_value = {'allowed': '1'}
+        Teamspeak3Manager()._sync_ts_group_db()
+        self.assertEqual(TSgroup.objects.all().count(), 1)
 
 
 class MockRequest:
@@ -445,12 +462,12 @@ class Teamspeak3AdminTestCase(TestCase):
     def test_field_queryset_no_reserved_names(self):
         """Ensure all groups are listed when no reserved names"""
         form = self.admin.get_form(request)
-        self.assertEqual(form.base_fields['auth_group']._get_queryset().count(), 1)
-        self.assertEqual(form.base_fields['ts_group']._get_queryset().count(), 1)
+        self.assertQuerysetEqual(form.base_fields['auth_group']._get_queryset(), Group.objects.all())
+        self.assertQuerysetEqual(form.base_fields['ts_group']._get_queryset(), TSgroup.objects.all())
 
     def test_field_queryset_reserved_names(self):
         """Ensure reserved group names are filtered out"""
         ReservedGroupName.objects.bulk_create([ReservedGroupName(name='test', reason='tests', created_by='Bob')])
         form = self.admin.get_form(request)
-        self.assertEqual(form.base_fields['auth_group']._get_queryset().count(), 0)
-        self.assertEqual(form.base_fields['ts_group']._get_queryset().count(), 0)
+        self.assertQuerysetEqual(form.base_fields['auth_group']._get_queryset(), Group.objects.none())
+        self.assertQuerysetEqual(form.base_fields['ts_group']._get_queryset(), TSgroup.objects.none())

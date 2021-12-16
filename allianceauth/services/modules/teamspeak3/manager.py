@@ -159,7 +159,7 @@ class Teamspeak3Manager:
     def _sync_ts_group_db(self):
         try:
             remote_groups = self._group_list()
-            managed_groups = {g:remote_groups[g] for g in remote_groups if g in set(remote_groups.keys()) - set(ReservedGroupName.objects.values_list('name', flat=True))}
+            managed_groups = {g:int(remote_groups[g]) for g in remote_groups if g in set(remote_groups.keys()) - set(ReservedGroupName.objects.values_list('name', flat=True))}
             remove = TSgroup.objects.exclude(ts_group_id__in=managed_groups.values())
 
             if remove:
@@ -174,8 +174,8 @@ class Teamspeak3Manager:
 
         except TeamspeakError as e:
             logger.error(f"Error occurred while syncing TS group db: {str(e)}")
-        except:
-            logger.exception("An unhandled exception has occurred while syncing TS groups.")
+        except Exception:
+            logger.exception(f"An unhandled exception has occurred while syncing TS groups.")
 
     def add_user(self, user, fmt_name):
         username_clean = self.__santatize_username(fmt_name[:30])
@@ -234,7 +234,7 @@ class Teamspeak3Manager:
                 logger.exception(f"Failed to delete user id {uid} from TS3 - received response {ret}")
                 return False
         else:
-            logger.warn("User with id %s not found on TS3 server. Assuming succesful deletion." % uid)
+            logger.warning("User with id %s not found on TS3 server. Assuming succesful deletion." % uid)
             return True
 
     def check_user_exists(self, uid):
