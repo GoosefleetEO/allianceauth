@@ -160,7 +160,7 @@ This error generally means teamspeak returned an error message that went unhandl
 
 This most commonly happens when your teamspeak server is externally hosted. You need to add the auth server IP to the teamspeak serverquery whitelist. This varies by provider.
 
-If you have SSH access to the server hosting it, you need to locate the teamspeak server folder and add the auth server IP on a new line in  `server_query_whitelist.txt`
+If you have SSH access to the server hosting it, you need to locate the teamspeak server folder and add the auth server IP on a new line in  `query_ip_allowlist.txt` (named `query_ip_whitelist.txt` on older teamspeak versions).
 
 ### `520 invalid loginname or password`
 
