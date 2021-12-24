@@ -6,15 +6,6 @@ Testing all services and plug-in apps
 
 from allianceauth.project_template.project_name.settings.base import *
 
-# Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
-NOSE_ARGS = [
-    #'--with-coverage',
-    #'--cover-package=',
-    #'--exe',  # If your tests need this to be found/run, check they py files are not chmodded +x
-]
-
 # Celery configuration
 CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
@@ -36,7 +27,6 @@ INSTALLED_APPS += [
     'allianceauth.services.modules.phpbb3',
     'allianceauth.services.modules.xenforo',
     'allianceauth.services.modules.teamspeak3',
-    'django_nose',
 ]
 
 ROOT_URLCONF = 'tests.urls'

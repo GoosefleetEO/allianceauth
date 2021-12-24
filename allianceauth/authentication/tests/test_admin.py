@@ -419,7 +419,7 @@ class TestUserAdmin(TestCaseWithTestData):
 
     # actions
 
-    @patch(MODULE_PATH + '.UserAdmin.message_user', auto_spec=True)
+    @patch(MODULE_PATH + '.UserAdmin.message_user', auto_spec=True, unsafe=True)
     @patch(MODULE_PATH + '.update_character')
     def test_action_update_main_character_model(
         self, mock_task, mock_message_user

@@ -156,14 +156,27 @@ def _latests_versions(tags: list) -> tuple:
 
 
 def _fetch_list_from_gitlab(url: str, max_pages: int = MAX_PAGES) -> list:
-    """returns a list from the GitLab API. Supports pageing"""
+    """returns a list from the GitLab API. Supports paging"""
     result = list()
+
     for page in range(1, max_pages + 1):
-        request = requests.get(
-            url, params={'page': page}, timeout=REQUESTS_TIMEOUT
-        )
-        request.raise_for_status()
+        try:
+            request = requests.get(
+                url, params={'page': page}, timeout=REQUESTS_TIMEOUT
+            )
+            request.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            error_str = str(e)
+
+            logger.warning(
+                f'Unable to fetch from GitLab API. Error: {error_str}',
+                exc_info=True,
+            )
+
+            return result
+
         result += request.json()
+
         if 'x-total-pages' in request.headers:
             try:
                 total_pages = int(request.headers['x-total-pages'])
