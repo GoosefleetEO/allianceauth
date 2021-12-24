@@ -46,16 +46,6 @@ dependency_scanning:
   - python -V
   - pip install wheel tox
 
-test-3.7-core:
-  <<: *only-default
-  image: python:3.7-bullseye
-  script:
-  - tox -e py37-core
-  artifacts:
-    when: always
-    reports:
-      cobertura: coverage.xml
-
 test-3.8-core:
   <<: *only-default
   image: python:3.8-bullseye
@@ -81,16 +71,6 @@ test-3.10-core:
   image: python:3.10-bullseye
   script:
   - tox -e py310-core
-  artifacts:
-    when: always
-    reports:
-      cobertura: coverage.xml
-
-test-3.7-all:
-  <<: *only-default
-  image: python:3.7-bullseye
-  script:
-  - tox -e py37-all
   artifacts:
     when: always
     reports:
