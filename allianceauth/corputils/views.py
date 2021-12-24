@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required, 
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from esi.decorators import token_required
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo
 

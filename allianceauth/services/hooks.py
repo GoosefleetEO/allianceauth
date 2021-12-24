@@ -1,4 +1,5 @@
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.urls import re_path
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.functional import cached_property
@@ -8,7 +9,6 @@ from string import Formatter
 from allianceauth.hooks import get_hooks
 
 from .models import NameFormatConfig
-
 
 def get_extension_logger(name):
     """
@@ -157,7 +157,7 @@ class MenuItemHook:
 
 class UrlHook:
     def __init__(self, urls, namespace, base_url):
-        self.include_pattern = url(base_url, include(urls, namespace=namespace))
+        self.include_pattern = re_path(base_url, include(urls, namespace=namespace))
 
 
 class NameFormatter:
