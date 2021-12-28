@@ -45,7 +45,11 @@ def group_management(request):
     logger.debug("Providing user {} with {} acceptrequests and {} leaverequests.".format(
         request.user, len(acceptrequests), len(leaverequests)))
 
-    render_items = {'acceptrequests': acceptrequests, 'leaverequests': leaverequests}
+    render_items = {
+        'acceptrequests': acceptrequests,
+        'leaverequests': leaverequests,
+        'auto_leave': getattr(settings, 'GROUPMANAGEMENT_AUTO_LEAVE', False),
+    }
 
     return render(request, 'groupmanagement/index.html', context=render_items)
 

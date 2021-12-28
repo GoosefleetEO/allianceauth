@@ -49,19 +49,22 @@ class NotificationManager(models.Manager):
         logger.info("Created notification %s", obj)
         return obj
 
-    def _max_notifications_per_user(self):
-        """return the maximum number of notifications allowed per user"""
-        max_notifications = getattr(settings, 'NOTIFICATIONS_MAX_PER_USER', None)
-        if (
-            max_notifications is None
-            or not isinstance(max_notifications, int)
-            or max_notifications < 0
-        ):
+    def _max_notifications_per_user(self) -> int:
+        """Maximum number of notifications allowed per user."""
+        max_notifications = getattr(
+            settings,
+            "NOTIFICATIONS_MAX_PER_USER",
+            self.model.NOTIFICATIONS_MAX_PER_USER_DEFAULT
+        )
+        try:
+            max_notifications = int(max_notifications)
+        except ValueError:
+            max_notifications = None
+        if max_notifications is None or max_notifications < 0:
             logger.warning(
-                'NOTIFICATIONS_MAX_PER_USER setting is invalid. Using default.'
+                "NOTIFICATIONS_MAX_PER_USER setting is invalid. Using default."
             )
             max_notifications = self.model.NOTIFICATIONS_MAX_PER_USER_DEFAULT
-
         return max_notifications
 
     def user_unread_count(self, user_pk: int) -> int:

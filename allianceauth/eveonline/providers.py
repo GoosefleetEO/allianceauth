@@ -13,17 +13,18 @@ from allianceauth import __version__
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), 'swagger.json'
 )
-"""
-Swagger spec operations:
 
-get_alliances_alliance_id
-get_alliances_alliance_id_corporations
-get_corporations_corporation_id
-get_characters_character_id
-get_universe_types_type_id
-post_character_affiliation
-get_universe_factions
-"""
+# for the love of Bob please add operations you use here. I'm tired of breaking undocumented things.
+ESI_OPERATIONS=[
+    'get_alliances_alliance_id',
+    'get_alliances_alliance_id_corporations',
+    'get_corporations_corporation_id',
+    'get_characters_character_id',
+    'post_characters_affiliation',
+    'get_universe_types_type_id',
+    'get_universe_factions',
+    'post_universe_names',
+]
 
 
 logger = logging.getLogger(__name__)
