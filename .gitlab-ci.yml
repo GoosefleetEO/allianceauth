@@ -87,16 +87,6 @@ test-3.11-core:
       cobertura: coverage.xml
   allow_failure: true
 
-test-3.7-all:
-  <<: *only-default
-  image: python:3.7-bullseye
-  script:
-  - tox -e py37-all
-  artifacts:
-    when: always
-    reports:
-      cobertura: coverage.xml
-
 test-3.8-all:
   <<: *only-default
   image: python:3.8-bullseye
