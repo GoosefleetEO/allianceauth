@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
@@ -113,29 +114,53 @@ class TestUserNotify(TestCase):
         self.assertSetEqual(result, expected)
 
 
+@patch("allianceauth.notifications.managers.logger")
 @patch(
-    MODULE_PATH + '.Notification.NOTIFICATIONS_MAX_PER_USER_DEFAULT',
+    MODULE_PATH + ".Notification.NOTIFICATIONS_MAX_PER_USER_DEFAULT",
     NOTIFICATIONS_MAX_PER_USER_DEFAULT
 )
 class TestMaxNotificationsPerUser(TestCase):
-
-    @override_settings(NOTIFICATIONS_MAX_PER_USER=None)
-    def test_reset_to_default_if_not_defined(self):
+    @override_settings(NOTIFICATIONS_MAX_PER_USER=42)
+    def test_should_use_custom_integer_setting(self, mock_logger):
+        # when
         result = Notification.objects._max_notifications_per_user()
-        expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, 42)
+        self.assertFalse(mock_logger.warning.called)
 
-    @override_settings(NOTIFICATIONS_MAX_PER_USER='11')
-    def test_reset_to_default_if_not_int(self):
+    @override_settings(NOTIFICATIONS_MAX_PER_USER="42")
+    def test_should_use_custom_string_setting(self, mock_logger):
+        # when
         result = Notification.objects._max_notifications_per_user()
-        expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, 42)
+        self.assertFalse(mock_logger.warning.called)
+
+    @override_settings()
+    def test_should_use_default_if_not_defined(self, mock_logger):
+        # given
+        del settings.NOTIFICATIONS_MAX_PER_USER
+        # when
+        result = Notification.objects._max_notifications_per_user()
+        # then
+        self.assertEqual(result, NOTIFICATIONS_MAX_PER_USER_DEFAULT)
+        self.assertFalse(mock_logger.warning.called)
+
+    @override_settings(NOTIFICATIONS_MAX_PER_USER="abc")
+    def test_should_reset_to_default_if_not_int(self, mock_logger):
+        # when
+        result = Notification.objects._max_notifications_per_user()
+        # then
+        self.assertEqual(result, NOTIFICATIONS_MAX_PER_USER_DEFAULT)
+        self.assertTrue(mock_logger.warning.called)
 
     @override_settings(NOTIFICATIONS_MAX_PER_USER=-1)
-    def test_reset_to_default_if_lt_zero(self):
+    def test_should_reset_to_default_if_lt_zero(self, mock_logger):
+        # when
         result = Notification.objects._max_notifications_per_user()
-        expected = NOTIFICATIONS_MAX_PER_USER_DEFAULT
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, NOTIFICATIONS_MAX_PER_USER_DEFAULT)
+        self.assertTrue(mock_logger.warning.called)
 
 
 @patch('allianceauth.notifications.managers.cache')

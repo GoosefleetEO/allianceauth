@@ -49,7 +49,6 @@ def run_model_update():
     for alliance in EveAllianceInfo.objects.all().values('alliance_id'):
         update_alliance.apply_async(args=[alliance['alliance_id']], priority=TASK_PRIORITY)
 
-    #update existing character models if required
     # update existing character models
     character_ids = EveCharacter.objects.all().values_list('character_id', flat=True)
     for character_ids_chunk in chunks(character_ids, CHUNK_SIZE):

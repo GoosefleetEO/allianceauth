@@ -90,11 +90,16 @@ This allows you to more finely control who has access to manage which groups.
 
 ### Auto Leave
 
-By default in AA, Both requests and leaves for non-open groups must be approved by a group manager. If you wish to allow users to leave groups without requiring approvals, add the following lines to your `local.py`
+By default, in AA both requests and leaves for non-open groups must be approved by a group manager. If you wish to allow users to leave groups without requiring approvals, add the following lines to your `local.py`
 
 ```python
 ## Allows users to freely leave groups without requiring approval.
-AUTO_LEAVE = True
+GROUPMANAGEMENT_AUTO_LEAVE = True
+```
+
+```eval_rst
+.. note::
+    Before you set `GROUPMANAGEMENT_AUTO_LEAVE = True`, make sure there are no pending leave requests, as this option will hide the "Leave Requests" tab.
 ```
 
 ## Settings

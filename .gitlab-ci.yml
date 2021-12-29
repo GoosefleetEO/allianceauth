@@ -76,6 +76,27 @@ test-3.10-core:
     reports:
       cobertura: coverage.xml
 
+test-3.11-core:
+  <<: *only-default
+  image: python:3.11-rc-bullseye
+  script:
+  - tox -e py311-core
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+  allow_failure: true
+
+test-3.7-all:
+  <<: *only-default
+  image: python:3.7-bullseye
+  script:
+  - tox -e py37-all
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+
 test-3.8-all:
   <<: *only-default
   image: python:3.8-bullseye
@@ -105,6 +126,17 @@ test-3.10-all:
     when: always
     reports:
       cobertura: coverage.xml
+
+test-3.11-all:
+  <<: *only-default
+  image: python:3.11-rc-bullseye
+  script:
+  - tox -e py311-all
+  artifacts:
+    when: always
+    reports:
+      cobertura: coverage.xml
+  allow_failure: true
 
 deploy_production:
   stage: deploy
