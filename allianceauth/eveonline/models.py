@@ -1,16 +1,24 @@
-from django.db import models
 from typing import Union
 
-from .managers import EveCharacterManager, EveCharacterProviderManager
-from .managers import EveCorporationManager, EveCorporationProviderManager
-from .managers import EveAllianceManager, EveAllianceProviderManager
+from django.db import models
+
 from . import providers
 from .evelinks import eveimageserver
+from .managers import (
+    EveAllianceManager,
+    EveAllianceProviderManager,
+    EveCharacterManager,
+    EveCharacterProviderManager,
+    EveCorporationManager,
+    EveCorporationProviderManager,
+)
 
 _DEFAULT_IMAGE_SIZE = 32
 
 
 class EveFactionInfo(models.Model):
+    """A faction in Eve Online."""
+
     faction_id = models.PositiveIntegerField(unique=True, db_index=True)
     faction_name = models.CharField(max_length=254, unique=True)
 
@@ -52,6 +60,8 @@ class EveFactionInfo(models.Model):
 
 
 class EveAllianceInfo(models.Model):
+    """An alliance in Eve Online."""
+
     alliance_id = models.PositiveIntegerField(unique=True)
     alliance_name = models.CharField(max_length=254, unique=True)
     alliance_ticker = models.CharField(max_length=254)
@@ -119,6 +129,8 @@ class EveAllianceInfo(models.Model):
 
 
 class EveCorporationInfo(models.Model):
+    """A corporation in Eve Online."""
+
     corporation_id = models.PositiveIntegerField(unique=True)
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
@@ -182,8 +194,10 @@ class EveCorporationInfo(models.Model):
 
 
 class EveCharacter(models.Model):
+    """A character in Eve Online."""
+
     character_id = models.PositiveIntegerField(unique=True)
-    character_name = models.CharField(max_length=254, unique=True)
+    character_name = models.CharField(max_length=254, db_index=True)
     corporation_id = models.PositiveIntegerField()
     corporation_name = models.CharField(max_length=254)
     corporation_ticker = models.CharField(max_length=5)
