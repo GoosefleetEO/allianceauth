@@ -68,8 +68,8 @@ class EveAllianceInfo(models.Model):
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
                 EveCorporationInfo.objects.create_corporation(corp_id)
-        EveCorporationInfo.objects.filter(
-            corporation_id__in=alliance.corp_ids).update(alliance=self
+        EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(
+            alliance=self
         )
         EveCorporationInfo.objects\
             .filter(alliance=self)\
@@ -198,12 +198,12 @@ class EveCharacter(models.Model):
 
     class Meta:
         indexes = [
-                    models.Index(fields=['corporation_id',]),
-                    models.Index(fields=['alliance_id',]),
-                    models.Index(fields=['corporation_name',]),
-                    models.Index(fields=['alliance_name',]),
-                    models.Index(fields=['faction_id',]),
-                  ]
+            models.Index(fields=['corporation_id',]),
+            models.Index(fields=['alliance_id',]),
+            models.Index(fields=['corporation_name',]),
+            models.Index(fields=['alliance_name',]),
+            models.Index(fields=['faction_id',]),
+        ]
 
     @property
     def alliance(self) -> Union[EveAllianceInfo, None]:
@@ -335,7 +335,6 @@ class EveCharacter(models.Model):
     def alliance_logo_url_256(self) -> str:
         """image URL for alliance of this character or empty string"""
         return self.alliance_logo_url(256)
-
 
     def faction_logo_url(self, size=_DEFAULT_IMAGE_SIZE) -> str:
         """image URL for alliance of this character or empty string"""
