@@ -40,13 +40,12 @@ def analytics_event(category: str,
     Send a Google Analytics Event for each token stored
     Includes check for if its enabled/disabled
 
-    Parameters
-    -------
-    `category` (str): Celery Namespace
-    `action` (str): Task Name
-    `label` (str): Optional, Task Success/Exception
-    `value` (int): Optional, If bulk, Query size, can be a binary True/False
-    `event_type` (str): Optional, Celery or Stats only, Default to Celery
+    Args:
+        `category` (str): Celery Namespace
+        `action` (str): Task Name
+        `label` (str): Optional, Task Success/Exception
+        `value` (int): Optional, If bulk, Query size, can be a binary True/False
+        `event_type` (str): Optional, Celery or Stats only, Default to Celery
     """
     analyticstokens = AnalyticsTokens.objects.all()
     client_id = AnalyticsIdentifier.objects.get(id=1).identifier.hex
@@ -73,7 +72,8 @@ def analytics_event(category: str,
 def analytics_daily_stats():
     """Celery Task: Do not call directly
 
-    Gathers a series of daily statistics and sends analytics events containing them"""
+    Gathers a series of daily statistics and sends analytics events containing them
+    """
     users = install_stat_users()
     tokens = install_stat_tokens()
     addons = install_stat_addons()
