@@ -1,7 +1,8 @@
 from django.contrib import admin
-
-from .models import AuthTS, Teamspeak3User, StateGroup
+from django.contrib.auth.models import Group
+from .models import AuthTS, Teamspeak3User, StateGroup, TSgroup
 from ...admin import ServicesUserAdmin
+from allianceauth.groupmanagement.models import ReservedGroupName
 
 
 @admin.register(Teamspeak3User)
@@ -24,6 +25,16 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
 
     fields = ('auth_group', 'ts_group')
     filter_horizontal = ('ts_group',)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'auth_group':
+            kwargs['queryset'] = Group.objects.exclude(name__in=ReservedGroupName.objects.values_list('name', flat=True))
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'ts_group':
+            kwargs['queryset'] = TSgroup.objects.exclude(ts_group_name__in=ReservedGroupName.objects.values_list('name', flat=True))
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def _ts_group(self, obj):
         return [x for x in obj.ts_group.all().order_by('ts_group_id')]
