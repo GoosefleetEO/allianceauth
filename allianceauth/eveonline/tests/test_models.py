@@ -1,12 +1,15 @@
 from unittest.mock import Mock, patch
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
+from esi.models import Token
 
-from ..models import (
-    EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
-)
-from ..providers import Alliance, Corporation, Character
+from allianceauth.tests.auth_utils import AuthUtils
+
 from ..evelinks import eveimageserver
+from ..models import EveAllianceInfo, EveCharacter, EveCorporationInfo, EveFactionInfo
+from ..providers import Alliance, Character, Corporation
+from .esi_client_stub import EsiClientStub
 
 
 class EveCharacterTestCase(TestCase):
@@ -402,8 +405,8 @@ class EveAllianceTestCase(TestCase):
         my_alliance.save()
         my_alliance.populate_alliance()
 
-        for corporation in EveCorporationInfo.objects\
-            .filter(corporation_id__in=[2001, 2002]
+        for corporation in (
+            EveCorporationInfo.objects.filter(corporation_id__in=[2001, 2002])
         ):
             self.assertEqual(corporation.alliance, my_alliance)
 
@@ -587,3 +590,98 @@ class EveCorporationTestCase(TestCase):
             self.my_corp.logo_url_256,
             'https://images.evetech.net/corporations/2001/logo?size=256'
         )
+
+
+@patch('allianceauth.eveonline.providers.esi_client_factory')
+@patch("allianceauth.eveonline.models.notify")
+class TestCharacterUpdate(TestCase):
+    def test_should_update_normal_character(self, mock_notify, mock_esi_client_factory):
+        # given
+        mock_esi_client_factory.return_value = EsiClientStub()
+        my_character = EveCharacter.objects.create(
+            character_id=1001,
+            character_name="not my name",
+            corporation_id=2002,
+            corporation_name="Wayne Food",
+            corporation_ticker="WYF",
+            alliance_id=None
+        )
+        # when
+        my_character.update_character()
+        # then
+        my_character.refresh_from_db()
+        self.assertEqual(my_character.character_name, "Bruce Wayne")
+        self.assertEqual(my_character.corporation_id, 2001)
+        self.assertEqual(my_character.corporation_name, "Wayne Technologies")
+        self.assertEqual(my_character.corporation_ticker, "WTE")
+        self.assertEqual(my_character.alliance_id, 3001)
+        self.assertEqual(my_character.alliance_name, "Wayne Enterprises")
+        self.assertEqual(my_character.alliance_ticker, "WYE")
+        self.assertFalse(mock_notify.called)
+
+    def test_should_update_dead_character_with_owner(
+        self, mock_notify, mock_esi_client_factory
+    ):
+        # given
+        mock_esi_client_factory.return_value = EsiClientStub()
+        character_1666 = EveCharacter.objects.create(
+            character_id=1666,
+            character_name="Hal Jordan",
+            corporation_id=2002,
+            corporation_name="Wayne Food",
+            corporation_ticker="WYF",
+            alliance_id=None
+        )
+        user = AuthUtils.create_user("Bruce Wayne")
+        token_1666 = Token.objects.create(
+            user=user,
+            character_id=character_1666.character_id,
+            character_name=character_1666.character_name,
+            character_owner_hash="ABC123-1666",
+        )
+        character_1001 = EveCharacter.objects.create(
+            character_id=1001,
+            character_name="Bruce Wayne",
+            corporation_id=2001,
+            corporation_name="Wayne Technologies",
+            corporation_ticker="WYT",
+            alliance_id=None
+        )
+        token_1001 = Token.objects.create(
+            user=user,
+            character_id=character_1001.character_id,
+            character_name=character_1001.character_name,
+            character_owner_hash="ABC123-1001",
+        )
+        # when
+        character_1666.update_character()
+        # then
+        character_1666.refresh_from_db()
+        self.assertTrue(character_1666.is_biomassed)
+        self.assertNotIn(token_1666, user.token_set.all())
+        self.assertIn(token_1001, user.token_set.all())
+        with self.assertRaises(ObjectDoesNotExist):
+            self.assertTrue(character_1666.character_ownership)
+        user.profile.refresh_from_db()
+        self.assertIsNone(user.profile.main_character)
+        self.assertTrue(mock_notify.called)
+
+    def test_should_handle_dead_character_without_owner(
+        self, mock_notify, mock_esi_client_factory
+    ):
+        # given
+        mock_esi_client_factory.return_value = EsiClientStub()
+        character_1666 = EveCharacter.objects.create(
+            character_id=1666,
+            character_name="Hal Jordan",
+            corporation_id=1011,
+            corporation_name="LexCorp",
+            corporation_ticker='LC',
+            alliance_id=None
+        )
+        # when
+        character_1666.update_character()
+        # then
+        character_1666.refresh_from_db()
+        self.assertTrue(character_1666.is_biomassed)
+        self.assertFalse(mock_notify.called)
