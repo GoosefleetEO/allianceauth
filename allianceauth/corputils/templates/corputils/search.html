@@ -43,6 +43,9 @@
 {% endblock %}
 {% block extra_script %}
     $(document).ready(function(){
-        $('#table-search').DataTable();
+        $('#table-search').DataTable({
+            "stateSave": true,
+            "stateDuration": 0
+        });
     });
 {% endblock %}
