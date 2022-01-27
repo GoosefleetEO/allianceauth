@@ -1,13 +1,27 @@
-from django.db import models
+import logging
 from typing import Union
 
-from .managers import EveCharacterManager, EveCharacterProviderManager
-from .managers import EveCorporationManager, EveCorporationProviderManager
-from .managers import EveAllianceManager, EveAllianceProviderManager
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from esi.models import Token
+
+from allianceauth.notifications import notify
+
 from . import providers
 from .evelinks import eveimageserver
+from .managers import (
+    EveAllianceManager,
+    EveAllianceProviderManager,
+    EveCharacterManager,
+    EveCharacterProviderManager,
+    EveCorporationManager,
+    EveCorporationProviderManager,
+)
+
+logger = logging.getLogger(__name__)
 
 _DEFAULT_IMAGE_SIZE = 32
+DOOMHEIM_CORPORATION_ID = 1000001
 
 
 class EveFactionInfo(models.Model):
@@ -68,13 +82,12 @@ class EveAllianceInfo(models.Model):
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
                 EveCorporationInfo.objects.create_corporation(corp_id)
-        EveCorporationInfo.objects.filter(
-            corporation_id__in=alliance.corp_ids).update(alliance=self
+        EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(
+            alliance=self
         )
-        EveCorporationInfo.objects\
-            .filter(alliance=self)\
-            .exclude(corporation_id__in=alliance.corp_ids)\
-            .update(alliance=None)
+        EveCorporationInfo.objects.filter(alliance=self).exclude(
+            corporation_id__in=alliance.corp_ids
+        ).update(alliance=None)
 
     def update_alliance(self, alliance: providers.Alliance = None):
         if alliance is None:
@@ -182,6 +195,7 @@ class EveCorporationInfo(models.Model):
 
 
 class EveCharacter(models.Model):
+    """Character in Eve Online"""
     character_id = models.PositiveIntegerField(unique=True)
     character_name = models.CharField(max_length=254, unique=True)
     corporation_id = models.PositiveIntegerField()
@@ -198,12 +212,20 @@ class EveCharacter(models.Model):
 
     class Meta:
         indexes = [
-                    models.Index(fields=['corporation_id',]),
-                    models.Index(fields=['alliance_id',]),
-                    models.Index(fields=['corporation_name',]),
-                    models.Index(fields=['alliance_name',]),
-                    models.Index(fields=['faction_id',]),
-                  ]
+            models.Index(fields=['corporation_id',]),
+            models.Index(fields=['alliance_id',]),
+            models.Index(fields=['corporation_name',]),
+            models.Index(fields=['alliance_name',]),
+            models.Index(fields=['faction_id',]),
+        ]
+
+    def __str__(self):
+        return self.character_name
+
+    @property
+    def is_biomassed(self) -> bool:
+        """Whether this character is dead or not."""
+        return self.corporation_id == DOOMHEIM_CORPORATION_ID
 
     @property
     def alliance(self) -> Union[EveAllianceInfo, None]:
@@ -249,10 +271,36 @@ class EveCharacter(models.Model):
         self.faction_id = character.faction.id
         self.faction_name = character.faction.name
         self.save()
+        if self.is_biomassed:
+            self._remove_tokens_of_biomassed_character()
         return self
 
-    def __str__(self):
-        return self.character_name
+    def _remove_tokens_of_biomassed_character(self) -> None:
+        """Remove tokens of this biomassed character."""
+        try:
+            user = self.character_ownership.user
+        except ObjectDoesNotExist:
+            return
+        tokens_to_delete = Token.objects.filter(character_id=self.character_id)
+        tokens_count = tokens_to_delete.count()
+        if not tokens_count:
+            return
+        tokens_to_delete.delete()
+        logger.info(
+            "%d tokens from user %s for biomassed character %s [id:%s] deleted.",
+            tokens_count,
+            user,
+            self,
+            self.character_id,
+        )
+        notify(
+            user=user,
+            title=f"Character {self} biomassed",
+            message=(
+                f"Your former character {self} has been biomassed "
+                "and has been removed from the list of your alts."
+            )
+        )
 
     @staticmethod
     def generic_portrait_url(
@@ -335,7 +383,6 @@ class EveCharacter(models.Model):
     def alliance_logo_url_256(self) -> str:
         """image URL for alliance of this character or empty string"""
         return self.alliance_logo_url(256)
-
 
     def faction_logo_url(self, size=_DEFAULT_IMAGE_SIZE) -> str:
         """image URL for alliance of this character or empty string"""
