@@ -21,8 +21,8 @@ if getattr(settings, "ANALYTICS_ENABLE_DEBUG", False) and settings.DEBUG:
     # Force sending of analytics data during in a debug/test environemt
     # Usefull for developers working on this feature.
     logger.warning(
-                "You have 'ANALYTICS_ENABLE_DEBUG' Enabled! "
-                "This debug instance will send analytics data!")
+        "You have 'ANALYTICS_ENABLE_DEBUG' Enabled! "
+        "This debug instance will send analytics data!")
     DEBUG_URL = COLLECTION_URL
 
 ANALYTICS_URL = COLLECTION_URL
@@ -59,13 +59,13 @@ def analytics_event(category: str,
 
         if allowed is True:
             tracking_id = token.token
-            send_ga_tracking_celery_event.s(tracking_id=tracking_id,
-                                            client_id=client_id,
-                                            category=category,
-                                            action=action,
-                                            label=label,
-                                            value=value).\
-                apply_async(priority=9)
+            send_ga_tracking_celery_event.s(
+                tracking_id=tracking_id,
+                client_id=client_id,
+                category=category,
+                action=action,
+                label=label,
+                value=value).apply_async(priority=9)
 
 
 @shared_task()
