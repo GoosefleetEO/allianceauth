@@ -106,8 +106,10 @@
                         idx: 1
                     }
                 ],
-                bootstrap: true
+                bootstrap: true,
             },
+            "stateSave": true,
+            "stateDuration": 0,
             drawCallback: function ( settings ) {
                 let api = this.api();
                 let rows = api.rows( {page:'current'} ).nodes();

@@ -48,7 +48,7 @@ When using Alliance Auth to manage external services like Discord, Auth will aut
 
 ```eval_rst
 .. note::
-    While this feature can help to avoid naming conflicts with groups on external services, the respective service component in Alliance Auth also needs to be build in such a way that it knows how to prevent these conflicts. Currently only the Discord service has this ability.
+    While this feature can help to avoid naming conflicts with groups on external services, the respective service component in Alliance Auth also needs to be build in such a way that it knows how to prevent these conflicts. Currently only the Discord and Teamspeak3 services have this ability.
 ```
 
 ## Managing groups

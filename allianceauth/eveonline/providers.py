@@ -170,7 +170,7 @@ class EveProvider:
         """
         :return: an ItemType object for the given ID
         """
-        raise NotImplemented()
+        raise NotImplementedError()
 
 
 class EveSwaggerProvider(EveProvider):
@@ -207,7 +207,8 @@ class EveSwaggerProvider(EveProvider):
     def __str__(self):
         return 'esi'
 
-    def get_alliance(self, alliance_id):
+    def get_alliance(self, alliance_id: int) -> Alliance:
+        """Fetch alliance from ESI."""
         try:
             data = self.client.Alliance.get_alliances_alliance_id(alliance_id=alliance_id).result()
             corps = self.client.Alliance.get_alliances_alliance_id_corporations(alliance_id=alliance_id).result()
@@ -223,7 +224,8 @@ class EveSwaggerProvider(EveProvider):
         except HTTPNotFound:
             raise ObjectNotFound(alliance_id, 'alliance')
 
-    def get_corp(self, corp_id):
+    def get_corp(self, corp_id: int) -> Corporation:
+        """Fetch corporation from ESI."""
         try:
             data = self.client.Corporation.get_corporations_corporation_id(corporation_id=corp_id).result()
             model = Corporation(
@@ -239,29 +241,43 @@ class EveSwaggerProvider(EveProvider):
         except HTTPNotFound:
             raise ObjectNotFound(corp_id, 'corporation')
 
-    def get_character(self, character_id):
+    def get_character(self, character_id: int) -> Character:
+        """Fetch character from ESI."""
         try:
-            data = self.client.Character.get_characters_character_id(character_id=character_id).result()
+            character_name = self._fetch_character_name(character_id)
             affiliation = self.client.Character.post_characters_affiliation(characters=[character_id]).result()[0]
-
             model = Character(
                 id=character_id,
-                name=data['name'],
+                name=character_name,
                 corp_id=affiliation['corporation_id'],
                 alliance_id=affiliation['alliance_id'] if 'alliance_id' in affiliation else None,
                 faction_id=affiliation['faction_id'] if 'faction_id' in affiliation else None,
             )
             return model
-        except (HTTPNotFound, HTTPUnprocessableEntity):
+        except (HTTPNotFound, HTTPUnprocessableEntity, ObjectNotFound):
             raise ObjectNotFound(character_id, 'character')
 
+    def _fetch_character_name(self, character_id: int) -> str:
+        """Fetch character name from ESI."""
+        data = self.client.Universe.post_universe_names(ids=[character_id]).result()
+        character = data.pop() if data else None
+        if (
+            not character
+            or character["category"] != "character"
+            or character["id"] != character_id
+        ):
+            raise ObjectNotFound(character_id, 'character')
+        return character["name"]
+
     def get_all_factions(self):
+        """Fetch all factions from ESI."""
         if not self._faction_list:
             self._faction_list = self.client.Universe.get_universe_factions().result()
         return self._faction_list
 
-    def get_faction(self, faction_id):
-        faction_id=int(faction_id)
+    def get_faction(self, faction_id: int):
+        """Fetch faction from ESI."""
+        faction_id = int(faction_id)
         try:
             if not self._faction_list:
                 _ = self.get_all_factions()
@@ -273,7 +289,8 @@ class EveSwaggerProvider(EveProvider):
         except (HTTPNotFound, HTTPUnprocessableEntity, KeyError):
             raise ObjectNotFound(faction_id, 'faction')
 
-    def get_itemtype(self, type_id):
+    def get_itemtype(self, type_id: int) -> ItemType:
+        """Fetch inventory item from ESI."""
         try:
             data = self.client.Universe.get_universe_types_type_id(type_id=type_id).result()
             return ItemType(id=type_id, name=data['name'])

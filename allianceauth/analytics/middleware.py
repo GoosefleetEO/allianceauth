@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from .models import AnalyticsTokens, AnalyticsIdentifier
 from .tasks import send_ga_tracking_web_view
@@ -10,6 +11,8 @@ import re
 class AnalyticsMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
         """Django Middleware: Process Page Views and creates Analytics Celery Tasks"""
+        if getattr(settings, "ANALYTICS_DISABLED", False):
+            return response
         analyticstokens = AnalyticsTokens.objects.all()
         client_id = AnalyticsIdentifier.objects.get(id=1).identifier.hex
         try:
