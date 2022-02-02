@@ -7,6 +7,7 @@ from jsonschema.exceptions import RefResolutionError
 from django.test import TestCase
 
 from . import set_logger
+from .esi_client_stub import EsiClientStub
 from ..providers import (
     ObjectNotFound,
     Entity,
@@ -632,13 +633,7 @@ class TestEveSwaggerProvider(TestCase):
 
     @patch(MODULE_PATH + '.esi_client_factory')
     def test_get_character(self, mock_esi_client_factory):
-        mock_esi_client_factory.return_value \
-            .Character.get_characters_character_id \
-            = TestEveSwaggerProvider.esi_get_characters_character_id
-        mock_esi_client_factory.return_value \
-            .Character.post_characters_affiliation \
-            = TestEveSwaggerProvider.esi_post_characters_affiliation
-
+        mock_esi_client_factory.return_value = EsiClientStub()
         my_provider = EveSwaggerProvider()
 
         # character with alliance
@@ -649,8 +644,8 @@ class TestEveSwaggerProvider(TestCase):
         self.assertEqual(my_character.alliance_id, 3001)
 
         # character wo/ alliance
-        my_character = my_provider.get_character(1002)
-        self.assertEqual(my_character.id, 1002)
+        my_character = my_provider.get_character(1011)
+        self.assertEqual(my_character.id, 1011)
         self.assertEqual(my_character.alliance_id, None)
 
         # character not found

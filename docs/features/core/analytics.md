@@ -10,6 +10,12 @@ To Opt-Out, modify our pre-loaded token using the Admin dashboard */admin/analyt
 
 Each of the three features Daily Stats, Celery Events and Page Views can be enabled/Disabled independently.
 
+Alternatively, you can fully opt out of analytics with the following optional setting:
+
+```python
+ANALYTICS_DISABLED = True
+```
+
 ![Analytics Tokens](/_static/images/features/core/analytics/tokens.png)
 
 ## What
@@ -58,6 +64,8 @@ This data is stored in a Team Google Analytics Dashboard. The Maintainers all ha
 
 ### Analytics Event
 
+```eval_rst
 .. automodule:: allianceauth.analytics.tasks
     :members: analytics_event
     :undoc-members:
+```

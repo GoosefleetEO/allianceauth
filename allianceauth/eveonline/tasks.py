@@ -1,11 +1,10 @@
 import logging
 
 from celery import shared_task
-from .models import EveAllianceInfo
-from .models import EveCharacter
-from .models import EveCorporationInfo
 
+from .models import EveAllianceInfo, EveCharacter, EveCorporationInfo
 from . import providers
+
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +31,8 @@ def update_alliance(alliance_id):
 
 
 @shared_task
-def update_character(character_id):
-    """Update given character from ESI"""
+def update_character(character_id: int) -> None:
+    """Update given character from ESI."""
     EveCharacter.objects.update_character(character_id)
 
 
@@ -65,17 +64,17 @@ def update_character_chunk(character_ids_chunk: list):
             .post_characters_affiliation(characters=character_ids_chunk).result()
         character_names = providers.provider.client.Universe\
             .post_universe_names(ids=character_ids_chunk).result()
-    except:
+    except OSError:
         logger.info("Failed to bulk update characters. Attempting single updates")
         for character_id in character_ids_chunk:
             update_character.apply_async(
-                        args=[character_id], priority=TASK_PRIORITY
-                    )
+                args=[character_id], priority=TASK_PRIORITY
+            )
         return
 
     affiliations = {
-            affiliation.get('character_id'): affiliation
-            for affiliation in affiliations_raw
+        affiliation.get('character_id'): affiliation
+        for affiliation in affiliations_raw
     }
     # add character names to affiliations
     for character in character_names:
@@ -108,5 +107,5 @@ def update_character_chunk(character_ids_chunk: list):
 
             if corp_changed or alliance_changed or name_changed:
                 update_character.apply_async(
-                        args=[character.get('character_id')], priority=TASK_PRIORITY
-                    )
+                    args=[character.get('character_id')], priority=TASK_PRIORITY
+                )
