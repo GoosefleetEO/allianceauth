@@ -33,7 +33,7 @@ install_requires = [
     'sleekxmpp',
     'pydiscourse',
 
-    'django-esi>=3.0.0,<4.0.0'
+    'django-esi @ git+https://gitlab.com/soratidus999/django-esi.git@py310',
 ]
 
 testing_extras = [
