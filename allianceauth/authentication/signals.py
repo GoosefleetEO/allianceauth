@@ -11,7 +11,7 @@ from allianceauth.eveonline.models import EveCharacter
 
 logger = logging.getLogger(__name__)
 
-state_changed = Signal(providing_args=['user', 'state'])
+state_changed = Signal()
 
 
 def trigger_state_check(state):
