@@ -14,7 +14,7 @@ from requests.exceptions import HTTPError
 import requests_mock
 
 from django.contrib.auth.models import Group, User
-from django.core.cache import caches
+from django_redis import get_redis_connection
 from django.shortcuts import reverse
 from django.test import TransactionTestCase, TestCase
 from django.test.utils import override_settings
@@ -87,8 +87,7 @@ remove_guild_member_request = DiscordRequest(
 
 
 def clear_cache():
-    default_cache = caches['default']
-    redis = default_cache.get_master_client()
+    redis = get_redis_connection('default')
     redis.flushall()
     logger.info('Cache flushed')
 
