@@ -5,7 +5,7 @@ from django.urls import re_path
 from django.urls import path
 
 urlpatterns = [
-    path('^activate/complete/$', views.activation_complete, name='registration_activation_complete'),
+    path('activate/complete/', views.activation_complete, name='registration_activation_complete'),
     # The activation key can make use of any character from the
     # URL-safe base64 alphabet, plus the colon as a separator.
     re_path(r'^activate/(?P<activation_key>[-:\w]+)/$', views.ActivationView.as_view(), name='registration_activate'),
