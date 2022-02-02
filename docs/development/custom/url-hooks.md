@@ -38,7 +38,7 @@ The app's `urls.py` would look like so:
     import plugin.views
 
     urlpatterns = [
-        url(r^'index$', plugins.views.index, name='index'),
+        re_path(r^'index$', plugins.views.index, name='index'),
         ]
 
 Subsequently it would implement the UrlHook in a dedicated `auth_hooks.py` file like so:

@@ -33,7 +33,7 @@ It is possible to add or override URLs with your auth project's URL config file.
 import allianceauth.urls
 
 urlpatterns = [
-    url(r'', include(allianceauth.urls)),
+    re_path(r'', include(allianceauth.urls)),
 ]
 ```
 
@@ -46,8 +46,8 @@ import allianceauth.urls
 import myauth.views
 
 urlpatterns = [
-    url(r'', include(allianceauth.urls)),
-    url(r'myview/$', myauth.views.myview, name='myview'),
+    re_path(r'', include(allianceauth.urls)),
+    re_path(r'myview/$', myauth.views.myview, name='myview'),
 ]
 ```
 
@@ -58,7 +58,7 @@ import allianceauth.urls
 import myauth.views
 
 urlpatterns = [
-    url(r'account/login/$', myauth.views.login, name='auth_login_user'),
-    url(r'', include(allianceauth.urls)),
+    re_path(r'account/login/$', myauth.views.login, name='auth_login_user'),
+    re_path(r'', include(allianceauth.urls)),
 ]
 ```
