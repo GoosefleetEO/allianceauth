@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path
 import esi.urls
 
 from django.conf.urls import include
@@ -22,35 +22,35 @@ admin.site.site_header = NAME
 # Functional/Untranslated URL's
 urlpatterns = [
     # Locale
-    re_path(r'^i18n/', include('django.conf.urls.i18n')),
+    path('i18n/', include('django.conf.urls.i18n')),
 
     # Authentication
-    re_path(r'', include(allianceauth.authentication.urls)),
-    re_path(r'^account/login/$', TemplateView.as_view(template_name='public/login.html'), name='auth_login_user'),
-    re_path(r'^account/', include(hmac_urls)),
+    path('', include(allianceauth.authentication.urls)),
+    path('account/login/', TemplateView.as_view(template_name='public/login.html'), name='auth_login_user'),
+    path('account/', include(hmac_urls)),
 
     # Admin urls
-    re_path(r'^admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
     # SSO
-    re_path(r'^sso/', include((esi.urls, 'esi'), namespace='esi')),
-    re_path(r'^sso/login$', allianceauth.authentication.views.sso_login, name='auth_sso_login'),
+    path('sso/', include((esi.urls, 'esi'), namespace='esi')),
+    path('sso/login', allianceauth.authentication.views.sso_login, name='auth_sso_login'),
 
     # Notifications
-    re_path(r'', include(allianceauth.notifications.urls)),
+    path('', include(allianceauth.notifications.urls)),
 
     # Groups
-    re_path(r'', include(allianceauth.groupmanagement.urls)),
+    path('', include(allianceauth.groupmanagement.urls)),
 
     # Services
-    re_path(r'', decorate_url_patterns(allianceauth.services.urls.urlpatterns, main_character_required)),
+    path('', decorate_url_patterns(allianceauth.services.urls.urlpatterns, main_character_required)),
 
     # Night mode
-    re_path(r'^night/', views.NightModeRedirectView.as_view(), name='nightmode')
+    path('night/', views.NightModeRedirectView.as_view(), name='nightmode')
 ]
 
 
 # Append app urls
 app_urls = get_hooks('url_hook')
 for app in app_urls:
-    urlpatterns += [re_path(r'', decorate_url_patterns([app().include_pattern], main_character_required))]
+    urlpatterns += [path('', decorate_url_patterns([app().include_pattern], main_character_required))]

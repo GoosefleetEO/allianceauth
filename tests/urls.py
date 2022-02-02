@@ -1,17 +1,17 @@
 import allianceauth.urls
-from django.urls import re_path
+from django.urls import path
 from . import views
 
 urlpatterns = allianceauth.urls.urlpatterns
 
 urlpatterns += [
     # Navhelper test urls
-    re_path(r'^main-page/$', views.page, name='p1'),
-    re_path(r'^main-page/sub-section/$', views.page, name='p1-s1'),
-    re_path(r'^second-page/$', views.page, name='p1'),
+    path("main-page/", views.page, name="p1"),
+    path("main-page/sub-section/", views.page, name="p1-s1"),
+    path("second-page/", views.page, name="p1"),
 ]
 
-handler500 = 'allianceauth.views.Generic500Redirect'
-handler404 = 'allianceauth.views.Generic404Redirect'
-handler403 = 'allianceauth.views.Generic403Redirect'
-handler400 = 'allianceauth.views.Generic400Redirect'
+handler500 = "allianceauth.views.Generic500Redirect"
+handler404 = "allianceauth.views.Generic404Redirect"
+handler403 = "allianceauth.views.Generic403Redirect"
+handler400 = "allianceauth.views.Generic400Redirect"
