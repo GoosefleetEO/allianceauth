@@ -67,3 +67,16 @@ _NOTE: If you specify a version of allianceauth in your `requirements.txt` in a 
 1. Update the versions in your `requirements.txt` file
 1. Run `docker-compose build`
 1. Run `docker-compose --env-file=.env up -d`
+
+## Notes
+
+### Apple M1 Support
+If you want to run locally on an M1 powered Apple device, you'll need to add `platform: linux/x86_64` under each container in `docker-compose.yml` as the auth container is not compiled for ARM (other containers may work without this, but it's known to work if added to all containers).
+
+Example:
+
+```yaml
+  redis:
+    platform: linux/x86_64
+    image: redis:6.2
+```
