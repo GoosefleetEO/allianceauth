@@ -85,28 +85,24 @@ class TestBasicsAndHelpers(TestCase):
         client = DiscordClient(TEST_BOT_TOKEN, mock_redis, is_rate_limited=True)
         self.assertTrue(client.is_rate_limited)
 
-    @patch(MODULE_PATH + '.caches')
+    @patch(MODULE_PATH + '.get_redis_connection')
     def test_use_default_redis_if_none_provided(self, mock_caches):
         my_redis = MagicMock(spec=Redis)
-        mock_default_cache = MagicMock(**{'get_master_client.return_value': my_redis})
-        my_dict = {'default': mock_default_cache}
-        mock_caches.__getitem__.side_effect = my_dict.__getitem__
+        mock_caches.return_value = my_redis
 
         client = DiscordClient(TEST_BOT_TOKEN)
-        self.assertTrue(mock_default_cache.get_master_client.called)
+        self.assertTrue(mock_caches.called)
         self.assertEqual(client._redis, my_redis)
 
-    @patch(MODULE_PATH + '.caches')
+    @patch(MODULE_PATH + '.get_redis_connection')
     def test_raise_exception_if_default_cache_is_not_redis(self, mock_caches):
         my_redis = MagicMock()
-        mock_default_cache = MagicMock(**{'get_master_client.return_value': my_redis})
-        my_dict = {'default': mock_default_cache}
-        mock_caches.__getitem__.side_effect = my_dict.__getitem__
+        mock_caches.return_value = my_redis
 
         with self.assertRaises(RuntimeError):
             DiscordClient(TEST_BOT_TOKEN)
 
-        self.assertTrue(mock_default_cache.get_master_client.called)
+        self.assertTrue(mock_caches.called)
 
 
 @requests_mock.Mocker()
