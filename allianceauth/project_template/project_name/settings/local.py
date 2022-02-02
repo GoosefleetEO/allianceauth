@@ -61,6 +61,13 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = ''
 
+# Cache compression can help on bigger auths where ram starts to become an issue.
+# Uncomment the following 3 lines to enable.
+
+#CACHES["default"]["OPTIONS"] = {
+#    "COMPRESSOR": "django_redis.compressors.lzma.LzmaCompressor",
+#}
+
 #######################################
 # Add any custom settings below here. #
 #######################################
