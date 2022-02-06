@@ -30,6 +30,9 @@ It is possible to overload static and templates shipped with Django or Alliance 
 It is possible to add or override URLs with your auth project's URL config file. Upon install it is of the form:
 
 ```python
+from django.urls import re_path
+from django.urls import include
+
 import allianceauth.urls
 
 urlpatterns = [
@@ -42,23 +45,29 @@ This means every request gets passed to the Alliance Auth URL config to be inter
 If you wanted to add a URL pointing to a custom view, it can be added anywhere in the list if not already used by Alliance Auth:
 
 ```python
+from django.urls import re_path
+from django.urls import include, path
+
 import allianceauth.urls
 import myauth.views
 
 urlpatterns = [
     re_path(r'', include(allianceauth.urls)),
-    re_path(r'myview/$', myauth.views.myview, name='myview'),
+    path('myview/', myauth.views.myview, name='myview'),
 ]
 ```
 
 Additionally you can override URLs used by Alliance Auth here:
 
 ```python
+from django.urls import re_path
+from django.urls import include, path
+
 import allianceauth.urls
 import myauth.views
 
 urlpatterns = [
-    re_path(r'account/login/$', myauth.views.login, name='auth_login_user'),
+    path('account/login/', myauth.views.login, name='auth_login_user'),
     re_path(r'', include(allianceauth.urls)),
 ]
 ```

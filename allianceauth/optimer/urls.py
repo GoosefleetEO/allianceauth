@@ -1,12 +1,12 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import views
 
 app_name = 'optimer'
 
 urlpatterns = [
-    re_path(r'^$', views.optimer_view, name='view'),
-    re_path(r'^add$', views.add_optimer_view, name='add'),
-    re_path(r'^(\w+)/remove$', views.remove_optimer, name='remove'),
-    re_path(r'^(\w+)/edit$', views.edit_optimer, name='edit'),
-    ]
+    path('', views.optimer_view, name='view'),
+    path('add/', views.add_optimer_view, name='add'),
+    path('<int:optimer_id>/remove/', views.remove_optimer, name='remove'),
+    path('<int:optimer_id>/edit/', views.edit_optimer, name='edit'),
+]

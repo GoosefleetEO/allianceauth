@@ -1,8 +1,8 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
     # Discourse Service Control
-    re_path(r'^discourse/sso$', views.discourse_sso, name='auth_discourse_sso'),
+    path('discourse/sso', views.discourse_sso, name='auth_discourse_sso'),
 ]
