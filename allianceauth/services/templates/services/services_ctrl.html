@@ -5,7 +5,7 @@
     <td class="text-center">{{ username }}</td>
     <td class="text-center"><a href="{{ service_url }}">{{ service_url }}</a></td>
     <td class="text-center">
-        {% ifequal username "" %}
+        {% if username == "" %}
             {% if urls.auth_activate %}
             <a href="{% url urls.auth_activate %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
@@ -27,6 +27,6 @@
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
             {% endif %}
-        {% endifequal %}
+        {% endif %}
     </td>
 </tr>
