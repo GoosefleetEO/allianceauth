@@ -2,7 +2,7 @@ import logging
 
 from django.contrib.auth.models import User, Permission
 from django.db import models, transaction
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 from allianceauth.notifications import notify
 

@@ -1,4 +1,5 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import path
 
 app_name = 'example'
 
@@ -7,5 +8,5 @@ module_urls = [
 ]
 
 urlpatterns = [
-    url(r'^example/', include((module_urls, app_name), namespace=app_name)),
+    path('example/', include((module_urls, app_name), namespace=app_name)),
 ]

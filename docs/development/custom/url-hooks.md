@@ -34,12 +34,12 @@ An app called `plugin` provides a single view:
 
 The app's `urls.py` would look like so:
 
-    from django.conf.urls import url
+    from django.urls import path
     import plugin.views
 
     urlpatterns = [
-        url(r^'index$', plugins.views.index, name='index'),
-        ]
+        path('index/', plugins.views.index, name='index'),
+    ]
 
 Subsequently it would implement the UrlHook in a dedicated `auth_hooks.py` file like so:
 

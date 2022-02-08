@@ -3,7 +3,7 @@
     <td class="text-center">{{ username }}</td>
     <td class="text-center"><a href="mumble://{{ service_url }}">{{ service_url }}</a></td>
     <td class="text-center">
-        {% ifequal username "" %}
+        {% if username == "" %}
             <a href="{% url urls.auth_activate %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
@@ -20,6 +20,6 @@
             <a  href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
                 <span class="glyphicon glyphicon-arrow-right"></span>
             </a>
-        {% endifequal %}
+        {% endif %}
     </td>
 </tr>

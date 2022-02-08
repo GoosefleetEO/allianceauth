@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from allianceauth.notifications import notify
 

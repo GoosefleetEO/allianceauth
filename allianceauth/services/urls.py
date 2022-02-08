@@ -1,14 +1,15 @@
-from django.conf.urls import include, url
+from django.conf.urls import include
 from allianceauth.hooks import get_hooks
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
     # Services
-    url(r'^services/', include(([
-        url(r'^$', views.services_view, name='services'),
+    path('services/', include(([
+        path('', views.services_view, name='services'),
         # Tools
-        url(r'^tool/fleet_formatter_tool/$', views.fleet_formatter_view, name='fleet_format_tool'),
+        path('tool/fleet_formatter_tool/', views.fleet_formatter_view, name='fleet_format_tool'),
     ], 'services'), namespace='services')),
 ]
 

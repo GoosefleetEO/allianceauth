@@ -7,7 +7,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 install_requires = [
-    'mysqlclient',
+    'mysqlclient>=2.1.0',
     'dnspython',
     'passlib',
     'requests>=2.9.1,<3.0.0',
@@ -18,22 +18,22 @@ install_requires = [
     'packaging>=21.0,<22',
     'beautifulsoup4',
 
-    'redis>=3.3.1,<4.0.0',
-    'celery>=4.3.0,<6.0.0,!=4.4.4',  # 4.4.4 is missing a dependency
-    'celery_once>=2.0.1',
+    'redis>=4.0.0,<5.0.0',
+    'celery>=5.2.0,<6.0.0',
+    'celery_once>=3.0.1',
 
-    'django>=3.2.9,<4.0.0',
+    'django>=4.0.2,<5.0.0',
     'django-bootstrap-form',
-    'django-registration>=3.1',
+    'django-registration>=3.2',
     'django-sortedm2m',
     'django-redis>=5.2.0<6.0.0',
-    'django-celery-beat>=2.0.0',
+    'django-celery-beat @ git+https://github.com/celery/django-celery-beat.git',
 
     'openfire-restapi',
     'sleekxmpp',
     'pydiscourse',
 
-    'django-esi>=3.0.0,<4.0.0'
+    'django-esi @ git+https://gitlab.com/soratidus999/django-esi.git@py310',
 ]
 
 testing_extras = [
@@ -70,7 +70,7 @@ setup(
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 3.2',
+        'Framework :: Django :: 4',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Operating System :: POSIX :: Linux',

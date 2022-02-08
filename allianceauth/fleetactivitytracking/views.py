@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from esi.decorators import token_required
 from allianceauth.eveonline.providers import provider
 from .forms import FatlinkForm
