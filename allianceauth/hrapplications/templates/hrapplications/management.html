@@ -181,7 +181,7 @@
                         <form class="form-signin" role="form" action={% url 'hrapplications:search' %} method="POST">
                             {% csrf_token %}
                             {{ search_form|bootstrap }}
-                            <br/>
+                            <br>
                             <button class="btn btn-lg btn-primary btn-block" type="submit">{% translate "Search" %}</button>
                         </form>
                     </div>
