@@ -1,5 +1,6 @@
 from allianceauth.analytics.middleware import AnalyticsMiddleware
 from unittest.mock import Mock
+from django.http import HttpResponse
 
 from django.test.testcases import TestCase
 
@@ -7,7 +8,7 @@ from django.test.testcases import TestCase
 class TestAnalyticsMiddleware(TestCase):
 
     def setUp(self):
-        self.middleware = AnalyticsMiddleware()
+        self.middleware = AnalyticsMiddleware(HttpResponse)
         self.request = Mock()
         self.request.headers = {
                 "User-Agent": "AUTOMATED TEST"

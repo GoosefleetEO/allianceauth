@@ -30,7 +30,7 @@ install_requires = [
     'django-celery-beat @ git+https://github.com/celery/django-celery-beat.git',
 
     'openfire-restapi',
-    'sleekxmpp',
+    'slixmpp',
     'pydiscourse',
 
     'django-esi @ git+https://gitlab.com/soratidus999/django-esi.git@py310',
