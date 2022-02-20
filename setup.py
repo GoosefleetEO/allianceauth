@@ -30,7 +30,7 @@ install_requires = [
     'django-celery-beat>=2.0.0',
 
     'openfire-restapi',
-    'sleekxmpp',
+    'sleekxmpp<=1.3.2',
     'pydiscourse',
 
     'django-esi>=3.0.0,<4.0.0'
