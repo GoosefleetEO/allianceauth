@@ -33,7 +33,7 @@ install_requires = [
     'slixmpp',
     'pydiscourse',
 
-    'django-esi @ git+https://gitlab.com/soratidus999/django-esi.git@py310',
+    'django-esi>=4.0.0a1'
 ]
 
 testing_extras = [
