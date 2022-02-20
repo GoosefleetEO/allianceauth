@@ -3,7 +3,7 @@ import random
 import string
 from urllib.parse import urlparse
 
-import sleekxmpp
+import slixmpp
 from django.conf import settings
 from ofrestapi.users import Users as ofUsers
 from ofrestapi import exception
@@ -172,13 +172,13 @@ class OpenfireManager:
             raise PingBotException("Unable to connect to jabber server.")
 
 
-class PingBot(sleekxmpp.ClientXMPP):
+class PingBot(slixmpp.ClientXMPP):
     """
     A copy-paste of the example client bot from
     http://sleekxmpp.com/getting_started/sendlogout.html
     """
     def __init__(self, jid, password, recipient, message):
-        sleekxmpp.ClientXMPP.__init__(self, jid, password)
+        slixmpp.ClientXMPP.__init__(self, jid, password)
 
         self.reconnect_max_attempts = 5
         self.auto_reconnect = False
