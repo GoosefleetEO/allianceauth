@@ -188,7 +188,7 @@ class TestCaseWithTestData(TestCase):
             corporation_id=5432,
             corporation_name="Xavier's School for Gifted Youngsters",
             corporation_ticker='MUTNT',
-            alliance_id = None,
+            alliance_id=None,
             faction_id=999,
             faction_name='The X-Men',
         )
@@ -206,6 +206,7 @@ class TestCaseWithTestData(TestCase):
         cls.user_4.profile.save()
         EveFactionInfo.objects.create(faction_id=999, faction_name='The X-Men')
 
+
 def make_generic_search_request(ModelClass: type, search_term: str):
     User.objects.create_superuser(
         username='superuser', password='secret', email='admin@example.com'
@@ -218,6 +219,7 @@ def make_generic_search_request(ModelClass: type, search_term: str):
 
 
 class TestCharacterOwnershipAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = CharacterOwnershipAdmin(
@@ -244,6 +246,7 @@ class TestCharacterOwnershipAdmin(TestCaseWithTestData):
 
 
 class TestOwnershipRecordAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = OwnershipRecordAdmin(
@@ -270,6 +273,7 @@ class TestOwnershipRecordAdmin(TestCaseWithTestData):
 
 
 class TestStateAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = StateAdmin(
@@ -299,6 +303,7 @@ class TestStateAdmin(TestCaseWithTestData):
 
 
 class TestUserAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -344,7 +349,7 @@ class TestUserAdmin(TestCaseWithTestData):
         self.assertEqual(user_main_organization(self.user_3), expected)
 
     def test_user_main_organization_u4(self):
-        expected="Xavier's School for Gifted Youngsters<br>The X-Men"
+        expected = "Xavier's School for Gifted Youngsters<br>The X-Men"
         self.assertEqual(user_main_organization(self.user_4), expected)
 
     def test_characters_u1(self):
