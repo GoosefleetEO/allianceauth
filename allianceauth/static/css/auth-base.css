@@ -95,6 +95,11 @@ ul.list-group.list-group-horizontal > li.list-group-item {
     .table-aa > tbody > tr:last-child {
         border-bottom: none;
     }
+
+    .task-status-progress-bar {
+        font-size: 15px!important;
+        line-height: normal!important;
+    }
 }
 
 /* highlight active menu items

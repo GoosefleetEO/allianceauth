@@ -1,9 +1,11 @@
 import logging
+from typing import Optional
 
-import requests
 import amqp.exceptions
-from packaging.version import Version as Pep440Version, InvalidVersion
+import requests
 from celery.app import app_or_default
+from packaging.version import InvalidVersion
+from packaging.version import Version as Pep440Version
 
 from django import template
 from django.conf import settings
@@ -11,6 +13,7 @@ from django.core.cache import cache
 
 from allianceauth import __version__
 
+from ..authentication.task_statistics.event_series import dashboard_results
 
 register = template.Library()
 
@@ -36,30 +39,51 @@ logger = logging.getLogger(__name__)
 @register.inclusion_tag('allianceauth/admin-status/overview.html')
 def status_overview() -> dict:
     response = {
-        'notifications': list(),
-        'current_version': __version__,
-        'task_queue_length': -1,
+        "notifications": list(),
+        "current_version": __version__,
+        "task_queue_length": None,
+        "tasks_succeeded": 0,
+        "tasks_retried": 0,
+        "tasks_failed": 0,
+        "tasks_total": 0,
+        "tasks_hours": 0,
+        "earliest_task": None
     }
     response.update(_current_notifications())
     response.update(_current_version_summary())
     response.update({'task_queue_length': _fetch_celery_queue_length()})
+    response.update(_celery_stats())
     return response
 
 
-def _fetch_celery_queue_length() -> int:
+def _celery_stats() -> dict:
+    hours = getattr(settings, "ALLIANCEAUTH_DASHBOARD_TASKS_MAX_HOURS", 24)
+    results = dashboard_results(hours=hours)
+    return {
+        "tasks_succeeded": results.succeeded,
+        "tasks_retried": results.retried,
+        "tasks_failed": results.failed,
+        "tasks_total": results.total,
+        "tasks_hours": results.hours,
+        "earliest_task": results.earliest_task
+    }
+
+
+def _fetch_celery_queue_length() -> Optional[int]:
     try:
         app = app_or_default(None)
         with app.connection_or_acquire() as conn:
-            return conn.default_channel.queue_declare(
+            result = conn.default_channel.queue_declare(
                 queue=getattr(settings, 'CELERY_DEFAULT_QUEUE', 'celery'),
                 passive=True
-            ).message_count
+            )
+            return result.message_count
     except amqp.exceptions.ChannelError:
         # Queue doesn't exist, probably empty
         return 0
     except Exception:
         logger.exception("Failed to get celery queue length")
-    return -1
+    return None
 
 
 def _current_notifications() -> dict:
