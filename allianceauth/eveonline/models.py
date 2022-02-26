@@ -25,6 +25,8 @@ DOOMHEIM_CORPORATION_ID = 1000001
 
 
 class EveFactionInfo(models.Model):
+    """A faction in Eve Online."""
+
     faction_id = models.PositiveIntegerField(unique=True, db_index=True)
     faction_name = models.CharField(max_length=254, unique=True)
 
@@ -66,6 +68,8 @@ class EveFactionInfo(models.Model):
 
 
 class EveAllianceInfo(models.Model):
+    """An alliance in Eve Online."""
+
     alliance_id = models.PositiveIntegerField(unique=True)
     alliance_name = models.CharField(max_length=254, unique=True)
     alliance_ticker = models.CharField(max_length=254)
@@ -132,6 +136,8 @@ class EveAllianceInfo(models.Model):
 
 
 class EveCorporationInfo(models.Model):
+    """A corporation in Eve Online."""
+
     corporation_id = models.PositiveIntegerField(unique=True)
     corporation_name = models.CharField(max_length=254, unique=True)
     corporation_ticker = models.CharField(max_length=254)
@@ -195,9 +201,10 @@ class EveCorporationInfo(models.Model):
 
 
 class EveCharacter(models.Model):
-    """Character in Eve Online"""
+    """A character in Eve Online."""
+
     character_id = models.PositiveIntegerField(unique=True)
-    character_name = models.CharField(max_length=254, unique=True)
+    character_name = models.CharField(max_length=254, db_index=True)
     corporation_id = models.PositiveIntegerField()
     corporation_name = models.CharField(max_length=254)
     corporation_ticker = models.CharField(max_length=5)
