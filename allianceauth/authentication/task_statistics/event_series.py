@@ -5,7 +5,7 @@ from typing import Optional, List
 from redis import Redis
 from pytz import utc
 
-from django.core.cache import cache
+from django_redis import get_redis_connection
 
 _TaskCounts = namedtuple(
     "_TaskCounts", ["succeeded", "retried", "failed", "total", "earliest_task", "hours"]
@@ -55,7 +55,7 @@ class EventSeries:
             raise TypeError("Can not instantiate base class.")
         if not hasattr(self, "KEY_ID"):
             raise ValueError("KEY_ID not defined")
-        self._redis = cache.get_master_client() if not redis else redis
+        self._redis = get_redis_connection("default") if not redis else redis
         if not isinstance(self._redis, Redis):
             raise TypeError(
                 "This class requires a Redis client, but none was provided "
