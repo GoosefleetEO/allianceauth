@@ -13,8 +13,12 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.text import slugify
 
-from allianceauth.authentication.models import State, get_guest_state,\
-    CharacterOwnership, UserProfile, OwnershipRecord
+from allianceauth.authentication.models import (
+    State,
+    get_guest_state,
+    CharacterOwnership,
+    UserProfile,
+    OwnershipRecord)
 from allianceauth.hooks import get_hooks
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo,\
     EveAllianceInfo, EveFactionInfo
