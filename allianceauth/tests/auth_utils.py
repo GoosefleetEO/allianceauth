@@ -174,7 +174,7 @@ class AuthUtils:
         alliance_id=None,
         alliance_name='',
         disconnect_signals=False
-    ):
+    ) -> EveCharacter:
         """new version that works in all cases"""
         if disconnect_signals:
             cls.disconnect_signals()
