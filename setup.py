@@ -27,7 +27,7 @@ install_requires = [
     'django-registration>=3.2',
     'django-sortedm2m',
     'django-redis>=5.2.0<6.0.0',
-    'django-celery-beat @ git+https://github.com/celery/django-celery-beat.git',
+    'django-celery-beat @ git+https://github.com/celery/django-celery-beat.git@0806ab3c65e1615e9b617146779c21f49749067a',
 
     'openfire-restapi',
     'slixmpp',
