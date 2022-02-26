@@ -55,7 +55,6 @@ TEST_VERSION = '2.6.5'
 
 
 class TestStatusOverviewTag(TestCase):
-
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
     @patch(MODULE_PATH + '.admin_status._fetch_celery_queue_length')
     @patch(MODULE_PATH + '.admin_status._current_version_summary')
@@ -66,6 +65,7 @@ class TestStatusOverviewTag(TestCase):
         mock_current_version_info,
         mock_fetch_celery_queue_length
     ):
+        # given
         notifications = {
             'notifications': GITHUB_NOTIFICATION_ISSUES[:5]
         }
@@ -83,22 +83,20 @@ class TestStatusOverviewTag(TestCase):
         }
         mock_current_version_info.return_value = version_info
         mock_fetch_celery_queue_length.return_value = 3
-
+        # when
         result = status_overview()
-        expected = {
-            'notifications': GITHUB_NOTIFICATION_ISSUES[:5],
-            'latest_major': True,
-            'latest_minor': True,
-            'latest_patch': True,
-            'latest_beta': False,
-            'current_version': TEST_VERSION,
-            'latest_major_version': '2.4.5',
-            'latest_minor_version': '2.4.0',
-            'latest_patch_version': '2.4.5',
-            'latest_beta_version': '2.4.4a1',
-            'task_queue_length': 3,
-        }
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result["notifications"], GITHUB_NOTIFICATION_ISSUES[:5])
+        self.assertTrue(result["latest_major"])
+        self.assertTrue(result["latest_minor"])
+        self.assertTrue(result["latest_patch"])
+        self.assertFalse(result["latest_beta"])
+        self.assertEqual(result["current_version"], TEST_VERSION)
+        self.assertEqual(result["latest_major_version"], '2.4.5')
+        self.assertEqual(result["latest_minor_version"], '2.4.0')
+        self.assertEqual(result["latest_patch_version"], '2.4.5')
+        self.assertEqual(result["latest_beta_version"], '2.4.4a1')
+        self.assertEqual(result["task_queue_length"], 3)
 
 
 class TestNotifications(TestCase):
