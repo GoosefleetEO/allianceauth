@@ -1,4 +1,17 @@
+from django.db.models.signals import (
+    m2m_changed,
+    post_save,
+    pre_delete,
+    pre_save
+)
 from django.urls import reverse
+from unittest import mock
+
+MODULE_PATH = 'allianceauth.authentication'
+
+
+def patch(target, *args, **kwargs):
+    return mock.patch(f'{MODULE_PATH}{target}', *args, **kwargs)
 
 
 def get_admin_change_view_url(obj: object) -> str:

@@ -3,12 +3,23 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.contrib import messages
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class NightModeRedirectView(View):
     SESSION_VAR = "NIGHT_MODE"
 
     def get(self, request, *args, **kwargs):
         request.session[self.SESSION_VAR] = not self.night_mode_state(request)
+        if not request.user.is_anonymous:
+            try:
+                request.user.profile.night_mode = request.session[self.SESSION_VAR]
+                request.user.profile.save()
+            except Exception as e:
+                logger.exception(e)
+
         return HttpResponseRedirect(request.GET.get("next", "/"))
 
     @classmethod

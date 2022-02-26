@@ -40,7 +40,7 @@ def update_character(character_id: int) -> None:
 def run_model_update():
     """Update all alliances, corporations and characters from ESI"""
 
-    # update existing corp models
+    #update existing corp models
     for corp in EveCorporationInfo.objects.all().values('corporation_id'):
         update_corp.apply_async(args=[corp['corporation_id']], priority=TASK_PRIORITY)
 

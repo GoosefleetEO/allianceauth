@@ -5,6 +5,7 @@ from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 from allianceauth.eveonline.models import EveCharacter, EveCorporationInfo, EveAllianceInfo, EveFactionInfo
 from allianceauth.notifications import notify
+from django.conf import settings
 
 from .managers import CharacterOwnershipManager, StateManager
 
@@ -62,9 +63,39 @@ class UserProfile(models.Model):
     class Meta:
         default_permissions = ('change',)
 
-    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    main_character = models.OneToOneField(EveCharacter, blank=True, null=True, on_delete=models.SET_NULL)
-    state = models.ForeignKey(State, on_delete=models.SET_DEFAULT, default=get_guest_state_pk)
+    user = models.OneToOneField(
+        User,
+        related_name='profile',
+        on_delete=models.CASCADE)
+    main_character = models.OneToOneField(
+        EveCharacter,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL)
+    state = models.ForeignKey(
+        State,
+        on_delete=models.SET_DEFAULT,
+        default=get_guest_state_pk)
+    LANGUAGE_CHOICES = [
+        ('en', _('English')),
+        ('de', _('German')),
+        ('es', _('Spanish')),
+        ('zh-hans', _('Chinese Simplified')),
+        ('ru', _('Russian')),
+        ('ko', _('Korean')),
+        ('fr', _('French')),
+        ('ja', _('Japanese')),
+        ('it', _('Italian')),
+    ]
+    language = models.CharField(
+        _("Language"), max_length=10,
+        choices=LANGUAGE_CHOICES,
+        blank=True,
+        default='')
+    night_mode = models.BooleanField(
+        _("Night Mode"),
+        blank=True,
+        null=True)
 
     def assign_state(self, state=None, commit=True):
         if not state:
@@ -93,8 +124,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return str(self.user)
-
-
 class CharacterOwnership(models.Model):
     class Meta:
         default_permissions = ('change', 'delete')

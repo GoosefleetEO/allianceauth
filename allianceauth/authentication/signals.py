@@ -1,6 +1,11 @@
 import logging
 
-from .models import CharacterOwnership, UserProfile, get_guest_state, State, OwnershipRecord
+from .models import (
+    CharacterOwnership,
+    UserProfile,
+    get_guest_state,
+    State,
+    OwnershipRecord)
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
@@ -71,7 +76,7 @@ def reassess_on_profile_save(sender, instance, created, *args, **kwargs):
 
 @receiver(post_save, sender=User)
 def create_required_models(sender, instance, created, *args, **kwargs):
-    # ensure all users have a model
+    # ensure all users have our Sub-Models
     if created:
         logger.debug(f'User {instance} created. Creating default UserProfile.')
         UserProfile.objects.get_or_create(user=instance)
