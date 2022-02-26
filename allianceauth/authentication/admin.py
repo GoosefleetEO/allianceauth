@@ -380,6 +380,7 @@ class UserAdmin(BaseUserAdmin):
         'username',
         'character_ownerships__character__character_name'
     )
+    readonly_fields = ('date_joined', 'last_login')
 
     def _characters(self, obj):
         character_ownerships = list(obj.character_ownerships.all())
@@ -425,10 +426,19 @@ class UserAdmin(BaseUserAdmin):
     def has_delete_permission(self, request, obj=None):
         return request.user.has_perm('auth.delete_user')
 
+    def get_object(self, *args , **kwargs):
+        obj = super().get_object(*args , **kwargs)
+        self.obj = obj  # storing current object for use in formfield_for_manytomany
+        return obj
+
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        """overriding this formfield to have sorted lists in the form"""
         if db_field.name == "groups":
-            kwargs["queryset"] = Group.objects.all().order_by(Lower('name'))
+            groups_qs = Group.objects.filter(authgroup__states__isnull=True)
+            obj_state = self.obj.profile.state
+            if obj_state:
+                matching_groups_qs = Group.objects.filter(authgroup__states=obj_state)
+                groups_qs = groups_qs | matching_groups_qs
+            kwargs["queryset"] = groups_qs.order_by(Lower('name'))
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 

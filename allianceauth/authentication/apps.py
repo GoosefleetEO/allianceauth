@@ -3,10 +3,14 @@ from django.core.checks import register, Tags
 
 
 class AuthenticationConfig(AppConfig):
-    name = 'allianceauth.authentication'
-    label = 'authentication'
+    name = "allianceauth.authentication"
+    label = "authentication"
 
     def ready(self):
-        super().ready()
-        from allianceauth.authentication import checks, signals
+        from allianceauth.authentication import checks, signals  # noqa: F401
+        from allianceauth.authentication.task_statistics import (
+            signals as celery_signals,
+        )
+
         register(Tags.security)(checks.check_login_scopes_setting)
+        celery_signals.reset_counters()

@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from urllib.parse import quote
 from unittest.mock import patch, MagicMock
 
@@ -188,7 +189,7 @@ class TestCaseWithTestData(TestCase):
             corporation_id=5432,
             corporation_name="Xavier's School for Gifted Youngsters",
             corporation_ticker='MUTNT',
-            alliance_id = None,
+            alliance_id=None,
             faction_id=999,
             faction_name='The X-Men',
         )
@@ -206,6 +207,7 @@ class TestCaseWithTestData(TestCase):
         cls.user_4.profile.save()
         EveFactionInfo.objects.create(faction_id=999, faction_name='The X-Men')
 
+
 def make_generic_search_request(ModelClass: type, search_term: str):
     User.objects.create_superuser(
         username='superuser', password='secret', email='admin@example.com'
@@ -218,6 +220,7 @@ def make_generic_search_request(ModelClass: type, search_term: str):
 
 
 class TestCharacterOwnershipAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = CharacterOwnershipAdmin(
@@ -244,6 +247,7 @@ class TestCharacterOwnershipAdmin(TestCaseWithTestData):
 
 
 class TestOwnershipRecordAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = OwnershipRecordAdmin(
@@ -270,6 +274,7 @@ class TestOwnershipRecordAdmin(TestCaseWithTestData):
 
 
 class TestStateAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.modeladmin = StateAdmin(
@@ -299,6 +304,7 @@ class TestStateAdmin(TestCaseWithTestData):
 
 
 class TestUserAdmin(TestCaseWithTestData):
+    fixtures = ["disable_analytics"]
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -344,7 +350,7 @@ class TestUserAdmin(TestCaseWithTestData):
         self.assertEqual(user_main_organization(self.user_3), expected)
 
     def test_user_main_organization_u4(self):
-        expected="Xavier's School for Gifted Youngsters<br>The X-Men"
+        expected = "Xavier's School for Gifted Youngsters<br>The X-Men"
         self.assertEqual(user_main_organization(self.user_4), expected)
 
     def test_characters_u1(self):
@@ -535,6 +541,42 @@ class TestUserAdmin(TestCaseWithTestData):
         response = make_generic_search_request(type(obj), obj.username)
         expected = 200
         self.assertEqual(response.status_code, expected)
+
+
+class TestUserAdminChangeForm(TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.modeladmin = UserAdmin(model=User, admin_site=AdminSite())
+
+    def test_should_show_groups_available_to_user_with_blue_state_only(self):
+        # given
+        superuser = User.objects.create_superuser("Super")
+        user = AuthUtils.create_user("Bruce Wayne")
+        character = AuthUtils.add_main_character_2(
+            user,
+            name="Bruce Wayne",
+            character_id=1001,
+            corp_id=2001,
+            corp_name="Wayne Technologies"
+        )
+        blue_state = State.objects.get(name="Blue")
+        blue_state.member_characters.add(character)
+        member_state = AuthUtils.get_member_state()
+        group_1 = Group.objects.create(name="Group 1")
+        group_2 = Group.objects.create(name="Group 2")
+        group_2.authgroup.states.add(blue_state)
+        group_3 = Group.objects.create(name="Group 3")
+        group_3.authgroup.states.add(member_state)
+        self.client.force_login(superuser)
+        # when
+        response = self.client.get(f"/admin/authentication/user/{user.pk}/change/")
+        # then
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.rendered_content, features="html.parser")
+        groups_select = soup.find("select", {"id": "id_groups"}).find_all('option')
+        group_ids = {int(option["value"]) for option in groups_select}
+        self.assertSetEqual(group_ids, {group_1.pk, group_2.pk})
 
 
 class TestMakeServicesHooksActions(TestCaseWithTestData):

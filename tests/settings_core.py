@@ -27,3 +27,5 @@ PASSWORD_HASHERS = [
 ]
 
 LOGGING = None  # Comment out to enable logging for debugging
+
+ALLIANCEAUTH_DASHBOARD_TASK_STATISTICS_DISABLED = True  # disable for tests
