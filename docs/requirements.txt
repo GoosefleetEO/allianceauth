@@ -1,15 +1,16 @@
 # Docs Specific Packages
-sphinx>=3.2.1,<4.0.0
-sphinx_rtd_theme==0.5.0
-recommonmark==0.6.0
+sphinx>=4.4.0,<5.0.0
+sphinx_rtd_theme>=1.0.0,<2.0.0
+recommonmark==0.7.1
 
 # Autodoc dependencies
-django>=3.2,<4.0.0
+django>=4.0.2,<5.0.0
 django-celery-beat>=2.0.0
 django-bootstrap-form
 django-sortedm2m
-django-esi>=3,<4
-celery>5,<6
-celery_once
+django-esi>=4.0.0a1,<5
+django-redis>=5.2.0<6.0.0
+celery>=5.2.0,<6.0.0
+celery_once>=3.0.1
 passlib
-redis>=3.3.1,<4.0.0
+redis>=4.0.0,<5.0.0

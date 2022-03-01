@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Alliance Auth'
-copyright = '2018-2020, Alliance Auth'
+copyright = '2018-2022, Alliance Auth'
 author = 'R4stl1n'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -68,7 +68,7 @@ author = 'R4stl1n'
 # built documents.
 #
 # The short X.Y version.
-version = '2.0'
+version = '3.0'
 # The full version, including alpha/beta/rc tags.
 # release = u'1.14.0'
 
