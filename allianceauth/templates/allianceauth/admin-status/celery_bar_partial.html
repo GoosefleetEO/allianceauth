@@ -6,7 +6,6 @@
     aria-valuenow="{% widthratio tasks_count tasks_total 100 %}"
     aria-valuemin="0"
     aria-valuemax="100"
-    style="width: {% widthratio tasks_count tasks_total 100 %}%;"
-    title="{{ tasks_count|intcomma }} {{ label }}">
+    style="width: {% widthratio tasks_count tasks_total 100 %}%;">
     {% widthratio tasks_count tasks_total 100 %}%
 </div>

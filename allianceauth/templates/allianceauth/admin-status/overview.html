@@ -78,10 +78,15 @@
                 <div class="panel-heading text-center"><h3 class="panel-title">{% translate "Task Queue" %}</h3></div>
                 <div class="panel-body flex-center-horizontal">
                     <p>
-                    {% blocktranslate with total=tasks_total|intcomma latest=earliest_task|timesince|default_if_none:"?" %}
-                    Status of {{ total }} processed tasks • last {{ latest }}</p>
+                    {% blocktranslate with total=tasks_total|intcomma latest=earliest_task|timesince|default:"?" %}
+                    Status of {{ total }} processed tasks • last {{ latest }}
                     {% endblocktranslate %}
-                    <div class="progress" style="height: 21px;">
+                    </p>
+                    <div
+                        class="progress"
+                        style="height: 21px;"
+                        title="{{ tasks_succeeded|intcomma }} succeeded, {{ tasks_retried|intcomma }} retried, {{ tasks_failed|intcomma }} failed"
+                    >
                         {% include "allianceauth/admin-status/celery_bar_partial.html" with label="suceeded" level="success" tasks_count=tasks_succeeded %}
                         {% include "allianceauth/admin-status/celery_bar_partial.html" with label="retried" level="info" tasks_count=tasks_retried %}
                         {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
