@@ -1,5 +1,4 @@
 import datetime as dt
-from collections import namedtuple
 from typing import Optional, List
 
 from redis import Redis
@@ -7,68 +6,29 @@ from pytz import utc
 
 from django_redis import get_redis_connection
 
-_TaskCounts = namedtuple(
-    "_TaskCounts", ["succeeded", "retried", "failed", "total", "earliest_task", "hours"]
-)
-
-
-def dashboard_results(hours: int) -> _TaskCounts:
-    """Counts of all task events within the given timeframe."""
-    def earliest_if_exists(events: EventSeries, earliest: dt.datetime) -> list:
-        my_earliest = events.first_event(earliest=earliest)
-        return [my_earliest] if my_earliest else []
-
-    earliest = dt.datetime.utcnow() - dt.timedelta(hours=hours)
-    earliest_events = list()
-    succeeded = SucceededTaskSeries()
-    succeeded_count = succeeded.count(earliest=earliest)
-    earliest_events += earliest_if_exists(succeeded, earliest)
-    retried = RetriedTaskSeries()
-    retried_count = retried.count(earliest=earliest)
-    earliest_events += earliest_if_exists(retried, earliest)
-    failed = FailedTaskSeries()
-    failed_count = failed.count(earliest=earliest)
-    earliest_events += earliest_if_exists(failed, earliest)
-    return _TaskCounts(
-        succeeded=succeeded_count,
-        retried=retried_count,
-        failed=failed_count,
-        total=succeeded_count + retried_count + failed_count,
-        earliest_task=min(earliest_events) if earliest_events else None,
-        hours=hours,
-    )
-
 
 class EventSeries:
-    """Base class for recording and analysing a series of events.
+    """API for recording and analysing a series of events."""
 
-    This class must be inherited from and the child class must define KEY_ID.
-    """
+    _ROOT_KEY = "ALLIANCEAUTH_EVENT_SERIES"
 
-    _ROOT_KEY = "ALLIANCEAUTH_TASK_SERIES"
-
-    def __init__(
-        self,
-        redis: Redis = None,
-    ) -> None:
-        if type(self) == EventSeries:
-            raise TypeError("Can not instantiate base class.")
-        if not hasattr(self, "KEY_ID"):
-            raise ValueError("KEY_ID not defined")
+    def __init__(self, key_id: str, redis: Redis = None) -> None:
         self._redis = get_redis_connection("default") if not redis else redis
         if not isinstance(self._redis, Redis):
             raise TypeError(
                 "This class requires a Redis client, but none was provided "
                 "and the default Django cache backend is not Redis either."
             )
+        self._key_id = str(key_id)
+        self.clear()
 
     @property
     def _key_counter(self):
-        return f"{self._ROOT_KEY}_{self.KEY_ID}_COUNTER"
+        return f"{self._ROOT_KEY}_{self._key_id}_COUNTER"
 
     @property
     def _key_sorted_set(self):
-        return f"{self._ROOT_KEY}_{self.KEY_ID}_SORTED_SET"
+        return f"{self._ROOT_KEY}_{self._key_id}_SORTED_SET"
 
     def add(self, event_time: dt.datetime = None) -> None:
         """Add event.
@@ -133,21 +93,3 @@ class EventSeries:
     @staticmethod
     def _cast_scores_to_dt(score) -> dt.datetime:
         return dt.datetime.fromtimestamp(float(score), tz=utc)
-
-
-class SucceededTaskSeries(EventSeries):
-    """A task has succeeded."""
-
-    KEY_ID = "SUCCEEDED"
-
-
-class RetriedTaskSeries(EventSeries):
-    """A task has been retried."""
-
-    KEY_ID = "RETRIED"
-
-
-class FailedTaskSeries(EventSeries):
-    """A task has failed."""
-
-    KEY_ID = "FAILED"

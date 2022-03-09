@@ -1,15 +1,21 @@
-from celery.signals import task_failure, task_retry, task_success, worker_ready
+from celery.signals import (
+    task_failure,
+    task_internal_error,
+    task_retry,
+    task_success,
+    worker_ready
+)
 
 from django.conf import settings
 
-from .event_series import FailedTaskSeries, RetriedTaskSeries, SucceededTaskSeries
+from .counters import failed_tasks, retried_tasks, succeeded_tasks
 
 
 def reset_counters():
     """Reset all counters for the celery status."""
-    SucceededTaskSeries().clear()
-    FailedTaskSeries().clear()
-    RetriedTaskSeries().clear()
+    succeeded_tasks.clear()
+    failed_tasks.clear()
+    retried_tasks.clear()
 
 
 def is_enabled() -> bool:
@@ -27,16 +33,22 @@ def reset_counters_when_celery_restarted(*args, **kwargs):
 @task_success.connect
 def record_task_succeeded(*args, **kwargs):
     if is_enabled():
-        SucceededTaskSeries().add()
+        succeeded_tasks.add()
 
 
 @task_retry.connect
 def record_task_retried(*args, **kwargs):
     if is_enabled():
-        RetriedTaskSeries().add()
+        retried_tasks.add()
 
 
 @task_failure.connect
 def record_task_failed(*args, **kwargs):
     if is_enabled():
-        FailedTaskSeries().add()
+        failed_tasks.add()
+
+
+@task_internal_error.connect
+def record_task_internal_error(*args, **kwargs):
+    if is_enabled():
+        failed_tasks.add()

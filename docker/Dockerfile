@@ -39,7 +39,6 @@ RUN allianceauth start myauth
 COPY /allianceauth/project_template/project_name/settings/local.py ${AUTH_HOME}/myauth/myauth/settings/local.py
 RUN allianceauth update myauth
 RUN mkdir -p ${STATIC_BASE}/myauth/static
-RUN python ${AUTH_HOME}/myauth/manage.py collectstatic --noinput
 COPY /docker/conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'alias auth="python $AUTH_HOME/myauth/manage.py"' >> ~/.bashrc && \
     echo 'alias supervisord="supervisord -c /etc/supervisor/conf.d/supervisord.conf"' >> ~/.bashrc && \
