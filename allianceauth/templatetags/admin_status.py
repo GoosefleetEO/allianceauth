@@ -13,7 +13,7 @@ from django.core.cache import cache
 
 from allianceauth import __version__
 
-from ..authentication.task_statistics.event_series import dashboard_results
+from ..authentication.task_statistics.counters import dashboard_results
 
 register = template.Library()
 
