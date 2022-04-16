@@ -36,6 +36,11 @@ GITLAB_AUTH_ANNOUNCEMENT_ISSUES_URL = (
 logger = logging.getLogger(__name__)
 
 
+@register.simple_tag()
+def decimal_widthratio(this_value, max_value, max_width) -> str:
+    return str(round(this_value/max_value * max_width, 2))
+
+
 @register.inclusion_tag('allianceauth/admin-status/overview.html')
 def status_overview() -> dict:
     response = {
