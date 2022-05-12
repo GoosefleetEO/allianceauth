@@ -38,6 +38,9 @@ logger = logging.getLogger(__name__)
 
 @register.simple_tag()
 def decimal_widthratio(this_value, max_value, max_width) -> str:
+    if max_value == 0:
+        return 0
+
     return str(round(this_value/max_value * max_width, 2))
 
 
