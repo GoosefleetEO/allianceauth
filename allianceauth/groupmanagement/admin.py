@@ -1,19 +1,20 @@
-from django import forms
 from django.apps import apps
-from django.contrib.auth.models import Permission
 from django.contrib import admin
-from django.contrib.auth.models import Group as BaseGroup, User
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import Group as BaseGroup
+from django.contrib.auth.models import Permission, User
 from django.db.models import Count
 from django.db.models.functions import Lower
-from django.db.models.signals import pre_save, post_save, pre_delete, \
-    post_delete, m2m_changed
+from django.db.models.signals import (
+    m2m_changed,
+    post_delete,
+    post_save,
+    pre_delete,
+    pre_save
+)
 from django.dispatch import receiver
-from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 
-from .models import AuthGroup, ReservedGroupName
-from .models import GroupRequest
+from .forms import GroupAdminForm, ReservedGroupNameAdminForm
+from .models import AuthGroup, GroupRequest, ReservedGroupName
 
 if 'eve_autogroups' in apps.app_configs:
     _has_auto_groups = True
@@ -28,10 +29,12 @@ class AuthGroupInlineAdmin(admin.StackedInline):
         'description',
         'group_leaders',
         'group_leader_groups',
-        'states', 'internal',
+        'states',
+        'internal',
         'hidden',
         'open',
-        'public'
+        'public',
+        'restricted',
     )
     verbose_name_plural = 'Auth Settings'
     verbose_name = ''
@@ -49,6 +52,11 @@ class AuthGroupInlineAdmin(admin.StackedInline):
 
     def has_change_permission(self, request, obj=None):
         return request.user.has_perm('auth.change_group')
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return self.readonly_fields + ("restricted",)
+        return self.readonly_fields
 
 
 if _has_auto_groups:
@@ -96,17 +104,6 @@ class HasLeaderFilter(admin.SimpleListFilter):
         return queryset
 
 
-class GroupAdminForm(forms.ModelForm):
-    def clean_name(self):
-        my_name = self.cleaned_data['name']
-        if ReservedGroupName.objects.filter(name__iexact=my_name).exists():
-            raise ValidationError(
-                _("This name has been reserved and can not be used for groups."),
-                code='reserved_name'
-            )
-        return my_name
-
-
 class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
     list_select_related = ('authgroup',)
@@ -143,16 +140,13 @@ class GroupAdmin(admin.ModelAdmin):
     def _description(self, obj):
         return obj.authgroup.description
 
+    @admin.display(description="Members", ordering="member_count")
     def _member_count(self, obj):
         return obj.member_count
 
-    _member_count.short_description = 'Members'
-    _member_count.admin_order_field = 'member_count'
-
+    @admin.display(boolean=True)
     def has_leader(self, obj):
         return obj.authgroup.group_leaders.exists() or obj.authgroup.group_leader_groups.exists()
-
-    has_leader.boolean = True
 
     def _properties(self, obj):
         properties = list()
@@ -172,10 +166,9 @@ class GroupAdmin(admin.ModelAdmin):
                 properties.append('Public')
         if not properties:
             properties.append('Default')
-
+        if obj.authgroup.restricted:
+            properties.append('Restricted')
         return properties
-
-    _properties.short_description = "properties"
 
     filter_horizontal = ('permissions',)
     inlines = (AuthGroupInlineAdmin,)
@@ -191,6 +184,11 @@ class GroupAdmin(admin.ModelAdmin):
             ag_instance.group = form.instance
             ag_instance.save()
         formset.save()
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return self.readonly_fields + ("permissions",)
+        return self.readonly_fields
 
 
 class Group(BaseGroup):
@@ -216,32 +214,9 @@ class GroupRequestAdmin(admin.ModelAdmin):
         'leave_request',
     )
 
+    @admin.display(boolean=True, description="is leave request")
     def _leave_request(self, obj) -> True:
         return obj.leave_request
-
-    _leave_request.short_description = 'is leave request'
-    _leave_request.boolean = True
-
-
-class ReservedGroupNameAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['created_by'].initial = self.current_user.username
-        self.fields['created_at'].initial = _("(auto)")
-
-    created_by = forms.CharField(disabled=True)
-    created_at = forms.CharField(disabled=True)
-
-    def clean_name(self):
-        my_name = self.cleaned_data['name'].lower()
-        if Group.objects.filter(name__iexact=my_name).exists():
-            raise ValidationError(
-                _("There already exists a group with that name."), code='already_exists'
-            )
-        return my_name
-
-    def clean_created_at(self):
-        return now()
 
 
 @admin.register(ReservedGroupName)
