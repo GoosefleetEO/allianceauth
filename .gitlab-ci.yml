@@ -64,7 +64,9 @@ test-3.8-core:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.9-core:
   <<: *only-default
@@ -74,7 +76,9 @@ test-3.9-core:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.10-core:
   <<: *only-default
@@ -84,7 +88,9 @@ test-3.10-core:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.11-core:
   <<: *only-default
@@ -94,7 +100,9 @@ test-3.11-core:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
   allow_failure: true
 
 test-3.7-all:
@@ -115,7 +123,9 @@ test-3.8-all:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.9-all:
   <<: *only-default
@@ -125,7 +135,9 @@ test-3.9-all:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.10-all:
   <<: *only-default
@@ -135,7 +147,9 @@ test-3.10-all:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.11-all:
   <<: *only-default
@@ -145,7 +159,9 @@ test-3.11-all:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
   allow_failure: true
 
 deploy_production:
