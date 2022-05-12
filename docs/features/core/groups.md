@@ -38,6 +38,10 @@ The key difference is that the group is completely unmanaged by Auth. **Once a m
 
 Most people won't have a use for public groups, though it can be useful if you wish to allow public access to some services. You can grant service permissions on a public group to allow this behavior.
 
+### Restricted
+
+When a group is restricted only superuser admins can directly add or remove them to/from users. The purpose of this property is prevent staff admins from assigning themselves to groups that are security sensitive. The "restricted" property can be combined with all the other properties.
+
 ```eval_rst
 .. _ref-reserved-group-names:
 ```
