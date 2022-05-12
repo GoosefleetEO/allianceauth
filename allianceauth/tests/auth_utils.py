@@ -1,3 +1,5 @@
+from typing import List
+
 from django.contrib.auth.models import User, Group, Permission
 from django.db.models.signals import m2m_changed, pre_save, post_save
 from django.test import TestCase
@@ -257,6 +259,23 @@ class AuthUtils:
         """
         p = cls.get_permission_by_name(perm)
         return cls.add_permissions_to_user([p], user, disconnect_signals)
+
+    @classmethod
+    def add_permissions_to_user_by_name(
+        cls, perms: List[str], user: User, disconnect_signals: bool = True
+    ) -> User:
+        """Add permissions given by name to a user
+
+        Args:
+            perms: List of permission names as 'app_label.codename'
+            user: user object
+            disconnect_signals: whether to run process without signals
+
+        Returns:
+            Updated user object
+        """
+        permissions = [cls.get_permission_by_name(perm) for perm in perms]
+        return cls.add_permissions_to_user(permissions, user, disconnect_signals)
 
     @staticmethod
     def get_permission_by_name(perm: str) -> Permission:

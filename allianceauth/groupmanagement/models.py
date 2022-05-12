@@ -13,6 +13,7 @@ from allianceauth.notifications import notify
 
 class GroupRequest(models.Model):
     """Request from a user for joining or leaving a group."""
+
     leave_request = models.BooleanField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -44,6 +45,7 @@ class GroupRequest(models.Model):
 
 class RequestLog(models.Model):
     """Log entry about who joined and left a group and who approved it."""
+
     request_type = models.BooleanField(null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     request_info = models.CharField(max_length=254)
@@ -95,6 +97,7 @@ class AuthGroup(models.Model):
         Open - Users are automatically accepted into the group
         Not Open - Users requests must be approved before they are added to the group
     """
+
     group = models.OneToOneField(Group, on_delete=models.CASCADE, primary_key=True)
     internal = models.BooleanField(
         default=True,
@@ -124,6 +127,13 @@ class AuthGroup(models.Model):
             "visibility based on the other options set for this group.<br>"
             "Auth will not remove users from this group automatically when they "
             "are no longer authenticated."
+        )
+    )
+    restricted = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Group is restricted. This means that adding or removing users "
+            "for this group requires a superuser admin."
         )
     )
     group_leaders = models.ManyToManyField(
@@ -185,6 +195,7 @@ class ReservedGroupName(models.Model):
 
     This enables AA to ignore groups on other services (e.g. Discord) with that name.
     """
+
     name = models.CharField(
         _('name'),
         max_length=150,

@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+from django_webtest import WebTest
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
@@ -10,8 +12,10 @@ from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
     EveCharacter, EveCorporationInfo, EveAllianceInfo
 )
-from ..admin import HasLeaderFilter, GroupAdmin, Group
+from allianceauth.tests.auth_utils import AuthUtils
+
 from . import get_admin_change_view_url
+from ..admin import HasLeaderFilter, GroupAdmin, Group
 from ..models import ReservedGroupName
 
 
@@ -33,7 +37,6 @@ class MockRequest:
 
 
 class TestGroupAdmin(TestCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -466,6 +469,74 @@ class TestGroupAdmin(TestCase):
             response, "This name has been reserved and can not be used for groups"
         )
         self.assertFalse(Group.objects.filter(name="new group").exists())
+
+
+class TestGroupAdminChangeFormSuperuserExclusiveEdits(WebTest):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.super_admin = User.objects.create_superuser("super_admin")
+        cls.staff_admin = User.objects.create_user("staff_admin")
+        cls.staff_admin.is_staff = True
+        cls.staff_admin.save()
+        cls.staff_admin = AuthUtils.add_permissions_to_user_by_name(
+            [
+                "auth.add_group",
+                "auth.change_group",
+                "auth.view_group",
+                "groupmanagement.add_group",
+                "groupmanagement.change_group",
+                "groupmanagement.view_group",
+            ],
+            cls.staff_admin
+        )
+        cls.superuser_exclusive_fields = ["permissions", "authgroup-0-restricted"]
+
+    def test_should_show_all_fields_to_superuser_for_add(self):
+        # given
+        self.app.set_user(self.super_admin)
+        page = self.app.get("/admin/groupmanagement/group/add/")
+        # when
+        form = page.forms["group_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertIn(field, form.fields)
+
+    def test_should_not_show_all_fields_to_staff_admins_for_add(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        page = self.app.get("/admin/groupmanagement/group/add/")
+        # when
+        form = page.forms["group_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertNotIn(field, form.fields)
+
+    def test_should_show_all_fields_to_superuser_for_change(self):
+        # given
+        self.app.set_user(self.super_admin)
+        group = Group.objects.create(name="Dummy group")
+        page = self.app.get(f"/admin/groupmanagement/group/{group.pk}/change/")
+        # when
+        form = page.forms["group_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertIn(field, form.fields)
+
+    def test_should_not_show_all_fields_to_staff_admin_for_change(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        group = Group.objects.create(name="Dummy group")
+        page = self.app.get(f"/admin/groupmanagement/group/{group.pk}/change/")
+        # when
+        form = page.forms["group_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertNotIn(field, form.fields)
 
 
 class TestReservedGroupNameAdmin(TestCase):

@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 from urllib.parse import quote
 from unittest.mock import patch, MagicMock
 
+from django_webtest import WebTest
+
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import Group
 from django.test import TestCase, RequestFactory, Client
@@ -276,10 +278,10 @@ class TestOwnershipRecordAdmin(TestCaseWithTestData):
 class TestStateAdmin(TestCaseWithTestData):
     fixtures = ["disable_analytics"]
 
-    def setUp(self):
-        self.modeladmin = StateAdmin(
-            model=User, admin_site=AdminSite()
-        )
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.modeladmin = StateAdmin(model=User, admin_site=AdminSite())
 
     def test_change_view_loads_normally(self):
         User.objects.create_superuser(
@@ -543,7 +545,74 @@ class TestUserAdmin(TestCaseWithTestData):
         self.assertEqual(response.status_code, expected)
 
 
+class TestStateAdminChangeFormSuperuserExclusiveEdits(WebTest):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.super_admin = User.objects.create_superuser("super_admin")
+        cls.staff_admin = User.objects.create_user("staff_admin")
+        cls.staff_admin.is_staff = True
+        cls.staff_admin.save()
+        cls.staff_admin = AuthUtils.add_permissions_to_user_by_name(
+            [
+                "authentication.add_state",
+                "authentication.change_state",
+                "authentication.view_state",
+            ],
+            cls.staff_admin
+        )
+        cls.superuser_exclusive_fields = ["permissions",]
+
+    def test_should_show_all_fields_to_superuser_for_add(self):
+        # given
+        self.app.set_user(self.super_admin)
+        page = self.app.get("/admin/authentication/state/add/")
+        # when
+        form = page.forms["state_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertIn(field, form.fields)
+
+    def test_should_not_show_all_fields_to_staff_admins_for_add(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        page = self.app.get("/admin/authentication/state/add/")
+        # when
+        form = page.forms["state_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertNotIn(field, form.fields)
+
+    def test_should_show_all_fields_to_superuser_for_change(self):
+        # given
+        self.app.set_user(self.super_admin)
+        state = AuthUtils.get_member_state()
+        page = self.app.get(f"/admin/authentication/state/{state.pk}/change/")
+        # when
+        form = page.forms["state_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertIn(field, form.fields)
+
+    def test_should_not_show_all_fields_to_staff_admin_for_change(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        state = AuthUtils.get_member_state()
+        page = self.app.get(f"/admin/authentication/state/{state.pk}/change/")
+        # when
+        form = page.forms["state_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertNotIn(field, form.fields)
+
+
 class TestUserAdminChangeForm(TestCase):
+    fixtures = ["disable_analytics"]
+
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
@@ -552,7 +621,7 @@ class TestUserAdminChangeForm(TestCase):
     def test_should_show_groups_available_to_user_with_blue_state_only(self):
         # given
         superuser = User.objects.create_superuser("Super")
-        user = AuthUtils.create_user("Bruce Wayne")
+        user = AuthUtils.create_user("bruce_wayne")
         character = AuthUtils.add_main_character_2(
             user,
             name="Bruce Wayne",
@@ -577,6 +646,126 @@ class TestUserAdminChangeForm(TestCase):
         groups_select = soup.find("select", {"id": "id_groups"}).find_all('option')
         group_ids = {int(option["value"]) for option in groups_select}
         self.assertSetEqual(group_ids, {group_1.pk, group_2.pk})
+
+
+class TestUserAdminChangeFormSuperuserExclusiveEdits(WebTest):
+    fixtures = ["disable_analytics"]
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.super_admin = User.objects.create_superuser("super_admin")
+        cls.staff_admin = User.objects.create_user("staff_admin")
+        cls.staff_admin.is_staff = True
+        cls.staff_admin.save()
+        cls.staff_admin = AuthUtils.add_permissions_to_user_by_name(
+            [
+                "auth.change_user",
+                "auth.view_user",
+                "authentication.change_user",
+                "authentication.change_userprofile",
+                "authentication.view_user"
+            ],
+            cls.staff_admin
+        )
+        cls.superuser_exclusive_fields = [
+            "is_staff", "is_superuser", "user_permissions"
+        ]
+
+    def setUp(self) -> None:
+        self.user = AuthUtils.create_user("bruce_wayne")
+
+    def test_should_show_all_fields_to_superuser_for_change(self):
+        # given
+        self.app.set_user(self.super_admin)
+
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        # when
+        form = page.forms["user_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertIn(field, form.fields)
+
+    def test_should_not_show_all_fields_to_staff_admin_for_change(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        # when
+        form = page.forms["user_form"]
+        # then
+        for field in self.superuser_exclusive_fields:
+            with self.subTest(field=field):
+                self.assertNotIn(field, form.fields)
+
+    def test_should_allow_super_admin_to_add_restricted_group_to_user(self):
+        # given
+        self.app.set_user(self.super_admin)
+        group_restricted = Group.objects.create(name="restricted group")
+        group_restricted.authgroup.restricted = True
+        group_restricted.authgroup.save()
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        form = page.forms["user_form"]
+        # when
+        form["groups"].select_multiple(texts=["restricted group"])
+        response = form.submit("save")
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertIn(
+            "restricted group", self.user.groups.values_list("name", flat=True)
+        )
+
+    def test_should_not_allow_staff_admin_to_add_restricted_group_to_user(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        group_restricted = Group.objects.create(name="restricted group")
+        group_restricted.authgroup.restricted = True
+        group_restricted.authgroup.save()
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        form = page.forms["user_form"]
+        # when
+        form["groups"].select_multiple(texts=["restricted group"])
+        response = form.submit("save")
+        # then
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "You are not allowed to add or remove these restricted groups",
+            response.text
+        )
+
+    def test_should_not_allow_staff_admin_to_remove_restricted_group_from_user(self):
+        # given
+        self.app.set_user(self.staff_admin)
+        group_restricted = Group.objects.create(name="restricted group")
+        group_restricted.authgroup.restricted = True
+        group_restricted.authgroup.save()
+        self.user.groups.add(group_restricted)
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        form = page.forms["user_form"]
+        # when
+        form["groups"].select_multiple(texts=[])
+        response = form.submit("save")
+        # then
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "You are not allowed to add or remove these restricted groups",
+            response.text
+        )
+
+    def test_should_allow_staff_admin_to_add_normal_group_to_user(self):
+        # given
+        self.app.set_user(self.super_admin)
+        Group.objects.create(name="normal group")
+        page = self.app.get(f"/admin/authentication/user/{self.user.pk}/change/")
+        form = page.forms["user_form"]
+        # when
+        form["groups"].select_multiple(texts=["normal group"])
+        response = form.submit("save")
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.user.refresh_from_db()
+        self.assertIn("normal group", self.user.groups.values_list("name", flat=True))
 
 
 class TestMakeServicesHooksActions(TestCaseWithTestData):
