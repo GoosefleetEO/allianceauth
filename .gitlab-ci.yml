@@ -54,7 +54,9 @@ test-3.7-core:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.8-core:
   <<: *only-default
@@ -113,7 +115,9 @@ test-3.7-all:
   artifacts:
     when: always
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
 
 test-3.8-all:
   <<: *only-default
