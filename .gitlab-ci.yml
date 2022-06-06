@@ -168,6 +168,12 @@ test-3.11-all:
         path: coverage.xml
   allow_failure: true
 
+test-docs:
+  <<: *only-default
+  image: python:3.9-bullseye
+  script:
+  - tox -e docs
+
 deploy_production:
   stage: deploy
   image: python:3.10-bullseye
