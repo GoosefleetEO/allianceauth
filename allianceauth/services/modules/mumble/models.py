@@ -62,6 +62,12 @@ class MumbleManager(models.Manager):
 
 
 class MumbleUser(AbstractServiceModel):
+    user = models.OneToOneField(
+        'auth.User',
+        primary_key=True,
+        on_delete=models.CASCADE,
+        related_name='mumble'
+    )
     username = models.CharField(max_length=254, unique=True)
     pwhash = models.CharField(max_length=90)
     hashfn = models.CharField(max_length=20, default='sha1')
