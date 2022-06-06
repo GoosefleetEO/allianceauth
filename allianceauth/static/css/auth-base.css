@@ -1,3 +1,7 @@
+body {
+    margin-bottom: 32px;
+}
+
 .gray-icon-color .fa {
     color: #505050;
 }
