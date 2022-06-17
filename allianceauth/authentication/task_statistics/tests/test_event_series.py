@@ -1,13 +1,48 @@
 import datetime as dt
+from unittest.mock import patch
 
 from pytz import utc
+from redis import RedisError
+
 from django.test import TestCase
 from django.utils.timezone import now
 
-from allianceauth.authentication.task_statistics.event_series import EventSeries
+from allianceauth.authentication.task_statistics.event_series import (
+    EventSeries,
+    _RedisStub,
+)
+
+MODULE_PATH = "allianceauth.authentication.task_statistics.event_series"
 
 
 class TestEventSeries(TestCase):
+    def test_should_abort_without_redis_client(self):
+        # when
+        with patch(MODULE_PATH + ".cache.get_master_client") as mock:
+            mock.return_value = None
+            events = EventSeries("dummy")
+        # then
+        self.assertTrue(events._redis, _RedisStub)
+        self.assertTrue(events.is_disabled)
+
+    def test_should_disable_itself_if_redis_not_available_1(self):
+        # when
+        with patch(MODULE_PATH + ".cache.get_master_client") as mock_get_master_client:
+            mock_get_master_client.return_value.ping.side_effect = RedisError
+            events = EventSeries("dummy")
+        # then
+        self.assertIsInstance(events._redis, _RedisStub)
+        self.assertTrue(events.is_disabled)
+
+    def test_should_disable_itself_if_redis_not_available_2(self):
+        # when
+        with patch(MODULE_PATH + ".cache.get_master_client") as mock_get_master_client:
+            mock_get_master_client.return_value.ping.return_value = False
+            events = EventSeries("dummy")
+        # then
+        self.assertIsInstance(events._redis, _RedisStub)
+        self.assertTrue(events.is_disabled)
+
     def test_should_add_event(self):
         # given
         events = EventSeries("dummy")
