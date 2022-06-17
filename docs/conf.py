@@ -60,7 +60,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Alliance Auth'
-copyright = '2018-2020, Alliance Auth'
+copyright = '2018-2022, Alliance Auth'
 author = 'R4stl1n'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -111,6 +111,7 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = ["css/rtd_dark.css"]
 
 
 # -- Options for HTMLHelp output ------------------------------------------
