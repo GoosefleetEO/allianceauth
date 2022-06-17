@@ -5,16 +5,16 @@
     - merge_requests
 
 stages:
-- pre-commit
-- gitlab
-- test
-- deploy
-- docker
+  - pre-commit
+  - gitlab
+  - test
+  - deploy
+  - docker
 
 include:
-- template: Dependency-Scanning.gitlab-ci.yml
-- template: Security/SAST.gitlab-ci.yml
-- template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
 
 before_script:
   - apt-get update && apt-get install redis-server -y
@@ -42,16 +42,16 @@ sast:
 dependency_scanning:
   stage: gitlab
   before_script:
-  - apt-get update && apt-get install redis-server libmariadb-dev -y
-  - redis-server --daemonize yes
-  - python -V
-  - pip install wheel tox
+    - apt-get update && apt-get install redis-server libmariadb-dev -y
+    - redis-server --daemonize yes
+    - python -V
+    - pip install wheel tox
 
 test-3.8-core:
   <<: *only-default
   image: python:3.8-bullseye
   script:
-  - tox -e py38-core
+    - tox -e py38-core
   artifacts:
     when: always
     reports:
@@ -63,7 +63,7 @@ test-3.9-core:
   <<: *only-default
   image: python:3.9-bullseye
   script:
-  - tox -e py39-core
+    - tox -e py39-core
   artifacts:
     when: always
     reports:
@@ -75,7 +75,7 @@ test-3.10-core:
   <<: *only-default
   image: python:3.10-bullseye
   script:
-  - tox -e py310-core
+    - tox -e py310-core
   artifacts:
     when: always
     reports:
@@ -87,7 +87,7 @@ test-3.11-core:
   <<: *only-default
   image: python:3.11-rc-bullseye
   script:
-  - tox -e py311-core
+    - tox -e py311-core
   artifacts:
     when: always
     reports:
@@ -100,7 +100,7 @@ test-3.8-all:
   <<: *only-default
   image: python:3.8-bullseye
   script:
-  - tox -e py38-all
+    - tox -e py38-all
   artifacts:
     when: always
     reports:
@@ -112,7 +112,7 @@ test-3.9-all:
   <<: *only-default
   image: python:3.9-bullseye
   script:
-  - tox -e py39-all
+    - tox -e py39-all
   artifacts:
     when: always
     reports:
@@ -124,7 +124,7 @@ test-3.10-all:
   <<: *only-default
   image: python:3.10-bullseye
   script:
-  - tox -e py310-all
+    - tox -e py310-all
   artifacts:
     when: always
     reports:
@@ -136,7 +136,7 @@ test-3.11-all:
   <<: *only-default
   image: python:3.11-rc-bullseye
   script:
-  - tox -e py311-all
+    - tox -e py311-all
   artifacts:
     when: always
     reports:
@@ -144,6 +144,25 @@ test-3.11-all:
         coverage_format: cobertura
         path: coverage.xml
   allow_failure: true
+
+build-test:
+  stage: test
+  image: python:3.10-bullseye
+
+  before_script:
+    - python -m pip install --upgrade pip
+    - python -m pip install --upgrade build
+    - python -m pip install --upgrade setuptools wheel
+
+  script:
+    - python -m build
+
+  artifacts:
+    when: always
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+    paths:
+      - dist/*
+    expire_in: 1 year
 
 deploy_production:
   stage: deploy
