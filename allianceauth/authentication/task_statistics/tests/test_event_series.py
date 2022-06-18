@@ -18,7 +18,7 @@ MODULE_PATH = "allianceauth.authentication.task_statistics.event_series"
 class TestEventSeries(TestCase):
     def test_should_abort_without_redis_client(self):
         # when
-        with patch(MODULE_PATH + ".cache.get_master_client") as mock:
+        with patch(MODULE_PATH + ".get_redis_connection") as mock:
             mock.return_value = None
             events = EventSeries("dummy")
         # then
@@ -27,8 +27,8 @@ class TestEventSeries(TestCase):
 
     def test_should_disable_itself_if_redis_not_available_1(self):
         # when
-        with patch(MODULE_PATH + ".cache.get_master_client") as mock_get_master_client:
-            mock_get_master_client.return_value.ping.side_effect = RedisError
+        with patch(MODULE_PATH + ".get_redis_connection") as mock_get_redis_connection:
+            mock_get_redis_connection.return_value.ping.side_effect = RedisError
             events = EventSeries("dummy")
         # then
         self.assertIsInstance(events._redis, _RedisStub)
@@ -36,8 +36,8 @@ class TestEventSeries(TestCase):
 
     def test_should_disable_itself_if_redis_not_available_2(self):
         # when
-        with patch(MODULE_PATH + ".cache.get_master_client") as mock_get_master_client:
-            mock_get_master_client.return_value.ping.return_value = False
+        with patch(MODULE_PATH + ".get_redis_connection") as mock_get_redis_connection:
+            mock_get_redis_connection.return_value.ping.return_value = False
             events = EventSeries("dummy")
         # then
         self.assertIsInstance(events._redis, _RedisStub)
