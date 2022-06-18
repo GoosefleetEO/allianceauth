@@ -212,7 +212,14 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
     start_of_previous_month = first_day_of_previous_month(year, month)
 
     if request.user.has_perm('auth.fleetactivitytracking_statistics') and char_id:
-        user = EveCharacter.objects.get(character_id=char_id).user
+        try:
+            user = EveCharacter.objects.get(character_id=char_id).character_ownership.user
+        except EveCharacter.DoesNotExist:
+            messages.error(request, _('Character does not exist'))
+            return redirect('fatlink:view')
+        except AttributeError:
+            messages.error(request, _('User does not exist'))
+            return redirect('fatlink:view')
     else:
         user = request.user
     logger.debug(f"Personal monthly statistics view for user {user} called by {request.user}")

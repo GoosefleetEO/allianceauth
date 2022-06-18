@@ -1,15 +1,27 @@
-=============
-Template Tags
-=============
+=======================
+Template tags & filters
+=======================
 
-The following template tags are available to be used by all apps. To use them just load the respeetive template tag in your template like so:
+The following template tags and filters are available to be used by all apps. To use them just load them into your template like so:
 
-.. code-block:: html
+.. code-block:: html+django
 
     {% load evelinks %}
 
+
+Template Filters
+================
+
 evelinks
-========
+--------
+
+Example for using an evelinks filter to render an alliance logo:
+
+
+.. code-block:: html+django
+
+    <img src="{{ alliance_id|alliance_logo_url }}">
+
 
 .. automodule:: allianceauth.eveonline.templatetags.evelinks
     :members:

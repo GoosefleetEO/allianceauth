@@ -1,8 +1,8 @@
 from django.apps import apps
 from django.contrib import admin
-from django.contrib.auth.models import Group as BaseGroup
-from django.contrib.auth.models import Permission, User
-from django.db.models import Count
+
+from django.contrib.auth.models import Group as BaseGroup, Permission, User
+from django.db.models import Count, Exists, OuterRef
 from django.db.models.functions import Lower
 from django.db.models.signals import (
     m2m_changed,
@@ -15,6 +15,7 @@ from django.dispatch import receiver
 
 from .forms import GroupAdminForm, ReservedGroupNameAdminForm
 from .models import AuthGroup, GroupRequest, ReservedGroupName
+from .tasks import remove_users_not_matching_states_from_group
 
 if 'eve_autogroups' in apps.app_configs:
     _has_auto_groups = True
@@ -106,14 +107,13 @@ class HasLeaderFilter(admin.SimpleListFilter):
 
 class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
-    list_select_related = ('authgroup',)
     ordering = ('name',)
     list_display = (
         'name',
         '_description',
         '_properties',
         '_member_count',
-        'has_leader'
+        'has_leader',
     )
     list_filter = [
         'authgroup__internal',
@@ -129,31 +129,51 @@ class GroupAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if _has_auto_groups:
-            qs = qs.prefetch_related('managedalliancegroup_set', 'managedcorpgroup_set')
-        qs = qs.prefetch_related('authgroup__group_leaders').select_related('authgroup')
-        qs = qs.annotate(
-            member_count=Count('user', distinct=True),
+        has_leader_qs = (
+            AuthGroup.objects.filter(group=OuterRef('pk'), group_leaders__isnull=False)
         )
+        has_leader_groups_qs = (
+            AuthGroup.objects.filter(
+                group=OuterRef('pk'), group_leader_groups__isnull=False
+            )
+        )
+        qs = (
+            qs.select_related('authgroup')
+            .annotate(member_count=Count('user', distinct=True))
+            .annotate(has_leader=Exists(has_leader_qs))
+            .annotate(has_leader_groups=Exists(has_leader_groups_qs))
+        )
+        if _has_auto_groups:
+            is_autogroup_corp = (
+                Group.objects.filter(
+                    pk=OuterRef('pk'), managedcorpgroup__isnull=False
+                )
+            )
+            is_autogroup_alliance = (
+                Group.objects.filter(
+                    pk=OuterRef('pk'), managedalliancegroup__isnull=False
+                )
+            )
+            qs = (
+                qs.annotate(is_autogroup_corp=Exists(is_autogroup_corp))
+                .annotate(is_autogroup_alliance=Exists(is_autogroup_alliance))
+            )
         return qs
 
     def _description(self, obj):
         return obj.authgroup.description
 
-    @admin.display(description="Members", ordering="member_count")
+    @admin.display(description='Members', ordering='member_count')
     def _member_count(self, obj):
         return obj.member_count
 
     @admin.display(boolean=True)
     def has_leader(self, obj):
-        return obj.authgroup.group_leaders.exists() or obj.authgroup.group_leader_groups.exists()
+        return obj.has_leader or obj.has_leader_groups
 
     def _properties(self, obj):
         properties = list()
-        if _has_auto_groups and (
-            obj.managedalliancegroup_set.exists()
-            or obj.managedcorpgroup_set.exists()
-        ):
+        if _has_auto_groups and (obj.is_autogroup_corp or obj.is_autogroup_alliance):
             properties.append('Auto Group')
         elif obj.authgroup.internal:
             properties.append('Internal')
@@ -183,6 +203,8 @@ class GroupAdmin(admin.ModelAdmin):
             ag_instance = inline_form.save(commit=False)
             ag_instance.group = form.instance
             ag_instance.save()
+            if ag_instance.states.exists():
+                remove_users_not_matching_states_from_group.delay(ag_instance.group.pk)
         formset.save()
 
     def get_readonly_fields(self, request, obj=None):

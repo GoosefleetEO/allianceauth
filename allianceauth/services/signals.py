@@ -1,4 +1,5 @@
 import logging
+from functools import partial
 
 from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import ObjectDoesNotExist
@@ -8,7 +9,7 @@ from django.db.models.signals import pre_delete
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from .hooks import ServicesHook
-from .tasks import disable_user
+from .tasks import disable_user, update_groups_for_user
 
 from allianceauth.authentication.models import State, UserProfile
 from allianceauth.authentication.signals import state_changed
@@ -19,21 +20,27 @@ logger = logging.getLogger(__name__)
 
 @receiver(m2m_changed, sender=User.groups.through)
 def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
-    logger.debug(f"Received m2m_changed from {instance} groups with action {action}")
-
-    def trigger_service_group_update():
-        logger.debug("Triggering service group update for %s" % instance)
-        # Iterate through Service hooks
-        for svc in ServicesHook.get_services():
-            try:
-                svc.validate_user(instance)
-                svc.update_groups(instance)
-            except:
-                logger.exception(f'Exception running update_groups for services module {svc} on user {instance}')
-
-    if instance.pk and (action == "post_add" or action == "post_remove" or action == "post_clear"):
-        logger.debug("Waiting for commit to trigger service group update for %s" % instance)
-        transaction.on_commit(trigger_service_group_update)
+    logger.debug(
+        "%s: Received m2m_changed from groups with action %s", instance, action
+    )
+    if instance.pk and (
+        action == "post_add" or action == "post_remove" or action == "post_clear"
+    ):
+        if isinstance(instance, User):
+            logger.debug(
+                "Waiting for commit to trigger service group update for %s", instance
+            )
+            transaction.on_commit(partial(update_groups_for_user.delay, instance.pk))
+        elif (
+            isinstance(instance, Group)
+            and kwargs.get("model") is User
+            and "pk_set" in kwargs
+        ):
+            for user_pk in kwargs["pk_set"]:
+                logger.debug(
+                    "%s: Waiting for commit to trigger service group update for user", user_pk
+                )
+                transaction.on_commit(partial(update_groups_for_user.delay, user_pk))
 
 
 @receiver(m2m_changed, sender=User.user_permissions.through)

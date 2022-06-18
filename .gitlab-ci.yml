@@ -164,6 +164,12 @@ build-test:
       - dist/*
     expire_in: 1 year
 
+test-docs:
+  <<: *only-default
+  image: python:3.10-bullseye
+  script:
+  - tox -e docs
+
 deploy_production:
   stage: deploy
   image: python:3.10-bullseye

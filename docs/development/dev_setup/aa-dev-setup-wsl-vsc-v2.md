@@ -150,12 +150,14 @@ sudo redis-server --daemonize yes
 
 ```eval_rst
 .. note::
-    WSL does not have an init.d service, so it will not automatically start your services such as MySQL and Redis when you boot your Windows machine. For convenience we recommend putting the commands for starting these services in a bash script. Here is an example: ::
+    WSL does not have an init.d service, so it will not automatically start your services such as MySQL and Redis when you boot your Windows machine. For convenience we recommend putting the commands for starting these services in a bash script. Here is an example:
 
-    #/bin/bash
-    # start services for AA dev
-    sudo service mysql start
-    sudo redis-server --daemonize yes
+    ::
+
+        #/bin/bash
+        # start services for AA dev
+        sudo service mysql start
+        sudo redis-server --daemonize yes
 
     In addition it is possible to configure Windows to automatically start WSL services, but that procedure goes beyond the scopes of this guide.
 ```
