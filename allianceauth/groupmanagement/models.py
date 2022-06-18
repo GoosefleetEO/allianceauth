@@ -189,6 +189,15 @@ class AuthGroup(models.Model):
             | User.objects.filter(groups__in=list(self.group_leader_groups.all()))
         )
 
+    def remove_users_not_matching_states(self):
+        """Remove users not matching defined states from related group."""
+        states_qs = self.states.all()
+        if states_qs.exists():
+            states = list(states_qs)
+            non_compliant_users = self.group.user_set.exclude(profile__state__in=states)
+            for user in non_compliant_users:
+                self.group.user_set.remove(user)
+
 
 class ReservedGroupName(models.Model):
     """Name that can not be used for groups.

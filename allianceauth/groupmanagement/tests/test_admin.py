@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
-from django.test import TestCase, RequestFactory, Client
+from django.test import TestCase, RequestFactory, Client, override_settings
 
 from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
@@ -236,60 +236,104 @@ class TestGroupAdmin(TestCase):
         self.assertEqual(result, expected)
 
     def test_member_count(self):
-        expected = 1
-        obj = self.modeladmin.get_queryset(MockRequest(user=self.user_1))\
-            .get(pk=self.group_1.pk)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_1.pk)
+        # when
         result = self.modeladmin._member_count(obj)
-        self.assertEqual(result, expected)
+        # then
+        self.assertEqual(result, 1)
 
     def test_has_leader_user(self):
-        result = self.modeladmin.has_leader(self.group_1)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_1.pk)
+        # when
+        result = self.modeladmin.has_leader(obj)
+        # then
         self.assertTrue(result)
 
     def test_has_leader_group(self):
-        result = self.modeladmin.has_leader(self.group_2)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_2.pk)
+        # when
+        result = self.modeladmin.has_leader(obj)
+        # then
         self.assertTrue(result)
 
     def test_properties_1(self):
-        expected = ['Default']
-        result = self.modeladmin._properties(self.group_1)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_1.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Default'])
 
     def test_properties_2(self):
-        expected = ['Internal']
-        result = self.modeladmin._properties(self.group_2)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_2.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Internal'])
 
     def test_properties_3(self):
-        expected = ['Hidden']
-        result = self.modeladmin._properties(self.group_3)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_3.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Hidden'])
 
     def test_properties_4(self):
-        expected = ['Open']
-        result = self.modeladmin._properties(self.group_4)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_4.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Open'])
 
     def test_properties_5(self):
-        expected = ['Public']
-        result = self.modeladmin._properties(self.group_5)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_5.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Public'])
 
     def test_properties_6(self):
-        expected = ['Hidden', 'Open', 'Public']
-        result = self.modeladmin._properties(self.group_6)
-        self.assertListEqual(result, expected)
+        # given
+        request = MockRequest(user=self.user_1)
+        obj = self.modeladmin.get_queryset(request).get(pk=self.group_6.pk)
+        # when
+        result = self.modeladmin._properties(obj)
+        self.assertListEqual(result, ['Hidden', 'Open', 'Public'])
 
     if _has_auto_groups:
         @patch(MODULE_PATH + '._has_auto_groups', True)
-        def test_properties_7(self):
+        def test_should_show_autogroup_for_corporation(self):
+            # given
             self._create_autogroups()
-            expected = ['Auto Group']
-            my_group = Group.objects\
-                .filter(managedcorpgroup__isnull=False)\
-                .first()
-            result = self.modeladmin._properties(my_group)
-            self.assertListEqual(result, expected)
+            request = MockRequest(user=self.user_1)
+            queryset = self.modeladmin.get_queryset(request)
+            obj = queryset.filter(managedcorpgroup__isnull=False).first()
+            # when
+            result = self.modeladmin._properties(obj)
+            # then
+            self.assertListEqual(result, ['Auto Group'])
+
+        @patch(MODULE_PATH + '._has_auto_groups', True)
+        def test_should_show_autogroup_for_alliance(self):
+            # given
+            self._create_autogroups()
+            request = MockRequest(user=self.user_1)
+            queryset = self.modeladmin.get_queryset(request)
+            obj = queryset.filter(managedalliancegroup__isnull=False).first()
+            # when
+            result = self.modeladmin._properties(obj)
+            # then
+            self.assertListEqual(result, ['Auto Group'])
 
     # actions
 
@@ -537,6 +581,68 @@ class TestGroupAdminChangeFormSuperuserExclusiveEdits(WebTest):
         for field in self.superuser_exclusive_fields:
             with self.subTest(field=field):
                 self.assertNotIn(field, form.fields)
+
+
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
+class TestGroupAdmin2(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.superuser = User.objects.create_superuser("super")
+
+    def test_should_remove_users_from_state_groups(self):
+        # given
+        user_member = AuthUtils.create_user("Bruce Wayne")
+        character_member = AuthUtils.add_main_character_2(
+            user_member,
+            name="Bruce Wayne",
+            character_id=1001,
+            corp_id=2001,
+            corp_name="Wayne Technologies",
+        )
+        user_guest = AuthUtils.create_user("Lex Luthor")
+        AuthUtils.add_main_character_2(
+            user_guest,
+            name="Lex Luthor",
+            character_id=1011,
+            corp_id=2011,
+            corp_name="Luthor Corp",
+        )
+        member_state = AuthUtils.get_member_state()
+        member_state.member_characters.add(character_member)
+        user_member.refresh_from_db()
+        user_guest.refresh_from_db()
+        group = Group.objects.create(name="dummy")
+        user_member.groups.add(group)
+        user_guest.groups.add(group)
+        group.authgroup.states.add(member_state)
+        self.client.force_login(self.superuser)
+        # when
+        response = self.client.post(
+            f"/admin/groupmanagement/group/{group.pk}/change/",
+            data={
+                "name": f"{group.name}",
+                "authgroup-TOTAL_FORMS": "1",
+                "authgroup-INITIAL_FORMS": "1",
+                "authgroup-MIN_NUM_FORMS": "0",
+                "authgroup-MAX_NUM_FORMS": "1",
+                "authgroup-0-description": "",
+                "authgroup-0-states": f"{member_state.pk}",
+                "authgroup-0-internal": "on",
+                "authgroup-0-hidden": "on",
+                "authgroup-0-group": f"{group.pk}",
+                "authgroup-__prefix__-description": "",
+                "authgroup-__prefix__-internal": "on",
+                "authgroup-__prefix__-hidden": "on",
+                "authgroup-__prefix__-group": f"{group.pk}",
+                "_save": "Save"
+            }
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/group/")
+        self.assertIn(group, user_member.groups.all())
+        self.assertNotIn(group, user_guest.groups.all())
 
 
 class TestReservedGroupNameAdmin(TestCase):

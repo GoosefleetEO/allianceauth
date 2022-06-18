@@ -232,6 +232,38 @@ class TestAuthGroup(TestCase):
         expected = 'Superheros'
         self.assertEqual(str(group.authgroup), expected)
 
+    def test_should_remove_guests_from_group_when_restricted_to_members_only(self):
+        # given
+        user_member = AuthUtils.create_user("Bruce Wayne")
+        character_member = AuthUtils.add_main_character_2(
+            user_member,
+            name="Bruce Wayne",
+            character_id=1001,
+            corp_id=2001,
+            corp_name="Wayne Technologies",
+        )
+        user_guest = AuthUtils.create_user("Lex Luthor")
+        AuthUtils.add_main_character_2(
+            user_guest,
+            name="Lex Luthor",
+            character_id=1011,
+            corp_id=2011,
+            corp_name="Luthor Corp",
+        )
+        member_state = AuthUtils.get_member_state()
+        member_state.member_characters.add(character_member)
+        user_member.refresh_from_db()
+        user_guest.refresh_from_db()
+        group = Group.objects.create(name="dummy")
+        user_member.groups.add(group)
+        user_guest.groups.add(group)
+        group.authgroup.states.add(member_state)
+        # when
+        group.authgroup.remove_users_not_matching_states()
+        # then
+        self.assertIn(group, user_member.groups.all())
+        self.assertNotIn(group, user_guest.groups.all())
+
 
 class TestAuthGroupRequestApprovers(TestCase):
     def setUp(self) -> None:
