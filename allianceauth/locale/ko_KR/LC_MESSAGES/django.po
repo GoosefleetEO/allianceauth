@@ -9,6 +9,7 @@
 # Olgeda Choi <undead.choi@gmail.com>, 2020
 # Lahty <js03js70@gmail.com>, 2020
 # Joel Falknau <ozirascal@gmail.com>, 2020
+# ThatRagingKid, 2022
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-29 01:03+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Joel Falknau <ozirascal@gmail.com>, 2020\n"
+"Last-Translator: ThatRagingKid, 2022\n"
 "Language-Team: Korean (Korea) (https://www.transifex.com/alliance-auth/teams/107430/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,15 +28,15 @@ msgstr ""
 
 #: allianceauth/analytics/models.py:29
 msgid "Google Analytics Universal"
-msgstr ""
+msgstr "구글 애널리틱스 유니버설"
 
 #: allianceauth/analytics/models.py:30
 msgid "Google Analytics V4"
-msgstr ""
+msgstr "구글 애널리틱스 V4"
 
 #: allianceauth/authentication/decorators.py:37
 msgid "A main character is required to perform that action. Add one below."
-msgstr "해당 기능을 수행하려면 주 캐릭터가 요구됨. 아래에 하나를 추가하시오."
+msgstr "해당 기능을 수행하려면 주 캐릭터가 요구됨. 아래에서 하나를 추가하시오."
 
 #: allianceauth/authentication/forms.py:5
 msgid "Email"
@@ -65,7 +66,7 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                메인 캐릭터 (상태: %(state)s)\n"
+"                                주 캐릭터 (상태: %(state)s)\n"
 "                            "
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:102
@@ -103,7 +104,7 @@ msgstr "이름"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 #: allianceauth/hrapplications/templates/hrapplications/view.html:46
 msgid "Corp"
-msgstr "콥"
+msgstr "코퍼레이션"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:152
 #: allianceauth/corputils/templates/corputils/corpstats.html:76
@@ -118,7 +119,7 @@ msgstr "로그인"
 
 #: allianceauth/authentication/templates/public/register.html:7
 msgid "Registration"
-msgstr ""
+msgstr "가입"
 
 #: allianceauth/authentication/templates/public/register.html:22
 #: allianceauth/authentication/templates/registration/registration_form.html:5
@@ -137,7 +138,7 @@ msgstr "계정 패스워드 리셋을 요청하여 이 이메일을 보내드립
 
 #: allianceauth/authentication/templates/registration/password_reset_email.html:5
 msgid "Please go to the following page and choose a new password:"
-msgstr "다음 페이지로 이동하여 새로운 패스워드를 입력하세요."
+msgstr "다음 페이지로 이동하여 새로운 패스워드를 입력하세요:"
 
 #: allianceauth/authentication/templates/registration/password_reset_email.html:9
 msgid "Your username, in case you've forgotten:"
@@ -176,7 +177,7 @@ msgstr "계정에 %(name)s를 추가했습니다."
 #: allianceauth/authentication/views.py:94
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
-msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 추가된 계정입니다."
+msgstr "계정에 %(name)s를 추가하지 못했습니다. 이미 다른 계정에 추가되었습니다."
 
 #: allianceauth/authentication/views.py:133
 msgid "Unable to authenticate as the selected character."
@@ -184,7 +185,7 @@ msgstr "선택한 캐릭터로 인증을 수행할 수 없음"
 
 #: allianceauth/authentication/views.py:197
 msgid "Registration token has expired."
-msgstr "등록토큰 만료"
+msgstr "가입 토큰이 만료되었습니다."
 
 #: allianceauth/authentication/views.py:252
 msgid ""
@@ -202,16 +203,16 @@ msgstr "현재 새로운 계정 등록은 받지않습니다."
 
 #: allianceauth/corputils/auth_hooks.py:11
 msgid "Corporation Stats"
-msgstr "콥 상태"
+msgstr "코퍼레이션 상태"
 
 #: allianceauth/corputils/templates/corputils/base.html:3
 #: allianceauth/corputils/templates/corputils/base.html:6
 msgid "Corporation Member Data"
-msgstr "콥 멤버 데이터"
+msgstr "코퍼레이션 멤버 정보"
 
 #: allianceauth/corputils/templates/corputils/base.html:12
 msgid "Corporations"
-msgstr "콥"
+msgstr "코퍼레이션"
 
 #: allianceauth/corputils/templates/corputils/base.html:23
 msgid "Add"
@@ -219,7 +220,7 @@ msgstr "추가"
 
 #: allianceauth/corputils/templates/corputils/base.html:29
 msgid "Search all corporations..."
-msgstr "모든 콥 검색"
+msgstr "모든 코퍼레이션 검색"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:33
 msgid "Mains"
@@ -237,7 +238,7 @@ msgstr "미등록"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:38
 msgid "Last update:"
-msgstr "마지막 업데이트"
+msgstr "마지막 업데이트:"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:74
 #: allianceauth/corputils/templates/corputils/corpstats.html:112
@@ -260,7 +261,7 @@ msgstr "캐릭터"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:126
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:26
 msgid "Corporation"
-msgstr "콥"
+msgstr "코퍼레이션"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:91
 #: allianceauth/corputils/templates/corputils/corpstats.html:125
@@ -268,7 +269,7 @@ msgstr "콥"
 #: allianceauth/corputils/templates/corputils/corpstats.html:167
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
-msgstr "킬보드"
+msgstr "사살권"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:114
 #: allianceauth/corputils/templates/corputils/search.html:16
@@ -283,12 +284,12 @@ msgstr "주 캐릭터"
 #: allianceauth/corputils/templates/corputils/corpstats.html:115
 #: allianceauth/corputils/templates/corputils/search.html:17
 msgid "Main Corporation"
-msgstr "메인콥"
+msgstr "주 코퍼레이션"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:116
 #: allianceauth/corputils/templates/corputils/search.html:18
 msgid "Main Alliance"
-msgstr "메인 얼라이언스"
+msgstr "주 얼라이언스"
 
 #: allianceauth/corputils/templates/corputils/search.html:6
 msgid "Search Results"
@@ -296,28 +297,28 @@ msgstr "검색결과"
 
 #: allianceauth/corputils/templates/corputils/search.html:15
 msgid "zKillboard"
-msgstr "킬보드"
+msgstr "zKillboard"
 
 #: allianceauth/corputils/views.py:54
 msgid "Selected corp already has a statistics module."
-msgstr "선택한 콥은 이미 통계 모듈을 갖고있습니다."
+msgstr "선택한 코퍼레이션은 이미 통계 모듈을 갖고 있습니다."
 
 #: allianceauth/corputils/views.py:56
 msgid "Failed to gather corporation statistics with selected token."
-msgstr "선택한 토큰으로 콥 통계 수집 실패"
+msgstr "선택한 토큰으로 코퍼레이션 통계 수집에 실패했습니다."
 
 #: allianceauth/fleetactivitytracking/auth_hooks.py:9
 msgid "Fleet Activity Tracking"
-msgstr "플릿활동 추적"
+msgstr "함대 활동"
 
 #: allianceauth/fleetactivitytracking/forms.py:6 allianceauth/srp/form.py:8
 #: allianceauth/srp/templates/srp/management.html:37
 msgid "Fleet Name"
-msgstr "플릿 이름"
+msgstr "함대 이름"
 
 #: allianceauth/fleetactivitytracking/forms.py:7
 msgid "Duration of fat-link"
-msgstr "플릿활동추적 링크 주기"
+msgstr "함대 활동 링크 주기"
 
 #: allianceauth/fleetactivitytracking/forms.py:7
 msgid "minutes"
@@ -325,7 +326,7 @@ msgstr "분"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:3
 msgid "Fleet Participation"
-msgstr "플릿 참여"
+msgstr "함대 참여"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:7
 msgid "Character not found!"
@@ -337,25 +338,25 @@ msgstr "캐릭터가 등록되지 않음!"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:19
 msgid "This character is not associated with an auth account."
-msgstr "해당 캐릭터는 본 계정에 연결되어있지 않음."
+msgstr "해당 캐릭터는 본 계정에 연결되어 있지 않습니다."
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:19
 msgid "Add it here"
-msgstr "여기서 추가"
+msgstr "여기에 추가하시오"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/characternotexisting.html:19
 msgid "before attempting to click fleet attendance links."
-msgstr "플릿 참여 링크를 클릭하기 전에"
+msgstr "함대 참여 링크를 클릭하기 전"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:6
 msgid "Create Fatlink"
-msgstr "플릿활동추적 생성"
+msgstr "함대 활동 링크 생성"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:10
 #: allianceauth/optimer/templates/optimer/add.html:14
 #: allianceauth/optimer/templates/optimer/add.html:23
 msgid "Create Fleet Operation"
-msgstr "플릿 옵 생성"
+msgstr "함대 오퍼레이션 생성"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:14
 msgid "Bad request!"
@@ -364,20 +365,20 @@ msgstr "잘못된 요청!"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:25
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:65
 msgid "Create fatlink"
-msgstr "플릿활동추적 링크 생성"
+msgstr "함대 활동 링크 생성"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:5
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:6
 msgid "Fatlink view"
-msgstr "플릿활동추적 링크 보기"
+msgstr "함대 활동 링크 보기"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:9
 msgid "Edit fatlink"
-msgstr "플릿활동추적 수정"
+msgstr "함대 활동 링크 수정"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:13
 msgid "Delete fat"
-msgstr "플릿활동추적 수정"
+msgstr "함대 활동 링크 삭제"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:19
 msgid "Registered characters"
@@ -401,7 +402,7 @@ msgstr "시스템"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:27
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:30
 msgid "Ship"
-msgstr "배"
+msgstr "함선"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:27
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:50
@@ -422,7 +423,7 @@ msgstr "도킹"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:6
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:6
 msgid "Personal fatlink statistics"
-msgstr "개인별 플릿활동추적 통계"
+msgstr "개인별 함대 활동 링크 통계"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:10
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:10
@@ -492,11 +493,11 @@ msgstr "%(year)s년 동안의 참여 통계자료"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:12
 msgid "Previous year"
-msgstr "지난 해"
+msgstr "작년"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:14
 msgid "Next year"
-msgstr "다음 해"
+msgstr "내년"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalstatisticsview.html:21
 msgid "Month"
@@ -506,20 +507,20 @@ msgstr "달"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:24
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:25
 msgid "Fats"
-msgstr "플릿활동추적"
+msgstr "함대 활동"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:6
 msgid "Fatlink Corp Statistics"
-msgstr "콥별 플릿활동추적 통계"
+msgstr "코퍼레이션별 함대 활동 통계"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:25
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:26
 msgid "Average fats"
-msgstr "평균 플릿활동추적"
+msgstr "평균 함대 활동"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:6
 msgid "Fatlink statistics"
-msgstr "플릿활동추적 통계"
+msgstr "함대 활동 통계"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:22
 msgid "Ticker"
@@ -531,7 +532,7 @@ msgstr "참여 자료"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:14
 msgid "Most recent clicked fatlinks"
-msgstr "가장 최근에 클릭한 플릿활동추적 링크"
+msgstr "가장 최근에 클릭한 함대 활동 링크"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:19
 msgid "Personal statistics"
@@ -539,11 +540,11 @@ msgstr "개인별 통계"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:48
 msgid "No fleet activity on record."
-msgstr "플릿 활동기록이 없음"
+msgstr "함대 활동 기록이 없음"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:55
 msgid "Most recent fatlinks"
-msgstr "가장 최근의 플릿활동추적 링크"
+msgstr "가장 최근의 함대 활동 링크"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:60
 msgid "View statistics"
@@ -551,27 +552,27 @@ msgstr "통계 보기"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:97
 msgid "No created fatlinks on record."
-msgstr "생성된 플릿활동추적 링크 기록이 없음"
+msgstr "생성된 함대 활동 링크 기록이 없음"
 
 #: allianceauth/fleetactivitytracking/views.py:280
 msgid "Fleet participation registered."
-msgstr "플릿 참여 등록됨"
+msgstr "함대 참여 등록됨"
 
 #: allianceauth/fleetactivitytracking/views.py:296
 msgid "FAT link has expired."
-msgstr "플릿활동추적 링크 기한만료"
+msgstr "함대 활동 링크 기한만료"
 
 #: allianceauth/groupmanagement/admin.py:104
 msgid "This name has been reserved and can not be used for groups."
-msgstr ""
+msgstr "이 이름은 이미 할당되었고 그룹의 이름으로 사용될 수 없습니다."
 
 #: allianceauth/groupmanagement/admin.py:230
 msgid "(auto)"
-msgstr ""
+msgstr "(자동)"
 
 #: allianceauth/groupmanagement/admin.py:239
 msgid "There already exists a group with that name."
-msgstr ""
+msgstr "이 이름을 가진 그룹이 이미 있습니다."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:14
@@ -584,10 +585,12 @@ msgid ""
 "group.<br>Used for groups such as Members, Corp_*, Alliance_* "
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
+"시스템 그룹, 유저들은 이 그룹을 보거나, 참여하거나, 지원할 수 없습니다. <br>멤버, 코퍼레이션_*, 얼라이언스_* 등에 "
+"사용됨.<br><b>선택된 경우 비공개와 공개 옵션을 무시함.</b>"
 
 #: allianceauth/groupmanagement/models.py:110
 msgid "Group is hidden from users but can still join with the correct link."
-msgstr ""
+msgstr "비공개 그룹이지만 링크를 통해 참여할 수 있음."
 
 #: allianceauth/groupmanagement/models.py:116
 msgid ""
@@ -670,7 +673,7 @@ msgstr "감사 기록"
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:13
 #: allianceauth/timerboard/templates/timerboard/index_button.html:3
 msgid "Back"
-msgstr "돌아가기"
+msgstr "뒤로"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:28
 msgid "Date/Time"
@@ -984,15 +987,15 @@ msgstr "문자열 검색"
 #: allianceauth/hrapplications/templates/hrapplications/corpchoice.html:5
 #: allianceauth/hrapplications/templates/hrapplications/corpchoice.html:8
 msgid "Choose a Corp"
-msgstr "콥 선택"
+msgstr "코퍼레이션 선택"
 
 #: allianceauth/hrapplications/templates/hrapplications/corpchoice.html:11
 msgid "Available Corps"
-msgstr "사용 가능한 콥"
+msgstr "사용 가능한 코퍼레이션"
 
 #: allianceauth/hrapplications/templates/hrapplications/corpchoice.html:23
 msgid "No corps are accepting applications at this time."
-msgstr "현재 입사지원 가능한 콥이 없습니다."
+msgstr "현재 입사지원 가능한 코퍼레이션이 없습니다."
 
 #: allianceauth/hrapplications/templates/hrapplications/create.html:5
 #: allianceauth/hrapplications/templates/hrapplications/create.html:8
@@ -1222,7 +1225,7 @@ msgstr "모든 읽은 알림을 삭제했습니다."
 
 #: allianceauth/optimer/auth_hooks.py:10
 msgid "Fleet Operations"
-msgstr "플릿 옵"
+msgstr "함대 옵"
 
 #: allianceauth/optimer/form.py:12
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:11
@@ -1246,7 +1249,7 @@ msgstr ""
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:40
 msgid "Fleet Commander"
-msgstr "플릿 커맨더"
+msgstr "함대 커맨더"
 
 #: allianceauth/optimer/form.py:22 allianceauth/srp/form.py:14
 #: allianceauth/srp/templates/srp/data.html:93
@@ -1279,11 +1282,11 @@ msgstr "FC"
 
 #: allianceauth/optimer/templates/optimer/management.html:6
 msgid "Fleet Operation Management"
-msgstr "플릿 옵 관리"
+msgstr "함대 옵 관리"
 
 #: allianceauth/optimer/templates/optimer/management.html:11
 msgid "Fleet Operation Timers"
-msgstr "플릿 옵 타이머"
+msgstr "함대 옵 타이머"
 
 #: allianceauth/optimer/templates/optimer/management.html:21
 #: allianceauth/timerboard/templates/timerboard/view.html:23
@@ -1312,11 +1315,11 @@ msgstr "최근 지나간 옵 타이머가 없습니다."
 #: allianceauth/optimer/templates/optimer/update.html:16
 #: allianceauth/optimer/templates/optimer/update.html:28
 msgid "Update Fleet Operation"
-msgstr "플릿 옵 수정"
+msgstr "함대 옵 수정"
 
 #: allianceauth/optimer/templates/optimer/update.html:22
 msgid "Fleet Operation Does Not Exist"
-msgstr "존재하지 않는 플릿 옵"
+msgstr "존재하지 않는 함대 옵"
 
 #: allianceauth/optimer/views.py:69
 #, python-format
@@ -1434,23 +1437,23 @@ msgstr "서드파티"
 
 #: allianceauth/services/forms.py:6
 msgid "Name of Fleet:"
-msgstr "플릿 이름:"
+msgstr "함대 이름:"
 
 #: allianceauth/services/forms.py:7
 msgid "Fleet Commander:"
-msgstr "플릿 커맨더:"
+msgstr "함대 커맨더:"
 
 #: allianceauth/services/forms.py:8
 msgid "Fleet Comms:"
-msgstr "플릿 음성 채널:"
+msgstr "함대 음성 채널:"
 
 #: allianceauth/services/forms.py:9
 msgid "Fleet Type:"
-msgstr "플릿 타입:"
+msgstr "함대 타입:"
 
 #: allianceauth/services/forms.py:10
 msgid "Ship Priorities:"
-msgstr "플릿 우선도:"
+msgstr "함대 우선도:"
 
 #: allianceauth/services/forms.py:11
 msgid "Formup Location:"
@@ -1595,7 +1598,7 @@ msgstr "재버 방송"
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:94
 msgid "Fleet Broadcast Formatter"
-msgstr "플릿 신호 설정"
+msgstr "함대 신호 설정"
 
 #: allianceauth/services/modules/openfire/forms.py:7
 msgid "Message"
@@ -1749,11 +1752,11 @@ msgstr "XenForo 비밀번호 변경 완료"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:6
 msgid "Fleet Formatter Tool"
-msgstr "플릿 구성 도구"
+msgstr "함대 구성 도구"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:11
 msgid "Fleet Broadcast Formatter Tool"
-msgstr "플릿 브로드캐스트 설정 도구"
+msgstr "함대 브로드캐스트 설정 도구"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:24
 msgid "Format"
@@ -1814,12 +1817,12 @@ msgstr "SRP"
 #: allianceauth/srp/form.py:9
 #: allianceauth/srp/templates/srp/management.html:38
 msgid "Fleet Time"
-msgstr "플릿 시간"
+msgstr "함대 시간"
 
 #: allianceauth/srp/form.py:10
 #: allianceauth/srp/templates/srp/management.html:39
 msgid "Fleet Doctrine"
-msgstr "플릿 독트린"
+msgstr "함대 독트린"
 
 #: allianceauth/srp/form.py:16
 msgid "Killboard Link (zkillboard.com or kb.evetools.org)"
@@ -1839,12 +1842,12 @@ msgstr "사후조치 보고서 링크"
 
 #: allianceauth/srp/templates/srp/add.html:6
 msgid "SRP Fleet Create"
-msgstr "SRP 보상 플릿 생성"
+msgstr "SRP 보상 함대 생성"
 
 #: allianceauth/srp/templates/srp/add.html:14
 #: allianceauth/srp/templates/srp/add.html:24
 msgid "Create SRP Fleet"
-msgstr "SRP 보상 플릿 생성"
+msgstr "SRP 보상 함대 생성"
 
 #: allianceauth/srp/templates/srp/add.html:27
 msgid "Give this link to the line members"
@@ -1852,7 +1855,7 @@ msgstr "이 링크를 직계 멤버들에게 전달"
 
 #: allianceauth/srp/templates/srp/data.html:52
 msgid "SRP Fleet Data"
-msgstr "SRP 보상 플릿 데이터"
+msgstr "SRP 보상 함대 데이터"
 
 #: allianceauth/srp/templates/srp/data.html:57
 msgid "Mark Incomplete"
@@ -1908,7 +1911,7 @@ msgstr "작성 시간"
 
 #: allianceauth/srp/templates/srp/data.html:178
 msgid "No SRP requests for this fleet."
-msgstr "이 플릿에는 SRP 보상 요청이 없습니다."
+msgstr "이 함대에는 SRP 보상 요청이 없습니다."
 
 #: allianceauth/srp/templates/srp/management.html:8
 msgid "Srp Management"
@@ -1924,19 +1927,19 @@ msgstr "모두 조회하기"
 
 #: allianceauth/srp/templates/srp/management.html:23
 msgid "Add SRP Fleet"
-msgstr "SRP 보상 플릿 추가"
+msgstr "SRP 보상 함대 추가"
 
 #: allianceauth/srp/templates/srp/management.html:41
 msgid "Fleet AAR"
-msgstr "플릿 사후처리 보고서"
+msgstr "함대 사후처리 보고서"
 
 #: allianceauth/srp/templates/srp/management.html:42
 msgid "Fleet SRP Code"
-msgstr "플릿 SRP 보상 코드"
+msgstr "함대 SRP 보상 코드"
 
 #: allianceauth/srp/templates/srp/management.html:43
 msgid "Fleet ISK Cost"
-msgstr "플릿 ISK 비용"
+msgstr "함대 ISK 비용"
 
 #: allianceauth/srp/templates/srp/management.html:44
 msgid "SRP Status"
@@ -1983,37 +1986,37 @@ msgstr "사후처리 보고서 링크 업데이트"
 
 #: allianceauth/srp/templates/srp/update.html:17
 msgid "SRP Fleet Does Not Exist"
-msgstr "SRP 보상 플릿이 존재하지 않습니다."
+msgstr "SRP 보상 함대이 존재하지 않습니다."
 
 #: allianceauth/srp/views.py:85
 #, python-format
 msgid "Created SRP fleet %(fleetname)s."
-msgstr "SRP 보상 플릿 %(fleetname)s 생성 완료"
+msgstr "SRP 보상 함대 %(fleetname)s 생성 완료"
 
 #: allianceauth/srp/views.py:103
 #, python-format
 msgid "Removed SRP fleet %(fleetname)s."
-msgstr "SRP 보상 플릿 %(fleetname)s삭제 완료"
+msgstr "SRP 보상 함대 %(fleetname)s삭제 완료"
 
 #: allianceauth/srp/views.py:115
 #, python-format
 msgid "Disabled SRP fleet %(fleetname)s."
-msgstr "SRP 보상 플릿 %(fleetname)s비활성화 완료"
+msgstr "SRP 보상 함대 %(fleetname)s비활성화 완료"
 
 #: allianceauth/srp/views.py:127
 #, python-format
 msgid "Enabled SRP fleet %(fleetname)s."
-msgstr "SRP 보상 플릿 %(fleetname)s 활성화 완료"
+msgstr "SRP 보상 함대 %(fleetname)s 활성화 완료"
 
 #: allianceauth/srp/views.py:140
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as completed."
-msgstr "SRP 보상 플릿 %(fleetname)s 을 완료된 것으로 표시"
+msgstr "SRP 보상 함대 %(fleetname)s 을 완료된 것으로 표시"
 
 #: allianceauth/srp/views.py:153
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as incomplete."
-msgstr "SRP 보상 플릿 %(fleetname)s 을 미완료된 것으로 표시"
+msgstr "SRP 보상 함대 %(fleetname)s 을 미완료된 것으로 표시"
 
 #: allianceauth/srp/views.py:165
 #, python-format
@@ -2079,7 +2082,7 @@ msgstr "SRP 보상 요청 %(requestid)s을 찾을 수 없습니다. "
 #: allianceauth/srp/views.py:360
 #, python-format
 msgid "Saved changes to SRP fleet %(fleetname)s"
-msgstr "SRP 보상 요청 플릿 %(fleetname)s의 변경 사항이 저장되었습니다."
+msgstr "SRP 보상 요청 함대 %(fleetname)s의 변경 사항이 저장되었습니다."
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:6
 msgid "Alliance Auth Notifications"
@@ -2229,7 +2232,7 @@ msgstr "중요"
 
 #: allianceauth/timerboard/form.py:70
 msgid "Corp-Restricted"
-msgstr "콥 제한"
+msgstr "코퍼레이션 제한"
 
 #: allianceauth/timerboard/models.py:14
 msgid "Not Specified"
@@ -2294,7 +2297,7 @@ msgstr "스트럭처 타이머"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:28
 msgid "Corp Timers"
-msgstr "콥 타이머"
+msgstr "코퍼레이션 타이머"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:35
 #: allianceauth/timerboard/templates/timerboard/view.html:202
