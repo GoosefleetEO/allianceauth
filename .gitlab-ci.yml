@@ -47,6 +47,10 @@ dependency_scanning:
     - python -V
     - pip install wheel tox
 
+secret_detection:
+  stage: gitlab
+  before_script: []
+
 test-3.8-core:
   <<: *only-default
   image: python:3.8-bullseye
