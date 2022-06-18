@@ -47,3 +47,20 @@ def disable_user(user):
     for svc in ServicesHook.get_services():
         if svc.service_active_for_user(user):
             svc.delete_user(user)
+
+
+@shared_task
+def update_groups_for_user(user_pk: int) -> None:
+    """Update groups for all services registered to a user."""
+    user = User.objects.get(pk=user_pk)
+    logger.debug("%s: Triggering service group update for user", user)
+    for svc in ServicesHook.get_services():
+        try:
+            svc.validate_user(user)
+            svc.update_groups(user)
+        except Exception:
+            logger.exception(
+                'Exception running update_groups for services module %s on user %s',
+                svc,
+                user
+            )

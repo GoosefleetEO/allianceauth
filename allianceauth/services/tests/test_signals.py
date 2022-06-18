@@ -1,12 +1,15 @@
 from copy import deepcopy
 from unittest import mock
 
-from django.test import TestCase
+from django.test import override_settings, TestCase, TransactionTestCase
 from django.contrib.auth.models import Group, Permission
 
 from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
+
+
+MODULE_PATH = 'allianceauth.services.signals'
 
 
 class ServicesSignalsTestCase(TestCase):
@@ -17,17 +20,12 @@ class ServicesSignalsTestCase(TestCase):
         )
         self.none_user = AuthUtils.create_user('none_user', disconnect_signals=True)
 
-    @mock.patch('allianceauth.services.signals.transaction')
-    @mock.patch('allianceauth.services.signals.ServicesHook')
-    def test_m2m_changed_user_groups(self, services_hook, transaction):
+    @mock.patch(MODULE_PATH + '.transaction', spec=True)
+    @mock.patch(MODULE_PATH + '.update_groups_for_user', spec=True)
+    def test_m2m_changed_user_groups(self, update_groups_for_user, transaction):
         """
         Test that update_groups hook function is called on user groups change
         """
-        svc = mock.Mock()
-        svc.update_groups.return_value = None
-        svc.validate_user.return_value = None
-
-        services_hook.get_services.return_value = [svc]
 
         # Overload transaction.on_commit so everything happens synchronously
         transaction.on_commit = lambda fn: fn()
@@ -39,17 +37,11 @@ class ServicesSignalsTestCase(TestCase):
         self.member.save()
 
         # Assert
-        self.assertTrue(services_hook.get_services.called)
+        self.assertTrue(update_groups_for_user.delay.called)
+        args, _ = update_groups_for_user.delay.call_args
+        self.assertEqual(self.member.pk, args[0])
 
-        self.assertTrue(svc.update_groups.called)
-        args, kwargs = svc.update_groups.call_args
-        self.assertEqual(self.member, args[0])
-
-        self.assertTrue(svc.validate_user.called)
-        args, kwargs = svc.validate_user.call_args
-        self.assertEqual(self.member, args[0])
-
-    @mock.patch('allianceauth.services.signals.disable_user')
+    @mock.patch(MODULE_PATH + '.disable_user')
     def test_pre_delete_user(self, disable_user):
         """
         Test that disable_member is called when a user is deleted
@@ -60,7 +52,7 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = disable_user.call_args
         self.assertEqual(self.none_user, args[0])
 
-    @mock.patch('allianceauth.services.signals.disable_user')
+    @mock.patch(MODULE_PATH + '.disable_user')
     def test_pre_save_user_inactivation(self, disable_user):
         """
         Test a user set inactive has disable_member called
@@ -72,7 +64,7 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = disable_user.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.disable_user')
+    @mock.patch(MODULE_PATH + '.disable_user')
     def test_disable_services_on_loss_of_main_character(self, disable_user):
         """
         Test a user set inactive has disable_member called
@@ -84,8 +76,8 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = disable_user.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.transaction')
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.transaction')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_m2m_changed_group_permissions(self, services_hook, transaction):
         from django.contrib.contenttypes.models import ContentType
         svc = mock.Mock()
@@ -116,8 +108,8 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.transaction')
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.transaction')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_m2m_changed_user_permissions(self, services_hook, transaction):
         from django.contrib.contenttypes.models import ContentType
         svc = mock.Mock()
@@ -145,8 +137,8 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.transaction')
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.transaction')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_m2m_changed_user_state_permissions(self, services_hook, transaction):
         from django.contrib.contenttypes.models import ContentType
         svc = mock.Mock()
@@ -180,7 +172,7 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.validate_user.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_state_changed_services_validation_and_groups_update(self, services_hook):
         """Test a user changing state has service accounts validated and groups updated
         """
@@ -206,8 +198,7 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.update_groups.call_args
         self.assertEqual(self.member, args[0])
 
-
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_state_changed_services_validation_and_groups_update_1(self, services_hook):
         """Test a user changing main has service accounts validated and sync updated
         """
@@ -238,7 +229,7 @@ class ServicesSignalsTestCase(TestCase):
         args, kwargs = svc.sync_nickname.call_args
         self.assertEqual(self.member, args[0])
 
-    @mock.patch('allianceauth.services.signals.ServicesHook')
+    @mock.patch(MODULE_PATH + '.ServicesHook')
     def test_state_changed_services_validation_and_groups_update_2(self, services_hook):
         """Test a user changing main has service does not have accounts validated
         and sync updated if the new main is equal to the old main
@@ -260,3 +251,71 @@ class ServicesSignalsTestCase(TestCase):
         self.assertFalse(services_hook.get_services.called)
         self.assertFalse(svc.validate_user.called)
         self.assertFalse(svc.sync_nickname.called)
+
+
+@mock.patch(
+    "allianceauth.services.modules.mumble.auth_hooks.MumbleService.update_groups"
+)
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
+class TestUserGroupBulkUpdate(TransactionTestCase):
+    def test_should_run_user_service_check_when_group_added_to_user(
+        self, mock_update_groups
+    ):
+        # given
+        user = AuthUtils.create_user("Bruce Wayne")
+        AuthUtils.add_main_character_2(user, "Bruce Wayne", 1001)
+        group = Group.objects.create(name="Group")
+        mock_update_groups.reset_mock()
+        # when
+        user.groups.add(group)
+        # then
+        users_updated = {obj[0][0] for obj in mock_update_groups.call_args_list}
+        self.assertSetEqual(users_updated, {user})
+
+    def test_should_run_user_service_check_when_multiple_groups_are_added_to_user(
+        self, mock_update_groups
+    ):
+        # given
+        user = AuthUtils.create_user("Bruce Wayne")
+        AuthUtils.add_main_character_2(user, "Bruce Wayne", 1001)
+        group_1 = Group.objects.create(name="Group 1")
+        group_2 = Group.objects.create(name="Group 2")
+        mock_update_groups.reset_mock()
+        # when
+        user.groups.add(group_1, group_2)
+        # then
+        users_updated = {obj[0][0] for obj in mock_update_groups.call_args_list}
+        self.assertSetEqual(users_updated, {user})
+
+    def test_should_run_user_service_check_when_user_added_to_group(
+        self, mock_update_groups
+    ):
+        # given
+        user = AuthUtils.create_user("Bruce Wayne")
+        AuthUtils.add_main_character_2(user, "Bruce Wayne", 1001)
+        group = Group.objects.create(name="Group")
+        mock_update_groups.reset_mock()
+        # when
+        group.user_set.add(user)
+        # then
+        users_updated = {obj[0][0] for obj in mock_update_groups.call_args_list}
+        self.assertSetEqual(users_updated, {user})
+
+    def test_should_run_user_service_check_when_multiple_users_are_added_to_group(
+        self, mock_update_groups
+    ):
+        # given
+        user_1 = AuthUtils.create_user("Bruce Wayne")
+        AuthUtils.add_main_character_2(user_1, "Bruce Wayne", 1001)
+        user_2 = AuthUtils.create_user("Peter Parker")
+        AuthUtils.add_main_character_2(user_2, "Peter Parker", 1002)
+        user_3 = AuthUtils.create_user("Lex Luthor")
+        AuthUtils.add_main_character_2(user_3, "Lex Luthor", 1011)
+        group = Group.objects.create(name="Group")
+        user_1.groups.add(group)
+        mock_update_groups.reset_mock()
+        # when
+        group.user_set.add(user_2, user_3)
+        # then
+        users_updated = {obj[0][0] for obj in mock_update_groups.call_args_list}
+        self.assertSetEqual(users_updated, {user_2, user_3})
