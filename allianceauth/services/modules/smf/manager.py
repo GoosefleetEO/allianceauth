@@ -159,7 +159,7 @@ class SmfManager:
         else:
             try:
                 cursor.execute(cls.SQL_ADD_USER,
-                                [username_clean, passwd, email_address, register_date, username_clean])
+                                [username_clean, pwhash, email_address, register_date, username_clean])
                 cls.add_avatar(username_clean, characterid)
                 logger.info("Added smf member_name %s" % username_clean)
                 cls.update_groups(username_clean, groups)
