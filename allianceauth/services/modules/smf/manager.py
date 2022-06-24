@@ -164,8 +164,7 @@ class SmfManager:
                 logger.info("Added smf member_name %s" % username_clean)
                 cls.update_groups(username_clean, groups)
             except Exception as e:
-                logger.warn("Unable to add smf user %s" % username_clean)
-                logger.warning(e)
+                logger.warn("Unable to add smf user %s: %s" % username_clean, e)
                 pass
         return username_clean, passwd
 
