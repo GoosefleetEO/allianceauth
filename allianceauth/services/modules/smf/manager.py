@@ -6,6 +6,8 @@ import hashlib
 import logging
 import re
 
+from packaging import version
+
 from django.db import connections
 from django.conf import settings
 from allianceauth.eveonline.models import EveCharacter
@@ -20,9 +22,18 @@ class SmfManager:
     def __init__(self):
         pass
 
-    SQL_ADD_USER = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
-                    r" buddy_list, signature, ignore_boards) " \
-                    r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0)" % TABLE_PREFIX
+    # For SMF < 2.1
+    SQL_ADD_USER_SMF_20 = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
+                            r" buddy_list, message_labels, openid_uri, signature, ignore_boards) " \
+                            r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0, 0, 0)" % TABLE_PREFIX
+
+    # For SMF >= 2.1
+    SQL_ADD_USER_SMF_21 = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
+                            r" buddy_list, signature, ignore_boards) " \
+                            r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0)" % TABLE_PREFIX
+
+    # returns something like »window.smfVersion = "SMF 2.0.19";«
+    SQL_GET_CURRENT_SMF_VERSION = r"SELECT data FROM %sadmin_info_files WHERE filename = %%s" % TABLE_PREFIX
 
     SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
 
@@ -45,6 +56,23 @@ class SmfManager:
     SQL_GET_USER_GROUPS = r"SELECT additional_groups FROM %smembers WHERE id_member = %%s" % TABLE_PREFIX
 
     SQL_ADD_USER_AVATAR = r"UPDATE %smembers SET avatar = %%s WHERE id_member = %%s" % TABLE_PREFIX
+
+    @classmethod
+    def _get_current_smf_version(cls) -> str:
+        """
+        Get the current SMF version from the DB
+        :return:
+        """
+
+        cursor = connections['smf'].cursor()
+        cursor.execute(cls.SQL_GET_CURRENT_SMF_VERSION, ['current-version.js'])
+        row = cursor.fetchone()
+        smf_version_string = row[0]
+
+        smf_version = smf_version_string.replace('window.smfVersion = "SMF ', '').replace('";', '')
+
+        return smf_version
+
 
     @staticmethod
     def _sanitize_groupname(name):
@@ -161,8 +189,22 @@ class SmfManager:
             cls.__update_user_info(username_clean, email_address, pwhash)
         else:
             try:
-                cursor.execute(cls.SQL_ADD_USER,
-                                [username_clean, pwhash, email_address, register_date, username_clean])
+                smf_version = cls._get_current_smf_version()
+
+                if version.parse(smf_version) < version.parse("2.1"):
+                    logger.debug("SMF compatibility: < 2.1")
+
+                    cursor.execute(
+                        cls.SQL_ADD_USER_SMF_20,
+                        [username_clean, pwhash, email_address, register_date, username_clean]
+                    )
+                else:
+                    logger.debug("SMF compatibility: >= 2.1")
+
+                    cursor.execute(
+                        cls.SQL_ADD_USER_SMF_21,
+                        [username_clean, pwhash, email_address, register_date, username_clean]
+                    )
                 cls.add_avatar(username_clean, characterid)
                 logger.info(f"Added smf member_name {username_clean}")
                 cls.update_groups(username_clean, groups)
