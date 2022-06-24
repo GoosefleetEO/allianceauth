@@ -176,8 +176,8 @@ class SmfManager:
         try:
             cursor.execute(cls.SQL_DIS_USER, [email_address, passwd, username])
             logger.info("Updated smf user %s info" % username)
-        except:
-            logger.exception("Unable to update smf user %s info." % username)
+        except Exception as e:
+            logger.exception("Unable to update smf user %s info. (%s)" % username, e)
             pass
 
     @classmethod
@@ -218,8 +218,8 @@ class SmfManager:
             cursor = connections['smf'].cursor()
             cursor.execute(cls.SQL_ADD_USER_GROUP, [groupid, userid])
             logger.info(f"Added smf user id {userid} to group id {groupid}")
-        except:
-            logger.exception(f"Unable to add smf user id {userid} to group id {groupid}")
+        except Exception as e:
+            logger.exception(f"Unable to add smf user id {userid} to group id {groupid} ({e})")
             pass
 
     @classmethod
@@ -229,8 +229,8 @@ class SmfManager:
             cursor = connections['smf'].cursor()
             cursor.execute(cls.SQL_REMOVE_USER_GROUP, [groupid, userid])
             logger.info(f"Removed smf user id {userid} from group id {groupid}")
-        except:
-            logger.exception(f"Unable to remove smf user id {userid} from group id {groupid}")
+        except Exception as e:
+            logger.exception(f"Unable to remove smf user id {userid} from group id {groupid} ({e})")
             pass
 
     @classmethod
