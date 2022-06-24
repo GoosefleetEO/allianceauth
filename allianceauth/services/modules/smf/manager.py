@@ -154,7 +154,7 @@ class SmfManager:
         register_date = cls.get_current_utc_date()
         # check if the username was simply revoked
         if cls.check_user(username) is True:
-            logger.warn("Unable to add smf user with username %s - already exists. Updating user instead." % username)
+            logger.warning("Unable to add smf user with username %s - already exists. Updating user instead." % username)
             cls.__update_user_info(username_clean, email_address, pwhash)
         else:
             try:
@@ -164,7 +164,7 @@ class SmfManager:
                 logger.info("Added smf member_name %s" % username_clean)
                 cls.update_groups(username_clean, groups)
             except Exception as e:
-                logger.warn("Unable to add smf user %s: %s" % username_clean, e)
+                logger.warning("Unable to add smf user %s: %s" % username_clean, e)
                 pass
         return username_clean, passwd
 
