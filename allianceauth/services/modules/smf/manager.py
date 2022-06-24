@@ -21,8 +21,8 @@ class SmfManager:
         pass
 
     SQL_ADD_USER = r"INSERT INTO %smembers (member_name, passwd, email_address, date_registered, real_name," \
-                    r" buddy_list, message_labels, openid_uri, signature, ignore_boards) " \
-                    r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0, 0, 0)" % TABLE_PREFIX
+                    r" buddy_list, signature, ignore_boards) " \
+                    r"VALUES (%%s, %%s, %%s, %%s, %%s, 0, 0, 0)" % TABLE_PREFIX
 
     SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
 
@@ -163,8 +163,9 @@ class SmfManager:
                 cls.add_avatar(username_clean, characterid)
                 logger.info("Added smf member_name %s" % username_clean)
                 cls.update_groups(username_clean, groups)
-            except:
+            except Exception as e:
                 logger.warn("Unable to add smf user %s" % username_clean)
+                logger.warning(e)
                 pass
         return username_clean, passwd
 
