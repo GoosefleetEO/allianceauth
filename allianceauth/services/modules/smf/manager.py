@@ -67,9 +67,12 @@ class SmfManager:
         cursor = connections['smf'].cursor()
         cursor.execute(cls.SQL_GET_CURRENT_SMF_VERSION, ['current-version.js'])
         row = cursor.fetchone()
-        smf_version_string = row[0]
+        db_result = row[0]
 
-        smf_version = smf_version_string.replace('window.smfVersion = "SMF ', '').replace('";', '')
+        pattern = re.compile(r"\d+(\.\d+)+")
+        result = pattern.search(db_result)
+
+        smf_version = result.group(0)
 
         return smf_version
 
