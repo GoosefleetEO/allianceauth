@@ -322,7 +322,7 @@ class UserAdmin(BaseUserAdmin):
 
     class Media:
         css = {
-            "all": ("authentication/css/admin.css",)
+            "all": ("allianceauth/authentication/css/admin.css",)
         }
 
     def get_queryset(self, request):
@@ -542,7 +542,7 @@ class BaseOwnershipAdmin(admin.ModelAdmin):
 
     class Media:
         css = {
-            "all": ("authentication/css/admin.css",)
+            "all": ("allianceauth/authentication/css/admin.css",)
         }
 
     def get_readonly_fields(self, request, obj=None):
