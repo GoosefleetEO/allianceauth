@@ -17,7 +17,7 @@
         {% include 'bundles/bootstrap-css.html' %}
         {% include 'bundles/fontawesome.html' %}
 
-        <link href="{% static 'css/auth-base.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'allianceauth/css/auth-base.css' %}" type="text/css" rel="stylesheet">
 
         {% block extra_css %}{% endblock extra_css %}
     </head>
@@ -49,8 +49,8 @@
                 userNotificationsCountViewUrl: "{% url 'notifications:user_notifications_count' request.user.pk %}"
             };
         </script>
-        <script src="{% static 'js/refresh_notifications.js' %}"></script>
-        <script src="{% static 'js/eve-time.js' %}"></script>
+        <script src="{% static 'allianceauth/js/refresh_notifications.js' %}"></script>
+        <script src="{% static 'allianceauth/js/eve-time.js' %}"></script>
 
         {% block extra_javascript %}
         {% endblock extra_javascript %}
