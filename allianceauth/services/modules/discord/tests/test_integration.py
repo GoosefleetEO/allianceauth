@@ -14,7 +14,6 @@ from requests.exceptions import HTTPError
 import requests_mock
 
 from django.contrib.auth.models import Group, User
-from django.core.cache import caches
 from django.shortcuts import reverse
 from django.test import TransactionTestCase, TestCase
 from django.test.utils import override_settings
@@ -23,6 +22,7 @@ from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.notifications.models import Notification
 from allianceauth.tests.auth_utils import AuthUtils
+from allianceauth.utils.cache import get_redis_client
 
 from . import (
     TEST_GUILD_ID,
@@ -87,8 +87,7 @@ remove_guild_member_request = DiscordRequest(
 
 
 def clear_cache():
-    default_cache = caches['default']
-    redis = default_cache.get_master_client()
+    redis = get_redis_client()
     redis.flushall()
     logger.info('Cache flushed')
 
@@ -108,7 +107,6 @@ def reset_testdata():
 @requests_mock.Mocker()
 class TestServiceFeatures(TransactionTestCase):
     fixtures = ['disable_analytics.json']
-
 
     @classmethod
     def setUpClass(cls):

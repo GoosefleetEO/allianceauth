@@ -35,17 +35,17 @@ import logging
 from uuid import uuid1
 import random
 
-from django.core.cache import caches
 from django.contrib.auth.models import User, Group
 
 from allianceauth.services.modules.discord.models import DiscordUser
+from allianceauth.utils.cache import get_redis_client
 
 logger = logging.getLogger('allianceauth')
 MAX_RUNS = 3
 
+
 def clear_cache():
-    default_cache = caches['default']
-    redis = default_cache.get_master_client()
+    redis = get_redis_client()
     redis.flushall()
     logger.info('Cache flushed')
 
