@@ -11,5 +11,4 @@ models
 
 .. automodule:: allianceauth.eveonline.models
     :members:
-    :exclude-members: objects, provider
-    :undoc-members:
+    :exclude-members: DoesNotExist, MultipleObjectsReturned

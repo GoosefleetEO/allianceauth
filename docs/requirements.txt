@@ -3,6 +3,7 @@ sphinx>=3.2.1,<4.0.0
 sphinx_rtd_theme==0.5.0
 recommonmark==0.6.0
 Jinja2<3.1
+sphinxcontrib-django2
 
 # Autodoc dependencies
 django>=3.2,<4.0.0
