@@ -4,6 +4,7 @@ sphinx_rtd_theme>=1.0.0,<2.0.0
 recommonmark==0.7.1
 Jinja2<3.1
 docutils==0.16
+sphinxcontrib-django2
 
 # Autodoc dependencies
 celery>=5.2.0,<6.0.0

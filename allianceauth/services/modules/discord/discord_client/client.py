@@ -8,7 +8,7 @@ from uuid import uuid1
 from redis import Redis
 import requests
 
-from django_redis import get_redis_connection
+from allianceauth.utils.cache import get_redis_client
 
 from allianceauth import __title__ as AUTH_TITLE, __url__, __version__
 
@@ -103,7 +103,7 @@ class DiscordClient:
         self._access_token = str(access_token)
         self._is_rate_limited = bool(is_rate_limited)
         if not redis:
-            self._redis = get_redis_connection("default")
+            self._redis = get_redis_client()
             if not isinstance(self._redis, Redis):
                 raise RuntimeError(
                     'This class requires a Redis client, but none was provided '

@@ -5,7 +5,7 @@ from typing import List, Optional
 from pytz import utc
 from redis import Redis, RedisError
 
-from django_redis import get_redis_connection
+from allianceauth.utils.cache import get_redis_client
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class EventSeries:
     _ROOT_KEY = "ALLIANCEAUTH_EVENT_SERIES"
 
     def __init__(self, key_id: str, redis: Redis = None) -> None:
-        self._redis = get_redis_connection("default") if not redis else redis
+        self._redis = get_redis_client() if not redis else redis
         try:
             if not self._redis.ping():
                 raise RuntimeError()

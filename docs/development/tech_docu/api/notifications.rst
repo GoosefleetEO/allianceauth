@@ -13,7 +13,8 @@ models
 ===========
 
 .. autoclass:: allianceauth.notifications.models.Notification
-    :members: Level, mark_viewed, set_level
+    :members:
+    :exclude-members: DoesNotExist, MultipleObjectsReturned, save
 
 managers
 ===========
