@@ -17,7 +17,7 @@ class ServicesUserAdmin(admin.ModelAdmin):
     """Parent class for UserAdmin classes for all services"""
     class Media:
         css = {
-            "all": ("services/admin.css",)
+            "all": ("allianceauth/services/admin.css",)
         }
 
     search_fields = ('user__username',)
