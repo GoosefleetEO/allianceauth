@@ -49,8 +49,8 @@
                 userNotificationsCountViewUrl: "{% url 'notifications:user_notifications_count' request.user.pk %}"
             };
         </script>
-        <script src="{% static 'allianceauth/js/refresh_notifications.js' %}"></script>
-        <script src="{% static 'allianceauth/js/eve-time.js' %}"></script>
+        {% include 'bundles/refresh-notifications-js.html' %}
+        {% include 'bundles/evetime-js.html' %}
 
         {% block extra_javascript %}
         {% endblock extra_javascript %}

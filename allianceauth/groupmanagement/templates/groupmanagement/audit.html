@@ -25,13 +25,15 @@
                     <div class="table-responsive">
                         <table class="table table-striped" id="log-entries">
                             <thead>
-                                <th scope="col">{% translate "Date/Time" %}</th>
-                                <th scope="col">{% translate "Requestor" %}</th>
-                                <th scope="col">{% translate "Character" %}</th>
-                                <th scope="col">{% translate "Corporation" %}</th>
-                                <th scope="col">{% translate "Type" %}</th>
-                                <th scope="col">{% translate "Action" %}</th>
-                                <th scope="col">{% translate "Actor" %}</th>
+                                <tr>
+                                    <th scope="col">{% translate "Date/Time" %}</th>
+                                    <th scope="col">{% translate "Requestor" %}</th>
+                                    <th scope="col">{% translate "Character" %}</th>
+                                    <th scope="col">{% translate "Corporation" %}</th>
+                                    <th scope="col">{% translate "Type" %}</th>
+                                    <th scope="col">{% translate "Action" %}</th>
+                                    <th scope="col">{% translate "Actor" %}</th>
+                                </tr>
                             </thead>
 
                             <tbody>
@@ -74,7 +76,7 @@
 {% block extra_javascript %}
     {% include 'bundles/datatables-js.html' %}
     {% include 'bundles/moment-js.html' with locale=True %}
-    <script type="application/javascript" src="{% static 'allianceauth/js/filterDropDown/filterDropDown.min.js' %}"></script>
+    {% include 'bundles/filterdropdown-js.html' %}
 {% endblock %}
 
 {% block extra_css %}
