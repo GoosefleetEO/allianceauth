@@ -8,7 +8,7 @@ You should have the following available on the system you are using to set this 
 
 ## Setup Guide
 
-1. run `bash <(curl -s https://gitlab.com/allianceauth/allianceauth/-/raw/v2.11.x/docker/scripts/download.sh)`. This will download all the files you need to install auth and place them in a directory named `aa-docker`. Feel free to rename/move this folder.
+1. run `bash <(curl -s https://gitlab.com/allianceauth/allianceauth/-/raw/v2.14.x/docker/scripts/download.sh)`. This will download all the files you need to install auth and place them in a directory named `aa-docker`. Feel free to rename/move this folder.
 1. run `./scripts/prepare-env.sh` to set up your environment
 1. (optional) Change `PROTOCOL` to `http://` if not using SSL in `.env`
 1. run `docker-compose --env-file=.env up -d` (NOTE: if this command hangs, follow the instructions [here](https://www.digitalocean.com/community/tutorials/how-to-setup-additional-entropy-for-cloud-servers-using-haveged))
