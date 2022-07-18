@@ -213,6 +213,8 @@ build-image:
     docker image push --all-tags $CI_REGISTRY_IMAGE/auth
   rules:
     - if: $CI_COMMIT_TAG
+      when: delayed
+      start_in: 10 minutes
 
 build-image-dev:
   before_script: []
