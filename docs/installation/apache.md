@@ -77,3 +77,19 @@ After acquiring SSL the config file needs to be adjusted. Add the following line
         RequestHeader set X-FORWARDED-PROTOCOL https
         RequestHeader set X-FORWARDED-SSL On
 ```
+
+### Known Issues
+
+#### Apache2 vs. Django
+
+For some versions of Apache2 you might have to tell the Django framework explicitly
+to use SSL, since the automatic detection doesn't work. SSL in general will work,
+but internally created URLs by Django might still be prefixed with just `http://`
+instead of `https://`, so it can't hurt to add these lines to
+`myauth/myauth/settings/local.py`.
+
+```python
+# Setup support for proxy headers
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+```
