@@ -540,7 +540,7 @@
 
     {% include 'bundles/moment-js.html' with locale=True %}
     {% include 'bundles/timers-js.html' %}
-    <script type="application/javascript">
+    <script>
         let timers = [
             {% for timer in timers %}
                 {
