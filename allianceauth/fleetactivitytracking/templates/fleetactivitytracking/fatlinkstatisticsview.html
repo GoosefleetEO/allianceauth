@@ -1,5 +1,4 @@
 {% extends "allianceauth/base.html" %}
-{% load bootstrap %}
 {% load i18n %}
 
 {% block page_title %}{% translate "Fatlink statistics" %}{% endblock page_title %}
@@ -29,9 +28,9 @@
             {% for corpStat in fatStats %}
             <tr>
                 <td>
-                    <img src="{{ corpStat.corp.logo_url_32 }}" class="ra-avatar img-responsive">
+                    <img src="{{ corpStat.corp.logo_url_32 }}" class="ra-avatar img-responsive" alt="{{ corpStat.corp.corporation_name }}">
                 </td>
-                <td class="text-center"><a href="{% url 'fatlink:statistics_corp' corpStat.corp.corporation_id %}">[{{ corpStat.corp.corporation_ticker }}]</td>
+                <td class="text-center"><a href="{% url 'fatlink:statistics_corp' corpStat.corp.corporation_id %}">[{{ corpStat.corp.corporation_ticker }}]</a></td>
                 <td class="text-center">{{ corpStat.corp.corporation_name }}</td>
                 <td class="text-center">{{ corpStat.corp.member_count }}</td>
                 <td class="text-center">{{ corpStat.n_fats }}</td>

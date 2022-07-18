@@ -63,7 +63,7 @@
                         <h4 class="modal-title" id="myModalLabel">{% translate "Application Search" %}</h4>
                     </div>
                     <div class="modal-body">
-                        <form class="form-signin" role="form" action={% url 'hrapplications:search' %} method="POST">
+                        <form class="form-signin" role="form" action="{% url 'hrapplications:search' %}" method="POST">
                             {% csrf_token %}
                             {{ search_form|bootstrap }}
                             <br>

@@ -36,7 +36,7 @@
                                 {% for member in members %}
                                     <tr>
                                         <td>
-                                            <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle" style="margin-right: 1rem;">
+                                            <img src="{{ member.main_char|character_portrait_url:32 }}" class="img-circle" style="margin-right: 1rem;" alt="{{ member.main_char.character_name }}">
                                             {% if member.main_char %}
                                                 <a href="{{ member.main_char|evewho_character_url }}" target="_blank">
                                                     {{ member.main_char.character_name }}

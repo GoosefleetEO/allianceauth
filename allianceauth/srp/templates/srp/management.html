@@ -1,5 +1,4 @@
 {% extends "allianceauth/base.html" %}
-{% load bootstrap %}
 {% load i18n %}
 
 {% load humanize %}
@@ -42,7 +41,7 @@
                             <th class="text-center">{% translate "Fleet ISK Cost" %}</th>
                             <th class="text-center">{% translate "SRP Status" %}</th>
                             <th class="text-center">{% translate "Pending Requests" %}</th>
-                            <th width="100px" class="text-center">{% translate "Actions" %}</th>
+                            <th class="text-center" style="width: 100px;">{% translate "Actions" %}</th>
                         </tr>
                         {% for srpfleet in srpfleets %}
                             <tr>

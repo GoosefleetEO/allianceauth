@@ -577,7 +577,7 @@
         let updateAllTimers = function () {
             let l = timers.length;
 
-            for (var i=0; i < l; ++i) {
+            for (let i=0; i < l; ++i) {
                 if (timers[i].expired) continue;
 
                 updateTimer(timers[i]);
@@ -603,7 +603,7 @@
         let setAllLocalTimes = function () {
             let l = timers.length;
 
-            for (var i=0; i < l; ++i) {
+            for (let i=0; i < l; ++i) {
                 setLocalTime(timers[i]);
             }
         };
