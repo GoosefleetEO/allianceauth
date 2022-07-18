@@ -6,6 +6,8 @@ To reduce redundancy and help speed up development we encourage developers to ut
 .. toctree::
     :maxdepth: 1
 
+    discord_client
+    discord_service
     esi
     evelinks
     eveonline

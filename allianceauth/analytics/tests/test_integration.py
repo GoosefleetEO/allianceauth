@@ -3,16 +3,17 @@ from urllib.parse import parse_qs
 
 import requests_mock
 
-from django.test import TestCase, override_settings
+from django.test import override_settings
 
 from allianceauth.analytics.tasks import ANALYTICS_URL
 from allianceauth.eveonline.tasks import update_character
 from allianceauth.tests.auth_utils import AuthUtils
+from allianceauth.utils.testing import NoSocketsTestCase
 
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @requests_mock.mock()
-class TestAnalyticsForViews(TestCase):
+class TestAnalyticsForViews(NoSocketsTestCase):
     @override_settings(ANALYTICS_DISABLED=False)
     def test_should_run_analytics(self, requests_mocker):
         # given
@@ -40,7 +41,7 @@ class TestAnalyticsForViews(TestCase):
 
 @override_settings(CELERY_ALWAYS_EAGER=True)
 @requests_mock.mock()
-class TestAnalyticsForTasks(TestCase):
+class TestAnalyticsForTasks(NoSocketsTestCase):
     @override_settings(ANALYTICS_DISABLED=False)
     @patch("allianceauth.eveonline.models.EveCharacter.objects.update_character")
     def test_should_run_analytics_for_successful_task(

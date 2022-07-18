@@ -1,26 +1,32 @@
-from django.test import TestCase, RequestFactory
+from unittest.mock import patch
+
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
+from django.test import RequestFactory
 from django.utils.timezone import now
 
 from allianceauth.authentication.models import CharacterOwnership
 from allianceauth.eveonline.models import (
-    EveCharacter, EveCorporationInfo, EveAllianceInfo
+    EveAllianceInfo,
+    EveCharacter,
+    EveCorporationInfo,
 )
+from allianceauth.utils.testing import NoSocketsTestCase
 
 from ....admin import (
+    MainAllianceFilter,
+    MainCorporationsFilter,
+    ServicesUserAdmin,
+    user_main_organization,
     user_profile_pic,
     user_username,
-    user_main_organization,
-    ServicesUserAdmin,
-    MainCorporationsFilter,
-    MainAllianceFilter
 )
 from ..admin import DiscordUserAdmin
 from ..models import DiscordUser
+from . import MODULE_PATH
 
 
-class TestDataMixin(TestCase):
+class TestDataMixin(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -168,7 +174,7 @@ class TestDataMixin(TestCase):
         )
 
 
-class TestColumnRendering(TestDataMixin, TestCase):
+class TestColumnRendering(TestDataMixin, NoSocketsTestCase):
 
     def test_user_profile_pic_u1(self):
         expected = (
@@ -229,7 +235,7 @@ class TestColumnRendering(TestDataMixin, TestCase):
     # actions
 
 
-class TestFilters(TestDataMixin, TestCase):
+class TestFilters(TestDataMixin, NoSocketsTestCase):
 
     def test_filter_main_corporations(self):
 
@@ -287,3 +293,16 @@ class TestFilters(TestDataMixin, TestCase):
         queryset = changelist.get_queryset(request)
         expected = [self.user_1.discord]
         self.assertSetEqual(set(queryset), set(expected))
+
+
+@patch(MODULE_PATH + ".admin.DiscordUser.delete_user")
+class TestDeleteQueryset(TestDataMixin, NoSocketsTestCase):
+    def test_should_delete_all_objects(self, mock_delete_user):
+        # given
+        request = self.factory.get('/')
+        request.user = self.user_1
+        queryset = DiscordUser.objects.filter(user__in=[self.user_2, self.user_3])
+        # when
+        self.modeladmin.delete_queryset(request, queryset)
+        # then
+        self.assertEqual(mock_delete_user.call_count, 2)

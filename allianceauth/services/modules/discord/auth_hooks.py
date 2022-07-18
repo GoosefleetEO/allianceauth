@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
 
+from .core import server_name, user_formatted_nick
 from .models import DiscordUser
 from .urls import urlpatterns
 from .utils import LoggerAddTag
@@ -53,7 +54,7 @@ class DiscordService(ServicesHook):
         return render_to_string(
             self.service_ctrl_template,
             {
-                'server_name': DiscordUser.objects.server_name(),
+                'server_name': server_name(),
                 'user_has_account': user_has_account,
                 'discord_username': discord_username
             },
@@ -73,7 +74,7 @@ class DiscordService(ServicesHook):
                     'user_pk': user.pk,
                     # since the new nickname is not yet in the DB we need to
                     # provide it manually to the task
-                    'nickname': DiscordUser.objects.user_formatted_nick(user)
+                    'nickname': user_formatted_nick(user)
                 },
                 priority=SINGLE_TASK_PRIORITY
             )

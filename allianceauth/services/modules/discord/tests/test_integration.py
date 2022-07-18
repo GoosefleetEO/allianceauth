@@ -4,54 +4,67 @@ Testing all components of the service, with the exception of the Discord API.
 
 Please note that these tests require Redis and will flush it
 """
-from collections import namedtuple
+import dataclasses
+import json
 import logging
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 from uuid import uuid1
 
-from django_webtest import WebTest
-from requests.exceptions import HTTPError
 import requests_mock
+from requests.exceptions import HTTPError
 
 from django.contrib.auth.models import Group, User
 from django.shortcuts import reverse
-from django.test import TransactionTestCase, TestCase
-from django.test.utils import override_settings
+from django.test import TransactionTestCase, override_settings
+from django_webtest import WebTest
 
 from allianceauth.authentication.models import State
 from allianceauth.eveonline.models import EveCharacter
+from allianceauth.groupmanagement.models import ReservedGroupName
 from allianceauth.notifications.models import Notification
 from allianceauth.tests.auth_utils import AuthUtils
 from allianceauth.utils.cache import get_redis_client
+from allianceauth.utils.testing import NoSocketsTestCase
 
-from . import (
-    TEST_GUILD_ID,
-    TEST_USER_NAME,
-    TEST_USER_ID,
-    TEST_USER_DISCRIMINATOR,
-    TEST_MAIN_NAME,
-    TEST_MAIN_ID,
-    MODULE_PATH,
-    add_permissions_to_members,
-    ROLE_ALPHA,
-    ROLE_BRAVO,
-    ROLE_CHARLIE,
-    ROLE_MIKE,
-    create_role,
-    create_user_info
-)
-from ..discord_client.app_settings import DISCORD_API_BASE_URL
-from ..discord_client.exceptions import DiscordApiBackoff
-from ..models import DiscordUser
 from .. import tasks
+from ..core import create_bot_client
+from ..discord_client import DiscordApiBackoff
+from ..discord_client.app_settings import DISCORD_API_BASE_URL
+from ..discord_client.tests.factories import (
+    TEST_GUILD_ID,
+    TEST_USER_ID,
+    TEST_USER_NAME,
+    create_discord_error_response_unknown_member,
+    create_discord_guild_member_object,
+    create_discord_guild_object,
+    create_discord_role_object,
+    create_discord_user_object,
+)
+from ..models import DiscordUser
+from . import MODULE_PATH, TEST_MAIN_ID, TEST_MAIN_NAME, add_permissions_to_members
 
 logger = logging.getLogger('allianceauth')
 
-ROLE_MEMBER = create_role(99, 'Member')
-ROLE_BLUE = create_role(98, 'Blue')
+ROLE_ALPHA = create_discord_role_object(id=1, name="alpha")
+ROLE_BRAVO = create_discord_role_object(id=2, name="bravo")
+ROLE_CHARLIE = create_discord_role_object(id=3, name="charlie")
+ROLE_CHARLIE_2 = create_discord_role_object(id=4, name="Charlie")  # Discord roles are case sensitive
+ROLE_MIKE = create_discord_role_object(id=13, name="mike", managed=True)
+ROLE_MEMBER = create_discord_role_object(99, 'Member')
+ROLE_BLUE = create_discord_role_object(98, 'Blue')
 
-# Putting all requests to Discord into objects so we can compare them better
-DiscordRequest = namedtuple('DiscordRequest', ['method', 'url'])
+
+@dataclasses.dataclass(frozen=True)
+class DiscordRequest:
+    """Helper for comparing requests made to the Discord API."""
+    method: str
+    url: str
+    text: str = dataclasses.field(compare=False, default=None)
+
+    def json(self):
+        return json.loads(self.text)
+
+
 user_get_current_request = DiscordRequest(
     method='GET',
     url=f'{DISCORD_API_BASE_URL}users/@me'
@@ -102,8 +115,9 @@ def reset_testdata():
     Notification.objects.all().delete()
 
 
+@patch(MODULE_PATH + '.core.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
-@override_settings(CELERY_ALWAYS_EAGER=True)
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=False)
 @requests_mock.Mocker()
 class TestServiceFeatures(TransactionTestCase):
     fixtures = ['disable_analytics.json']
@@ -191,7 +205,7 @@ class TestServiceFeatures(TransactionTestCase):
         requests_mocker.patch(modify_guild_member_request.url, status_code=204)
 
         # exhausting rate limit
-        client = DiscordUser.objects._bot_client()
+        client = create_bot_client()
         client._redis.set(
             name=client._KEY_GLOBAL_RATE_LIMIT_REMAINING,
             value=0,
@@ -207,7 +221,6 @@ class TestServiceFeatures(TransactionTestCase):
         requests_made = [
             DiscordRequest(r.method, r.url) for r in requests_mocker.request_history
         ]
-
         self.assertListEqual(requests_made, list())
 
     def test_when_member_is_demoted_to_guest_then_his_account_is_deleted(
@@ -245,7 +258,7 @@ class TestServiceFeatures(TransactionTestCase):
         # request mocks
         requests_mocker.get(
             guild_member_request.url,
-            json={'user': create_user_info(), 'roles': ['3', '13', '99']}
+            json=create_discord_guild_member_object(roles=[3, 13, 99])
         )
         requests_mocker.get(
             guild_roles_request.url,
@@ -281,10 +294,7 @@ class TestServiceFeatures(TransactionTestCase):
     ):
         requests_mocker.get(
             guild_member_request.url,
-            json={
-                'user': create_user_info(),
-                'roles': ['13', '99']
-            }
+            json=create_discord_guild_member_object(roles=[13, 99])
         )
         requests_mocker.get(
             guild_roles_request.url,
@@ -313,10 +323,7 @@ class TestServiceFeatures(TransactionTestCase):
     ):
         requests_mocker.get(
             guild_member_request.url,
-            json={
-                'user': {'id': str(TEST_USER_ID), 'username': TEST_MAIN_NAME},
-                'roles': ['13', '99']
-            }
+            json=create_discord_guild_member_object(roles=['13', '99'])
         )
         requests_mocker.get(
             guild_roles_request.url,
@@ -342,11 +349,11 @@ class TestServiceFeatures(TransactionTestCase):
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
 
-@override_settings(CELERY_ALWAYS_EAGER=True)
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
 @patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
-class StateTestCase(TestCase):
+class StateTestCase(NoSocketsTestCase):
 
     def setUp(self):
         clear_cache()
@@ -430,6 +437,7 @@ class StateTestCase(TestCase):
             self.user.discord
 
 
+@patch(MODULE_PATH + '.core.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
 @requests_mock.Mocker()
@@ -448,24 +456,25 @@ class TestUserFeatures(WebTest):
         )
         add_permissions_to_members()
 
-    @patch(MODULE_PATH + '.views.messages')
-    @patch(MODULE_PATH + '.managers.OAuth2Session')
+    @patch(MODULE_PATH + '.views.messages', spec=True)
+    @patch(MODULE_PATH + '.managers.OAuth2Session', spec=True)
     def test_user_activation_normal(
         self, requests_mocker, mock_OAuth2Session, mock_messages
     ):
         # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+            guild_infos_request.url, json=create_discord_guild_object()
         )
         requests_mocker.get(
-            user_get_current_request.url,
-            json=create_user_info(
-                TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
-            )
+            user_get_current_request.url, json=create_discord_user_object()
         )
         requests_mocker.get(
-            guild_roles_request.url,
-            json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
+            guild_roles_request.url, json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MEMBER]
+        )
+        requests_mocker.get(
+            guild_member_request.url,
+            status_code=404,
+            json=create_discord_error_response_unknown_member()
         )
         requests_mocker.put(add_guild_member_request.url, status_code=201)
 
@@ -503,33 +512,93 @@ class TestUserFeatures(WebTest):
         for r in requests_mocker.request_history:
             obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
+        self.assertIn(add_guild_member_request, requests_made)
 
-        expected = [
-            guild_infos_request,
-            user_get_current_request,
-            guild_roles_request,
-            add_guild_member_request
-        ]
-        self.assertListEqual(requests_made, expected)
+    @patch(MODULE_PATH + '.views.messages', spec=True)
+    @patch(MODULE_PATH + '.managers.OAuth2Session', spec=True)
+    def test_should_activate_existing_user_and_keep_managed_and_reserved_roles(
+        self, requests_mocker, mock_OAuth2Session, mock_messages
+    ):
+        # setup
+        requests_mocker.get(
+            guild_infos_request.url, json=create_discord_guild_object()
+        )
+        requests_mocker.get(
+            user_get_current_request.url, json=create_discord_user_object()
+        )
+        requests_mocker.get(
+            guild_roles_request.url, json=[
+                ROLE_ALPHA, ROLE_CHARLIE, ROLE_MEMBER, ROLE_MIKE
+            ]
+        )
+        requests_mocker.get(
+            guild_member_request.url,
+            json=create_discord_guild_member_object(roles=[1, 3, 13])
+        )
+        requests_mocker.patch(modify_guild_member_request.url, status_code=204)
+        ReservedGroupName.objects.create(
+            name="charlie", reason="dummy", created_by="xyz"
+        )
 
-    @patch(MODULE_PATH + '.views.messages')
-    @patch(MODULE_PATH + '.managers.OAuth2Session')
+        authentication_code = 'auth_code'
+        oauth_url = 'https://www.example.com/oauth'
+        state = ''
+        mock_OAuth2Session.return_value.authorization_url.return_value = \
+            oauth_url, state
+
+        # login
+        self.app.set_user(self.member)
+
+        # user opens services page
+        services_page = self.app.get(reverse('services:services'))
+        self.assertEqual(services_page.status_code, 200)
+
+        # user clicks Discord service activation link on page
+        response = services_page.click(href=reverse('discord:activate'))
+
+        # check we got a redirect to Discord OAuth
+        self.assertRedirects(
+            response, expected_url=oauth_url, fetch_redirect_response=False
+        )
+
+        # simulate Discord callback
+        response = self.app.get(
+            reverse('discord:callback'), params={'code': authentication_code}
+        )
+
+        # user got a success message
+        self.assertTrue(mock_messages.success.called)
+        self.assertFalse(mock_messages.error.called)
+
+        my_request = None
+        for r in requests_mocker.request_history:
+            obj = DiscordRequest(r.method, r.url, r.text)
+            if obj == modify_guild_member_request:
+                my_request = obj
+                break
+        else:
+            self.fail("Request not found")
+        self.assertSetEqual(set(my_request.json()["roles"]), {3, 13, 99})
+
+    @patch(MODULE_PATH + '.views.messages', spec=True)
+    @patch(MODULE_PATH + '.managers.OAuth2Session', spec=True)
     def test_user_activation_failed(
         self, requests_mocker, mock_OAuth2Session, mock_messages
     ):
         # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+            guild_infos_request.url, json=create_discord_guild_object()
         )
         requests_mocker.get(
-            user_get_current_request.url,
-            json=create_user_info(
-                TEST_USER_ID, TEST_USER_NAME, TEST_USER_DISCRIMINATOR
-            )
+            user_get_current_request.url, json=create_discord_user_object()
         )
         requests_mocker.get(
-            guild_roles_request.url,
-            json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MIKE, ROLE_MEMBER]
+            guild_roles_request.url, json=[ROLE_ALPHA, ROLE_BRAVO, ROLE_MEMBER]
+        )
+        requests_mocker.get(
+            guild_member_request.url,
+            status_code=404,
+            json=create_discord_error_response_unknown_member()
         )
 
         mock_exception = HTTPError('error')
@@ -571,20 +640,13 @@ class TestUserFeatures(WebTest):
         for r in requests_mocker.request_history:
             obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
+        self.assertIn(add_guild_member_request, requests_made)
 
-        expected = [
-            guild_infos_request,
-            user_get_current_request,
-            guild_roles_request,
-            add_guild_member_request
-        ]
-        self.assertListEqual(requests_made, expected)
-
-    @patch(MODULE_PATH + '.views.messages')
+    @patch(MODULE_PATH + '.views.messages', spec=True)
     def test_user_deactivation_normal(self, requests_mocker, mock_messages):
         # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+            guild_infos_request.url, json=create_discord_guild_object()
         )
         requests_mocker.delete(remove_guild_member_request.url, status_code=204)
         DiscordUser.objects.create(user=self.member, uid=TEST_USER_ID)
@@ -610,15 +672,13 @@ class TestUserFeatures(WebTest):
         for r in requests_mocker.request_history:
             obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
+        self.assertIn(remove_guild_member_request, requests_made)
 
-        expected = [guild_infos_request, remove_guild_member_request]
-        self.assertListEqual(requests_made, expected)
-
-    @patch(MODULE_PATH + '.views.messages')
+    @patch(MODULE_PATH + '.views.messages', spec=True)
     def test_user_deactivation_fails(self, requests_mocker, mock_messages):
         # setup
         requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
+            guild_infos_request.url, json=create_discord_guild_object()
         )
         mock_exception = HTTPError('error')
         mock_exception.response = Mock()
@@ -648,11 +708,9 @@ class TestUserFeatures(WebTest):
         for r in requests_mocker.request_history:
             obj = DiscordRequest(r.method, r.url)
             requests_made.append(obj)
+        self.assertIn(remove_guild_member_request, requests_made)
 
-        expected = [guild_infos_request, remove_guild_member_request]
-        self.assertListEqual(requests_made, expected)
-
-    @patch(MODULE_PATH + '.views.messages')
+    @patch(MODULE_PATH + '.views.messages', spec=True)
     def test_user_add_new_server(self, requests_mocker, mock_messages):
         # setup
         mock_exception = HTTPError(Mock(**{"response.status_code": 400}))
@@ -684,14 +742,13 @@ class TestUserFeatures(WebTest):
         services_page = self.app.get(reverse('services:services'))
         self.assertEqual(services_page.status_code, 200)
 
-    @override_settings(CELERY_ALWAYS_EAGER=True)
+    @override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
+    @patch(MODULE_PATH + ".core.default_bot_client", spec=True)
     def test_server_name_is_updated_by_task(
-        self, requests_mocker
+        self, requests_mocker, mock_bot_client
     ):
         # setup
-        requests_mocker.get(
-            guild_infos_request.url, json={'id': TEST_GUILD_ID, 'name': 'Test Guild'}
-        )
+        mock_bot_client.guild_name.return_value = "Test Guild"
         # run task to update usernames
         tasks.update_all_usernames()
 
