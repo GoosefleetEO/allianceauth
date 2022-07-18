@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from requests.exceptions import HTTPError
 
@@ -6,13 +7,17 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy
 
-from allianceauth.groupmanagement.models import ReservedGroupName
 from allianceauth.notifications import notify
 
 from . import __title__
 from .app_settings import DISCORD_GUILD_ID
-from .discord_client import DiscordApiBackoff, DiscordClient, DiscordRoles
-from .discord_client.helpers import match_or_create_roles_from_names
+from .core import (
+    create_bot_client,
+    default_bot_client,
+    calculate_roles_for_user,
+    user_formatted_nick
+)
+from .discord_client import DiscordApiBackoff
 from .managers import DiscordUserManager
 from .utils import LoggerAddTag
 
@@ -21,14 +26,13 @@ logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
 
 class DiscordUser(models.Model):
-
-    USER_RELATED_NAME = 'discord'
+    """The Discord user account of an Auth user."""
 
     user = models.OneToOneField(
         User,
         primary_key=True,
         on_delete=models.CASCADE,
-        related_name=USER_RELATED_NAME,
+        related_name='discord',
         help_text='Auth user owning this Discord account'
     )
     uid = models.BigIntegerField(
@@ -80,24 +84,21 @@ class DiscordUser(models.Model):
         - False on error or raises exception
         """
         if not nickname:
-            nickname = DiscordUser.objects.user_formatted_nick(self.user)
-        if nickname:
-            client = DiscordUser.objects._bot_client()
-            success = client.modify_guild_member(
-                guild_id=DISCORD_GUILD_ID,
-                user_id=self.uid,
-                nick=nickname
-            )
-            if success:
-                logger.info('Nickname for %s has been updated', self.user)
-            else:
-                logger.warning('Failed to update nickname for %s', self.user)
-            return success
-
-        else:
+            nickname = user_formatted_nick(self.user)
+        if not nickname:
             return False
+        success = default_bot_client.modify_guild_member(
+            guild_id=DISCORD_GUILD_ID,
+            user_id=self.uid,
+            nick=nickname
+        )
+        if success:
+            logger.info('Nickname for %s has been updated', self.user)
+        else:
+            logger.warning('Failed to update nickname for %s', self.user)
+        return success
 
-    def update_groups(self, state_name: str = None) -> bool:
+    def update_groups(self, state_name: str = None) -> Optional[bool]:
         """update groups for a user based on his current group memberships.
         Will add or remove roles of a user as needed.
 
@@ -109,57 +110,18 @@ class DiscordUser(models.Model):
         - None if user is no longer a member of the Discord server
         - False on error or raises exception
         """
-        client = DiscordUser.objects._bot_client()
-        member_roles = self._determine_member_roles(client)
-        if member_roles is None:
+        new_roles, is_changed = calculate_roles_for_user(
+            user=self.user,
+            client=default_bot_client,
+            discord_uid=self.uid,
+            state_name=state_name
+        )
+        if is_changed is None:
+            logger.debug('User is not a member of this guild %s', self.user)
             return None
-        return self._update_roles_if_needed(client, state_name, member_roles)
-
-    def _determine_member_roles(self, client: DiscordClient) -> DiscordRoles:
-        """Determine the roles of the current member / user."""
-        member_info = client.guild_member(guild_id=DISCORD_GUILD_ID, user_id=self.uid)
-        if member_info is None:
-            return None  # User is no longer a member
-        guild_roles = DiscordRoles(client.guild_roles(guild_id=DISCORD_GUILD_ID))
-        logger.debug('Current guild roles: %s', guild_roles.ids())
-        if 'roles' in member_info:
-            if not guild_roles.has_roles(member_info['roles']):
-                guild_roles = DiscordRoles(
-                    client.guild_roles(guild_id=DISCORD_GUILD_ID, use_cache=False)
-                )
-                if not guild_roles.has_roles(member_info['roles']):
-                    raise RuntimeError(
-                        'Member {} has unknown roles: {}'.format(
-                            self.user,
-                            set(member_info['roles']).difference(guild_roles.ids())
-                        )
-                    )
-            return guild_roles.subset(member_info['roles'])
-        raise RuntimeError('member_info from %s is not valid' % self.user)
-
-    def _update_roles_if_needed(
-        self, client: DiscordClient, state_name: str, member_roles: DiscordRoles
-    ) -> bool:
-        """Update the roles of this member/user if needed."""
-        requested_roles = match_or_create_roles_from_names(
-            client=client,
-            guild_id=DISCORD_GUILD_ID,
-            role_names=DiscordUser.objects.user_group_names(
-                user=self.user, state_name=state_name
-            )
-        )
-        logger.debug(
-            'Requested roles for user %s: %s', self.user, requested_roles.ids()
-        )
-        logger.debug('Current roles user %s: %s', self.user, member_roles.ids())
-        reserved_role_names = ReservedGroupName.objects.values_list("name", flat=True)
-        member_roles_reserved = member_roles.subset(role_names=reserved_role_names)
-        member_roles_managed = member_roles.subset(managed_only=True)
-        member_roles_persistent = member_roles_managed.union(member_roles_reserved)
-        if requested_roles != member_roles.difference(member_roles_persistent):
+        if is_changed:
             logger.debug('Need to update roles for user %s', self.user)
-            new_roles = requested_roles.union(member_roles_persistent)
-            success = client.modify_guild_member(
+            success = default_bot_client.modify_guild_member(
                 guild_id=DISCORD_GUILD_ID,
                 user_id=self.uid,
                 role_ids=list(new_roles.ids())
@@ -172,7 +134,7 @@ class DiscordUser(models.Model):
         logger.info('No need to update roles for user %s', self.user)
         return True
 
-    def update_username(self) -> bool:
+    def update_username(self) -> Optional[bool]:
         """Updates the username incl. the discriminator
         from the Discord server and saves it
 
@@ -181,8 +143,9 @@ class DiscordUser(models.Model):
         - None if user is no longer a member of the Discord server
         - False on error or raises exception
         """
-        client = DiscordUser.objects._bot_client()
-        user_info = client.guild_member(guild_id=DISCORD_GUILD_ID, user_id=self.uid)
+        user_info = default_bot_client.guild_member(
+            guild_id=DISCORD_GUILD_ID, user_id=self.uid
+        )
         if user_info is None:
             success = None
         elif (
@@ -206,7 +169,7 @@ class DiscordUser(models.Model):
         notify_user: bool = False,
         is_rate_limited: bool = True,
         handle_api_exceptions: bool = False
-    ) -> bool:
+    ) -> Optional[bool]:
         """Deletes the Discount user both on the server and locally
 
         Params:
@@ -221,7 +184,7 @@ class DiscordUser(models.Model):
         """
         try:
             _user = self.user
-            client = DiscordUser.objects._bot_client(is_rate_limited=is_rate_limited)
+            client = create_bot_client(is_rate_limited=is_rate_limited)
             success = client.remove_guild_member(
                 guild_id=DISCORD_GUILD_ID, user_id=self.uid
             )
@@ -241,15 +204,13 @@ class DiscordUser(models.Model):
                         )
                     logger.info('Account for user %s was deleted.', _user)
                     return True
-                else:
-                    logger.debug('Account for user %s was already deleted.', _user)
-                    return None
+                logger.debug('Account for user %s was already deleted.', _user)
+                return None
 
-            else:
-                logger.warning(
-                    'Failed to remove user %s from the Discord server', _user
-                )
-                return False
+            logger.warning(
+                'Failed to remove user %s from the Discord server', _user
+            )
+            return False
 
         except (HTTPError, ConnectionError, DiscordApiBackoff) as ex:
             if handle_api_exceptions:
@@ -257,5 +218,4 @@ class DiscordUser(models.Model):
                     'Failed to remove user %s from Discord server: %s',self.user, ex
                 )
                 return False
-            else:
-                raise ex
+            raise ex
