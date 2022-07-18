@@ -3,18 +3,18 @@ from unittest.mock import MagicMock, patch
 from celery.exceptions import Retry
 from requests.exceptions import HTTPError
 
-from django.test import TestCase
 from django.contrib.auth.models import Group
 from django.test.utils import override_settings
 
 from allianceauth.tests.auth_utils import AuthUtils
+from allianceauth.utils.testing import NoSocketsTestCase
 
-from . import TEST_USER_NAME, TEST_USER_ID, TEST_MAIN_NAME, TEST_MAIN_ID
-from ..models import DiscordUser
-from ..discord_client import DiscordApiBackoff
 from .. import tasks
+from ..discord_client import DiscordApiBackoff
+from ..discord_client.tests.factories import TEST_USER_ID, TEST_USER_NAME
+from ..models import DiscordUser
 from ..utils import set_logger_to_file
-
+from . import TEST_MAIN_ID, TEST_MAIN_NAME
 
 MODULE_PATH = 'allianceauth.services.modules.discord.tasks'
 logger = set_logger_to_file(MODULE_PATH, __file__)
@@ -22,7 +22,7 @@ logger = set_logger_to_file(MODULE_PATH, __file__)
 
 @patch(MODULE_PATH + '.DiscordUser.update_groups')
 @patch(MODULE_PATH + ".logger")
-class TestUpdateGroups(TestCase):
+class TestUpdateGroups(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -110,7 +110,7 @@ class TestUpdateGroups(TestCase):
 
 
 @patch(MODULE_PATH + '.DiscordUser.update_nickname')
-class TestUpdateNickname(TestCase):
+class TestUpdateNickname(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -163,7 +163,7 @@ class TestUpdateNickname(TestCase):
 
 
 @patch(MODULE_PATH + '.DiscordUser.update_username')
-class TestUpdateUsername(TestCase):
+class TestUpdateUsername(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -179,7 +179,7 @@ class TestUpdateUsername(TestCase):
 
 
 @patch(MODULE_PATH + '.DiscordUser.delete_user')
-class TestDeleteUser(TestCase):
+class TestDeleteUser(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -213,7 +213,7 @@ class TestDeleteUser(TestCase):
 
 
 @patch(MODULE_PATH + '.DiscordUser.update_groups')
-class TestTaskPerformUserAction(TestCase):
+class TestTaskPerformUserAction(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -236,7 +236,7 @@ class TestTaskPerformUserAction(TestCase):
 
 @patch(MODULE_PATH + '.DiscordUser.objects.server_name')
 @patch(MODULE_PATH + ".logger")
-class TestTaskUpdateServername(TestCase):
+class TestTaskUpdateServername(NoSocketsTestCase):
 
     def test_normal(self, mock_logger, mock_server_name):
         tasks.update_servername()
@@ -281,7 +281,7 @@ class TestTaskUpdateServername(TestCase):
 
 
 @patch(MODULE_PATH + '.DiscordUser.objects.server_name')
-class TestTaskPerformUsersAction(TestCase):
+class TestTaskPerformUsersAction(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -300,8 +300,8 @@ class TestTaskPerformUsersAction(TestCase):
         tasks._task_perform_users_action(mock_task, 'server_name')
 
 
-@override_settings(CELERY_ALWAYS_EAGER=True)
-class TestBulkTasks(TestCase):
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
+class TestBulkTasks(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
