@@ -141,28 +141,18 @@ class DiscordUser(models.Model):
         Returns:
         - True on success
         - None if user is no longer a member of the Discord server
-        - False on error or raises exception
         """
-        user_info = default_bot_client.guild_member(
+        member_info = default_bot_client.guild_member(
             guild_id=DISCORD_GUILD_ID, user_id=self.uid
         )
-        if user_info is None:
-            success = None
-        elif (
-            user_info
-            and 'user' in user_info
-            and 'username' in user_info['user']
-            and 'discriminator' in user_info['user']
-        ):
-            self.username = user_info['user']['username']
-            self.discriminator = user_info['user']['discriminator']
-            self.save()
-            logger.info('Username for %s has been updated', self.user)
-            success = True
-        else:
-            logger.warning('Failed to update username for %s', self.user)
-            success = False
-        return success
+        if not member_info:
+            logger.warning('%s: User not a guild member', self.user)
+            return None
+        self.username = member_info.user.username
+        self.discriminator = member_info.user.discriminator
+        self.save()
+        logger.info('%s: Username has been updated', self.user)
+        return True
 
     def delete_user(
         self,
