@@ -14,8 +14,8 @@ import requests_mock
 from requests.exceptions import HTTPError
 
 from django.contrib.auth.models import Group, User
-from django.shortcuts import reverse
 from django.test import TransactionTestCase, override_settings
+from django.urls import reverse
 from django_webtest import WebTest
 
 from allianceauth.authentication.models import State
@@ -42,6 +42,7 @@ from ..discord_client.tests.factories import (
 )
 from ..models import DiscordUser
 from . import MODULE_PATH, TEST_MAIN_ID, TEST_MAIN_NAME, add_permissions_to_members
+from .factories import create_discord_user, create_user
 
 logger = logging.getLogger('allianceauth')
 
@@ -347,6 +348,28 @@ class TestServiceFeatures(TransactionTestCase):
 
         self.assertTrue(roles_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
+
+
+@override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)
+@patch(MODULE_PATH + '.managers.DISCORD_GUILD_ID', TEST_GUILD_ID)
+@patch(MODULE_PATH + '.models.DISCORD_GUILD_ID', TEST_GUILD_ID)
+@requests_mock.Mocker()
+class TestTasks(NoSocketsTestCase):
+    def test_should_update_username(self, requests_mocker):
+        # given
+        user = create_user()
+        discord_user = create_discord_user(user)
+        discord_user_obj = create_discord_user_object()
+        data = create_discord_guild_member_object(user=discord_user_obj)
+        requests_mocker.get(guild_member_request.url, json=data)
+        # when
+        tasks.update_username.delay(user.pk)
+        # then
+        discord_user.refresh_from_db()
+        self.assertEqual(discord_user.username, discord_user_obj["username"])
+        self.assertEqual(
+            discord_user.discriminator, discord_user_obj["discriminator"]
+        )
 
 
 @override_settings(CELERY_ALWAYS_EAGER=True, CELERY_EAGER_PROPAGATES_EXCEPTIONS=True)

@@ -6,10 +6,17 @@ from allianceauth.tests.auth_utils import AuthUtils
 from allianceauth.utils.testing import NoSocketsTestCase
 
 from ..discord_client import DiscordApiBackoff, RolesSet
-from ..discord_client.tests.factories import TEST_USER_ID, TEST_USER_NAME, create_role
+from ..discord_client.tests.factories import (
+    TEST_USER_ID,
+    TEST_USER_NAME,
+    create_guild_member,
+    create_role,
+)
+from ..discord_client.tests.factories import create_user as create_guild_user
 from ..models import DiscordUser
 from ..utils import set_logger_to_file
 from . import MODULE_PATH, TEST_MAIN_ID, TEST_MAIN_NAME
+from .factories import create_discord_user, create_user
 
 logger = set_logger_to_file(MODULE_PATH + '.models', __file__)
 
@@ -84,99 +91,41 @@ class TestUpdateNick(NoSocketsTestCase):
         self.assertTrue(mock_default_bot_client.modify_guild_member.called)
 
 
-@patch(MODULE_PATH + '.models.default_bot_client', spec=True)
+@patch(MODULE_PATH + '.models.default_bot_client.guild_member', spec=True)
 class TestUpdateUsername(NoSocketsTestCase):
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.user = AuthUtils.create_user(TEST_USER_NAME)
+        cls.user = create_user()
 
-    def setUp(self):
-        self.discord_user = DiscordUser.objects.create(
-            user=self.user,
-            uid=TEST_USER_ID,
-            username=TEST_MAIN_NAME,
-            discriminator='1234'
-        )
-
-    def test_can_update(self, mock_default_bot_client):
+    def test_can_update(self, mock_guild_member):
         # given
+        discord_user = create_discord_user(user=self.user)
         new_username = 'New name'
         new_discriminator = '9876'
-        user_info = {
-            'user': {
-                'id': str(TEST_USER_ID),
-                'username': new_username,
-                'discriminator': new_discriminator,
-            }
-        }
-        mock_default_bot_client.guild_member.return_value = user_info
+        guild_user = create_guild_user(
+            username='New name', discriminator=new_discriminator
+        )
+        mock_guild_member.return_value = create_guild_member(user=guild_user)
         # when
-        result = self.discord_user.update_username()
+        result = discord_user.update_username()
         # then
         self.assertTrue(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
-        self.discord_user.refresh_from_db()
-        self.assertEqual(self.discord_user.username, new_username)
-        self.assertEqual(self.discord_user.discriminator, new_discriminator)
+        self.assertTrue(mock_guild_member.called)
+        discord_user.refresh_from_db()
+        self.assertEqual(discord_user.username, new_username)
+        self.assertEqual(discord_user.discriminator, new_discriminator)
 
-    def test_return_none_if_user_no_longer_a_member(self, mock_default_bot_client):
+    def test_return_none_if_user_no_longer_a_member(self, mock_guild_member):
         # given
-        mock_default_bot_client.guild_member.return_value = None
+        discord_user = create_discord_user(user=self.user)
+        mock_guild_member.return_value = None
         # when
-        result = self.discord_user.update_username()
+        result = discord_user.update_username()
         # then
         self.assertIsNone(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
-
-    def test_return_false_if_api_returns_false(self, mock_default_bot_client):
-        # given
-        mock_default_bot_client.guild_member.return_value = False
-        # when
-        result = self.discord_user.update_username()
-        # then
-        self.assertFalse(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
-
-    def test_return_false_if_api_returns_corrput_data_1(self, mock_default_bot_client):
-        # given
-        mock_default_bot_client.guild_member.return_value = {'invalid': True}
-        # when
-        result = self.discord_user.update_username()
-        # then
-        self.assertFalse(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
-
-    def test_return_false_if_api_returns_corrput_data_2(self, mock_default_bot_client):
-        # given
-        user_info = {
-            'user': {
-                'id': str(TEST_USER_ID),
-                'discriminator': '1234',
-            }
-        }
-        mock_default_bot_client.guild_member.return_value = user_info
-        # when
-        result = self.discord_user.update_username()
-        # then
-        self.assertFalse(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
-
-    def test_return_false_if_api_returns_corrput_data_3(self, mock_default_bot_client):
-        # given
-        user_info = {
-            'user': {
-                'id': str(TEST_USER_ID),
-                'username': TEST_USER_NAME,
-            }
-        }
-        mock_default_bot_client.guild_member.return_value = user_info
-        # when
-        result = self.discord_user.update_username()
-        # then
-        self.assertFalse(result)
-        self.assertTrue(mock_default_bot_client.guild_member.called)
+        self.assertTrue(mock_guild_member.called)
 
 
 @patch(MODULE_PATH + '.models.notify', spec=True)
