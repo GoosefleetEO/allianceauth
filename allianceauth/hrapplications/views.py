@@ -219,7 +219,7 @@ def hr_application_search(request):
                 Q(user__character_ownerships__character__corporation_name__icontains=searchstring) |
                 Q(user__character_ownerships__character__alliance_name__icontains=searchstring) |
                 Q(user__username__icontains=searchstring)
-            )
+            ).distinct()
 
             context = {'applications': applications, 'search_form': HRApplicationSearchForm()}
 
