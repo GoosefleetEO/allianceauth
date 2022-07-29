@@ -52,7 +52,7 @@
                         <li class="list-group-item list-group-item-{% if latest_patch %}success{% elif latest_minor %}warning{% else %}danger{% endif %}">
                             <h5 class="list-group-item-heading">{% translate "Latest Stable" %}</h5>
                             <p class="list-group-item-text">
-                                <a href="https://gitlab.com/allianceauth/allianceauth/-/tags/v{{ latest_patch_version }}" style="color:#000">
+                                <a href="https://gitlab.com/allianceauth/allianceauth/-/tags/v{{ latest_patch_version }}" style="color:#000;">
                                     <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
                                     {{ latest_patch_version }}
                                 </a>
@@ -63,7 +63,7 @@
                         <li class="list-group-item list-group-item-info">
                             <h5 class="list-group-item-heading">{% translate "Latest Pre-Release" %}</h5>
                             <p class="list-group-item-text">
-                                <a href="https://gitlab.com/allianceauth/allianceauth/-/tags/v{{ latest_beta_version }}" style="color:#000">
+                                <a href="https://gitlab.com/allianceauth/allianceauth/-/tags/v{{ latest_beta_version }}" style="color:#000;">
                                     <i class="fab fa-gitlab hidden-xs" aria-hidden="true"></i>
                                     {{ latest_beta_version }}
                                 </a>

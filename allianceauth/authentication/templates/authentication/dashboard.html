@@ -27,7 +27,7 @@
                                         <table class="table">
                                             <tr>
                                                 <td class="text-center">
-                                                    <img class="ra-avatar" src="{{ main.portrait_url_128 }}">
+                                                    <img class="ra-avatar" src="{{ main.portrait_url_128 }}" alt="{{ main.character_name }}">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -39,7 +39,7 @@
                                         <table class="table">
                                             <tr>
                                                 <td class="text-center">
-                                                    <img class="ra-avatar" src="{{ main.corporation_logo_url_128 }}">
+                                                    <img class="ra-avatar" src="{{ main.corporation_logo_url_128 }}" alt="{{ main.corporation_name }}">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -52,7 +52,7 @@
                                             <table class="table">
                                                 <tr>
                                                     <td class="text-center">
-                                                        <img class="ra-avatar" src="{{ main.alliance_logo_url_128 }}">
+                                                        <img class="ra-avatar" src="{{ main.alliance_logo_url_128 }}" alt="{{ main.alliance_name }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -63,7 +63,7 @@
                                             <table class="table">
                                                 <tr>
                                                     <td class="text-center">
-                                                        <img class="ra-avatar" src="{{ main.faction_logo_url_128 }}">
+                                                        <img class="ra-avatar" src="{{ main.faction_logo_url_128 }}" alt="{{ main.faction_name }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -75,13 +75,13 @@
                                 </div>
                                 <div class="table visible-xs-block">
                                     <p>
-                                        <img class="ra-avatar" src="{{ main.portrait_url_64 }}">
-                                        <img class="ra-avatar" src="{{ main.corporation_logo_url_64 }}">
+                                        <img class="ra-avatar" src="{{ main.portrait_url_64 }}" alt="{{ main.corporation_name }}">
+                                        <img class="ra-avatar" src="{{ main.corporation_logo_url_64 }}" alt="{{ main.corporation_name }}">
                                         {% if main.alliance_id %}
-                                            <img class="ra-avatar" src="{{ main.alliance_logo_url_64 }}">
+                                            <img class="ra-avatar" src="{{ main.alliance_logo_url_64 }}" alt="{{ main.alliance_name }}">
                                         {% endif %}
                                         {% if main.faction_id %}
-                                            <img class="ra-avatar" src="{{ main.faction_logo_url_64 }}">
+                                            <img class="ra-avatar" src="{{ main.faction_logo_url_64 }}" alt="{{ main.faction_name }}">
                                         {% endif %}
                                     </p>
                                     <p>
@@ -121,7 +121,7 @@
                         <h3 class="panel-title">{% translate "Group Memberships" %}</h3>
                     </div>
                     <div class="panel-body">
-                        <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">
+                        <div style="height: 240px;overflow-y:auto;">
                             <table class="table table-aa">
                                 {% for group in groups %}
                                     <tr>
@@ -154,7 +154,8 @@
                     <tbody>
                         {% for char in characters %}
                             <tr>
-                                <td class="text-center"><img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                <td class="text-center">
+                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}" alt="{{ char.character_name }}">
                                 </td>
                                 <td class="text-center">{{ char.character_name }}</td>
                                 <td class="text-center">{{ char.corporation_name }}</td>
@@ -168,7 +169,7 @@
                         {% for char in characters %}
                             <tr>
                                 <td class="text-center" style="vertical-align: middle">
-                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}">
+                                    <img class="ra-avatar img-circle" src="{{ char.portrait_url_32 }}" alt="{{ char.character_name }}">
                                 </td>
                                 <td class="text-center" style="vertical-align: middle; width: 100%">
                                     <strong>{{ char.character_name }}</strong><br>

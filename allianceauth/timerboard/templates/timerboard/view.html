@@ -540,7 +540,7 @@
 
     {% include 'bundles/moment-js.html' with locale=True %}
     {% include 'bundles/timers-js.html' %}
-    <script type="application/javascript">
+    <script>
         let timers = [
             {% for timer in timers %}
                 {
@@ -577,7 +577,7 @@
         let updateAllTimers = function () {
             let l = timers.length;
 
-            for (var i=0; i < l; ++i) {
+            for (let i=0; i < l; ++i) {
                 if (timers[i].expired) continue;
 
                 updateTimer(timers[i]);
@@ -603,7 +603,7 @@
         let setAllLocalTimes = function () {
             let l = timers.length;
 
-            for (var i=0; i < l; ++i) {
+            for (let i=0; i < l; ++i) {
                 setLocalTime(timers[i]);
             }
         };
