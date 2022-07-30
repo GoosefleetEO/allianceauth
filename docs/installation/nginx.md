@@ -35,17 +35,36 @@ Nginx needs to be able to read the folder containing your auth project's static 
 
 ```eval_rst
 .. tip::
-    Some specific distros may use www-data:www-data instead of nginx:nginx, causing static files (images, stylesheets etc) not to appear. You can confirm what user Nginx will run under by checking either its base config file `/etc/nginx/nginx.conf` for the "user" setting, or once Nginx has started `ps aux | grep nginx`.
+    Some specific distros may use ``www-data:www-data`` instead of ``nginx:nginx``, causing static files (images, stylesheets etc) not to appear. You can confirm what user Nginx will run under by checking either its base config file ``/etc/nginx/nginx.conf`` for the "user" setting, or once Nginx has started ``ps aux | grep nginx``.
     Adjust your chown commands to the correct user if needed.
 ..
 ```
 
 You will need to have [Gunicorn](gunicorn.md) or some other WSGI server setup for hosting Alliance Auth.
 
-### Ubuntu
+## Install
+
+Ubuntu 1804, 2004. 2204:
+```bash
+sudo apt-get install nginx
+```
+
+CentOS 7
+```bash
+sudo yum install nginx
+```
+
+CentOS Stream 8, Stream 9:
+```bash
+sudo dnf install nginx
+```
+
 Create a config file in `/etc/nginx/sites-available` and call it `alliance-auth.conf` or whatever your preferred name is.
 
-Create a symbolic link to enable the site `ln -s /etc/nginx/sites-available/alliance-auth.conf /etc/nginx/sites-enabled/`
+Create a symbolic link to enable the site
+```bash
+ln -s /etc/nginx/sites-available/alliance-auth.conf /etc/nginx/sites-enabled/
+```
 
 ### CentOS
 

@@ -2,10 +2,7 @@
 
 This guide describes how to upgrade an existing Alliance Auth (AA) installation to a newer Python 3 version.
 
-```eval_rst
-.. hint::
-    In accordance with the installation guide we will assume you perform all actions as root. If you are not running as root you need to add ``sudo`` to some commands.
-```
+This guide shares many similarities with the Alliance Auth install guide, but it is targeted towards existing installs needing to update.
 
 ```eval_rst
 .. note::
@@ -16,33 +13,35 @@ This guide describes how to upgrade an existing Alliance Auth (AA) installation 
 
 To run AA with a newer Python 3 version than your system's default you need to install it first. Technically it would be possible to upgrade your system's default Python 3, but since many of your system's tools have been tested to work with that specific version we would not recommend it. Instead we recommend to install an additional Python 3 version alongside your default version and use that for AA.
 
-```eval_rst
-.. note::
-    For stability and performance we currently recommend to run AA with Python 3.7. It has proven to be the fastest and most stable version in use currently.
-```
-
 To install other Python versions than those included with your distribution, you need to add a new installation repository. Then you can install the specific Python 3 to your system.
 
-Ubuntu 1604 1804:
-
+Ubuntu 1804, 2004:
 ```eval_rst
 .. note::
-    Ubuntu 2004 ships with Python 3.8, No updates required.
+    Ubuntu 2204 ships with Python 3.10 already
 ```
 
 ```bash
-add-apt-repository ppa:deadsnakes/ppa
+sudo add-apt-repository ppa:deadsnakes/ppa
 ```
 
 ```bash
-apt-get update
+sudo apt-get update
 ```
 
 ```bash
-apt-get install python3.7 python3.7-dev python3.7-venv
+sudo apt-get install python3.10 python3.10-dev python3.10-venv
 ```
 
-CentOS 7/8:
+CentOS 7:
+We need to build Python from source
+
+Centos Stream 8/9:
+```eval_rst
+.. note::
+    A Python 3.9 Package is available for Stream 8 and 9. You _may_ use this instead of building your own package. But our documentation will assume Python3.10 and you may need to substitute as neccessary
+    sudo dnf install python39 python39-devel
+```
 
 ```bash
 cd ~
@@ -53,15 +52,15 @@ sudo yum install gcc openssl-devel bzip2-devel libffi-devel wget
 ```
 
 ```bash
-wget https://www.python.org/ftp/python/3.7.11/Python-3.7.11.tgz
+wget https://www.python.org/ftp/python/3.10.5/Python-3.10.5.tgz
 ```
 
 ```bash
-tar xvf Python-3.7.11.tgz
+tar xvf Python-3.10.5.tgz
 ```
 
 ```bash
-cd Python-3.7.11/
+cd Python-3.10.5/
 ```
 
 ```bash
@@ -69,13 +68,20 @@ cd Python-3.7.11/
 ```
 
 ```bash
-make altinstall
+sudo make altinstall
 ```
 ## Preparing your venv
 
 Before updating your venv it is important to make sure that your current installation is stable. Otherwise your new venv might not be consistent with your data, which might create problems.
 
 Start by navigating to your main project folder (the one that has `manage.py` in it). If you followed the default installation the path is: `/home/allianceserver/myauth`
+
+```eval_rst
+.. note::
+    If you installed Alliance Auth under the allianceserver user, as reccommended. Remember to switch users for easier permission management::
+
+      sudo su allianceserver
+```
 
 Activate your venv:
 
@@ -117,12 +123,21 @@ If you unsure which apps you have installed from repos check `INSTALLED_APPS` in
 pip list
 ```
 
+Repeat as needed for your apps
+
 ```bash
-python manage.py migrate
+pip install -U APP_NAME
 ```
 
 Make sure to run migrations and collect static files for all upgraded apps.
 
+```bash
+python manage.py migrate
+```
+
+```bash
+python manage.py collectstatic
+```
 ### Restart and final check
 
 Do a final restart of your AA supervisors and make sure your installation is still running normally.
@@ -182,10 +197,10 @@ mv /home/allianceserver/venv/auth /home/allianceserver/venv/auth_old
 
 ## Create your new venv
 
-Now let's create our new venv with Python 3.7 and activate it:
+Now let's create our new venv with Python 3.10 and activate it:
 
 ```bash
-python3.7 -m venv /home/allianceserver/venv/auth
+python3.10 -m venv /home/allianceserver/venv/auth
 ```
 
 ```bash
@@ -199,15 +214,7 @@ Now we need to reinstall all packages into your new venv.
 ### Install basic packages
 
 ```bash
-pip install --upgrade pip
-```
-
-```bash
-pip install --upgrade setuptools
-```
-
-```bash
-pip install wheel
+pip install -U pip setuptools wheel
 ```
 
 ### Installing AA & Gunicorn
