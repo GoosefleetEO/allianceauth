@@ -26,7 +26,7 @@ class Timer(models.Model):
 
     details = models.CharField(max_length=254, default="")
     system = models.CharField(max_length=254, default="")
-    planet_moon = models.CharField(max_length=254, default="")
+    planet_moon = models.CharField(max_length=254, blank=True, default="")
     structure = models.CharField(max_length=254, default="")
     timer_type = models.CharField(
         max_length=254,

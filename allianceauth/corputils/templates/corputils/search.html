@@ -21,7 +21,7 @@
                 <tbody>
                     {% for result in results %}
                         <tr {% if not result.1.registered %}class="danger"{% endif %}>
-                            <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle"></td>
+                            <td class="text-center"><img src="{{ result.1.portrait_url }}" class="img-circle" alt="{{ result.1.character_name }}"></td>
                             <td class="text-center">{{ result.1.character_name }}</td>
                             <td class="text-center">{{ result.0.corp.corporation_name }}</td>
                             <td class="text-center"><a href="https://zkillboard.com/character/{{ result.1.character_id }}/" class="label label-danger" target="_blank">{% translate "Killboard" %}</a></td>
