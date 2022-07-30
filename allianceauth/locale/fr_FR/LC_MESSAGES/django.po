@@ -5,11 +5,11 @@
 # 
 # Translators:
 # François LACROIX-DURANT <umbre@fallenstarscreations.com>, 2020
+# Philippe Querin-Laporte <philippe.querin@hotmail.com>, 2020
 # Keven D. <theenarki@gmail.com>, 2020
 # Idea ., 2021
 # Mickael PATTE, 2021
 # Geoffrey Fabbro, 2021
-# Philippe Querin-Laporte <philippe.querin@hotmail.com>, 2022
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-29 01:03+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Philippe Querin-Laporte <philippe.querin@hotmail.com>, 2022\n"
+"Last-Translator: Geoffrey Fabbro, 2021\n"
 "Language-Team: French (France) (https://www.transifex.com/alliance-auth/teams/107430/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
