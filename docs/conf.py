@@ -63,7 +63,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'Alliance Auth'
 copyright = '2018-2022, Alliance Auth'
-author = 'R4stl1n'
+author = 'Alliance Auth Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -173,6 +173,7 @@ texinfo_documents = [
     author, 'AllianceAuth', 'An auth system for EVE Online to help in-game organizations manage online service access.',
     'Miscellaneous'),
 ]
+
 
 def setup(app):
     app.add_config_value('recommonmark_config', {

@@ -15,10 +15,16 @@ Check out the full [Gunicorn docs](http://docs.gunicorn.org/en/latest/index.html
 
 ```eval_rst
 .. note::
-    If you're using a virtual environment, activate it now. ``source /path/to/venv/bin/activate``.
+    If you're using a virtual environment, activate it now::
+      sudo su allianceserver
+      source /home/allianceserver/venv/auth/bin/activate
 ```
 
-Install Gunicorn using pip, `pip install gunicorn`.
+Install Gunicorn using pip
+
+```bash
+pip install gunicorn
+```
 
 In your `myauth` base directory, try running `gunicorn --bind 0.0.0.0:8000 myauth.wsgi`. You should be able to browse to `http://yourserver:8000` and see your Alliance Auth installation running. Images and styling will be missing, but don't worry, your web server will provide them.
 
@@ -26,7 +32,7 @@ Once you validate its running, you can kill the process with Ctrl+C and continue
 
 ## Running Gunicorn with Supervisor
 
-You should use [Supervisor](allianceauth.md#supervisor) to keep all of Alliance Auth components running (instead of using screen). You don't _have to_ but we will be using it to start and run Gunicorn so you might as well.
+If you are following this guide, we already use [Supervisor](allianceauth.md#supervisor) to keep all of Alliance Auth components running. You don't _have to_ but we will be using it to start and run Gunicorn for consistency.
 
 ### Sample Supervisor config
 
@@ -43,7 +49,6 @@ autostart=true
 autorestart=true
 stopsignal=INT
 ```
-
 - `[program:gunicorn]` - Change `gunicorn` to whatever you wish to call your process in Supervisor.
 - `user = allianceserver` - Change to whatever user you wish Gunicorn to run as. You could even set this as allianceserver if you wished. I'll leave the question security of that up to you.
 - `directory=/home/allianceserver/myauth/` - Needs to be the path to your Alliance Auth project.
@@ -71,11 +76,14 @@ Change it by adding `--workers=5` to the command.
 
 ##### Running with a virtual environment
 
-If you're running with a virtual environment, you'll need to add the path to the `command=` config line.
+Following this guide, you are running with a virtual environment. Therefore you'll need to add the path to the `command=` config line.
 
 e.g. `command=/path/to/venv/bin/gunicorn myauth.wsgi`
 
-The example config is using the myauth venv from the main installation guide: `command=/home/allianceserver/venv/auth/bin/gunicorn myauth.wsgi`
+The example config is using the myauth venv from the main installation guide:
+```ini
+command=/home/allianceserver/venv/auth/bin/gunicorn myauth.wsgi
+```
 
 ### Starting via Supervisor
 
@@ -89,4 +97,6 @@ Any web server capable of proxy passing should be able to sit in front of Gunico
 
 In the past when you made changes you restarted the entire Apache server. This is no longer required. When you update or make configuration changes that ask you to restart Apache, instead you can just restart Gunicorn:
 
-`supervisorctl restart gunicorn`, or the service name you chose for it.
+```bash
+supervisorctl restart myauth:gunicorn
+```

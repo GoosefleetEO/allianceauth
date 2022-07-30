@@ -19,20 +19,25 @@ BROADCAST_USER_PASSWORD = ""
 BROADCAST_SERVICE_NAME = "broadcast"
 ```
 
-## Dependencies
+## OS Dependencies
 
 Openfire require a Java 8 runtime environment.
 
-Ubuntu:
+Ubuntu 1804, 2004, 2204:
 
 ```bash
-apt-get install openjdk-8-jdk
+sudo apt-get install openjdk-11-jre
 ```
 
-CentOS:
+Centos 7:
 
 ```bash
-yum -y install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+sudo yum install java-11-openjdk java-11-openjdk-devel
+```
+
+Centos Stream 8, Stream 9:
+```bash
+sudo dnf install java-11-openjdk java-11-openjdk-devel
 ```
 
 ## Setup
@@ -45,22 +50,26 @@ On your PC, navigate to the [Ignite Realtime downloads section](https://www.igni
 
 Retrieve the file location by copying the URL from the “click here” link, depending on your browser you may have a Copy Link or similar option in your right click menu.
 
-In the console, ensure you’re in your user’s home directory: `cd ~`
+In the console, ensure you’re in your user’s home directory:
+```bash
+cd ~
+```
 
-Now download the package. Replace the link below with the link you got earlier.
+Download and install the package, replacing the URL with the latest you got from the Openfire download page earlier
 
-`wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_4.2.3_all.deb`
+Ubuntu 1804, 2004, 2204:
 
-Now install from the package. Replace the filename with your filename (the last part of the download URL is the file name)
+```bash
+wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire_4.7.2_all.deb
+dpkg -i openfire_4.7.2_all.deb
+```
 
-Ubuntu:
+Centos 7, Stream 8, Stream 9:
 
-`dpkg -i openfire_4.2.3_all.deb`
-
-CentOS:
-
-`yum install -y openfire-4.2.3-1.noarch.rpm`
-
+```bash
+wget https://www.igniterealtime.org/downloadServlet?filename=openfire/openfire-4.7.2-1.noarch.rpm
+yum install -y openfire-4.7.2-1.noarch.rpm
+```
 ### Create Database
 
 Performance is best when working from a SQL database. If you installed MySQL or MariaDB alongside your auth project, go ahead and create a database for Openfire:

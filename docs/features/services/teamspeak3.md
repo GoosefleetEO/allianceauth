@@ -34,18 +34,19 @@ CELERYBEAT_SCHEDULE['run_ts3_group_update'] = {
 
 ### Download Installer
 
-To install we need a copy of the server. You can find the latest version from [this dl server](http://dl.4players.de/ts/releases/) (I’d recommend getting the latest stable version – find this version number from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the Linux version.
+To install we need a copy of the server. You can find the latest version from the [TeamSpeak site](https://www.teamspeak.com/downloads#)). Be sure to get a link to the Linux version.
 
 Download the server, replacing the link with the link you got earlier.
 
-```text
-http://dl.4players.de/ts/releases/3.13.2/teamspeak3-server_linux_amd64-3.13.2.tar.bz2
+``` bash
+cd ~
+wget https://files.teamspeak-services.com/releases/server/3.13.7/teamspeak3-server_linux_amd64-3.13.7.tar.bz2
 ```
 
 Now we need to extract the file.
 
 ```bash
-tar -xf teamspeak3-server_linux_amd64-3.1.0.tar.bz2
+tar -xf teamspeak3-server_linux_amd64-3.13.7.tar.bz2
 ```
 
 ### Create User
@@ -82,14 +83,19 @@ service teamspeak start
 
 ### Update Settings
 
-The console will spit out a block of text. If it does not appear, it can be found with `service teamspeak status`. **SAVE THIS**.
+Set your Teamspeak Serveradmin password to a random string
+
+```bash
+./ts3server_minimal_runscript.sh inifile=ts3server.ini serveradmin_password=pleasegeneratearandomstring
+
+```
 
 If you plan on claiming the ServerAdmin token, do so with a different TeamSpeak client profile than the one used for your auth account, or you will lose your admin status.
 
 Edit the settings you added to your auth project's settings file earlier, entering the following:
 
-- `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from that block of text it just spat out (usually `serveradmin`)
-- `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` from that block of text it just spat out
+- `TEAMSPEAK3_SERVERQUERY_USER` is `loginname` from the above bash command (usually `serveradmin`)
+- `TEAMSPEAK3_SERVERQUERY_PASSWORD` is `password` following the equals in `serveradmin_password=`
 - `TEAMSPEAK_VIRTUAL_SERVER` is the virtual server ID of the server to be managed - it will only ever not be 1 if your server is hosted by a professional company
 - `TEAMSPEAK3_PUBLIC_URL` is the public address of your TeamSpeak server. Do not include any leading http:// or teamspeak://
 

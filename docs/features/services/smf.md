@@ -36,17 +36,17 @@ Using your browser, you can download the latest version of SMF to your desktop c
 
 Download using wget, replacing the URL with the URL for the package you just retrieved
 
-```shell
-wget https://download.simplemachines.org/index.php?thanks;filename=smf_2-0-15_install.zip
+```bash
+wget https://download.simplemachines.org/index.php?thanks;filename=smf_2-1-2_install.tar.gz
 ```
 
 This needs to be unpackaged. Unzip it, replacing the file name with that of the file you just downloaded
-```shell
-unzip smf_2-0-15_install.zip
-````
+```bash
+unzip smf_2-1-2_install.zip
+```
 
 Now we need to move this to our web directory. Usually `/var/www/forums`.
-```shell
+```bash
 mv smf /var/www/forums
 ````
 

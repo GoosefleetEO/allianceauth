@@ -8,11 +8,6 @@ Mumble is a free voice chat server. While not as flashy as TeamSpeak, it has all
 ```
 
 ```eval_rst
-.. note::
-    Same as the official installation guide this guide is assuming you are performing all steps as ``root`` user.
-```
-
-```eval_rst
 .. warning::
     This guide is currently for Ubuntu only.
 ```
@@ -24,17 +19,17 @@ Mumble is a free voice chat server. While not as flashy as TeamSpeak, it has all
 The mumble server package can be retrieved from a repository, which we need to add:
 
 ```bash
-apt-add-repository ppa:mumble/release
+sudo apt-add-repository ppa:mumble/release
 ```
 
 ```bash
-apt-get update
+sudo apt-get update
 ```
 
 Now three packages need to be installed:
 
 ```bash
-apt-get install python-software-properties mumble-server libqt5sql5-mysql
+sudo apt-get install python-software-properties mumble-server libqt5sql5-mysql
 ```
 
 ### Installing Mumble Authenticator
@@ -51,7 +46,7 @@ We will now install the authenticator into your Auth virtual environment. Please
 source /home/allianceserver/venv/auth/bin/activate
 ```
 
-Install the python dependencies for the mumble authenticator. Note that this process can take a couple minutes to complete.
+Install the python dependencies for the mumble authenticator. Note that this process can take 2-10 minutes to complete.
 
 ```bash
 pip install -r requirements.txt
@@ -72,7 +67,7 @@ GRANT ALL PRIVILEGES ON alliance_mumble . * TO 'allianceserver'@'localhost';
 Mumble ships with a configuration file that needs customization. By default it’s located at `/etc/mumble-server.ini`. Open it with your favorite text editor:
 
 ```bash
-nano /etc/mumble-server.ini
+sudo nano /etc/mumble-server.ini
 ```
 
 We need to enable the ICE authenticator. Edit the following:
@@ -96,7 +91,7 @@ Save and close the file.
 To get Mumble superuser account credentials, run the following:
 
 ```bash
-dpkg-reconfigure mumble-server
+sudo dpkg-reconfigure mumble-server
 ```
 
 Set the password to something you’ll remember and write it down. This is your superuser password and later needed to manage ACLs.
@@ -104,7 +99,7 @@ Set the password to something you’ll remember and write it down. This is your 
 Now restart the server to see the changes reflected.
 
 ```bash
-service mumble-server restart
+sudo service mumble-server restart
 ```
 
 That’s it! Your server is ready to be connected to at example.com:64738
@@ -136,7 +131,7 @@ python /home/allianceserver/mumble-authenticator/authenticator.py
 And finally ensure the allianceserver user has read/write permissions to the mumble authenticator files before proceeding:
 
 ```bash
-chown -R allianceserver:allianceserver /home/allianceserver/mumble-authenticator
+sudo chown -R allianceserver:allianceserver /home/allianceserver/mumble-authenticator
 ```
 
 The authenticator needs to be running 24/7 to validate users on Mumble. This can be achieved by adding a section to your auth project's supervisor config file like the following example:
@@ -165,8 +160,8 @@ priority=999
 To enable the changes in your supervisor configuration you need to restart the supervisor process itself. And before we do that we are shutting down the current Auth supervisors gracefully:
 
 ```bash
-supervisor stop myauth:
-systemctl restart supervisor
+sudo supervisor stop myauth:
+sudo systemctl restart supervisor
 ```
 
 ## Configuring Auth
@@ -255,8 +250,8 @@ There is no way to force your users to update their clients or use Push to Talk,
 
 <https://wiki.mumble.info/wiki/Murmur.ini#Miscellany>
 
-We suggest using Mumble 1.3.0+ for your server and Clients, you can tune this to the latest Patch version.
-`suggestVersion=1.3.0`
+We suggest using Mumble 1.4.0+ for your server and Clients, you can tune this to the latest Patch version.
+`suggestVersion=1.4.230`
 
 If Push to Talk is to your tastes, configure the suggestion as follows
 `suggestPushToTalk=true`
@@ -268,7 +263,7 @@ If Push to Talk is to your tastes, configure the suggestion as follows
 With the default configuration your mumble server is public. Meaning that everyone who has the address can at least connect to it and might also be able join all channels that don't have any permissions set (Depending on your ACL configured for the root channel). If you want only registered member being able to join your mumble, you have to set a server password. To do so open your mumble server configuration which is by default located at `/etc/mumble-server.ini`.
 
 ```bash
-nano /etc/mumble-server.ini
+sudo nano /etc/mumble-server.ini
 ```
 
 Now search for `serverpassword=` and set your password here. If there is no such line, simply add it.
@@ -280,7 +275,7 @@ serverpassword=YourSuperSecretServerPassword
 Save the file and restart your mumble server afterwards.
 
 ```bash
-service mumble-server restart
+sudo service mumble-server restart
 ```
 
 From now on, only registered member can join your mumble server. Now if you still want to allow guests to join you have 2 options.

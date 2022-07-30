@@ -8,19 +8,39 @@ If you're using a small VPS to host services with very limited memory, consider 
 
 ## Installation
 
-Ubuntu:
+Ubuntu 1804, 2004:
+```bash
+apt-get install apache2
+```
 
-    apt-get install apache2
+CentOS 7:
+```bash
+yum install httpd
+```
+Centos Stream 8, Stream 9
+```bash
+dnf install httpd
+```
 
-CentOS:
+CentOS 7, Stream 8, Stream 9
+```bash
+systemctl enable httpd
+```
 
-    yum install httpd
-    systemctl enable httpd
-    systemctl start httpd
-
+```bash
+systemctl start httpd
+```
 ## Configuration
 
-Apache needs to be able to read the folder containing your auth project's static files. On Ubuntu: `chown -R www-data:www-data /var/www/myauth/static`, and on CentOS: `chown -R apache:apache /var/www/myauth/static`
+Apache needs to be able to read the folder containing your auth project's static files.
+Ubuntu 1804, 2004:
+```
+chown -R www-data:www-data /var/www/myauth/static
+```
+CentOS 7, Stream 8, Stream 9
+```
+chown -R apache:apache /var/www/myauth/static
+```
 
 Apache serves sites through defined virtual hosts. These are located in `/etc/apache2/sites-available/` on Ubuntu and `/etc/httpd/conf.d/httpd.conf` on CentOS.
 
@@ -29,12 +49,19 @@ A virtual host for auth need only proxy requests to your WSGI server (Gunicorn i
 ### Ubuntu
 
 To proxy and modify headers a few mods need to be enabled.
-
-    a2enmod proxy
-    a2enmod proxy_http
-    a2enmod headers
+```bash
+a2enmod proxy
+a2enmod proxy_http
+a2enmod headers
+```
 
 Create a new config file for auth e.g. `/etc/apache2/sites-available/myauth.conf` and fill out the virtual host configuration. To enable your config use `a2ensite myauth.conf` and then reload apache with `service apache2 reload`.
+
+```eval_rst
+.. warning::
+    In some scenarios, the Apache default page is still enabled. To disable it use::
+      a2dissite 000-default.conf
+```
 
 ### CentOS
 
