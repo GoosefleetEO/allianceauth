@@ -13,6 +13,12 @@ STATIC_ROOT = "/var/www/{{ project_name }}/static/"
 # in page titles and the site header.
 SITE_NAME = '{{ project_name }}'
 
+# This is your websites URL, set it accordingly
+SITE_URL = "https://example.com"
+
+# Django security
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
+
 # Change this to enable/disable debug mode, which displays
 # useful error messages but can leak sensitive data.
 DEBUG = False
