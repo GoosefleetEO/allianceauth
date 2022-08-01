@@ -384,7 +384,7 @@ allianceauth start myauth
 
 The settings file needs configuring, edit the template at `myauth/myauth/settings/local.py`.
 
-Be sure to configure:
+**Be sure to configure:**
 * Your site URL as `SITE_URL`
 * The Database account setup earlier in **Database Setup**
 * `ESI_SSO_CLIENT_ID`, `ESI_SSO_CLIENT_SECRET` from the EVE Online Developers Portal earlier in **Eve Online Settings**
