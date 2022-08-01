@@ -1,4 +1,3 @@
-{% load static %}
 {% load i18n %}
 {% load navactive %}
 {% load auth_notifications %}
@@ -16,8 +15,7 @@
 
         {% include 'bundles/bootstrap-css.html' %}
         {% include 'bundles/fontawesome.html' %}
-
-        <link href="{% static 'allianceauth/css/auth-base.css' %}" rel="stylesheet">
+        {% include 'bundles/auth-base-css.html' %}
 
         {% block extra_css %}{% endblock extra_css %}
     </head>

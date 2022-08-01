@@ -1,5 +1,4 @@
 {% extends "allianceauth/base.html" %}
-{% load static %}
 {% load i18n %}
 
 {% load humanize %}
@@ -7,7 +6,7 @@
 {% block extra_css %}
     {% include 'bundles/datatables-css.html' %}
     {% include 'bundles/x-editable.css.html' %}
-    <link href="{% static 'allianceauth/css/checkbox.css' %}" rel="stylesheet">
+    {% include 'bundles/checkbox-css.html' %}
     <style>
         .copy-text-fa-icon:hover {
             cursor: pointer;
