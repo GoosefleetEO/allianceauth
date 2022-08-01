@@ -17,8 +17,11 @@ Make the following changes in your auth project's settings file (`local.py`):
 
 ```python
 # Discord Configuration
+# Be sure to set the callback URLto https://example.com/discord/callback/
+# substituting your domain for example.com in Discord's developer portal
+# (Be sure to add the trailing slash)
 DISCORD_GUILD_ID = ''
-DISCORD_CALLBACK_URL = ''
+DISCORD_CALLBACK_URL = f"{SITE_URL}/discord/callback/"
 DISCORD_APP_ID = ''
 DISCORD_APP_SECRET = ''
 DISCORD_BOT_TOKEN = ''

@@ -13,6 +13,12 @@ STATIC_ROOT = "/var/www/{{ project_name }}/static/"
 # in page titles and the site header.
 SITE_NAME = '{{ project_name }}'
 
+# This is your websites URL, set it accordingly
+SITE_URL = "https://example.com"
+
+# Django security
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
+
 # Change this to enable/disable debug mode, which displays
 # useful error messages but can leak sensitive data.
 DEBUG = False
@@ -39,15 +45,16 @@ DATABASES['default'] = {
 
 # Register an application at https://developers.eveonline.com for Authentication
 # & API Access and fill out these settings. Be sure to set the callback URL
-# to https://example.com/sso/callback substituting your domain for example.com
+# to https://example.com/sso/callback substituting your domain for example.com in
+# CCP's developer portal
 # Logging in to auth requires the publicData scope (can be overridden through the
 # LOGIN_TOKEN_SCOPES setting). Other apps may require more (see their docs).
 ESI_SSO_CLIENT_ID = ''
 ESI_SSO_CLIENT_SECRET = ''
-ESI_SSO_CALLBACK_URL = ''
+ESI_SSO_CALLBACK_URL = f"{SITE_URL}/sso/callback"
 ESI_USER_CONTACT_EMAIL = ''    # A server maintainer that CCP can contact in case of issues.
 
-# By default emails are validated before new users can log in.
+# By default, emails are validated before new users can log in.
 # It's recommended to use a free service like SparkPost or Elastic Email to send email.
 # https://www.sparkpost.com/docs/integrations/django/
 # https://elasticemail.com/resources/settings/smtp-api/
