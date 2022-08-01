@@ -344,8 +344,6 @@ For **scopes** your SSO app needs to have at least `publicData`. Additional scop
 
 As **callback URL** you want to define the URL of your Alliance Auth site plus the route: `/sso/callback`. Example for a valid callback URL: `https://auth.example.com/sso/callback`
 
-In `local.py` you will need to set `ESI_USER_CONTACT_EMAIL` to an email address to ensure that CCP has reliable contact information for you.
-
 ### Alliance Auth Project
 
 Update Pip before installing python packages:
@@ -384,7 +382,14 @@ The following command bootstraps a Django project which will run your **Alliance
 allianceauth start myauth
 ```
 
-The settings file needs configuring. Edit the template at `myauth/myauth/settings/local.py`. Be sure to configure the EVE SSO as defined earlier in **Eve Online Settings** and valid Email settings.
+The settings file needs configuring, edit the template at `myauth/myauth/settings/local.py`.
+
+Be sure to configure:
+* Your site URL as `SITE_URL`
+* The Database account setup earlier in **Database Setup**
+* `ESI_SSO_CLIENT_ID`, `ESI_SSO_CLIENT_SECRET` from the EVE Online Developers Portal earlier in **Eve Online Settings**
+* `ESI_USER_CONTACT_EMAIL` to an email address to ensure that CCP has reliable contact information for you
+* Valid Email server settings.
 
 Django needs to install models to the database before it can start.
 
