@@ -2,5 +2,10 @@
 CSS for allianceauth admin site
 */
 
-.img-circle { border-radius: 50%; }
-.column-user_profile_pic { width: 50px; }
+.img-circle {
+    border-radius: 50%;
+}
+
+.column-user_profile_pic {
+    width: 50px;
+}
