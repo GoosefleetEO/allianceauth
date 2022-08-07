@@ -248,59 +248,82 @@ def fatlink_monthly_personal_statistics_view(request, year, month, char_id=None)
 
 @login_required
 @token_required(
-    scopes=['esi-location.read_location.v1', 'esi-location.read_ship_type.v1', 'esi-universe.read_structures.v1'])
+    scopes=[
+        'esi-location.read_location.v1',
+        'esi-location.read_ship_type.v1',
+        'esi-universe.read_structures.v1',
+        'esi-location.read_online.v1',
+    ]
+)
 def click_fatlink_view(request, token, fat_hash=None):
-    fatlink = get_object_or_404(Fatlink, hash=fat_hash)
+    c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
+    character = EveCharacter.objects.get_character_by_id(token.character_id)
+    character_online = c.Location.get_characters_character_id_online(
+        character_id=token.character_id
+    ).result()
 
-    if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
+    if character_online["online"] is True:
+        fatlink = get_object_or_404(Fatlink, hash=fat_hash)
 
-        character = EveCharacter.objects.get_character_by_id(token.character_id)
+        if (timezone.now() - fatlink.fatdatetime) < datetime.timedelta(seconds=(fatlink.duration * 60)):
+            if character:
+                # get data
+                location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
+                ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
+                location['solar_system_name'] = \
+                    c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
 
-        if character:
-            # get data
-            c = token.get_esi_client(spec_file=SWAGGER_SPEC_PATH)
-            location = c.Location.get_characters_character_id_location(character_id=token.character_id).result()
-            ship = c.Location.get_characters_character_id_ship(character_id=token.character_id).result()
-            location['solar_system_name'] = \
-                c.Universe.get_universe_systems_system_id(system_id=location['solar_system_id']).result()['name']
-            if location['station_id']:
-                location['station_name'] = \
-                    c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
-            elif location['structure_id']:
-                location['station_name'] = \
-                    c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
-                        'name']
+                if location['station_id']:
+                    location['station_name'] = \
+                        c.Universe.get_universe_stations_station_id(station_id=location['station_id']).result()['name']
+                elif location['structure_id']:
+                    location['station_name'] = \
+                        c.Universe.get_universe_structures_structure_id(structure_id=location['structure_id']).result()[
+                            'name']
+                else:
+                    location['station_name'] = "No Station"
+
+                ship['ship_type_name'] = provider.get_itemtype(ship['ship_type_id']).name
+
+                fat = Fat()
+                fat.system = location['solar_system_name']
+                fat.station = location['station_name']
+                fat.shiptype = ship['ship_type_name']
+                fat.fatlink = fatlink
+                fat.character = character
+                fat.user = request.user
+
+                try:
+                    fat.full_clean()
+                    fat.save()
+                    messages.success(request, _('Fleet participation registered.'))
+                except ValidationError as e:
+                    err_messages = []
+
+                    for errorname, message in e.message_dict.items():
+                        err_messages.append(message[0])
+
+                    messages.error(request, ' '.join(err_messages))
             else:
-                location['station_name'] = "No Station"
-            ship['ship_type_name'] = provider.get_itemtype(ship['ship_type_id']).name
+                context = {
+                    'character_id': token.character_id,
+                    'character_name': token.character_name,
+                    'character_portrait_url': EveCharacter.generic_portrait_url(
+                        token.character_id, 128
+                    ),
+                }
 
-            fat = Fat()
-            fat.system = location['solar_system_name']
-            fat.station = location['station_name']
-            fat.shiptype = ship['ship_type_name']
-            fat.fatlink = fatlink
-            fat.character = character
-            fat.user = request.user
-            try:
-                fat.full_clean()
-                fat.save()
-                messages.success(request, _('Fleet participation registered.'))
-            except ValidationError as e:
-                err_messages = []
-                for errorname, message in e.message_dict.items():
-                    err_messages.append(message[0])
-                messages.error(request, ' '.join(err_messages))
+                return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
         else:
-            context = {
-                'character_id': token.character_id,
-                'character_name': token.character_name,
-                'character_portrait_url': EveCharacter.generic_portrait_url(
-                    token.character_id, 128
-                ),
-            }
-            return render(request, 'fleetactivitytracking/characternotexisting.html', context=context)
+            messages.error(request, _('FAT link has expired.'))
     else:
-        messages.error(request, _('FAT link has expired.'))
+        messages.warning(
+            request,
+            _(
+                f"Cannot register the fleet participation for {character.character_name}. The character needs to be online."
+            ),
+        )
+
     return redirect('fatlink:view')
 
 
