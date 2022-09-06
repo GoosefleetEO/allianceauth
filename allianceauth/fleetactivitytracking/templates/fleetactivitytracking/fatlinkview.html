@@ -33,7 +33,7 @@
                 <td class="text-center">{{ fat.fatlink.fleet }}</td>
                 <td class="text-center">{{ fat.character.character_name }}</td>
                 {%  if fat.station != "No Station" %}
-                <td class="text-center">{% blocktrans %}Docked in {% endblocktrans %}{{ fat.system }}</td>
+                <td class="text-center">{% blocktranslate %}Docked in {% endblocktranslate %}{{ fat.system }}</td>
                 {% else %}
                 <td class="text-center">{{ fat.system }}</td>
                 {% endif %}

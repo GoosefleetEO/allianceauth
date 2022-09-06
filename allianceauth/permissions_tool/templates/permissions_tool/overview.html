@@ -8,10 +8,10 @@
         <h1 class="page-header">{% translate "Permissions Overview" %}</h1>
         <p>
         {% if request.GET.all != 'yes' %}
-            {% blocktrans %}Showing only applied permissions{% endblocktrans %}
+            {% blocktranslate %}Showing only applied permissions{% endblocktranslate %}
             <a href="{% url 'permissions_tool:overview' %}?all=yes" class="btn btn-primary">{% translate "Show All" %}</a>
         {% else %}
-            {% blocktrans %}Showing all permissions{% endblocktrans %}
+            {% blocktranslate %}Showing all permissions{% endblocktranslate %}
             <a href="{% url 'permissions_tool:overview' %}?all=no" class="btn btn-primary">{% translate "Show Applied" %}</a>
         {% endif %}
         </p>

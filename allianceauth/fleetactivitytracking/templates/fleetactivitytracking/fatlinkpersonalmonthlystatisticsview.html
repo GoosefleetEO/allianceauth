@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ month }}, {{ year }}{% endblocktrans %}
+        <h1 class="page-header text-center">{% blocktranslate %}Participation data statistics for {{ month }}, {{ year }}{% endblocktranslate %}
             {% if char_id %}
             <div class="text-right">
                 <a href="{% url 'fatlink:user_statistics_month' char_id previous_month|date:'Y' previous_month|date:'m' %}" class="btn btn-info">{% translate "Previous month" %}</a>
@@ -14,11 +14,11 @@
             {% endif %}
         </h1>
         <h2>
-            {% blocktrans count links=n_fats trimmed %}
+            {% blocktranslate count links=n_fats trimmed %}
                 {{ user }} has collected one link this month.
             {% plural %}
                 {{ user }} has collected {{ links }} links this month.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </h2>
         <table class="table table-responsive">
             <tr>
@@ -34,11 +34,11 @@
         </table>
         {%  if created_fats %}
         <h2>
-            {% blocktrans count links=n_created_fats trimmed  %}
+            {% blocktranslate count links=n_created_fats trimmed  %}
                 {{ user }} has created one link this month.
             {% plural %}
                 {{ user }} has created {{ links }} links this month.
-            {% endblocktrans %}
+            {% endblocktranslate %}
         </h2>
         {% if created_fats %}
         <table class="table">

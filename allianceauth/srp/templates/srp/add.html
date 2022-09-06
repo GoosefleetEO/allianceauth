@@ -23,7 +23,7 @@
                             <button class="btn btn-lg btn-primary btn-block" type="submit">{% translate "Create SRP Fleet" %}</button>
                         </form>
                     {% else %}
-                        <div class="alert alert-info" role="alert">{% blocktrans %}Give this link to the line members{% endblocktrans %}.</div>
+                        <div class="alert alert-info" role="alert">{% blocktranslate %}Give this link to the line members{% endblocktranslate %}.</div>
                         <div class="alert alert-info" role="alert">
                             {{ request.scheme }}://{{ request.get_host }}{% url 'srp:request' completed_srp_code %}</div>
                         <div class="text-center">

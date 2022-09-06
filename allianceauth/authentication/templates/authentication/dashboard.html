@@ -14,9 +14,9 @@
                 <div class="panel panel-primary" style="height:100%">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            {% blocktrans with state=request.user.profile.state %}
+                            {% blocktranslate with state=request.user.profile.state %}
                                 Main Character (State: {{ state }})
-                            {% endblocktrans %}
+                            {% endblocktranslate %}
                         </h3>
                     </div>
                     <div class="panel-body">

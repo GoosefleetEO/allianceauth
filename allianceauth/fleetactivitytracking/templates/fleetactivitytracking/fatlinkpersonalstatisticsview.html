@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="col-lg-12">
-        <h1 class="page-header text-center">{% blocktrans %}Participation data statistics for {{ year }}{% endblocktrans %}
+        <h1 class="page-header text-center">{% blocktranslate %}Participation data statistics for {{ year }}{% endblocktranslate %}
             <div class="text-right">
                 <a href="{% url 'fatlink:personal_statistics_year' previous_year %}" class="btn btn-info">{% translate "Previous year" %}</a>
                 {%  if next_year %}

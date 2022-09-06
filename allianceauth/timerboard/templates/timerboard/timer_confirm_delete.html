@@ -16,7 +16,7 @@
                 <div class="row">
                     <form action="" method="post">
                         {% csrf_token %}
-                        <p>{% blocktrans %}Are you sure you want to delete timer "{{ object }}"?{% endblocktrans %}</p>
+                        <p>{% blocktranslate %}Are you sure you want to delete timer "{{ object }}"?{% endblocktranslate %}</p>
                         <input class="btn btn-danger btn-block" type="submit" value="Confirm">
                     </form>
                 </div>

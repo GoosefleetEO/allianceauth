@@ -3,13 +3,13 @@
 
 
 {% block page_title %}
-    {% blocktrans with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktrans %}
+    {% blocktranslate with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktranslate %}
 {% endblock page_title %}
 
 {% block content %}
     <div class="col-lg-12">
         <h1 class="page-header text-center">
-            {% blocktrans with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktrans %}
+            {% blocktranslate with service_name=view.service_name|title %}Delete {{ service_name }} Account?{% endblocktranslate %}
         </h1>
         <div class="container-fluid">
             <div class="col-md-2 col-md-offset-5">
@@ -17,9 +17,9 @@
                     <form action="" method="post">
                         {% csrf_token %}
                         <p>
-                            {% blocktrans trimmed with service_name=view.service_name|title %}
+                            {% blocktranslate trimmed with service_name=view.service_name|title %}
                             Are you sure you want to delete your {{ service_name }} account {{ object }}?
-                            {% endblocktrans %}
+                            {% endblocktranslate %}
                         </p>
                         <input class="btn btn-danger btn-block" type="submit" value="Confirm">
                     </form>
