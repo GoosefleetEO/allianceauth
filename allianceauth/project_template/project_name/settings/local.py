@@ -14,6 +14,7 @@ STATIC_ROOT = "/var/www/{{ project_name }}/static/"
 SITE_NAME = '{{ project_name }}'
 
 # This is your websites URL, set it accordingly
+# Make sure this URL is WITHOUT a trailing slash
 SITE_URL = "https://example.com"
 
 # Django security
