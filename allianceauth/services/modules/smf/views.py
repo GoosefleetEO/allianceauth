@@ -19,26 +19,51 @@ ACCESS_PERM = 'smf.access_smf'
 @login_required
 @permission_required(ACCESS_PERM)
 def activate_smf(request):
-    logger.debug("activate_smf called by user %s" % request.user)
+    logger.debug(f"activate_smf called by user {request.user}")
     # Valid now we get the main characters
-    character = request.user.profile.main_character
-    logger.debug(f"Adding smf user for user {request.user} with main character {character}")
-    result = SmfManager.add_user(SmfTasks.get_username(request.user), request.user.email, ['Member'], character.character_id)
+    main_character = request.user.profile.main_character
+
+    logger.debug(
+        f"Adding smf user for user {request.user} with main character {main_character}"
+    )
+
+    result = SmfManager.add_user(
+        SmfTasks.get_username(request.user),
+        request.user.email,
+        ['Member'],
+        main_character,
+    )
+
     # if empty we failed
     if result[0] != "":
-        SmfUser.objects.update_or_create(user=request.user, defaults={'username': result[0]})
-        logger.debug("Updated authserviceinfo for user %s with smf credentials. Updating groups." % request.user)
+        SmfUser.objects.update_or_create(
+            user=request.user, defaults={'username': result[0]}
+        )
+
+        logger.debug(
+            f"Updated authserviceinfo for user {request.user} "
+            f"with smf credentials. Updating groups."
+        )
+
         SmfTasks.update_groups.delay(request.user.pk)
-        logger.info("Successfully activated smf for user %s" % request.user)
+
+        logger.info(f"Successfully activated smf for user {request.user}")
+
         messages.success(request, _('Activated SMF account.'))
         credentials = {
             'username': result[0],
             'password': result[1],
         }
-        return render(request, 'services/service_credentials.html', context={'credentials': credentials, 'service': 'SMF'})
-    else:
-        logger.error("Unsuccessful attempt to activate smf for user %s" % request.user)
-        messages.error(request, _('An error occurred while processing your SMF account.'))
+
+        return render(
+            request,
+            'services/service_credentials.html',
+            context={'credentials': credentials, 'service': 'SMF'},
+        )
+
+    logger.error(f"Unsuccessful attempt to activate smf for user {request.user}")
+    messages.error(request, _('An error occurred while processing your SMF account.'))
+
     return redirect("services:services")
 
 
