@@ -60,7 +60,7 @@
                                                 <i class="glyphicon glyphicon-list-alt"></i>
                                             </a>
 
-                                            <a id="clipboard-copy" data-clipboard-text="{{ request.scheme }}://{{request.get_host}}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% translate "Copy Direct Join Link" %}">
+                                            <a id="clipboard-copy" data-clipboard-text="{{ SITE_URL }}{% url 'groupmanagement:request_add' group.id %}" class="btn btn-warning" title="{% translate "Copy Direct Join Link" %}">
                                                 <i class="glyphicon glyphicon-copy"></i>
                                             </a>
                                         </td>
