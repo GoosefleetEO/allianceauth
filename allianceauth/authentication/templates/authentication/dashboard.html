@@ -159,7 +159,7 @@
                                 </td>
                                 <td class="text-center">{{ char.character_name }}</td>
                                 <td class="text-center">{{ char.corporation_name }}</td>
-                                <td class="text-center">{{ char.alliance_name }}</td>
+                                <td class="text-center">{{ char.alliance_name|default:"" }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
