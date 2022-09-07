@@ -71,7 +71,7 @@ class EveAllianceInfo(models.Model):
     """An alliance in Eve Online."""
 
     alliance_id = models.PositiveIntegerField(unique=True)
-    alliance_name = models.CharField(max_length=254, unique=True)
+    alliance_name = models.CharField(max_length=254, db_index=True)
     alliance_ticker = models.CharField(max_length=254)
     executor_corp_id = models.PositiveIntegerField()
 
@@ -139,7 +139,7 @@ class EveCorporationInfo(models.Model):
     """A corporation in Eve Online."""
 
     corporation_id = models.PositiveIntegerField(unique=True)
-    corporation_name = models.CharField(max_length=254, unique=True)
+    corporation_name = models.CharField(max_length=254, db_index=True)
     corporation_ticker = models.CharField(max_length=254)
     member_count = models.IntegerField()
     ceo_id = models.PositiveIntegerField(blank=True, null=True, default=None)
