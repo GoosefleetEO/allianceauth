@@ -11,6 +11,8 @@ from packaging import version
 
 from django.db import connections
 from django.conf import settings
+from django.contrib.auth.models import User
+
 from allianceauth.eveonline.models import EveCharacter
 
 logger = logging.getLogger(__name__)
@@ -39,6 +41,8 @@ class SmfManager:
     SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
 
     SQL_UPD_USER = r"UPDATE %smembers SET email_address = %%s, passwd = %%s, real_name = %%s WHERE member_name = %%s" % TABLE_PREFIX
+
+    SQL_UPD_DISPLAY_NAME = r"UPDATE %smembers SET real_name = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
     SQL_DIS_USER = r"UPDATE %smembers SET email_address = %%s, passwd = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
@@ -271,6 +275,27 @@ class SmfManager:
             logger.info(f"Deleted smf user {username}")
             return True
         logger.error(f"Unable to delete smf user {username} - user not found on smf.")
+        return False
+
+    @classmethod
+    def update_display_name(cls, user: User):
+        logger.debug(f"Updating SMF displayed name for user {user}")
+        cursor = connections['smf'].cursor()
+        smf_username = user.smf.username
+
+        try:
+            display_name = user.profile.main_character.character_name
+        except Exception as exc:
+            logger.exception(
+                f"Unable to find a main character name for {user}, skipping... ({exc})"
+            )
+            display_name = smf_username
+
+        if cls.check_user(smf_username):
+            cursor.execute(cls.SQL_UPD_DISPLAY_NAME, [display_name, smf_username])
+            logger.info(f"Updated displayed name for smf user {smf_username}")
+            return True
+        logger.error(f"Unable to update smf user {smf_username} - user not found on smf.")
         return False
 
     @classmethod

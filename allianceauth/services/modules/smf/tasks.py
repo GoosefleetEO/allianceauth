@@ -58,6 +58,40 @@ class SmfTasks:
             logger.debug("User does not have an smf account")
 
     @staticmethod
+    @shared_task(bind=True, name="smf.update_display_name", base=QueueOnce)
+    def update_display_name(self, pk):
+        user = User.objects.get(pk=pk)
+        logger.debug(f"Updating SMF displayed name user {user}")
+
+        if SmfTasks.has_account(user):
+            try:
+                if not SmfManager.update_display_name(user):
+                    raise Exception("SMF Displayed Name Sync failed")
+                logger.debug(f"Updated user {user} SMF displayed name.")
+                return True
+            except SmfUser.DoesNotExist:
+                logger.info(
+                    f"SMF displayed name sync failed for {user}, "
+                    "user does not have a SMF account"
+                )
+            except:
+                logger.exception(
+                    f"SMF displayed name sync failed for {user}, retrying in 10 mins"
+                )
+                raise self.retry(countdown=60 * 10)
+        else:
+            logger.debug(f"User {user} does not have a SMF account, skipping")
+
+        return False
+
+    @staticmethod
+    @shared_task(name="smf.update_all_display_names")
+    def update_all_display_names():
+        logger.debug("Updating ALL SMF display names")
+        for smf_user in SmfUser.objects.exclude(username__exact=''):
+            SmfTasks.update_display_name.delay(smf_user)
+
+    @staticmethod
     @shared_task(name="smf.update_all_groups")
     def update_all_groups():
         logger.debug("Updating ALL smf groups")
