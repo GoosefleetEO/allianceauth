@@ -284,7 +284,7 @@ python manage.py migrate
 We also need to create a superuser for our AA installation:
 
 ```bash
-python /home/allianceserver/myauth/manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 ## Running Alliance Auth
@@ -319,7 +319,7 @@ In addition you can start a celery worker instance for myauth. For development p
 This can be done from the command line with the following command in the myauth folder (where manage.py is located):
 
 ```bash
-celery -E -A myauth worker -l info -P solo
+celery -A myauth worker -l info -P solo
 ```
 
 Same as AA itself you can start Celery from any terminal session, from a terminal window within VSC or as a debug config in VSC (see chapter about debugging for details). For convenience we recommend starting Celery as debug config.
