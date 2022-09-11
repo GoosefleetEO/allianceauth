@@ -103,13 +103,17 @@
                         {% endif %}
                         <div class="clearfix"></div>
                         <div class="row">
-                            <div class="col-sm-6 button-wrapper">
-                                <a href="{% url 'authentication:add_character' %}" class="btn btn-block btn-info"
-                                title="Add Character">{% translate 'Add Character' %}</a>
+                            <div class="col-sm-6">
+                                <p>
+                                    <a href="{% url 'authentication:add_character' %}" class="btn btn-block btn-info"
+                                    title="Add Character">{% translate 'Add Character' %}</a>
+                                </p>
                             </div>
-                            <div class="col-sm-6 button-wrapper">
-                                <a href="{% url 'authentication:change_main_character' %}" class="btn btn-block btn-info"
-                                title="Change Main Character">{% translate "Change Main" %}</a>
+                            <div class="col-sm-6">
+                                <p>
+                                    <a href="{% url 'authentication:change_main_character' %}" class="btn btn-block btn-info"
+                                    title="Change Main Character">{% translate "Change Main" %}</a>
+                                </p>
                             </div>
                         </div>
                     </div>
