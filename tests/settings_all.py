@@ -10,40 +10,43 @@ from allianceauth.project_template.project_name.settings.base import *
 CELERY_ALWAYS_EAGER = True  # Forces celery to run locally for testing
 
 INSTALLED_APPS += [
-    'allianceauth.eveonline.autogroups',
-    'allianceauth.hrapplications',
-    'allianceauth.timerboard',
-    'allianceauth.srp',
-    'allianceauth.optimer',
-    'allianceauth.corputils',
-    'allianceauth.fleetactivitytracking',
-    'allianceauth.permissions_tool',
-    'allianceauth.services.modules.mumble',
-    'allianceauth.services.modules.discord',
-    'allianceauth.services.modules.discourse',
-    'allianceauth.services.modules.ips4',
-    'allianceauth.services.modules.openfire',
-    'allianceauth.services.modules.smf',
-    'allianceauth.services.modules.phpbb3',
-    'allianceauth.services.modules.xenforo',
-    'allianceauth.services.modules.teamspeak3',
+    "allianceauth.eveonline.autogroups",
+    "allianceauth.hrapplications",
+    "allianceauth.timerboard",
+    "allianceauth.srp",
+    "allianceauth.optimer",
+    "allianceauth.corputils",
+    "allianceauth.fleetactivitytracking",
+    "allianceauth.permissions_tool",
+    "allianceauth.services.modules.mumble",
+    "allianceauth.services.modules.discord",
+    "allianceauth.services.modules.discourse",
+    "allianceauth.services.modules.ips4",
+    "allianceauth.services.modules.openfire",
+    "allianceauth.services.modules.smf",
+    "allianceauth.services.modules.phpbb3",
+    "allianceauth.services.modules.xenforo",
+    "allianceauth.services.modules.teamspeak3",
 ]
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = "tests.urls"
+
+SITE_URL = "https://example.com"
+CSRF_TRUSTED_ORIGINS = [SITE_URL]
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1"
+        "LOCATION": "redis://127.0.0.1:6379/1",
     }
 }
 
 ########################
 # XenForo Configuration
 ########################
-XENFORO_ENDPOINT = 'example.com/api.php'
+XENFORO_ENDPOINT = "example.com/api.php"
 XENFORO_DEFAULT_GROUP = 0
-XENFORO_APIKEY   = 'yourapikey'
+XENFORO_APIKEY = "yourapikey"
 #####################
 
 ######################
@@ -79,7 +82,7 @@ MUMBLE_SERVER_ID = 1
 ######################################
 # PHPBB3 Configuration
 ######################################
-PHPBB3_URL = ''
+PHPBB3_URL = ""
 
 ######################################
 # Teamspeak3 Configuration
@@ -92,12 +95,12 @@ PHPBB3_URL = ''
 # TEAMSPEAK3_AUTHED_GROUP_ID - Default authed group id
 # TEAMSPEAK3_PUBLIC_URL - teamspeak3 public url used for link creation
 ######################################
-TEAMSPEAK3_SERVER_IP = '127.0.0.1'
+TEAMSPEAK3_SERVER_IP = "127.0.0.1"
 TEAMSPEAK3_SERVER_PORT = 10011
-TEAMSPEAK3_SERVERQUERY_USER = 'serveradmin'
-TEAMSPEAK3_SERVERQUERY_PASSWORD = 'passwordhere'
+TEAMSPEAK3_SERVERQUERY_USER = "serveradmin"
+TEAMSPEAK3_SERVERQUERY_PASSWORD = "passwordhere"
 TEAMSPEAK3_VIRTUAL_SERVER = 1
-TEAMSPEAK3_PUBLIC_URL = 'example.com'
+TEAMSPEAK3_PUBLIC_URL = "example.com"
 
 ######################################
 # Discord Configuration
@@ -110,13 +113,13 @@ TEAMSPEAK3_PUBLIC_URL = 'example.com'
 # DISCORD_CALLBACK_URL - oauth callback url
 # DISCORD_SYNC_NAMES - enable to force discord nicknames to be set to eve char name (bot needs Manage Nicknames permission)
 ######################################
-DISCORD_GUILD_ID = '0118999'
-DISCORD_BOT_TOKEN = 'bottoken'
-DISCORD_INVITE_CODE = 'invitecode'
-DISCORD_APP_ID = 'appid'
-DISCORD_APP_SECRET = 'secret'
-DISCORD_CALLBACK_URL = 'http://example.com/discord/callback'
-DISCORD_SYNC_NAMES = 'True' == 'False'
+DISCORD_GUILD_ID = "0118999"
+DISCORD_BOT_TOKEN = "bottoken"
+DISCORD_INVITE_CODE = "invitecode"
+DISCORD_APP_ID = "appid"
+DISCORD_APP_SECRET = "secret"
+DISCORD_CALLBACK_URL = "http://example.com/discord/callback"
+DISCORD_SYNC_NAMES = "True" == "False"
 
 ######################################
 # Discourse Configuration
@@ -126,10 +129,10 @@ DISCORD_SYNC_NAMES = 'True' == 'False'
 # DISCOURSE_API_KEY - API Key
 # DISCOURSE_SSO_SECRET - SSO secret key
 ######################################
-DISCOURSE_URL = 'https://example.com'
-DISCOURSE_API_USERNAME = ''
-DISCOURSE_API_KEY = ''
-DISCOURSE_SSO_SECRET = 'd836444a9e4084d5b224a60c208dce14'
+DISCOURSE_URL = "https://example.com"
+DISCOURSE_API_USERNAME = ""
+DISCOURSE_API_KEY = ""
+DISCOURSE_SSO_SECRET = "d836444a9e4084d5b224a60c208dce14"
 # Example secret from https://meta.discourse.org/t/official-single-sign-on-for-discourse/13045
 
 #####################################
@@ -138,16 +141,16 @@ DISCOURSE_SSO_SECRET = 'd836444a9e4084d5b224a60c208dce14'
 # IPS4_URL - base url of the IPS4 install (no trailing slash)
 # IPS4_API_KEY - API key provided by IPS4
 #####################################
-IPS4_URL = 'http://example.com/ips4'
-IPS4_API_KEY = ''
+IPS4_URL = "http://example.com/ips4"
+IPS4_API_KEY = ""
 
 ######################################
 # SMF Configuration
 ######################################
-SMF_URL = ''
+SMF_URL = ""
 
 PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
+    "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
 
 LOGGING = None  # Comment out to enable logging for debugging

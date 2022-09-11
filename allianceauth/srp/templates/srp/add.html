@@ -25,7 +25,8 @@
                     {% else %}
                         <div class="alert alert-info" role="alert">{% blocktranslate %}Give this link to the line members{% endblocktranslate %}.</div>
                         <div class="alert alert-info" role="alert">
-                            {{ request.scheme }}://{{ request.get_host }}{% url 'srp:request' completed_srp_code %}</div>
+                            {{ SITE_URL }}{% url 'srp:request' completed_srp_code %}
+                        </div>
                         <div class="text-center">
                             <a href="{% url 'srp:management' %}" class="btn btn-primary btn-lg">{% translate "Continue" %}</a>
                         </div>
