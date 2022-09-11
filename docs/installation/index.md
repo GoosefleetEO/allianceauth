@@ -13,4 +13,5 @@ In addition to main guide for installation Alliance Auth you also find guides fo
     apache
     gunicorn
     upgrade_python
+    switch_to_non_root
 ```
