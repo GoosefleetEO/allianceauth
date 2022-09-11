@@ -5,7 +5,7 @@ app_name = "groupmanagement"
 
 urlpatterns = [
     # groups
-    path("groups", views.groups_view, name="groups"),
+    path("groups/", views.groups_view, name="groups"),
     path("group/request/join/<int:group_id>/", views.group_request_add, name="request_add"),
     path(
         "group/request/leave/<int:group_id>/", views.group_request_leave, name="request_leave"

@@ -11,7 +11,7 @@ urlpatterns = [
     path('<int:fleet_id>/view/', views.srp_fleet_view, name='fleet'),
     path('add/', views.srp_fleet_add_view, name='add'),
     path('<int:fleet_id>/edit/', views.srp_fleet_edit_view, name='edit'),
-    path('<str:fleet_srp>/request', views.srp_request_view, name='request'),
+    path('<str:fleet_srp>/request/', views.srp_request_view, name='request'),
 
     # SRP URLS
     path('<int:fleet_id>/remove/', views.srp_fleet_remove, name='remove'),
@@ -27,6 +27,6 @@ urlpatterns = [
         name='request_approve'),
     path('request/reject/', views.srp_request_reject,
         name='request_reject'),
-    path('request/<int:fleet_srp_request_id>/update', views.srp_request_update_amount,
+    path('request/<int:fleet_srp_request_id>/update/', views.srp_request_update_amount,
         name="request_update_amount"),
 ]
