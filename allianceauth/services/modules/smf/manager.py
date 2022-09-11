@@ -5,11 +5,14 @@ from datetime import datetime
 import hashlib
 import logging
 import re
+from typing import Tuple
 
 from packaging import version
 
 from django.db import connections
 from django.conf import settings
+from django.contrib.auth.models import User
+
 from allianceauth.eveonline.models import EveCharacter
 
 logger = logging.getLogger(__name__)
@@ -36,6 +39,10 @@ class SmfManager:
     SQL_GET_CURRENT_SMF_VERSION = r"SELECT data FROM %sadmin_info_files WHERE filename = %%s" % TABLE_PREFIX
 
     SQL_DEL_USER = r"DELETE FROM %smembers where member_name = %%s" % TABLE_PREFIX
+
+    SQL_UPD_USER = r"UPDATE %smembers SET email_address = %%s, passwd = %%s, real_name = %%s WHERE member_name = %%s" % TABLE_PREFIX
+
+    SQL_UPD_DISPLAY_NAME = r"UPDATE %smembers SET real_name = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
     SQL_DIS_USER = r"UPDATE %smembers SET email_address = %%s, passwd = %%s WHERE member_name = %%s" % TABLE_PREFIX
 
@@ -174,50 +181,75 @@ class SmfManager:
         return out
 
     @classmethod
-    def add_user(cls, username, email_address, groups, characterid):
+    def add_user(cls, username, email_address, groups, main_character: EveCharacter) -> Tuple:
+        """
+        Add a user to SMF
+        :param username:
+        :param email_address:
+        :param groups:
+        :param main_character:
+        :return:
+        """
+
+        main_character_id = main_character.character_id
+        main_character_name = main_character.character_name
+
         logger.debug(
-            f"Adding smf user with member_name {username}, "
-            f"email_address {email_address}, "
-            f"characterid {characterid}"
+            f"Adding smf user with member_name: {username}, "
+            f"email_address: {email_address}, "
+            f"characterid: {main_character_id}, "
+            f"main character: {main_character_name}"
         )
+
         cursor = connections['smf'].cursor()
         username_clean = cls.santatize_username(username)
         passwd = cls.generate_random_pass()
         pwhash = cls.gen_hash(username_clean, passwd)
-        logger.debug(f"Proceeding to add smf user {username} and pwhash starting with {pwhash[0:5]}")
         register_date = cls.get_current_utc_date()
+
+        logger.debug(f"Proceeding to add smf user {username} and pwhash starting with {pwhash[0:5]}")
+
         # check if the username was simply revoked
         if cls.check_user(username) is True:
-            logger.warning(f"Unable to add smf user with username {username} - already exists. Updating user instead.")
-            cls.__update_user_info(username_clean, email_address, pwhash)
+            logger.warning(
+                f"Unable to add smf user with username {username} - "
+                f"already exists. Updating user instead."
+            )
+
+            cls.__update_user_info(
+                username_clean, email_address, pwhash, main_character_name
+            )
         else:
             try:
                 smf_version = cls._get_current_smf_version()
+                sql_add_user_arguments = [
+                    username_clean,
+                    pwhash,
+                    email_address,
+                    register_date,
+                    main_character_name,
+                ]
 
                 if version.parse(smf_version) < version.parse("2.1"):
                     logger.debug("SMF compatibility: < 2.1")
 
-                    cursor.execute(
-                        cls.SQL_ADD_USER_SMF_20,
-                        [username_clean, pwhash, email_address, register_date, username_clean]
-                    )
+                    cursor.execute(cls.SQL_ADD_USER_SMF_20, sql_add_user_arguments)
                 else:
                     logger.debug("SMF compatibility: >= 2.1")
 
-                    cursor.execute(
-                        cls.SQL_ADD_USER_SMF_21,
-                        [username_clean, pwhash, email_address, register_date, username_clean]
-                    )
-                cls.add_avatar(username_clean, characterid)
+                    cursor.execute(cls.SQL_ADD_USER_SMF_21, sql_add_user_arguments)
+
+                cls.add_avatar(username_clean, main_character_id)
                 logger.info(f"Added smf member_name {username_clean}")
                 cls.update_groups(username_clean, groups)
             except Exception as e:
                 logger.warning(f"Unable to add smf user {username_clean}: {e}")
                 pass
+
         return username_clean, passwd
 
     @classmethod
-    def __update_user_info(cls, username, email_address, passwd):
+    def __update_user_info(cls, username, email_address, passwd, main_character_name):
         logger.debug(
             f"Updating smf user {username} info: "
             f"username {email_address} "
@@ -225,7 +257,9 @@ class SmfManager:
         )
         cursor = connections['smf'].cursor()
         try:
-            cursor.execute(cls.SQL_DIS_USER, [email_address, passwd, username])
+            cursor.execute(
+                cls.SQL_UPD_USER, [email_address, passwd, main_character_name, username]
+            )
             logger.info(f"Updated smf user {username} info")
         except Exception as e:
             logger.exception(f"Unable to update smf user {username} info. ({e})")
@@ -241,6 +275,27 @@ class SmfManager:
             logger.info(f"Deleted smf user {username}")
             return True
         logger.error(f"Unable to delete smf user {username} - user not found on smf.")
+        return False
+
+    @classmethod
+    def update_display_name(cls, user: User):
+        logger.debug(f"Updating SMF displayed name for user {user}")
+        cursor = connections['smf'].cursor()
+        smf_username = user.smf.username
+
+        try:
+            display_name = user.profile.main_character.character_name
+        except Exception as exc:
+            logger.exception(
+                f"Unable to find a main character name for {user}, skipping... ({exc})"
+            )
+            display_name = smf_username
+
+        if cls.check_user(smf_username):
+            cursor.execute(cls.SQL_UPD_DISPLAY_NAME, [display_name, smf_username])
+            logger.info(f"Updated displayed name for smf user {smf_username}")
+            return True
+        logger.error(f"Unable to update smf user {smf_username} - user not found on smf.")
         return False
 
     @classmethod

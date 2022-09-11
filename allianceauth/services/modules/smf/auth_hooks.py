@@ -38,6 +38,12 @@ class SmfService(ServicesHook):
         if SmfTasks.has_account(user):
             SmfTasks.update_groups.delay(user.pk)
 
+    def sync_nickname(self, user):
+        logger.debug(f"Updating {self.name} displayed name for {user}")
+
+        if SmfTasks.has_account(user):
+            SmfTasks.update_display_name.apply_async(args=[user.pk], countdown=5) # cooldown on this task to ensure DB clean when syncing
+
     def update_all_groups(self):
         logger.debug('Update all %s groups called' % self.name)
         SmfTasks.update_all_groups.delay()
