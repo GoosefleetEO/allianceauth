@@ -6,16 +6,16 @@
 # Translators:
 # Erik Kalkoken <erik.kalkoken@gmail.com>, 2020
 # Joel Falknau <ozirascal@gmail.com>, 2021
-# Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2021
+# Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2022
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-11 23:57+1000\n"
+"POT-Creation-Date: 2022-09-14 23:17+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2021\n"
+"Last-Translator: Peter Pfeufer <rounon.dax@terra-nanotech.de>, 2022\n"
 "Language-Team: German (https://www.transifex.com/alliance-auth/teams/107430/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,6 +44,7 @@ msgstr "E-Mail"
 #, python-format
 msgid "You are not allowed to add or remove these restricted groups: %s"
 msgstr ""
+"Du kannst diese eingeschränkten Gruppen nicht hinzufügen oder entfernen: %s"
 
 #: allianceauth/authentication/models.py:80
 #: allianceauth/project_template/project_name/settings/base.py:89
@@ -92,7 +93,7 @@ msgstr "Italienisch"
 
 #: allianceauth/authentication/models.py:91
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: allianceauth/authentication/models.py:96
 #: allianceauth/templates/allianceauth/night-toggle.html:6
@@ -175,19 +176,20 @@ msgstr "Einloggen"
 
 #: allianceauth/authentication/templates/public/login.html:10
 msgid "Login with Eve SSO"
-msgstr ""
+msgstr "Mit Eve SSO einloggen"
 
 #: allianceauth/authentication/templates/public/middle_box.html:24
 msgid "For information on SSO, ESI and security read the CCP Dev Blog"
 msgstr ""
+"Für Informationen zu SSO, ESI und Sicherheit, lies bitte den CCP Dev-Blog"
 
 #: allianceauth/authentication/templates/public/middle_box.html:26
 msgid "Introducing ESI - A New API For Eve Online"
-msgstr ""
+msgstr "Wir stellen ESI vor – eine neue API für Eve Online (Englisch)"
 
 #: allianceauth/authentication/templates/public/middle_box.html:32
 msgid "Manage ESI Applications"
-msgstr ""
+msgstr "ESI Applikationen verwalten"
 
 #: allianceauth/authentication/templates/public/register.html:6
 msgid "Registration"
@@ -609,11 +611,11 @@ msgstr "Keine erstellten FAT-Links bekannt."
 
 #: allianceauth/fleetactivitytracking/views.py:218
 msgid "Character does not exist"
-msgstr ""
+msgstr "Charakter existiert nicht"
 
 #: allianceauth/fleetactivitytracking/views.py:221
 msgid "User does not exist"
-msgstr ""
+msgstr "Nutzer existiert nicht"
 
 #: allianceauth/fleetactivitytracking/views.py:299
 msgid "Fleet participation registered."
@@ -629,6 +631,8 @@ msgid ""
 "Cannot register the fleet participation for {character.character_name}. The "
 "character needs to be online."
 msgstr ""
+"Die Flottenteilnahme für {character.character_name} kann nicht registriert "
+"werden. Der Charakter muss hierzu online sein."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:13
@@ -690,6 +694,8 @@ msgid ""
 "Group is restricted. This means that adding or removing users for this group"
 " requires a superuser admin."
 msgstr ""
+"Gruppe ist eingeschränkt. Das bedeutet, dass zum Hinzufügen oder Entfernen "
+"von Benutzern für diese Gruppe ein Superuser/Administrator erforderlich ist."
 
 #: allianceauth/groupmanagement/models.py:144
 msgid ""
@@ -1292,7 +1298,7 @@ msgstr "Titel"
 
 #: allianceauth/notifications/templates/notifications/list_partial.html:28
 msgid "No notifications."
-msgstr ""
+msgstr "Keine Benachrichtigungen"
 
 #: allianceauth/notifications/templates/notifications/view.html:4
 #: allianceauth/notifications/templates/notifications/view.html:8
@@ -1926,7 +1932,7 @@ msgstr "Gib diesen Link an Deine Piloten weiter"
 
 #: allianceauth/srp/templates/srp/data.html:5
 msgid "Srp Fleet Data"
-msgstr ""
+msgstr "SRP Flotten Daten"
 
 #: allianceauth/srp/templates/srp/data.html:50
 msgid "SRP Fleet Data"
@@ -2216,6 +2222,8 @@ msgid ""
 "                    Status of %(total)s processed tasks • last %(latest)s\n"
 "                    "
 msgstr ""
+"\n"
+"Status von %(total)s verarbeiteten Tasks • innerhalb der letzten %(latest)s"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
 #, python-format
@@ -2224,6 +2232,8 @@ msgid ""
 "                        %(queue_length)s queued tasks\n"
 "                        "
 msgstr ""
+"\n"
+"%(queue_length)s Tasks in der Warteschlange"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
 msgid "Admin"
