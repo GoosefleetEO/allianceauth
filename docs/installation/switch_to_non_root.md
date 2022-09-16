@@ -15,7 +15,7 @@ First, log in as your sudo user and run the following commands in order:
 ```shell
 sudo chown -R allianceserver: /home/allianceserver
 sudo chown -R allianceserver: /var/www/myauth
-sudo chmod -r 655 /var/www/myauth
+sudo chmod -R 655 /var/www/myauth
 ```
 
 That's it. Your AA installation is now configured to be maintained with the `allianceserver` user.
