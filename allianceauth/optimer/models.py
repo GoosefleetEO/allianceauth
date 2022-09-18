@@ -34,7 +34,7 @@ class OpTimer(models.Model):
     fc = models.CharField(max_length=254, default="")
     post_time = models.DateTimeField(default=timezone.now)
     eve_character = models.ForeignKey(EveCharacter, null=True,
-                                      on_delete=models.SET_NULL)
+                                    on_delete=models.SET_NULL)
     description = models.TextField(blank=True, default="")
     type = models.ForeignKey(OpTimerType, null=True, on_delete=models.SET_NULL)
 
