@@ -13,9 +13,23 @@ repos:
       - id: check-yaml
       - id: fix-byte-order-marker
       - id: trailing-whitespace
-        exclude: (\.min\.css|\.min\.js|\.mo|\.po|swagger\.json)$
+        exclude: |
+          (?x)(
+            \.min\.css|
+            \.min\.js|
+            \.po|
+            \.mo|
+            swagger\.json
+          )
       - id: end-of-file-fixer
-        exclude: (\.min\.css|\.min\.js|\.mo|\.po|swagger\.json)$
+        exclude: |
+          (?x)(
+            \.min\.css|
+            \.min\.js|
+            \.po|
+            \.mo|
+            swagger\.json
+          )
       - id: mixed-line-ending
         args: [ '--fix=lf' ]
       - id: fix-encoding-pragma
@@ -25,7 +39,14 @@ repos:
     rev: 2.4.0
     hooks:
       - id: editorconfig-checker
-        exclude: ^(LICENSE|allianceauth\/static\/allianceauth\/css\/themes\/bootstrap-locals.less|allianceauth\/eveonline\/swagger.json|(.*.po)|(.*.mo))
+        exclude: |
+          (?x)(
+            LICENSE|
+            allianceauth\/static\/allianceauth\/css\/themes\/bootstrap-locals.less|
+            \.po|
+            \.mo|
+            swagger\.json
+          )
 
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.34.0

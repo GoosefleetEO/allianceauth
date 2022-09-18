@@ -8,13 +8,13 @@ from uuid import uuid4
 class AnalyticsIdentifier(models.Model):
 
     identifier = models.UUIDField(default=uuid4,
-                                  editable=False)
+                                editable=False)
 
     def save(self, *args, **kwargs):
         if not self.pk and AnalyticsIdentifier.objects.exists():
             # Force a single object
             raise ValidationError('There is can be only one \
-                                   AnalyticsIdentifier instance')
+                                    AnalyticsIdentifier instance')
         self.pk = self.id = 1 # If this happens to be deleted and recreated, force it to be 1
         return super().save(*args, **kwargs)
 
