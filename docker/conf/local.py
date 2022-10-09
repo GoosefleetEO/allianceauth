@@ -28,7 +28,9 @@ DATABASES["default"] = {
 ESI_SSO_CLIENT_ID = os.environ.get("ESI_SSO_CLIENT_ID")
 ESI_SSO_CLIENT_SECRET = os.environ.get("ESI_SSO_CLIENT_SECRET")
 ESI_SSO_CALLBACK_URL = f"{SITE_URL}/sso/callback"
-ESI_USER_CONTACT_EMAIL = os.environ.get("ESI_USER_CONTACT_EMAIL")  # A server maintainer that CCP can contact in case of issues.
+ESI_USER_CONTACT_EMAIL = os.environ.get(
+    "ESI_USER_CONTACT_EMAIL"
+)  # A server maintainer that CCP can contact in case of issues.
 
 # By default emails are validated before new users can log in.
 # It's recommended to use a free service like SparkPost or Elastic Email to send email.
@@ -48,7 +50,6 @@ ROOT_URLCONF = "myauth.urls"
 WSGI_APPLICATION = "myauth.wsgi.application"
 STATIC_ROOT = "/var/www/myauth/static/"
 BROKER_URL = f"redis://{os.environ.get('AA_REDIS', 'redis:6379')}/0"
-CELERY_RESULT_BACKEND = f"redis://{os.environ.get('AA_REDIS', 'redis:6379')}/0"
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
