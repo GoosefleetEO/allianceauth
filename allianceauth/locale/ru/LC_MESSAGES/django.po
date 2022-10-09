@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 23:17+1000\n"
+"POT-Creation-Date: 2022-10-09 18:20+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
 "Last-Translator: Андрей Зубков <and.vareba81@gmail.com>, 2020\n"
 "Language-Team: Russian (https://www.transifex.com/alliance-auth/teams/107430/ru/)\n"
@@ -45,47 +45,38 @@ msgid "You are not allowed to add or remove these restricted groups: %s"
 msgstr ""
 
 #: allianceauth/authentication/models.py:80
-#: allianceauth/project_template/project_name/settings/base.py:89
 msgid "English"
 msgstr ""
 
 #: allianceauth/authentication/models.py:81
-#: allianceauth/project_template/project_name/settings/base.py:90
 msgid "German"
 msgstr ""
 
 #: allianceauth/authentication/models.py:82
-#: allianceauth/project_template/project_name/settings/base.py:91
 msgid "Spanish"
 msgstr ""
 
 #: allianceauth/authentication/models.py:83
-#: allianceauth/project_template/project_name/settings/base.py:92
 msgid "Chinese Simplified"
 msgstr ""
 
 #: allianceauth/authentication/models.py:84
-#: allianceauth/project_template/project_name/settings/base.py:93
 msgid "Russian"
 msgstr ""
 
 #: allianceauth/authentication/models.py:85
-#: allianceauth/project_template/project_name/settings/base.py:94
 msgid "Korean"
 msgstr ""
 
 #: allianceauth/authentication/models.py:86
-#: allianceauth/project_template/project_name/settings/base.py:95
 msgid "French"
 msgstr ""
 
 #: allianceauth/authentication/models.py:87
-#: allianceauth/project_template/project_name/settings/base.py:96
 msgid "Japanese"
 msgstr ""
 
 #: allianceauth/authentication/models.py:88
-#: allianceauth/project_template/project_name/settings/base.py:97
 msgid "Italian"
 msgstr ""
 
