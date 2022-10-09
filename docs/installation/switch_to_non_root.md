@@ -13,9 +13,15 @@ The migration itself is rather straightforward. The main idea is to change owner
 First, log in as your sudo user and run the following commands in order:
 
 ```shell
+# Set the right owner
 sudo chown -R allianceserver: /home/allianceserver
 sudo chown -R allianceserver: /var/www/myauth
-sudo chmod -r 655 /var/www/myauth
+
+# Remove static files, they will be re-added later
+sudo rm -rf /var/www/mayauth/static/*
+
+# Fix directory permissions
+sudo chmod -R 755 /var/www/myauth
 ```
 
 That's it. Your AA installation is now configured to be maintained with the `allianceserver` user.
@@ -43,6 +49,13 @@ Finally, switch to the main AA folder, from where you can run most commands dire
 
 ```shell
 cd myauth
+```
+
+Now it's time to re-add the static files with the right permissions. To do so simply
+run:
+
+```shell
+python manage.py collectstatic
 ```
 
 When you want to restart myauth, you need to switch back to your sudo user, because `allianceserver` does not have sudo privileges:

@@ -84,17 +84,16 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale/'),
 )
 
-ugettext = lambda s: s
 LANGUAGES = (
-    ('en', ugettext('English')),
-    ('de', ugettext('German')),
-    ('es', ugettext('Spanish')),
-    ('zh-hans', ugettext('Chinese Simplified')),
-    ('ru', ugettext('Russian')),
-    ('ko', ugettext('Korean')),
-    ('fr', ugettext('French')),
-    ('ja', ugettext('Japanese')),
-    ('it', ugettext('Italian')),
+    ("en", "English"),
+    ("de", "German"),
+    ("es", "Spanish"),
+    ("zh-hans", "Chinese Simplified"),
+    ("ru", "Russian"),
+    ("ko", "Korean"),
+    ("fr", "French"),
+    ("ja", "Japanese"),
+    ("it", "Italian"),
 )
 
 TEMPLATES = [

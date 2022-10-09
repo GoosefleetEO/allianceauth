@@ -18,13 +18,13 @@ class State(models.Model):
     priority = models.IntegerField(unique=True, help_text="Users get assigned the state with the highest priority available to them.")
 
     member_characters = models.ManyToManyField(EveCharacter, blank=True,
-                                               help_text="Characters to which this state is available.")
+                                                help_text="Characters to which this state is available.")
     member_corporations = models.ManyToManyField(EveCorporationInfo, blank=True,
-                                                 help_text="Corporations to whose members this state is available.")
+                                                help_text="Corporations to whose members this state is available.")
     member_alliances = models.ManyToManyField(EveAllianceInfo, blank=True,
-                                              help_text="Alliances to whose members this state is available.")
+                                            help_text="Alliances to whose members this state is available.")
     member_factions = models.ManyToManyField(EveFactionInfo, blank=True,
-                                             help_text="Factions to whose members this state is available.")
+                                            help_text="Factions to whose members this state is available.")
     public = models.BooleanField(default=False, help_text="Make this state available to any character.")
 
     objects = StateManager()
