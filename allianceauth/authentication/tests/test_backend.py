@@ -116,10 +116,17 @@ class TestAuthenticate(TestCase):
         user = StateBackend().authenticate(token=t)
         self.assertEqual(user, self.user)
 
+    """ Alt Login disabled
     def test_authenticate_alt_character(self):
         t = Token(character_id=self.alt_character.character_id, character_owner_hash='2')
         user = StateBackend().authenticate(token=t)
         self.assertEqual(user, self.user)
+    """
+
+    def test_authenticate_alt_character_fail(self):
+        t = Token(character_id=self.alt_character.character_id, character_owner_hash='2')
+        user = StateBackend().authenticate(token=t)
+        self.assertEqual(user, None)
 
     def test_authenticate_unclaimed_character(self):
         t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='3')
@@ -128,7 +135,17 @@ class TestAuthenticate(TestCase):
         self.assertEqual(user.username, 'Unclaimed_Character')
         self.assertEqual(user.profile.main_character, self.unclaimed_character)
 
+    """ Alt Login disabled
     def test_authenticate_character_record(self):
+        t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
+        OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
+        user = StateBackend().authenticate(token=t)
+        self.assertEqual(user, self.old_user)
+        self.assertTrue(CharacterOwnership.objects.filter(owner_hash='4', user=self.old_user).exists())
+        self.assertTrue(user.profile.main_character)
+    """
+
+    def test_authenticate_character_record_fails(self):
         t = Token(character_id=self.unclaimed_character.character_id, character_name=self.unclaimed_character.character_name, character_owner_hash='4')
         OwnershipRecord.objects.create(user=self.old_user, character=self.unclaimed_character, owner_hash='4')
         user = StateBackend().authenticate(token=t)
