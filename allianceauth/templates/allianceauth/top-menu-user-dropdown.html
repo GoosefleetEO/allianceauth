@@ -53,6 +53,9 @@
         <!-- logout / login -->
         <li role="separator" class="divider"></li>
         {% if user.is_authenticated %}
+            <li><a href="{% url 'authentication:token_management' %}">{% translate "Token Management" %}</a></li>
+            <li role="separator" class="divider"></li>
+
             <li><a href="{% url 'logout' %}">{% translate "Logout" %}</a></li>
         {% else %}
             <li><a href="{% url 'authentication:login' %}">{% translate "Login" %}</a></li>
