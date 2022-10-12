@@ -65,9 +65,9 @@ On the application summary page, press Create a Bot User.
 
 Update your auth project's settings file with these pieces of information from the summary page:
 
-- From the App Details panel, `DISCORD_APP_ID` is the Client/Application ID
-- From the App Details panel, `DISCORD_APP_SECRET` is the Secret
-- From the App Bot Users panel, `DISCORD_BOT_TOKEN` is the Token
+- From the General Information panel, `DISCORD_APP_ID` is the Client/Application ID
+- From the OAuth2 > General panel, `DISCORD_APP_SECRET` is the Client Secret
+- From the Bot panel, `DISCORD_BOT_TOKEN` is the Token
 
 ### Preparing Auth
 
