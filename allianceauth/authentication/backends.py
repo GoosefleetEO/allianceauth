@@ -2,6 +2,7 @@ import logging
 
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User, Permission
+from django.contrib import messages
 
 from .models import UserProfile, CharacterOwnership, OwnershipRecord
 
@@ -37,7 +38,13 @@ class StateBackend(ModelBackend):
             ownership = CharacterOwnership.objects.get(character__character_id=token.character_id)
             if ownership.owner_hash == token.character_owner_hash:
                 logger.debug(f'Authenticating {ownership.user} by ownership of character {token.character_name}')
-                return ownership.user
+                if ownership.user.profile.main_character:
+                    if ownership.user.profile.main_character.character_id == token.character_id:
+                        return ownership.user
+                    else:  ## this is an alt, enforce main only.
+                        if request:
+                            messages.error("Unable to authenticate with this Character, Please log in with the main character associated with this account.")
+                        return None
             else:
                 logger.debug(f'{token.character_name} has changed ownership. Creating new user account.')
                 ownership.delete()
@@ -57,13 +64,20 @@ class StateBackend(ModelBackend):
                 if records.exists():
                     # we've seen this character owner before. Re-attach to their old user account
                     user = records[0].user
+                    if user.profile.main_character:
+                        if ownership.user.profile.main_character.character_id != token.character_id:
+                            ## this is an alt, enforce main only due to trust issues in SSO.
+                            if request:
+                                messages.error("Unable to authenticate with this Character, Please log in with the main character associated with this account. Then add this character from the dashboard.")
+                            return None
+
                     token.user = user
                     co = CharacterOwnership.objects.create_by_token(token)
                     logger.debug(f'Authenticating {user} by matching owner hash record of character {co.character}')
-                    if not user.profile.main_character:
-                        # set this as their main by default if they have none
-                        user.profile.main_character = co.character
-                        user.profile.save()
+
+                    # set this as their main by default as they have none
+                    user.profile.main_character = co.character
+                    user.profile.save()
                     return user
             logger.debug(f'Unable to authenticate character {token.character_name}. Creating new user.')
             return self.create_user(token)
