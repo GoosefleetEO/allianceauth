@@ -1,6 +1,4 @@
-from glob import escape
 import logging
-from symbol import except_clause
 
 from django.conf import settings
 from django.contrib import messages
@@ -73,7 +71,7 @@ def token_management(request):
     return render(request, 'authentication/tokens.html', context)
 
 @login_required
-def token_revoke(request, token_id=None):
+def token_delete(request, token_id=None):
     try:
         token = Token.objects.get(id=token_id)
         if request.user == token.user:

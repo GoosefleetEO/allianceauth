@@ -28,9 +28,9 @@ urlpatterns = [
         name='token_management'
     ),
     path(
-        'account/tokens/revoke/<int:token_id>',
-        views.token_revoke,
-        name='token_revoke'
+        'account/tokens/delete/<int:token_id>',
+        views.token_delete,
+        name='token_delete'
     ),
     path(
         'account/tokens/refresh/<int:token_id>',
