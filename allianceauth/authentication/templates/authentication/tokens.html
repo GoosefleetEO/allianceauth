@@ -1,0 +1,62 @@
+{% extends "allianceauth/base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Dashboard" %}{% endblock %}
+
+{% block content %}
+    <h1 class="page-header text-center">{% translate "Token Management" %}</h1>
+    <div class="col-sm-12">
+        <table class="table table-aa" id="table_tokens" style="width:100%">
+            <thead>
+                <tr>
+                    <th>{% translate "Scopes" %}</th>
+                    <th class="text-right">{% translate "Actions" %}</th>
+                    <th>{% translate "Character" %}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tokens %}
+                    <tr>
+                        <td styl="white-space:initial;">{% for s in t.scopes.all %}<span class="label label-default">{{s.name}}</span> {% endfor %}</td>
+                        <td nowrap class="text-right"><a href="{% url 'authentication:token_delete' t.id %}" class="btn btn-danger"><i class="fas fa-trash"></i></a> <a href="{% url 'authentication:token_refresh' t.id %}" class="btn btn-success"><i class="fas fa-sync-alt"></i></a></td>
+                        <td>{{t.character_name}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% translate "This page is a best attempt, but backups or database logs can still contain your tokens. Always revoke tokens on https://community.eveonline.com/support/third-party-applications/ where possible."|urlize %}
+    </div>
+{% endblock %}
+
+{% block extra_javascript %}
+    {% include 'bundles/datatables-js.html' %}
+{% endblock %}
+
+{% block extra_css %}
+    {% include 'bundles/datatables-css.html' %}
+{% endblock %}
+
+{% block extra_script %}
+    $(document).ready(function(){
+        let grp = 2;
+        var table = $('#table_tokens').DataTable({
+            "columnDefs": [{ orderable: false, targets: [0,1] },{ "visible": false, "targets": grp }],
+            "order": [[grp, 'asc']],
+            "drawCallback": function (settings) {
+                var api = this.api();
+                var rows = api.rows({ page: 'current' }).nodes();
+                var last = null;
+                api.column(grp, { page: 'current' })
+                    .data()
+                    .each(function (group, i) {
+                        if (last !== group) {
+                            $(rows).eq(i).before('<tr class="info"><td colspan="3">' + group + '</td></tr>');
+                            last = group;
+                        }
+                    });
+            },
+            "stateSave": true,
+        });
+    });
+{% endblock %}

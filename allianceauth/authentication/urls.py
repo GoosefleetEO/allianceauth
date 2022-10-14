@@ -22,5 +22,20 @@ urlpatterns = [
         views.add_character,
         name='add_character'
     ),
+    path(
+        'account/tokens/manage/',
+        views.token_management,
+        name='token_management'
+    ),
+    path(
+        'account/tokens/delete/<int:token_id>',
+        views.token_delete,
+        name='token_delete'
+    ),
+    path(
+        'account/tokens/refresh/<int:token_id>',
+        views.token_refresh,
+        name='token_refresh'
+    ),
     path('dashboard/', views.dashboard, name='dashboard'),
 ]

@@ -61,6 +61,44 @@ def dashboard(request):
     }
     return render(request, 'authentication/dashboard.html', context)
 
+@login_required
+def token_management(request):
+    tokens = request.user.token_set.all()
+
+    context = {
+        'tokens': tokens
+    }
+    return render(request, 'authentication/tokens.html', context)
+
+@login_required
+def token_delete(request, token_id=None):
+    try:
+        token = Token.objects.get(id=token_id)
+        if request.user == token.user:
+            token.delete()
+            messages.success(request, "Token Deleted.")
+        else:
+            messages.error(request, "This token does not belong to you.")
+    except Token.DoesNotExist:
+        messages.warning(request, "Token does not exist")
+    return redirect('authentication:token_management')
+
+@login_required
+def token_refresh(request, token_id=None):
+    try:
+        token = Token.objects.get(id=token_id)
+        if request.user == token.user:
+            try:
+                token.refresh()
+                messages.success(request, "Token refreshed.")
+            except Exception as e:
+                messages.warning(request, f"Failed to refresh token. {e}")
+        else:
+            messages.error(request, "This token does not belong to you.")
+    except Token.DoesNotExist:
+        messages.warning(request, "Token does not exist")
+    return redirect('authentication:token_management')
+
 
 @login_required
 @token_required(scopes=settings.LOGIN_TOKEN_SCOPES)
