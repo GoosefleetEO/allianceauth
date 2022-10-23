@@ -9,7 +9,7 @@ sphinxcontrib-django2
 # Autodoc dependencies
 celery>=5.2.0,<6.0.0
 celery_once>=3.0.1
-django>=4.0.5,<5.0.0
+django>=4.0.6,<4.1.0
 django-bootstrap-form
 django-celery-beat>=2.3.0
 django-esi>=4.0.1
