@@ -146,6 +146,7 @@ test-3.11-all:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
 
 build-test:
   stage: test
