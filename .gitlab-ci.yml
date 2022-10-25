@@ -89,7 +89,7 @@ test-3.10-core:
 
 test-3.11-core:
   <<: *only-default
-  image: python:3.11-rc-bullseye
+  image: python:3.11-bullseye
   script:
     - tox -e py311-core
   artifacts:
@@ -98,7 +98,6 @@ test-3.11-core:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-  allow_failure: true
 
 test-3.8-all:
   <<: *only-default
@@ -138,7 +137,7 @@ test-3.10-all:
 
 test-3.11-all:
   <<: *only-default
-  image: python:3.11-rc-bullseye
+  image: python:3.11-bullseye
   script:
     - tox -e py311-all
   artifacts:
@@ -147,7 +146,6 @@ test-3.11-all:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-  allow_failure: true
 
 build-test:
   stage: test
