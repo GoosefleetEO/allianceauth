@@ -13,4 +13,5 @@ The official installation guide will install a stable version of Alliance Auth t
 
     gunicorn
     celery
+    redis
 ```
