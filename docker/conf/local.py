@@ -67,11 +67,15 @@ INSTALLED_APPS += [
     # 'allianceauth.permissions_tool',
     # 'allianceauth.srp',
     # 'allianceauth.timerboard',
+
     # https://allianceauth.readthedocs.io/en/latest/features/services/index.html
     # 'allianceauth.services.modules.discord',
     # 'allianceauth.services.modules.discourse',
     # 'allianceauth.services.modules.ips4',
     # 'allianceauth.services.modules.openfire',
+    # 'allianceauth.services.modules.mumble',
+    # An example of running mumble with authenticator in docker can be found here
+    # https://github.com/Solar-Helix-Independent-Transport/allianceauth-docker-mumble
     # 'allianceauth.services.modules.phpbb3',
     # 'allianceauth.services.modules.smf',
     # 'allianceauth.services.modules.teamspeak3',
