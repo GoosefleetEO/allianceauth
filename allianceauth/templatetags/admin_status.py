@@ -4,8 +4,7 @@ from typing import Optional
 import amqp.exceptions
 import requests
 from celery.app import app_or_default
-from packaging.version import InvalidVersion
-from packaging.version import Version as Pep440Version
+from packaging.version import InvalidVersion, Version as Pep440Version
 
 from django import template
 from django.conf import settings
