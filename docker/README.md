@@ -49,7 +49,11 @@ Using a custom docker image is the preferred approach, as it gives you the stabi
 
 1. Add each additional package that you want to install to a single line in `conf/requirements.txt`. It is recommended, but not required, that you include a version number as well. This will keep your packages from magically updating. You can lookup packages on https://package.wiki, and copy everything after `pip install` from the top of the page to use the most recent version. It should look something like `allianceauth-signal-pings==0.0.7`. Every entry in this file should be on a separate line
 1. In `docker-compose.yml`, comment out the `image` line under `allianceauth` (line 36... ish) and uncomment the `build` section
-1. Now run `docker-compose --env-file=.env up -d`, your custom container will be built, and auth will have your new packages. Make sure to follow the package's instructions on config values that go in `local.py`
+1. run `docker-compose --env-file=.env up -d`, your custom container will be built, and auth will have your new packages. Make sure to follow the package's instructions on config values that go in `local.py`
+1. run `docker-compose exec allianceauth bash` to open up a terminal inside your auth container
+1. run `allianceauth update myauth`
+1. run `auth migrate`
+1. run `auth collectstatic`
 
 _NOTE: It is recommended that you put any secret values (API keys, database credentials, etc) in an environment variable instead of hardcoding them into `local.py`. This gives you the ability to track your config in git without committing passwords. To do this, just add it to your `.env` file, and then reference in `local.py` with `os.environ.get("SECRET_NAME")`_
 
@@ -58,8 +62,12 @@ _NOTE: It is recommended that you put any secret values (API keys, database cred
 ### Base Image
 Whether you're using a custom image or not, the version of auth is dictated by $AA_DOCKER_TAG in your `.env` file.
 1. To update to a new version of auth, update the version number at the end (or replace the whole value with the tag in the release notes).
-1. Next, run `docker-compose pull`
-1. Finally, run `docker-compose --env-file=.env up -d`
+1. run `docker-compose pull`
+1. run `docker-compose --env-file=.env up -d`
+1. run `docker-compose exec allianceauth bash` to open up a terminal inside your auth container
+1. run `allianceauth update myauth`
+1. run `auth migrate`
+1. run `auth collectstatic`
 
 _NOTE: If you specify a version of allianceauth in your `requirements.txt` in a custom image it will override the version from the base image. Not recommended unless you know what you're doing_
 
