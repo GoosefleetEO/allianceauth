@@ -100,6 +100,19 @@ test-3.11-core:
         path: coverage.xml
   allow_failure: true
 
+test-pvpy-core:
+  <<: *only-default
+  image: pypy:3.9-bullseye
+  script:
+    - tox -e pypy-all
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  allow_failure: true
+
 test-3.8-all:
   <<: *only-default
   image: python:3.8-bullseye
@@ -141,6 +154,19 @@ test-3.11-all:
   image: python:3.11-rc-bullseye
   script:
     - tox -e py311-all
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  allow_failure: true
+
+test-pvpy-all:
+  <<: *only-default
+  image: pypy:3.9-bullseye
+  script:
+    - tox -e pypy-all
   artifacts:
     when: always
     reports:
