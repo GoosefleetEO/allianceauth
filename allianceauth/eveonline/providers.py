@@ -8,6 +8,7 @@ from django.conf import settings
 from esi.clients import esi_client_factory
 
 from allianceauth import __version__
+from allianceauth.utils.django import StartupCommand
 
 
 SWAGGER_SPEC_PATH = os.path.join(os.path.dirname(
@@ -175,15 +176,16 @@ class EveProvider:
 
 class EveSwaggerProvider(EveProvider):
     def __init__(self, token=None, adapter=None):
-        if settings.DEBUG:
+        if settings.DEBUG or StartupCommand().is_management_command:
             self._client = None
-            logger.info(
-                'DEBUG mode detected: ESI client will be loaded on-demand.'
-            )
+            logger.info('ESI client will be loaded on-demand')
         else:
+            logger.info('Loading ESI client')
             try:
                 self._client = esi_client_factory(
-                    token=token, spec_file=SWAGGER_SPEC_PATH, app_info_text=("allianceauth v" + __version__)
+                    token=token,
+                    spec_file=SWAGGER_SPEC_PATH,
+                    app_info_text=f"allianceauth v{__version__}"
                 )
             except (HTTPError, RefResolutionError):
                 logger.exception(
