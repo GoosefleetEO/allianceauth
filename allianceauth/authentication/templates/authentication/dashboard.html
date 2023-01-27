@@ -125,14 +125,16 @@
                         <h3 class="panel-title">{% translate "Group Memberships" %}</h3>
                     </div>
                     <div class="panel-body">
-                        <div style="height: 240px;overflow-y:auto;">
-                            <table class="table table-aa">
-                                {% for group in groups %}
-                                    <tr>
-                                        <td>{{ group.name }}</td>
-                                    </tr>
+                        <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">                            
+                            {% if not groups %}
+                                <p class="text-muted">No groups</p>
+                            {% else %}
+                                {% for group in groups %}                                
+                                    <span class="label label-default label-group" title="{{ group.authgroup.description }}">
+                                        {{ group.name }}
+                                    </span>
                                 {% endfor %}
-                            </table>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -187,4 +189,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+
+{% block extra_css %}        
+    <link rel="stylesheet" href="{% static 'authentication/css/dashboard.css' %}" type="text/css" media="screen">    
 {% endblock %}
