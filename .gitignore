@@ -76,4 +76,3 @@ celerybeat-schedule
 .flake8
 .pylintrc
 Makefile
-.isort.cfg
