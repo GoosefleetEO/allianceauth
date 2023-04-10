@@ -26,9 +26,10 @@ To install on your favorite flavour of Linux, identify and install equivalent pa
 
 ### OS Maintenance
 
-It is reccommended to ensure your OS is fully up to date before proceeding. We may also add Package Repositories here, used later in the documentation.
+It is recommended to ensure your OS is fully up to date before proceeding. We may also add Package Repositories here, used later in the documentation.
 
 Ubuntu 1804, 2004, 2204:
+
 ```bash
 sudo apt-get update
 ```
@@ -41,7 +42,7 @@ sudo apt-get upgrade
 sudo do-dist-upgrade
 ```
 
-CentOS 7
+CentOS 7:
 
 ```bash
 yum install epel-release
@@ -51,7 +52,7 @@ yum install epel-release
 sudo yum upgrade
 ```
 
-CentOS Stream 8
+CentOS Stream 8:
 
 ```bash
 sudo dnf config-manager --set-enabled powertools
@@ -65,7 +66,7 @@ sudo dnf install epel-release epel-next-release
 sudo yum upgrade
 ```
 
-CentOS Stream 9
+CentOS Stream 9:
 
 ```bash
 sudo dnf config-manager --set-enabled crb
@@ -78,15 +79,12 @@ dnf install epel-release epel-next-release
 ```bash
 sudo yum upgrade
 ```
+
 ### Python
 
-Alliance Auth requires Python 3.8 or higher. Ensure it is installed on your server before proceeding.
+Install Python 3.10 and related tools on your system.
 
 Ubuntu 1804, 2004:
-```eval_rst
-.. note::
-    Ubuntu 2204 ships with Python 3.10 already
-```
 
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
@@ -100,13 +98,25 @@ sudo apt-get update
 sudo apt-get install python3.10 python3.10-dev python3.10-venv
 ```
 
+Ubuntu 2204:
+
+```eval_rst
+.. note::
+    Ubuntu 2204 ships with Python 3.10 already, but some important tools are missing in the default installation.
+```
+
+```bash
+sudo apt-get install python3.10-dev python3.10-venv
+```
+
 CentOS 7:
 We need to build Python from source
 
 Centos Stream 8/9:
+
 ```eval_rst
 .. note::
-    A Python 3.9 Package is available for Stream 8 and 9. You _may_ use this instead of building your own package. But our documentation will assume Python3.10 and you may need to substitute as neccessary
+    A Python 3.9 Package is available for Stream 8 and 9. You _may_ use this instead of building your own package. But our documentation will assume Python3.10 and you may need to substitute as necessary
     sudo dnf install python39 python39-devel
 ```
 
@@ -137,6 +147,7 @@ cd Python-3.10.5/
 ```bash
 sudo make altinstall
 ```
+
 ### Database
 
 It's recommended to use a database service instead of SQLite. Many options are available, but this guide will use MariaDB.
@@ -147,19 +158,21 @@ It's recommended to use a database service instead of SQLite. Many options are a
 ```
 
 Ubuntu 1804, 2004, 2204:
+
 ```eval_rst
 .. warning::
     Please follow these steps to update MariaDB
     https://mariadb.org/download/?t=repo-config&d=20.04+%22focal%22&v=10.6&r_m=osuosl
 ```
 
-
 Ubuntu 1804, 2004, 2204
+
 ```bash
 apt-get install mariadb-server mariadb-client libmysqlclient-dev
 ```
 
-CentOS 7
+CentOS 7:
+
 ```eval_rst
 .. warning::
     Please follow these steps to update MariaDB
@@ -170,11 +183,11 @@ CentOS 7
 sudo yum install MariaDB-server MariaDB-client MariaDB-devel MariaDB-shared
 ```
 
-CentOS Stream 8/9
+CentOS Stream 8/9:
 
 ```eval_rst
 .. note::
-    We reccomend using the built in AppStream, as they are maintained by CentOS. Currently an AppStream is not available for 10.6
+    We recommend using the built in AppStream, as they are maintained by CentOS. Currently an AppStream is not available for 10.6
 ```
 
 ```bash
@@ -188,6 +201,7 @@ sudo dnf install mariadb mariadb-server mariadb-devel
 ```bash
 sudo systemctl enable mariadb
 ```
+
 ```bash
 sudo systemctl start mariadb
 ```
@@ -202,11 +216,13 @@ sudo systemctl start mariadb
 A few extra utilities are also required for installation of packages.
 
 Ubuntu 1804, 2004, 2204:
+
 ```bash
 sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev build-essential
 ```
 
 CentOS 7:
+
 ```bash
 sudo yum install gcc gcc-c++ unzip git redis curl bzip2-devel openssl-devel libffi-devel wget
 ```
@@ -220,6 +236,7 @@ sudo systemctl start redis.service
 ```
 
 CentOS Stream 8, Stream 9:
+
 ```bash
 sudo dnf install gcc gcc-c++ unzip git redis curl bzip2-devel openssl-devel libffi-devel wget
 ```
@@ -231,6 +248,7 @@ sudo systemctl enable redis.service
 ```bash
 sudo systemctl start redis.service
 ```
+
 ## Database Setup
 
 Alliance Auth needs a MySQL user account and database. Open an SQL shell with
@@ -277,11 +295,13 @@ mysql_secure_installation
 For security and permissions, it’s highly recommended you create a separate user to install auth under. Do not log in as this account.
 
 Ubuntu 1804, 2004, 2204:
+
 ```bash
-adduser --disabled-login allianceserver
+sudo adduser --disabled-login allianceserver
 ```
 
 CentOS 7, Stream 8, Stream 9:
+
 ```bash
 sudo useradd -s /bin/bash allianceserver
 ```
@@ -289,6 +309,7 @@ sudo useradd -s /bin/bash allianceserver
 ```bash
 sudo passwd -l allianceserver
 ```
+
 ### Prepare Directories
 
 ```bash
@@ -307,6 +328,23 @@ sudo chown -R allianceserver:allianceserver /var/www/myauth/static/
 ```
 
 ### Virtual Environment
+
+Switch to the allianceserver user.
+
+```bash
+sudo su allianceserver
+```
+
+And switch to it's home directory:
+
+```bash
+cd
+```
+
+```eval_rst
+.. note::
+    In general using the allianceserver user will greatly simplify permission management, when installing and performing maintenance on Alliance Auth.
+```
 
 Create a Python virtual environment and put it somewhere convenient (e.g. `/home/allianceserver/venv/auth/`)
 
@@ -346,16 +384,17 @@ As **callback URL** you want to define the URL of your Alliance Auth site plus t
 
 ### Alliance Auth Project
 
-Update Pip before installing python packages:
-
-```bash
-pip install -U pip setuptools
+```eval_rst
+.. warning::
+    Before installing any Python packages please double-check that you have activated in the virtual environment. This is usually indicated by your command line in the terminal starting with: `(auth)`.
 ```
 
-Ensure wheel is available before continuing:
+#### Install Python packages
+
+Update & install basic tools before installing further Python packages:
 
 ```bash
-pip install wheel
+pip install -U pip setuptools wheel
 ```
 
 You can install **Alliance Auth** with the following command. This will install AA and all its Python dependencies.
@@ -370,7 +409,9 @@ You should also install Gunicorn now unless you want to use another WSGI server 
 pip install gunicorn
 ```
 
-Now you need to create the application that will run the **Alliance Auth** install. Ensure you are in the allianceserver home directory by issuing:
+#### Create Alliance Auth project
+
+Now you need to create the Django project that will run **Alliance Auth**. Ensure you are in the allianceserver home directory by issuing:
 
 ```bash
 cd /home/allianceserver
@@ -382,16 +423,25 @@ The following command bootstraps a Django project which will run your **Alliance
 allianceauth start myauth
 ```
 
-The settings file needs configuring, edit the template at `myauth/myauth/settings/local.py`.
+#### Update settings
+
+Your settings file needs configuring:
+
+```bash
+nano myauth/myauth/settings/local.py
+```
 
 **Be sure to configure:**
-* Your site URL as `SITE_URL`
-* The Database account setup earlier in **Database Setup**
-* `ESI_SSO_CLIENT_ID`, `ESI_SSO_CLIENT_SECRET` from the EVE Online Developers Portal earlier in **Eve Online Settings**
-* `ESI_USER_CONTACT_EMAIL` to an email address to ensure that CCP has reliable contact information for you
-* Valid Email server settings.
 
-Django needs to install models to the database before it can start.
+- Your site URL as `SITE_URL`
+- The database user account setup from earlier in [Database Setup](#database-setup)
+- `ESI_SSO_CLIENT_ID`, `ESI_SSO_CLIENT_SECRET` from the EVE Online Developers Portal from earlier in [Eve Online SSO](#eve-online-sso)
+- `ESI_USER_CONTACT_EMAIL` to an email address to ensure that CCP has reliable contact information for you
+- Valid email server settings
+
+#### Install database & static files
+
+Django needs to setup the database before it can start.
 
 ```bash
 python /home/allianceserver/myauth/manage.py migrate
@@ -400,7 +450,7 @@ python /home/allianceserver/myauth/manage.py migrate
 Now we need to round up all the static files required to render templates. Make a directory to serve them from and populate it.
 
 ```bash
-python /home/allianceserver/myauth/manage.py collectstatic
+python /home/allianceserver/myauth/manage.py collectstatic --noinput
 ```
 
 Check to ensure your settings are valid.
@@ -409,7 +459,6 @@ Check to ensure your settings are valid.
 python /home/allianceserver/myauth/manage.py check
 ```
 
-
 ```eval_rst
 .. hint::
     If you are using root, ensure the allianceserver user has read/write permissions to this directory before proceeding::
@@ -417,17 +466,7 @@ python /home/allianceserver/myauth/manage.py check
       chown -R allianceserver:allianceserver /home/allianceserver/myauth
 ```
 
-## Services
-
-Alliance Auth needs some additional services to run, which we will set up and configure next.
-
-### Gunicorn
-
-To run the **Alliance Auth** website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. For this [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. It can be manually run from within your `myauth` base directory with `gunicorn --bind 0.0.0.0 myauth.wsgi` or automatically run using Supervisor.
-
-The default configuration is good enough for most installations. Additional information is available in the [gunicorn](gunicorn.md) doc.
-
-## Superuser
+#### Setup superuser
 
 Before using your auth site, it is essential to create a superuser account. This account will have all permissions in Alliance Auth. It's OK to use this as your personal auth account.
 
@@ -438,6 +477,16 @@ python /home/allianceserver/myauth/manage.py createsuperuser
 Once your install is complete, the superuser account is accessed by logging in via the admin site at `https://example.com/admin`.
 
 If you intend to use this account as your personal auth account you need to add a main character. Navigate to the normal user dashboard (at `https://example.com`) after logging in via the admin site and select `Change Main`. Once a main character has been added, it is possible to use SSO to login to this account.
+
+## Services
+
+Alliance Auth needs some additional services to run, which we will set up and configure next.
+
+### Gunicorn
+
+To run the **Alliance Auth** website a [WSGI Server](https://www.fullstackpython.com/wsgi-servers.html) is required. For this [Gunicorn](http://gunicorn.org/) is highly recommended for its ease of configuring. It can be manually run from within your `myauth` base directory with `gunicorn --bind 0.0.0.0 myauth.wsgi` or automatically run using Supervisor.
+
+The default configuration is good enough for most installations. Additional information is available in the [gunicorn](gunicorn.md) doc.
 
 ### Supervisor
 
@@ -461,9 +510,11 @@ CentOS 7:
 ```bash
 sudo dnf install supervisor
 ```
+
 ```bash
 sudo systemctl enable supervisord.service
 ```
+
 ```bash
 sudo systemctl start supervisord.service
 ```
@@ -473,9 +524,11 @@ CentOS Stream 8, Stream 9:
 ```bash
 sudo dnf install supervisor
 ```
+
 ```bash
 sudo systemctl enable supervisord.service
 ```
+
 ```bash
 sudo systemctl start supervisord.service
 ```
@@ -491,21 +544,21 @@ ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisor/conf.d/myauth.
 CentOS:
 
 ```bash
-ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
+sudo ln -s /home/allianceserver/myauth/supervisor.conf /etc/supervisord.d/myauth.ini
 ```
 
-Activate it with `supervisorctl reload`.
+Activate it with `sudo supervisorctl reload`.
 
-You can check the status of the processes with `supervisorctl status`. Logs from these processes are available in `/home/allianceserver/myauth/log` named by process.
+You can check the status of the processes with `sudo supervisorctl status`. Logs from these processes are available in `/home/allianceserver/myauth/log` named by process.
 
 ```eval_rst
 .. note::
     Any time the code or your settings change you'll need to restart Gunicorn and Celery. ::
 
-      supervisorctl restart myauth:
+      sudo supervisorctl restart myauth:
 ```
 
-## Webserver
+## Web server
 
 Once installed, decide on whether you're going to use [NGINX](nginx.md) or [Apache](apache.md) and follow the respective guide.
 
@@ -530,7 +583,7 @@ source /home/allianceserver/venv/auth/bin/activate
 and update with:
 
 ```bash
-pip install --upgrade allianceauth
+pip install -U allianceauth
 ```
 
 Some releases come with changes to the base settings. Update your project's settings with:
@@ -548,7 +601,7 @@ python /home/allianceserver/myauth/manage.py migrate
 Finally, some releases come with new or changed static files. Run the following command to update your static files folder:
 
 ```bash
-python /home/allianceserver/myauth/manage.py collectstatic
+python /home/allianceserver/myauth/manage.py collectstatic --noinput
 ```
 
 Always restart AA, Celery and Gunicorn after updating:

@@ -1,13 +1,16 @@
 <tr>
     <td class="text-center">{{ service_name }}</td>
     <td class="text-center">{{ username }}</td>
-    <td class="text-center"><a href="mumble://{{ service_url }}">{{ service_url }}</a></td>
-    <td class="text-center">
         {% if username == "" %}
+            <td class="text-center">{{ service_url }}</td>
+            <td class="text-center">
             <a href="{% url 'mumble:activate' %}" title="Activate" class="btn btn-warning">
                 <span class="glyphicon glyphicon-ok"></span>
             </a>
+        </td>
         {% else %}
+            <td class="text-center"><a href="mumble://{{ connect_url }}">{{ service_url }}</a></td>
+            <td class="text-center">
             <a href="{% url 'mumble:set_password' %}" title="Set Password" class="btn btn-warning">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
@@ -17,9 +20,9 @@
             <a href="{% url 'mumble:deactivate' %}" title="Deactivate" class="btn btn-danger">
                 <span class="glyphicon glyphicon-remove"></span>
             </a>
-            <a  href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
+            <a href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
                 <span class="glyphicon glyphicon-arrow-right"></span>
             </a>
+        </td>
         {% endif %}
-    </td>
 </tr>
