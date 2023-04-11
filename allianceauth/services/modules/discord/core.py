@@ -73,7 +73,7 @@ def _user_group_names(user: User, state_name: str = None) -> List[str]:
     """Names of groups and state the given user is a member of."""
     if not state_name:
         state_name = user.profile.state.name
-    group_names = [group.name if group.name in DISCORD_VALID_GROUP_NAMES else pass for group in user.groups.all()] + [state_name]
+    group_names = [group.name if group.name in DISCORD_VALID_GROUP_NAMES else None for group in user.groups.all()] + [state_name]
     logger.debug("Group names for roles updates of user %s are: %s", user, group_names)
     return group_names
 
