@@ -24,3 +24,5 @@ DISCORD_TASKS_RETRY_PAUSE = clean_setting('DISCORD_TASKS_RETRY_PAUSE', 60)
 
 DISCORD_SYNC_NAMES = clean_setting('DISCORD_SYNC_NAMES', False)
 """Automatically sync Discord users names to user's main character name when created."""
+
+DISCORD_VALID_GROUP_NAMES = clean_setting('DISCORD_VALID_GROUP_NAMES', [])
