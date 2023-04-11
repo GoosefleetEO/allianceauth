@@ -11,7 +11,7 @@ from allianceauth.groupmanagement.models import ReservedGroupName
 from allianceauth.services.hooks import NameFormatter
 
 from . import __title__
-from .app_settings import DISCORD_BOT_TOKEN, DISCORD_GUILD_ID
+from .app_settings import DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, DISCORD_VALID_GROUP_NAMES
 from .discord_client import DiscordClient, RolesSet, Role
 from .discord_client.exceptions import DiscordClientException
 from .utils import LoggerAddTag
@@ -47,6 +47,7 @@ def calculate_roles_for_user(
             - False when they have not changed,
             - None if user is not a member of the guild
     """
+    
     roles_calculated = client.match_or_create_roles_from_names_2(
         guild_id=DISCORD_GUILD_ID,
         role_names=_user_group_names(user=user, state_name=state_name),
@@ -72,7 +73,7 @@ def _user_group_names(user: User, state_name: str = None) -> List[str]:
     """Names of groups and state the given user is a member of."""
     if not state_name:
         state_name = user.profile.state.name
-    group_names = [group.name for group in user.groups.all()] + [state_name]
+    group_names = [group.name if group.name in DISCORD_VALID_GROUP_NAMES for group in user.groups.all()] + [state_name]
     logger.debug("Group names for roles updates of user %s are: %s", user, group_names)
     return group_names
 
