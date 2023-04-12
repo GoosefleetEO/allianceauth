@@ -154,10 +154,12 @@ It's recommended to use a database service instead of SQLite. Many options are a
 
 ```eval_rst
 .. note::
-    Many Ubuntu distributions come with an older version of Maria DB, which is not compatible with **Alliance Auth**. You need Maria DB 10.3 or higher!
+    Ubuntu distributions prior to 20.04 come with an older version of Maria DB, which is not compatible with **Alliance Auth**. You need Maria DB 10.3 or higher!
+    For 20.04 we still recommend to install Maria DB from the link below in order to get the newest stable version.
+    For 22.04 we recommend installing from the default Ubuntu distro, since it comes with the newest stable version.
 ```
 
-Ubuntu 1804, 2004, 2204:
+Ubuntu 1804, 2004:
 
 ```eval_rst
 .. warning::
@@ -168,7 +170,7 @@ Ubuntu 1804, 2004, 2204:
 Ubuntu 1804, 2004, 2204
 
 ```bash
-apt-get install mariadb-server mariadb-client libmysqlclient-dev
+sudo apt-get install mariadb-server mariadb-client libmysqlclient-dev
 ```
 
 CentOS 7:
