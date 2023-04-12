@@ -457,7 +457,7 @@ class Teamspeak3AdminTestCase(TestCase):
         cls.site = AdminSite()
         cls.admin = AuthTSgroupAdmin(AuthTS, cls.site)
         cls.group = Group.objects.create(name='test')
-        cls.ts_group = TSgroup.objects.create(ts_group_name='test')
+        cls.ts_group = TSgroup.objects.create(ts_group_id=1, ts_group_name='test')
 
     def test_field_queryset_no_reserved_names(self):
         """Ensure all groups are listed when no reserved names"""
