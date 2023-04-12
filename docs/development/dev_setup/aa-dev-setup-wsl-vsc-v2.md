@@ -16,14 +16,14 @@ In addition all tools described in this guide are open source or free software.
 The development environment consists of the following components:
 
 - Visual Studio Code with Remote WSL and Python extension
-- WSL with Ubuntu 18.04. LTS
-- Python 3.7 environment on WSL
+- WSL with Ubuntu (18.04. LTS or higher)
+- Python environment on WSL (3.8 or higher)
 - MySQL server on WSL
 - Redis on WSL
 - Alliance Auth on WSL
 - Celery on WSL
 
-We will use the build-in Django development webserver, so we don't need to setup a WSGI server or a web server.
+We will use the build-in Django development web server, so we don't need to setup a WSGI server or a web server.
 
 ```eval_rst
 .. note::
@@ -34,13 +34,13 @@ We will use the build-in Django development webserver, so we don't need to setup
 
 The only requirement is a PC with Windows 10 and Internet connection in order to download the additional software components.
 
-## Windows installation
+## Installing Windows apps
 
 ### Windows Subsystem for Linux
 
 - Install from here: [Microsoft docs](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
-- Choose Ubuntu 18.04. LTS
+- Choose Ubuntu 18.04. LTS or higher
 
 ### Visual Studio Code
 
@@ -54,7 +54,7 @@ The only requirement is a PC with Windows 10 and Internet connection in order to
 
 - Once connected to WSL install the Python extension on the WSL side
 
-## WSL Installation
+## Setting up WSL / Linux
 
 Open a WSL bash and update all software packets:
 
@@ -71,7 +71,7 @@ sudo apt-get install gettext
 
 ### Install Python
 
-For AA we want to develop with Python 3.7, because that provides the maximum compatibility with today's AA installations.
+Next we need to install Python and related development tools.
 
 ```eval_rst
 .. hint::
@@ -80,7 +80,7 @@ For AA we want to develop with Python 3.7, because that provides the maximum com
 
 ```eval_rst
 .. note::
-    Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version supported by AA, e.g Python 3.7
+    Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version currently supported by AA (e.g Python 3.8 at this time of writing) to ensure your apps are compatible with all current AA installations
     You an check out this `page <https://askubuntu.com/questions/682869/how-do-i-install-a-different-python-version-using-apt-get/1195153>`_ on how to install additional Python versions on Ubuntu.
 ```
 
@@ -90,7 +90,19 @@ Use the following command to install Python 3 with all required libraries with t
 sudo apt-get install python3 python3-dev python3-venv python3-setuptools python3-pip python-pip
 ```
 
-### Installing the DBMS
+### Install redis and other tools
+
+```bash
+sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev
+```
+
+Start redis
+
+```bash
+sudo redis-server --daemonize yes
+```
+
+## Installing the DBMS
 
 Install MySQL and required libraries with the following command:
 
@@ -122,35 +134,22 @@ sudo mysql -u root
 ```
 
 ```sql
-CREATE USER 'aa_dev'@'localhost' IDENTIFIED BY 'PASSWORD';
 CREATE DATABASE aa_dev CHARACTER SET utf8mb4;
-GRANT ALL PRIVILEGES ON aa_dev . * TO 'aa_dev'@'localhost';
-CREATE DATABASE test_aa_dev CHARACTER SET utf8mb4;
-GRANT ALL PRIVILEGES ON test_aa_dev . * TO 'aa_dev'@'localhost';
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'YOUR-PASSWORD';
+GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
+FLUSH PRIVILEGES;
 exit;
 ```
 
-Add timezone info to mysql
+Add timezone info to mysql:
 
 ```bash
 sudo mysql_tzinfo_to_sql /usr/share/zoneinfo | sudo mysql -u root mysql
 ```
 
-### Install redis and other tools
-
-```bash
-sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev
-```
-
-Start redis
-
-```bash
-sudo redis-server --daemonize yes
-```
-
 ```eval_rst
 .. note::
-    WSL does not have an init.d service, so it will not automatically start your services such as MySQL and Redis when you boot your Windows machine. For convenience we recommend putting the commands for starting these services in a bash script. Here is an example:
+    If your WSL does not have an init.d service, it will not automatically start your services such as MySQL and Redis when you boot your Windows machine and you have to manually start them. For convenience we recommend putting these commands in a bash script. Here is an example:
 
     ::
 
@@ -159,7 +158,6 @@ sudo redis-server --daemonize yes
         sudo service mysql start
         sudo redis-server --daemonize yes
 
-    In addition it is possible to configure Windows to automatically start WSL services, but that procedure goes beyond the scopes of this guide.
 ```
 
 ### Setup dev folder on WSL
@@ -179,9 +177,14 @@ A good location for setting up this folder structure is your home folder or a su
 
 Following this approach you can also setup additional AA projects, e.g. aa-dev-2, aa-dev-3 if needed.
 
-Create the root folder aa-dev.
+Create the root folder `aa-dev`.
 
-### setup virtual Python environment for aa-dev
+```eval_rst
+.. hint::
+    The folders `venv` and `myauth` will be created automatically in later steps. Please do not create them manually as this would lead to errors.
+```
+
+### Setup virtual Python environment for aa-dev
 
 Create the virtual environment. Run this in your aa-dev folder:
 
@@ -195,16 +198,15 @@ And activate your venv:
 source venv/bin/activate
 ```
 
-### install Python packages
+### Install and update basic Python packages
 
 ```bash
-pip install --upgrade pip
-pip install wheel
+pip install -U pip setuptools wheel
 ```
 
-## Alliance Auth installation
+## Installing Alliance Auth
 
-## Install and create AA instance
+### Install and create AA instance
 
 ```bash
 pip install allianceauth
@@ -226,16 +228,33 @@ First you want to make sure exclude the venv folder from VSC as follows:
 Open settings and go to Files:Exclude
 Add pattern: `**/venv`
 
-### Update settings
+### Create EVE Online SSO App
 
-Open the settings file with VSC. Its under `myauth/myauth/settings/local.py`
+For the Eve Online related setup you need to create a SSO app on the developer site:
 
-Make sure to have the settings of your Eve Online app ready.
+- Create your Eve Online SSO App on the [Eve Online developer site](https://developers.eveonline.com/)
+- Add all ESI scopes
+- Set callback URL to: `http://127.0.0.1:8000/sso/callback`
 
-Turn on DEBUG mode to ensure your static files get served by Django:
+### Update Django settings
+
+Open your local Django settings with VSC. The file is under `myauth/myauth/settings/local.py`
+
+```eval_rst
+.. hint::
+    There are two Django settings files: ``base.py`` and ``local.py``. The base settings file is controlled by the AA project and may change at any time. It is therefore recommended to only change the local settings file.
+```
 
 ```python
 DEBUG = True
+```
+
+Define URL and name of your site:
+
+```python
+SITE_URL = "http://127.0.0.1:8000"
+...
+SITE_NAME = "AA Dev"
 ```
 
 Update name, user and password of your DATABASE configuration.
@@ -244,26 +263,20 @@ Update name, user and password of your DATABASE configuration.
 DATABASES['default'] = {
     'ENGINE': 'django.db.backends.mysql',
     'NAME': 'aa_dev',
-    'USER': 'aa_dev',
-    'PASSWORD': 'PASSWORD',
+    'USER': 'admin',
+    'PASSWORD': 'YOUR-PASSWORD',
     'HOST': '127.0.0.1',
     'PORT': '3306',
     'OPTIONS': {'charset': 'utf8mb4'},
+    "TEST": {"CHARSET": "utf8mb4"},
 }
 ```
 
-For the Eve Online related setup you need to create a SSO app on the developer site:
-
-- Create your Eve Online SSO App on the [Eve Online developer site](https://developers.eveonline.com/)
-- Add all ESI scopes
-- Set callback URL to: `http://localhost:8000/sso/callback`
-
-Then update local.py with your settings:
+Add the credentials for your Eve Online SSO app as defined above:
 
 ```python
 ESI_SSO_CLIENT_ID = 'YOUR-ID'
 ESI_SSO_CLIENT_SECRET = 'YOUR_SECRET'
-ESI_SSO_CALLBACK_URL = 'http://localhost:8000/sso/callback'
 ```
 
 Disable email registration:
@@ -340,17 +353,19 @@ In VSC click on Debug / Add Configuration and choose "Django". Should Django not
 
 The result should look something like this:
 
-```python
+```json
 {
     "name": "Python: Django",
     "type": "python",
     "request": "launch",
     "program": "${workspaceFolder}/myauth/manage.py",
+    "cwd": "${workspaceFolder}/myauth",
     "args": [
         "runserver",
         "--noreload"
     ],
-    "django": true
+    "django": true,
+    "justMyCode": true,
 }
 ```
 
@@ -360,7 +375,7 @@ For celery we need another debug config, so that we can run it in parallel to ou
 
 Here is an example debug config for Celery:
 
-```javascript
+```json
 {
     "name": "Python: Celery",
     "type": "python",
@@ -386,16 +401,16 @@ Here is an example debug config for Celery:
 
 Finally it makes sense to have a dedicated debug config for running unit tests. Here is an example config for running all tests of the app `example`.
 
-```javascript
+```json
 {
     "name": "Python: myauth unit tests",
     "type": "python",
     "request": "launch",
     "program": "${workspaceFolder}/myauth/manage.py",
+    "cwd": "${workspaceFolder}/myauth",
     "args": [
         "test",
         "--keepdb",
-        "--debug-mode",
         "--failfast",
         "example",
     ],
@@ -410,7 +425,7 @@ You can also specify to run just a part of your test suite down to a test method
 
 Finally you may also want to have a debug config to debug a non-Django Python script:
 
-```javascript
+```json
 {
     "name": "Python: Current File",
     "type": "python",
@@ -424,43 +439,51 @@ Finally you may also want to have a debug config to debug a non-Django Python sc
 
 The following additional tools are very helpful when developing for AA with VS Code:
 
-### Pylance
+### VS Code extensions
 
-Pylance is an extension that works alongside Python in Visual Studio Code to provide performant language support: [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
-
-### Code Spell Checker
-
-Typos in your user facing comments can be quite embarrassing. This spell checker helps you avoid them: [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
-
-### markdownlint
-
-Extension for Visual Studio Code - Markdown linting and style checking for Visual Studio Code: [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-
-### GitLens
-
-Extension for Visual Studio Code - Supercharge the Git capabilities built into Visual Studio Code: [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
-
-### RST preview
-
-A VS Code extension to preview restructured text and provide syntax highlighting: [RST Preview](https://marketplace.visualstudio.com/items?itemName=tht13.rst-vscode)
-
-### Django Template
+#### Django Template
 
 This extension adds language colorization support and user snippets for the Django template language to VS Code: [Django Template](https://marketplace.visualstudio.com/items?itemName=bibhasdn.django-html)
 
-### DBeaver
+#### Code Spell Checker
 
-DBeaver is a free universal database tool and works with many different kinds of databases include MySQL. It can be installed on Windows 10 and will be able to help manage your MySQL databases running on WSL.
+Typos in your user facing comments can be quite embarrassing. This spell checker helps you avoid them: [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
 
-Install from here. [DBeaver](https://dbeaver.io/)
+#### Git History
 
-### django-extensions
+Very helpful to visualize the change history and compare different branches. [Git History](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)
+
+#### markdownlint
+
+Extension for Visual Studio Code - Markdown linting and style checking for Visual Studio Code: [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+
+#### Live Server
+
+Live Server allows you to start a mini webserver for any file quickly. This can e.g. be useful for looking at changes to to Sphinx docs.: [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+
+### Django apps
+
+#### Django Extensions
 
 [django-extensions](https://django-extensions.readthedocs.io/en/latest/) is a swiss army knife for django developers with adds a lot of very useful features to your Django site. Here are a few highlights:
 
 - shell_plus - An enhanced version of the Django shell. It will auto-load all your models at startup so you don't have to import anything and can use them right away.
 - graph_models - Creates a dependency graph of Django models. Visualizing a model dependency structure can be very useful for trying to understand how an existing Django app works, or e.g. how all the AA models work together.
 - runserver_plus - The standard runserver stuff but with the Werkzeug debugger baked in. This is a must have for any serious debugging.
+
+#### Django Debug Toolbar
+
+The [Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar) is a configurable set of panels that display various debug information about the current request/response and when clicked, display more details about the panel's content.
+
+E.g. this tool is invaluable to debug and fix performance issues with Django queries.
+
+### Windows applications
+
+#### DBeaver
+
+DBeaver is a free universal database tool and works with many different kinds of databases include MySQL. It can be installed on Windows 10 and will be able to help manage your MySQL databases running on WSL.
+
+Install from here. [DBeaver](https://dbeaver.io/)
 
 ## Adding apps for development
 
