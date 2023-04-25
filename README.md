@@ -56,13 +56,15 @@ Here is an example of the Alliance Auth web site with some plug-ins apps and ser
 
 - [Aaron Kable](https://gitlab.com/aaronkable/)
 - [Ariel Rin](https://gitlab.com/soratidus999/)
-- [Basraah](https://gitlab.com/basraah/)
 - [Col Crunch](https://gitlab.com/colcrunch/)
 - [Erik Kalkoken](https://gitlab.com/ErikKalkoken/)
+- [Rounon Dax](https://gitlab.com/ppfeufer)
+- [snipereagle1](https://gitlab.com/mckernanin)
 
 ### Former Developers
 
 - [Adarnof](https://gitlab.com/adarnof/)
+- [Basraah](https://gitlab.com/basraah/)
 
 ### Beta Testers / Bug Fixers
 
