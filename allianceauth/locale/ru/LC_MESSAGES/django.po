@@ -7,16 +7,17 @@
 # Alexander Gess <de.alex.gess@gmail.com>, 2020
 # Yuriy K <thedjcooltv@gmail.com>, 2020
 # Андрей Зубков <and.vareba81@gmail.com>, 2020
+# Filipp Chertiev <f@fzfx.ru>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 23:17+1000\n"
+"POT-Creation-Date: 2022-10-09 18:20+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Андрей Зубков <and.vareba81@gmail.com>, 2020\n"
-"Language-Team: Russian (https://www.transifex.com/alliance-auth/teams/107430/ru/)\n"
+"Last-Translator: Filipp Chertiev <f@fzfx.ru>, 2023\n"
+"Language-Team: Russian (https://app.transifex.com/alliance-auth/teams/107430/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,15 +26,16 @@ msgstr ""
 
 #: allianceauth/analytics/models.py:29
 msgid "Google Analytics Universal"
-msgstr ""
+msgstr "Google Analytics Universal"
 
 #: allianceauth/analytics/models.py:30
 msgid "Google Analytics V4"
-msgstr ""
+msgstr "Google Analytics V4"
 
 #: allianceauth/authentication/decorators.py:37
 msgid "A main character is required to perform that action. Add one below."
-msgstr "Необходимо указать основного персонажа. Добавим?"
+msgstr ""
+"Для продолжения следует указать основного персонажа. Выберите его ниже."
 
 #: allianceauth/authentication/forms.py:12
 msgid "Email"
@@ -42,61 +44,52 @@ msgstr "Email"
 #: allianceauth/authentication/forms.py:62
 #, python-format
 msgid "You are not allowed to add or remove these restricted groups: %s"
-msgstr ""
+msgstr "Вам не разрешено добавлять или удалять эти ограниченные группы: %s"
 
 #: allianceauth/authentication/models.py:80
-#: allianceauth/project_template/project_name/settings/base.py:89
 msgid "English"
-msgstr ""
+msgstr "Английский"
 
 #: allianceauth/authentication/models.py:81
-#: allianceauth/project_template/project_name/settings/base.py:90
 msgid "German"
-msgstr ""
+msgstr "Немецкий"
 
 #: allianceauth/authentication/models.py:82
-#: allianceauth/project_template/project_name/settings/base.py:91
 msgid "Spanish"
-msgstr ""
+msgstr "Испанский"
 
 #: allianceauth/authentication/models.py:83
-#: allianceauth/project_template/project_name/settings/base.py:92
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "Китайский упрощённый"
 
 #: allianceauth/authentication/models.py:84
-#: allianceauth/project_template/project_name/settings/base.py:93
 msgid "Russian"
-msgstr ""
+msgstr "Русский"
 
 #: allianceauth/authentication/models.py:85
-#: allianceauth/project_template/project_name/settings/base.py:94
 msgid "Korean"
-msgstr ""
+msgstr "Корейский"
 
 #: allianceauth/authentication/models.py:86
-#: allianceauth/project_template/project_name/settings/base.py:95
 msgid "French"
-msgstr ""
+msgstr "Французский"
 
 #: allianceauth/authentication/models.py:87
-#: allianceauth/project_template/project_name/settings/base.py:96
 msgid "Japanese"
-msgstr ""
+msgstr "Японский"
 
 #: allianceauth/authentication/models.py:88
-#: allianceauth/project_template/project_name/settings/base.py:97
 msgid "Italian"
-msgstr ""
+msgstr "Итальянский"
 
 #: allianceauth/authentication/models.py:91
 msgid "Language"
-msgstr ""
+msgstr "Язык"
 
 #: allianceauth/authentication/models.py:96
 #: allianceauth/templates/allianceauth/night-toggle.html:6
 msgid "Night Mode"
-msgstr ""
+msgstr "Ночной режим"
 
 #: allianceauth/authentication/models.py:110
 #, python-format
@@ -122,7 +115,7 @@ msgid ""
 "                            "
 msgstr ""
 "\n"
-"                                Основной персонаж (статус: %(state)s)\n"
+"                          Основной персонаж (статус: %(state)s)\n"
 "                            "
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:101
@@ -175,23 +168,24 @@ msgstr "Вход"
 
 #: allianceauth/authentication/templates/public/login.html:10
 msgid "Login with Eve SSO"
-msgstr ""
+msgstr "Зайти с помощью EVE SSO"
 
 #: allianceauth/authentication/templates/public/middle_box.html:24
 msgid "For information on SSO, ESI and security read the CCP Dev Blog"
 msgstr ""
+"Информацию по SSO, ESI и вопросам безопасности читайте в блоге CCP Dev"
 
 #: allianceauth/authentication/templates/public/middle_box.html:26
 msgid "Introducing ESI - A New API For Eve Online"
-msgstr ""
+msgstr "Введение в ESI — новое API для EVE Online"
 
 #: allianceauth/authentication/templates/public/middle_box.html:32
 msgid "Manage ESI Applications"
-msgstr ""
+msgstr "Управление приложениями ESI"
 
 #: allianceauth/authentication/templates/public/register.html:6
 msgid "Registration"
-msgstr ""
+msgstr "Регистрация"
 
 #: allianceauth/authentication/templates/public/register.html:21
 msgid "Register"
@@ -314,7 +308,7 @@ msgstr "Корпорация"
 #: allianceauth/corputils/templates/corputils/corpstats.html:167
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
-msgstr "zKillBoard"
+msgstr "Killboard"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:114
 #: allianceauth/corputils/templates/corputils/search.html:16
@@ -342,7 +336,7 @@ msgstr "Результаты поиска:"
 
 #: allianceauth/corputils/templates/corputils/search.html:15
 msgid "zKillboard"
-msgstr "zKillBoard"
+msgstr "zKillboard"
 
 #: allianceauth/corputils/views.py:54
 msgid "Selected corp already has a statistics module."
@@ -607,11 +601,11 @@ msgstr "Нет закрепленных ФлАк ссылок в записи"
 
 #: allianceauth/fleetactivitytracking/views.py:218
 msgid "Character does not exist"
-msgstr ""
+msgstr "Персонаж не существует"
 
 #: allianceauth/fleetactivitytracking/views.py:221
 msgid "User does not exist"
-msgstr ""
+msgstr "Пользователь не существует"
 
 #: allianceauth/fleetactivitytracking/views.py:299
 msgid "Fleet participation registered."
@@ -627,6 +621,8 @@ msgid ""
 "Cannot register the fleet participation for {character.character_name}. The "
 "character needs to be online."
 msgstr ""
+"Не могу зарегистрировать ФлАк для {character.character_name}. Персонаж "
+"должен быть онлайн."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:13
@@ -636,14 +632,15 @@ msgstr "Управление Группой"
 #: allianceauth/groupmanagement/forms.py:15
 msgid "This name has been reserved and can not be used for groups."
 msgstr ""
+"Это имя является зарезервированным и не может быть использовано для групп."
 
 #: allianceauth/groupmanagement/forms.py:25
 msgid "(auto)"
-msgstr ""
+msgstr "(авто)"
 
 #: allianceauth/groupmanagement/forms.py:34
 msgid "There already exists a group with that name."
-msgstr ""
+msgstr "Группа с таким именем уже существует."
 
 #: allianceauth/groupmanagement/models.py:105
 msgid ""
@@ -651,16 +648,25 @@ msgid ""
 "group.<br>Used for groups such as Members, Corp_*, Alliance_* "
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
+"Внутренняя группа, пользователи не могут видеть эту группу, присоединяться к"
+" ней или подавать запрос на присоединение.<br>Используется таких групп как "
+"Members, Corp_*, Alliance_* и т. п.<br><b>Будучи выбранной, отменяет "
+"настройки \"Скрытая\" и \"Открытая\".</b>"
 
 #: allianceauth/groupmanagement/models.py:113
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
+"Группы скрыты от пользователей, но к ним всё ещё можно присоединиться с "
+"помощью корректной ссылки."
 
 #: allianceauth/groupmanagement/models.py:119
 msgid ""
 "Group is open and users will be automatically added upon request.<br>If the "
 "group is not open users will need their request manually approved."
 msgstr ""
+"Группа является открытой, пользователи будут автоматически добавлены в неё "
+"при отправке запроса.<br>Если группа не является открытой, запросы от "
+"пользователей будут требовать ручного подтверждения."
 
 #: allianceauth/groupmanagement/models.py:126
 msgid ""
@@ -669,12 +675,18 @@ msgid ""
 "remove users from this group automatically when they are no longer "
 "authenticated."
 msgstr ""
+"Группа является публичной. Любые зарегистрированные пользователи могут "
+"присоединиться к этой группе, настройки видимости будут основаны на других "
+"настройках данной группы.<br>Auth не будет удалять пользователей из этой "
+"группы автоматически при окончании срока их аутентификации."
 
 #: allianceauth/groupmanagement/models.py:135
 msgid ""
 "Group is restricted. This means that adding or removing users for this group"
 " requires a superuser admin."
 msgstr ""
+"Группа является ограниченной. Это значит что добавление пользователей в эту "
+"группу или удаление из неё требует прав superuser admin."
 
 #: allianceauth/groupmanagement/models.py:144
 msgid ""
@@ -682,6 +694,9 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"Лидеры группы могут обрабатывать запросы, относящиеся к этой группе. "
+"Используйте разрешение <code>auth.group_management</code>, чтобы позволить "
+"пользователю управлять всеми группами.<br>"
 
 #: allianceauth/groupmanagement/models.py:154
 msgid ""
@@ -689,49 +704,56 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"Члены групп лидеров могут обрабатывать запросы, относящиеся к этой группе. "
+"Используйте разрешение <code>auth.group_management</code>, чтобы позволить "
+"пользователю управлять всеми группами.<br>"
 
 #: allianceauth/groupmanagement/models.py:163
 msgid ""
 "States listed here will have the ability to join this group provided they "
 "have the proper permissions.<br>"
 msgstr ""
+"Статусы, перечисленные здесь, смогут присоединиться к группе, если у них "
+"есть соответствующие разрешения.<br>"
 
 #: allianceauth/groupmanagement/models.py:171
 msgid ""
 "Short description <i>(max. 512 characters)</i> of the group shown to users."
 msgstr ""
+"Краткое описание <i>(макс. 512 символов)</i> группы, отображаемое "
+"пользователям."
 
 #: allianceauth/groupmanagement/models.py:178
 msgid "Can request non-public groups"
-msgstr ""
+msgstr "Можно отправлять запрос на непубличную группу."
 
 #: allianceauth/groupmanagement/models.py:209
 msgid "name"
-msgstr ""
+msgstr "имя"
 
 #: allianceauth/groupmanagement/models.py:212
 msgid "Name that can not be used for groups."
-msgstr ""
+msgstr "Имя, которое не может быть использовано для групп."
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "reason"
-msgstr ""
+msgstr "причина"
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "Reason why this name is reserved."
-msgstr ""
+msgstr "Причина, по которой это имя зарезервировано."
 
 #: allianceauth/groupmanagement/models.py:218
 msgid "created by"
-msgstr ""
+msgstr "создано кем"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "created at"
-msgstr ""
+msgstr "создано когда"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "Date when this entry was created"
-msgstr ""
+msgstr "Дата, когда данное содержимое было создано"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:4
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
@@ -773,11 +795,11 @@ msgstr "Исполнитель"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:48
 msgid "Removed"
-msgstr ""
+msgstr "Удалено"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:60
 msgid "All times displayed are EVE/UTC."
-msgstr ""
+msgstr "Все значения времени отображаются в EVE/ET/UTC."
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:67
 msgid "No entries found for this group."
@@ -797,13 +819,13 @@ msgstr "Корпорация"
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:49
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:75
 msgid "Group leader"
-msgstr ""
+msgstr "Лидер группы"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:60
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:82
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:139
 msgid "(unknown)"
-msgstr ""
+msgstr "(неизвестно)"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:65
 msgid "Remove from group"
@@ -1221,19 +1243,19 @@ msgstr "Откомментировать"
 
 #: allianceauth/notifications/models.py:21
 msgid "danger"
-msgstr ""
+msgstr "опасн"
 
 #: allianceauth/notifications/models.py:22
 msgid "warning"
-msgstr ""
+msgstr "упрежд"
 
 #: allianceauth/notifications/models.py:23
 msgid "info"
-msgstr ""
+msgstr "инфо"
 
 #: allianceauth/notifications/models.py:24
 msgid "success"
-msgstr ""
+msgstr "успех"
 
 #: allianceauth/notifications/templates/notifications/list.html:4
 #: allianceauth/notifications/templates/notifications/list.html:7
@@ -1267,7 +1289,7 @@ msgstr "Заголовок"
 
 #: allianceauth/notifications/templates/notifications/list_partial.html:28
 msgid "No notifications."
-msgstr ""
+msgstr "Нет уведомлений."
 
 #: allianceauth/notifications/templates/notifications/view.html:4
 #: allianceauth/notifications/templates/notifications/view.html:8
@@ -1315,7 +1337,7 @@ msgstr "Название операции"
 
 #: allianceauth/optimer/form.py:16
 msgid "Operation Type"
-msgstr ""
+msgstr "Тип операции"
 
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:38
@@ -1329,7 +1351,7 @@ msgstr "Дополнительная информация"
 
 #: allianceauth/optimer/form.py:23
 msgid "(Optional) Describe the operation with a couple of short words."
-msgstr ""
+msgstr "(Опционально) Опишите операцию несколькими короткими словами."
 
 #: allianceauth/optimer/templates/optimer/add.html:6
 #: allianceauth/optimer/templates/optimer/management.html:13
@@ -1366,7 +1388,7 @@ msgstr "Текущий EVE Time:"
 
 #: allianceauth/optimer/templates/optimer/management.html:26
 msgid "Next Fleet Operations"
-msgstr ""
+msgstr "Грядущие Флотовые операции"
 
 #: allianceauth/optimer/templates/optimer/management.html:30
 #: allianceauth/timerboard/templates/timerboard/view.html:362
@@ -1375,7 +1397,7 @@ msgstr "Нет предстоящих таймеров"
 
 #: allianceauth/optimer/templates/optimer/management.html:33
 msgid "Past Fleet Operations"
-msgstr ""
+msgstr "Прошлые Флотовые операции"
 
 #: allianceauth/optimer/templates/optimer/management.html:37
 #: allianceauth/timerboard/templates/timerboard/view.html:535
@@ -1455,7 +1477,7 @@ msgstr "Пользователи"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:41
 msgid "States"
-msgstr "Состояния"
+msgstr "Статусы"
 
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
@@ -1464,7 +1486,7 @@ msgstr "Этот сервис уже активирован"
 #: allianceauth/services/abstract.py:103
 #, python-brace-format
 msgid "Successfully set your {self.service_name} password"
-msgstr ""
+msgstr "Успешно установлен пароль для вашего {self.setvice_name}"
 
 #: allianceauth/services/auth_hooks.py:12
 msgid "Services"
@@ -1508,7 +1530,7 @@ msgstr "Назначение:"
 
 #: allianceauth/services/forms.py:15
 msgid "Reimbursable?*"
-msgstr "Конпенсировать?"
+msgstr "Компенсировать?"
 
 #: allianceauth/services/forms.py:15 allianceauth/services/forms.py:16
 msgid "Yes"
@@ -1539,10 +1561,12 @@ msgid ""
 "Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr ""
+"Auth автоматически отключил ваш аккаунт Discord. Если вы думаете, что это "
+"произошло по ошибке, пожалуйста свяжитесь с админом."
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:5
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
 msgid "Join the Discord server"
@@ -1550,7 +1574,7 @@ msgstr "Подключиться к серверу Discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
 msgid "Leave- and rejoin the Discord Server (Reset)"
-msgstr "Переподключиться к серверу Discord. "
+msgstr "Переподключиться к серверу Discord (сброс). "
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
 msgid "Leave the Discord server"
@@ -1605,29 +1629,31 @@ msgstr ""
 #: allianceauth/services/modules/discourse/views.py:62
 msgid "Invalid payload. Please contact support if this problem persists."
 msgstr ""
+"Недопустимая \"полезная нагрузка\". Пожалуйста свяжитесь с поддержкой, если "
+"данная проблема будет продолжаться."
 
 #: allianceauth/services/modules/ips4/views.py:31
 msgid "Activated IPSuite4 account."
-msgstr ""
+msgstr "Активирован аккаунт IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:39
 #: allianceauth/services/modules/ips4/views.py:60
 #: allianceauth/services/modules/ips4/views.py:81
 #: allianceauth/services/modules/ips4/views.py:101
 msgid "An error occurred while processing your IPSuite4 account."
-msgstr ""
+msgstr "Произошла ошибка при работе с вашим аккаунтом IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:52
 msgid "Reset IPSuite4 password."
-msgstr ""
+msgstr "Сбросить пароль IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:78
 msgid "Set IPSuite4 password."
-msgstr ""
+msgstr "Установить пароль IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:98
 msgid "Deactivated IPSuite4 account."
-msgstr ""
+msgstr "Деактивированный аккаунт IPSuite4."
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:26
 msgid "Jabber"
@@ -1641,7 +1667,7 @@ msgstr "Jabber Бродкаст"
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:94
 msgid "Fleet Broadcast Formatter"
-msgstr ""
+msgstr "Флотовый Оповещатель"
 
 #: allianceauth/services/modules/openfire/forms.py:7
 msgid "Message"
@@ -1704,26 +1730,26 @@ msgstr "Установить пароль на Форум."
 
 #: allianceauth/services/modules/smf/views.py:52
 msgid "Activated SMF account."
-msgstr ""
+msgstr "Активированный аккаунт SMF."
 
 #: allianceauth/services/modules/smf/views.py:65
 #: allianceauth/services/modules/smf/views.py:81
 #: allianceauth/services/modules/smf/views.py:102
 #: allianceauth/services/modules/smf/views.py:124
 msgid "An error occurred while processing your SMF account."
-msgstr ""
+msgstr "Произошла ошибка при работе с вашим аккаунтом SMF."
 
 #: allianceauth/services/modules/smf/views.py:78
 msgid "Deactivated SMF account."
-msgstr ""
+msgstr "Деактивированный аккаунт SMF."
 
 #: allianceauth/services/modules/smf/views.py:95
 msgid "Reset SMF password."
-msgstr ""
+msgstr "Сбросить пароль SMF."
 
 #: allianceauth/services/modules/smf/views.py:121
 msgid "Set SMF password."
-msgstr ""
+msgstr "Установить пароль SMF."
 
 #: allianceauth/services/modules/teamspeak3/forms.py:14
 #, python-format
@@ -1732,7 +1758,7 @@ msgstr "Не могу найти %s на сервере"
 
 #: allianceauth/services/modules/teamspeak3/templates/admin/teamspeak3/authts/change_list.html:8
 msgid "Update TS3 groups"
-msgstr ""
+msgstr "Обновить группы TS3"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:5
 msgid "Verify Teamspeak"
@@ -1772,26 +1798,26 @@ msgstr "Сбросить TeamSpeak3 ключ доступа."
 
 #: allianceauth/services/modules/xenforo/views.py:30
 msgid "Activated XenForo account."
-msgstr ""
+msgstr "Активированный аккаунт XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:40
 #: allianceauth/services/modules/xenforo/views.py:52
 #: allianceauth/services/modules/xenforo/views.py:73
 #: allianceauth/services/modules/xenforo/views.py:94
 msgid "An error occurred while processing your XenForo account."
-msgstr ""
+msgstr "Произошла ошибка при работе с вашим аккаунтом XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:50
 msgid "Deactivated XenForo account."
-msgstr ""
+msgstr "Деактивированный аккаунт XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:65
 msgid "Reset XenForo account password."
-msgstr ""
+msgstr "Сбросить пароль XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:91
 msgid "Changed XenForo password."
-msgstr ""
+msgstr "Изменённый пароль XenForo."
 
 #: allianceauth/services/templates/services/fleetformattertool.html:5
 msgid "Fleet Formatter Tool"
@@ -1799,7 +1825,7 @@ msgstr "ФлитФорматер"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:10
 msgid "Fleet Broadcast Formatter Tool"
-msgstr "Флотовый Бродкастер"
+msgstr "Флотовый Оповещатель"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:23
 msgid "Format"
@@ -1869,15 +1895,16 @@ msgstr "Флотовая Доктрина"
 
 #: allianceauth/srp/form.py:16
 msgid "Killboard Link (zkillboard.com or kb.evetools.org)"
-msgstr ""
+msgstr "Ссылка киллборды (zkillboard.com или kb.evetools.org)"
 
 #: allianceauth/srp/form.py:34
 msgid "Invalid Link. Please use zkillboard.com or kb.evetools.org"
 msgstr ""
+"Неверная ссылка. Пожалуйста используйте zkillboard.com или kb.evetools.org"
 
 #: allianceauth/srp/form.py:46
 msgid "Invalid Link. Please post a direct link to a killmail."
-msgstr ""
+msgstr "Неверная ссылка. Пожалуйста предоставьте прямую ссылку на киллмейл."
 
 #: allianceauth/srp/form.py:53
 msgid "After Action Report Link"
@@ -1898,7 +1925,7 @@ msgstr "Поделиться ссылкой с рядовыми участник
 
 #: allianceauth/srp/templates/srp/data.html:5
 msgid "Srp Fleet Data"
-msgstr ""
+msgstr "Данные флота по SRP"
 
 #: allianceauth/srp/templates/srp/data.html:50
 msgid "SRP Fleet Data"
@@ -1921,7 +1948,7 @@ msgstr "Суммарные потери:"
 #: allianceauth/srp/templates/srp/data.html:158
 #: allianceauth/srp/templates/srp/management.html:28
 msgid "Total ISK Cost:"
-msgstr "Оценочная стоимость (ISK):"
+msgstr "Оценочная стоимость, ISK:"
 
 #: allianceauth/srp/templates/srp/data.html:80
 #: allianceauth/srp/templates/srp/data.html:166
@@ -1934,7 +1961,7 @@ msgstr "Имя Пилота"
 
 #: allianceauth/srp/templates/srp/data.html:90
 msgid "Killboard Link"
-msgstr "zKillBoard ссылка"
+msgstr "Killboard ссылка"
 
 #: allianceauth/srp/templates/srp/data.html:92
 msgid "Ship Type"
@@ -1942,7 +1969,7 @@ msgstr "Тип корабля"
 
 #: allianceauth/srp/templates/srp/data.html:93
 msgid "Killboard Loss Amt"
-msgstr "потерь по zKillBoard на данный момент"
+msgstr "Потерь по Killboard на данный момент"
 
 #: allianceauth/srp/templates/srp/data.html:94
 msgid "SRP ISK Cost"
@@ -1978,7 +2005,7 @@ msgstr "Добавить SRP флот"
 
 #: allianceauth/srp/templates/srp/management.html:39
 msgid "Fleet AAR"
-msgstr "Флитовый AAR."
+msgstr "Флитовый AAR"
 
 #: allianceauth/srp/templates/srp/management.html:40
 msgid "Fleet SRP Code"
@@ -2072,15 +2099,15 @@ msgstr "Не могу найти SRP код с ID %(srpfleetid)s"
 
 #: allianceauth/srp/views.py:179
 msgid "This kill mail has already been posted."
-msgstr ""
+msgstr "Этот киллмейл уже был предоставлен ранее."
 
 #: allianceauth/srp/views.py:200
 msgid ""
 "Your SRP request Killmail link is invalid. Please make sure you are using "
 "zKillboard."
 msgstr ""
-"Ваш SRP запрос Killmail неправильный. Пожалуйста убедитесь в правильности "
-"ссылки. "
+"Ссылка на киллмейл в вашем SRP запросе неправильная. Пожалуйста убедитесь в "
+"правильности ссылки. "
 
 #: allianceauth/srp/views.py:212
 #, python-format
@@ -2144,11 +2171,11 @@ msgstr "Закрыт"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:28
 msgid "Powered by GitLab"
-msgstr ""
+msgstr "При поддержке GitLab"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:35
 msgid "Support Discord"
-msgstr ""
+msgstr "Поддержка Discord"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:43
 msgid "Software Version"
@@ -2185,6 +2212,8 @@ msgid ""
 "                    Status of %(total)s processed tasks • last %(latest)s\n"
 "                    "
 msgstr ""
+"\n"
+"            Статус %(total)s обработанных задач • последние %(latest)s"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
 #, python-format
@@ -2193,6 +2222,8 @@ msgid ""
 "                        %(queue_length)s queued tasks\n"
 "                        "
 msgstr ""
+"\n"
+"                  %(queue_length)s запланированных задач"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
 msgid "Admin"
@@ -2200,16 +2231,16 @@ msgstr "Администратор"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:19
 msgid "AA Documentation"
-msgstr ""
+msgstr "Документация AA"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:26
 msgid "AA Support Discord"
-msgstr ""
+msgstr "Discord поддержки AA"
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:10
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:14
 msgid "User Menu"
-msgstr ""
+msgstr "Меню пользователя"
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:56
 msgid "Logout"
@@ -2257,7 +2288,7 @@ msgstr "Тип структуры"
 
 #: allianceauth/timerboard/form.py:62
 msgid "Timer Type"
-msgstr ""
+msgstr "Тип таймера"
 
 #: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:32
@@ -2288,31 +2319,31 @@ msgstr "Корпорация зарегистрированна"
 
 #: allianceauth/timerboard/models.py:14
 msgid "Not Specified"
-msgstr ""
+msgstr "Не указано"
 
 #: allianceauth/timerboard/models.py:15
 msgid "Shield"
-msgstr ""
+msgstr "Щит"
 
 #: allianceauth/timerboard/models.py:16
 msgid "Armor"
-msgstr ""
+msgstr "Броня"
 
 #: allianceauth/timerboard/models.py:17
 msgid "Hull"
-msgstr ""
+msgstr "Структура"
 
 #: allianceauth/timerboard/models.py:18
 msgid "Final"
-msgstr ""
+msgstr "Финальный"
 
 #: allianceauth/timerboard/models.py:19
 msgid "Anchoring"
-msgstr ""
+msgstr "Постановка на якорь"
 
 #: allianceauth/timerboard/models.py:20
 msgid "Unanchoring"
-msgstr ""
+msgstr "Снятие с якоря"
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"
@@ -2372,4 +2403,4 @@ msgstr "Добавлен таймер в %(system)s на %(time)s."
 
 #: allianceauth/timerboard/views.py:82
 msgid "Saved changes to the timer."
-msgstr "Изменения сохранены"
+msgstr "Изменения таймера сохранены."

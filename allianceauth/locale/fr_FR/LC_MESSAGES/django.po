@@ -10,16 +10,18 @@
 # Idea ., 2021
 # Mickael PATTE, 2021
 # Geoffrey Fabbro, 2021
+# Mohssine Daghghar, 2023
+# Ludovick Fortin, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 23:17+1000\n"
+"POT-Creation-Date: 2022-10-09 18:20+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Geoffrey Fabbro, 2021\n"
-"Language-Team: French (France) (https://www.transifex.com/alliance-auth/teams/107430/fr_FR/)\n"
+"Last-Translator: Ludovick Fortin, 2023\n"
+"Language-Team: French (France) (https://app.transifex.com/alliance-auth/teams/107430/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +30,7 @@ msgstr ""
 
 #: allianceauth/analytics/models.py:29
 msgid "Google Analytics Universal"
-msgstr ""
+msgstr "Google Analytique Universelle"
 
 #: allianceauth/analytics/models.py:30
 msgid "Google Analytics V4"
@@ -48,55 +50,48 @@ msgstr "Email"
 #, python-format
 msgid "You are not allowed to add or remove these restricted groups: %s"
 msgstr ""
+"Vous n'avez pas l’autorisation d'ajouter ou d'enlever ces groupes "
+"restreints: %s"
 
 #: allianceauth/authentication/models.py:80
-#: allianceauth/project_template/project_name/settings/base.py:89
 msgid "English"
 msgstr "Anglais"
 
 #: allianceauth/authentication/models.py:81
-#: allianceauth/project_template/project_name/settings/base.py:90
 msgid "German"
 msgstr "Allemand"
 
 #: allianceauth/authentication/models.py:82
-#: allianceauth/project_template/project_name/settings/base.py:91
 msgid "Spanish"
 msgstr "Espagnol"
 
 #: allianceauth/authentication/models.py:83
-#: allianceauth/project_template/project_name/settings/base.py:92
 msgid "Chinese Simplified"
 msgstr "Chinois simplifié"
 
 #: allianceauth/authentication/models.py:84
-#: allianceauth/project_template/project_name/settings/base.py:93
 msgid "Russian"
 msgstr "Russe"
 
 #: allianceauth/authentication/models.py:85
-#: allianceauth/project_template/project_name/settings/base.py:94
 msgid "Korean"
 msgstr "Coréen"
 
 #: allianceauth/authentication/models.py:86
-#: allianceauth/project_template/project_name/settings/base.py:95
 msgid "French"
 msgstr "Français"
 
 #: allianceauth/authentication/models.py:87
-#: allianceauth/project_template/project_name/settings/base.py:96
 msgid "Japanese"
 msgstr "Japonais"
 
 #: allianceauth/authentication/models.py:88
-#: allianceauth/project_template/project_name/settings/base.py:97
 msgid "Italian"
 msgstr "Italien"
 
 #: allianceauth/authentication/models.py:91
 msgid "Language"
-msgstr ""
+msgstr "Langue"
 
 #: allianceauth/authentication/models.py:96
 #: allianceauth/templates/allianceauth/night-toggle.html:6
@@ -179,19 +174,21 @@ msgstr "Connexion"
 
 #: allianceauth/authentication/templates/public/login.html:10
 msgid "Login with Eve SSO"
-msgstr ""
+msgstr "Connexion avec Eve SSO"
 
 #: allianceauth/authentication/templates/public/middle_box.html:24
 msgid "For information on SSO, ESI and security read the CCP Dev Blog"
 msgstr ""
+"Pour de l'information sur le SSO, le ESI et la sécurité, lisez le blog de "
+"développeur CCP"
 
 #: allianceauth/authentication/templates/public/middle_box.html:26
 msgid "Introducing ESI - A New API For Eve Online"
-msgstr ""
+msgstr "Présentation d'ESI, une nouvelle API pour Eve Online."
 
 #: allianceauth/authentication/templates/public/middle_box.html:32
 msgid "Manage ESI Applications"
-msgstr ""
+msgstr "Gestion des Application ESI"
 
 #: allianceauth/authentication/templates/public/register.html:6
 msgid "Registration"
@@ -614,11 +611,11 @@ msgstr "Aucun lien FAT enregistré"
 
 #: allianceauth/fleetactivitytracking/views.py:218
 msgid "Character does not exist"
-msgstr ""
+msgstr "Le personnage n'existe pas"
 
 #: allianceauth/fleetactivitytracking/views.py:221
 msgid "User does not exist"
-msgstr ""
+msgstr "L'utilisateur n'existe pas"
 
 #: allianceauth/fleetactivitytracking/views.py:299
 msgid "Fleet participation registered."
@@ -634,6 +631,8 @@ msgid ""
 "Cannot register the fleet participation for {character.character_name}. The "
 "character needs to be online."
 msgstr ""
+"Impossible d'enregistrer la participation pour {character.character_name}. "
+"Le personnage doit être en ligne."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:13
@@ -642,15 +641,15 @@ msgstr "Gestion de groupe"
 
 #: allianceauth/groupmanagement/forms.py:15
 msgid "This name has been reserved and can not be used for groups."
-msgstr ""
+msgstr "Ce nom a été réserver et il ne peut être utilisé pour les groupes."
 
 #: allianceauth/groupmanagement/forms.py:25
 msgid "(auto)"
-msgstr ""
+msgstr "(automatique)"
 
 #: allianceauth/groupmanagement/forms.py:34
 msgid "There already exists a group with that name."
-msgstr ""
+msgstr "Il existe déjà un groupe portant ce nom."
 
 #: allianceauth/groupmanagement/models.py:105
 msgid ""
@@ -658,16 +657,25 @@ msgid ""
 "group.<br>Used for groups such as Members, Corp_*, Alliance_* "
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
+"Groupe interne, les utilisateurs ne peuvent pas voir, rejoindre ou demander "
+"de rejoindre ce groupe.<br> Utilisé pour les groupes comme, Membres, "
+"Corporations _*, Alliance etc.<br><b> Annule les options masquer et exposer "
+"quand sélectionner."
 
 #: allianceauth/groupmanagement/models.py:113
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
+"Le groupe est caché aux utilisateurs, mais ils peuvent toujours rejoindre "
+"avec le bon lien."
 
 #: allianceauth/groupmanagement/models.py:119
 msgid ""
 "Group is open and users will be automatically added upon request.<br>If the "
 "group is not open users will need their request manually approved."
 msgstr ""
+"Le groupe est ouvert, et les utilisateurs seront automatiquement ajoutés sur"
+" demande. <br> Si le groupe n’est pas ouvert, les utilisateurs auront besoin"
+" que leurs demandes soit approuvées manuellement."
 
 #: allianceauth/groupmanagement/models.py:126
 msgid ""
@@ -676,12 +684,18 @@ msgid ""
 "remove users from this group automatically when they are no longer "
 "authenticated."
 msgstr ""
+"Le groupe est public. Tout utilisateur enregistré peut rejoindre ce groupe, "
+"avec une visibilité basée sur les autres options définies pour ce "
+"groupe.<br> L' Auth ne supprimera pas automatiquement les utilisateurs de ce"
+" groupe lorsqu’ils ne seront plus authentifiés."
 
 #: allianceauth/groupmanagement/models.py:135
 msgid ""
 "Group is restricted. This means that adding or removing users for this group"
 " requires a superuser admin."
 msgstr ""
+"Le groupe est restreint. Cela signifie que l’ajout ou la suppression "
+"d’utilisateurs pour ce groupe nécessite un administrateur superutilisateur."
 
 #: allianceauth/groupmanagement/models.py:144
 msgid ""
@@ -707,38 +721,40 @@ msgstr ""
 msgid ""
 "Short description <i>(max. 512 characters)</i> of the group shown to users."
 msgstr ""
+"Brève description <i> (512 caractères maximum) </i> du groupe présenté aux "
+"utilisateurs."
 
 #: allianceauth/groupmanagement/models.py:178
 msgid "Can request non-public groups"
-msgstr ""
+msgstr "Peut demander des groupes non publics"
 
 #: allianceauth/groupmanagement/models.py:209
 msgid "name"
-msgstr ""
+msgstr "Nom"
 
 #: allianceauth/groupmanagement/models.py:212
 msgid "Name that can not be used for groups."
-msgstr ""
+msgstr "Nom qui ne peut pas être utilisé pour les groupes."
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "reason"
-msgstr ""
+msgstr "raison"
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "Reason why this name is reserved."
-msgstr ""
+msgstr "Raison pour laquelle ce nom est réservé."
 
 #: allianceauth/groupmanagement/models.py:218
 msgid "created by"
-msgstr ""
+msgstr "créé par"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "created at"
-msgstr ""
+msgstr "créé à"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "Date when this entry was created"
-msgstr ""
+msgstr "Date de création de cette entrée"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:4
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
@@ -868,7 +884,7 @@ msgstr "Voir les membres"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:59
 msgid "Audit Members"
-msgstr ""
+msgstr "Membres de l'audit"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:63
 msgid "Copy Direct Join Link"
@@ -1274,7 +1290,7 @@ msgstr "Titre"
 
 #: allianceauth/notifications/templates/notifications/list_partial.html:28
 msgid "No notifications."
-msgstr ""
+msgstr "Aucune notification."
 
 #: allianceauth/notifications/templates/notifications/view.html:4
 #: allianceauth/notifications/templates/notifications/view.html:8
@@ -1322,7 +1338,7 @@ msgstr "Nom de l'opération"
 
 #: allianceauth/optimer/form.py:16
 msgid "Operation Type"
-msgstr ""
+msgstr "Type d'opération"
 
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:38
@@ -1336,7 +1352,7 @@ msgstr "Information additionnelle"
 
 #: allianceauth/optimer/form.py:23
 msgid "(Optional) Describe the operation with a couple of short words."
-msgstr ""
+msgstr "(Facultatif) Décrivez l'opération en quelques mots."
 
 #: allianceauth/optimer/templates/optimer/add.html:6
 #: allianceauth/optimer/templates/optimer/management.html:13
@@ -1373,7 +1389,7 @@ msgstr "Heure d'Eve actuelle:"
 
 #: allianceauth/optimer/templates/optimer/management.html:26
 msgid "Next Fleet Operations"
-msgstr ""
+msgstr "Prochaines opérations de la flotte"
 
 #: allianceauth/optimer/templates/optimer/management.html:30
 #: allianceauth/timerboard/templates/timerboard/view.html:362
@@ -1382,7 +1398,7 @@ msgstr "Aucun minuteur à venir."
 
 #: allianceauth/optimer/templates/optimer/management.html:33
 msgid "Past Fleet Operations"
-msgstr ""
+msgstr "Opérations passées de la flotte"
 
 #: allianceauth/optimer/templates/optimer/management.html:37
 #: allianceauth/timerboard/templates/timerboard/view.html:535
@@ -1830,7 +1846,7 @@ msgstr ""
 #: allianceauth/services/templates/services/service_credentials.html:8
 #, python-format
 msgid "%(service_name)s Credentials"
-msgstr ""
+msgstr "%(service_name)sInformations d'identification"
 
 #: allianceauth/services/templates/services/service_password.html:5
 #, python-format
@@ -1890,7 +1906,7 @@ msgstr "Lien non valide. Veuillez poster un lien direct vers un Killmail."
 
 #: allianceauth/srp/form.py:53
 msgid "After Action Report Link"
-msgstr ""
+msgstr "Lien vers le rapport après action"
 
 #: allianceauth/srp/templates/srp/add.html:5
 msgid "SRP Fleet Create"
@@ -1907,7 +1923,7 @@ msgstr "Donner ce lien aux membres de la flotte"
 
 #: allianceauth/srp/templates/srp/data.html:5
 msgid "Srp Fleet Data"
-msgstr ""
+msgstr "Données de flotte SRP"
 
 #: allianceauth/srp/templates/srp/data.html:50
 msgid "SRP Fleet Data"
@@ -1965,7 +1981,7 @@ msgstr ""
 
 #: allianceauth/srp/templates/srp/data.html:98
 msgid "Post Time"
-msgstr ""
+msgstr "Heure de publication"
 
 #: allianceauth/srp/templates/srp/data.html:175
 msgid "No SRP requests for this fleet."
@@ -2069,17 +2085,17 @@ msgstr "Flotte SRP %(fleetname)sActive."
 #: allianceauth/srp/views.py:140
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as completed."
-msgstr ""
+msgstr "Flotte SRP marquée %(fleetname)s comme terminée."
 
 #: allianceauth/srp/views.py:153
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as incomplete."
-msgstr ""
+msgstr "Flotte SRP %(fleetname)smarquée comme incomplète."
 
 #: allianceauth/srp/views.py:165
 #, python-format
 msgid "Unable to locate SRP code with ID %(srpfleetid)s"
-msgstr ""
+msgstr "Impossible de localiser le code SRP avec l'ID %(srpfleetid)s"
 
 #: allianceauth/srp/views.py:179
 msgid "This kill mail has already been posted."
@@ -2096,7 +2112,7 @@ msgstr ""
 #: allianceauth/srp/views.py:212
 #, python-format
 msgid "Submitted SRP request for your %(ship)s."
-msgstr ""
+msgstr "Demande SRP soumise pour votre. %(ship)s"
 
 #: allianceauth/srp/views.py:216
 #, python-format
@@ -2104,6 +2120,8 @@ msgid ""
 "Character %(charid)s does not belong to your Auth account. Please add the "
 "API key for this character and try again"
 msgstr ""
+"Le personnage%(charid)s n'appartient pas à votre compte Auth. Ajoutez la clé"
+" API pour ce personnage et réessayez"
 
 #: allianceauth/srp/views.py:236 allianceauth/srp/views.py:262
 #: allianceauth/srp/views.py:300
@@ -2131,17 +2149,17 @@ msgstr "Impossible à trouver, veuillez sélectionner une autre requête SRP"
 #: allianceauth/srp/views.py:323
 #, python-format
 msgid "Rejected %(numrequests)s SRP requests."
-msgstr ""
+msgstr "Requêtes %(numrequests)s SRP rejetées."
 
 #: allianceauth/srp/views.py:336
 #, python-format
 msgid "Unable to locate SRP request with ID %(requestid)s"
-msgstr ""
+msgstr "Impossible de localiser la demande SRP avec l'ID %(requestid)s"
 
 #: allianceauth/srp/views.py:360
 #, python-format
 msgid "Saved changes to SRP fleet %(fleetname)s"
-msgstr ""
+msgstr "Modifications enregistrées de la flotte SRP%(fleetname)s"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:8
 msgid "Alliance Auth Notifications"
@@ -2194,6 +2212,9 @@ msgid ""
 "                    Status of %(total)s processed tasks • last %(latest)s\n"
 "                    "
 msgstr ""
+"\n"
+"État des tâches %(total)s traitées • dernier %(latest)s\n"
+"                    "
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
 #, python-format
@@ -2202,6 +2223,9 @@ msgid ""
 "                        %(queue_length)s queued tasks\n"
 "                        "
 msgstr ""
+"\n"
+"                        %(queue_length)stâches en file d'attente\n"
+"                        "
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
 msgid "Admin"

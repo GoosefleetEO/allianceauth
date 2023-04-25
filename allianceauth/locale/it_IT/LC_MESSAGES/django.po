@@ -5,17 +5,17 @@
 # 
 # Translators:
 # Alessandro Cresti, 2021
-# Linus Hope, 2021
+# Linus Hope, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-14 23:17+1000\n"
+"POT-Creation-Date: 2022-10-09 18:20+1000\n"
 "PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Linus Hope, 2021\n"
-"Language-Team: Italian (Italy) (https://www.transifex.com/alliance-auth/teams/107430/it_IT/)\n"
+"Last-Translator: Linus Hope, 2023\n"
+"Language-Team: Italian (Italy) (https://app.transifex.com/alliance-auth/teams/107430/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,11 +24,11 @@ msgstr ""
 
 #: allianceauth/analytics/models.py:29
 msgid "Google Analytics Universal"
-msgstr ""
+msgstr "Google Analytics Universal"
 
 #: allianceauth/analytics/models.py:30
 msgid "Google Analytics V4"
-msgstr ""
+msgstr "Google Analytics V4"
 
 #: allianceauth/authentication/decorators.py:37
 msgid "A main character is required to perform that action. Add one below."
@@ -38,76 +38,67 @@ msgstr ""
 
 #: allianceauth/authentication/forms.py:12
 msgid "Email"
-msgstr ""
+msgstr "Indirizzo di posta elettronica"
 
 #: allianceauth/authentication/forms.py:62
 #, python-format
 msgid "You are not allowed to add or remove these restricted groups: %s"
-msgstr ""
+msgstr "Non ti è consentito aggiungere o rimuovere questi gruppi limitati:%s"
 
 #: allianceauth/authentication/models.py:80
-#: allianceauth/project_template/project_name/settings/base.py:89
 msgid "English"
-msgstr ""
+msgstr "Inglese"
 
 #: allianceauth/authentication/models.py:81
-#: allianceauth/project_template/project_name/settings/base.py:90
 msgid "German"
-msgstr ""
+msgstr "Tedesco"
 
 #: allianceauth/authentication/models.py:82
-#: allianceauth/project_template/project_name/settings/base.py:91
 msgid "Spanish"
-msgstr ""
+msgstr "Spagnolo"
 
 #: allianceauth/authentication/models.py:83
-#: allianceauth/project_template/project_name/settings/base.py:92
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "Cinese semplificato"
 
 #: allianceauth/authentication/models.py:84
-#: allianceauth/project_template/project_name/settings/base.py:93
 msgid "Russian"
-msgstr ""
+msgstr "Russo"
 
 #: allianceauth/authentication/models.py:85
-#: allianceauth/project_template/project_name/settings/base.py:94
 msgid "Korean"
-msgstr ""
+msgstr "Coreano"
 
 #: allianceauth/authentication/models.py:86
-#: allianceauth/project_template/project_name/settings/base.py:95
 msgid "French"
-msgstr ""
+msgstr "Francese"
 
 #: allianceauth/authentication/models.py:87
-#: allianceauth/project_template/project_name/settings/base.py:96
 msgid "Japanese"
-msgstr ""
+msgstr "Giapponese"
 
 #: allianceauth/authentication/models.py:88
-#: allianceauth/project_template/project_name/settings/base.py:97
 msgid "Italian"
-msgstr ""
+msgstr "Italiano"
 
 #: allianceauth/authentication/models.py:91
 msgid "Language"
-msgstr ""
+msgstr "Lingua"
 
 #: allianceauth/authentication/models.py:96
 #: allianceauth/templates/allianceauth/night-toggle.html:6
 msgid "Night Mode"
-msgstr ""
+msgstr "Modalità scura"
 
 #: allianceauth/authentication/models.py:110
 #, python-format
 msgid "State changed to: %s"
-msgstr ""
+msgstr "Stato modificato a: %s"
 
 #: allianceauth/authentication/models.py:111
 #, python-format
 msgid "Your user's state is now: %(state)s"
-msgstr ""
+msgstr "Il tuo stato utente è ora: %(state)s"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:4
 #: allianceauth/authentication/templates/authentication/dashboard.html:7
@@ -172,23 +163,25 @@ msgstr "Alleanza"
 #: allianceauth/authentication/templates/public/login.html:6
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
 msgid "Login"
-msgstr ""
+msgstr "Accedi"
 
 #: allianceauth/authentication/templates/public/login.html:10
 msgid "Login with Eve SSO"
-msgstr ""
+msgstr "Accedi con EVE SSO"
 
 #: allianceauth/authentication/templates/public/middle_box.html:24
 msgid "For information on SSO, ESI and security read the CCP Dev Blog"
 msgstr ""
+"Per ulteriori informazioni riguardo a SSO, ESI e sicurezza consulta il CCP "
+"Dev Blog"
 
 #: allianceauth/authentication/templates/public/middle_box.html:26
 msgid "Introducing ESI - A New API For Eve Online"
-msgstr ""
+msgstr "Introducendo ESI - Una nuova API per Eve Online"
 
 #: allianceauth/authentication/templates/public/middle_box.html:32
 msgid "Manage ESI Applications"
-msgstr ""
+msgstr "Gestisci applicazioni ESI"
 
 #: allianceauth/authentication/templates/public/register.html:6
 msgid "Registration"
@@ -230,7 +223,7 @@ msgstr ""
 
 #: allianceauth/authentication/views.py:133
 msgid "Unable to authenticate as the selected character."
-msgstr ""
+msgstr "Impossibile autenticarsi con il personaggio selezioanto."
 
 #: allianceauth/authentication/views.py:197
 msgid "Registration token has expired."
@@ -322,7 +315,7 @@ msgstr "Corporazione"
 #: allianceauth/corputils/templates/corputils/corpstats.html:167
 #: allianceauth/corputils/templates/corputils/search.html:27
 msgid "Killboard"
-msgstr ""
+msgstr "Killboard"
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:114
 #: allianceauth/corputils/templates/corputils/search.html:16
@@ -350,11 +343,11 @@ msgstr "Cerca risultati"
 
 #: allianceauth/corputils/templates/corputils/search.html:15
 msgid "zKillboard"
-msgstr ""
+msgstr "zKillboard"
 
 #: allianceauth/corputils/views.py:54
 msgid "Selected corp already has a statistics module."
-msgstr ""
+msgstr "La corporazione selezionata dispone già di un modulo statistiche."
 
 #: allianceauth/corputils/views.py:56
 msgid "Failed to gather corporation statistics with selected token."
@@ -410,7 +403,7 @@ msgstr "Crea Fatlink"
 #: allianceauth/optimer/templates/optimer/add.html:13
 #: allianceauth/optimer/templates/optimer/add.html:22
 msgid "Create Fleet Operation"
-msgstr ""
+msgstr "Crea Fleet Operation"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:13
 msgid "Bad request!"
@@ -508,7 +501,7 @@ msgstr[2] "%(user)s ha ottenuto %(links)s links questo mese."
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:26
 msgid "Times used"
-msgstr ""
+msgstr "Numero di volte utilizzato"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkpersonalmonthlystatisticsview.html:37
 #, python-format
@@ -565,7 +558,7 @@ msgstr "Mese"
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:22
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:23
 msgid "Fats"
-msgstr ""
+msgstr "Fats"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:4
 msgid "Fatlink Corp Statistics"
@@ -614,11 +607,11 @@ msgstr "Nessun fatlink documentato."
 
 #: allianceauth/fleetactivitytracking/views.py:218
 msgid "Character does not exist"
-msgstr ""
+msgstr "Il personaggio non esiste"
 
 #: allianceauth/fleetactivitytracking/views.py:221
 msgid "User does not exist"
-msgstr ""
+msgstr "L'utente non esiste"
 
 #: allianceauth/fleetactivitytracking/views.py:299
 msgid "Fleet participation registered."
@@ -634,23 +627,25 @@ msgid ""
 "Cannot register the fleet participation for {character.character_name}. The "
 "character needs to be online."
 msgstr ""
+"Impossibile registrare la partecipazione alla flotta per "
+"{character.character_name}. Il personaggio deve essere online."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:13
 msgid "Group Management"
-msgstr ""
+msgstr "Gestione gruppi"
 
 #: allianceauth/groupmanagement/forms.py:15
 msgid "This name has been reserved and can not be used for groups."
-msgstr ""
+msgstr "Questo nome è riservato e non può essere utilizzato per gruppi."
 
 #: allianceauth/groupmanagement/forms.py:25
 msgid "(auto)"
-msgstr ""
+msgstr "(auto)"
 
 #: allianceauth/groupmanagement/forms.py:34
 msgid "There already exists a group with that name."
-msgstr ""
+msgstr "Esiste già un gruppo con quel nome."
 
 #: allianceauth/groupmanagement/models.py:105
 msgid ""
@@ -658,16 +653,25 @@ msgid ""
 "group.<br>Used for groups such as Members, Corp_*, Alliance_* "
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
+"Gruppo interno, gli utenti non possono vedere, unirsi o fare richiesta di "
+"adesione a questo gruppo. <br>Utilizzato per gruppi come Membri, Corpazioni,"
+" Alleanze, etc. <br><b>Sovrascrive opzioni nascoste e aperte quando "
+"seleazionato."
 
 #: allianceauth/groupmanagement/models.py:113
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
+"Il gruppo è nascosto agli utenti ma questi vi possono aderire utilizzando il"
+" link corretto. "
 
 #: allianceauth/groupmanagement/models.py:119
 msgid ""
 "Group is open and users will be automatically added upon request.<br>If the "
 "group is not open users will need their request manually approved."
 msgstr ""
+"Il gruppo è aperto e gli utenti saranno automaticamente aggiunti a seguito "
+"richiesta. <br>Se il gruppo non è aperto gli utenti dovranno necessitare di "
+"approvazione manuale."
 
 #: allianceauth/groupmanagement/models.py:126
 msgid ""
