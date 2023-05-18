@@ -588,16 +588,17 @@ class DiscordClient:
             return None  # User is no longer a member
         guild_roles = RolesSet(self.guild_roles(guild_id=guild_id))
         logger.debug('Current guild roles: %s', guild_roles.ids())
+        _roles = set(member_info.roles)
         if not guild_roles.has_roles(member_info.roles):
             guild_roles = RolesSet(
                 self.guild_roles(guild_id=guild_id, use_cache=False)
             )
             if not guild_roles.has_roles(member_info.roles):
                 role_ids = set(member_info.roles).difference(guild_roles.ids())
-                raise RuntimeError(
-                    f'Discord user {user_id} has unknown roles: {role_ids}'
-                )
-        return guild_roles.subset(member_info.roles)
+                logger.warning(f'Discord user {user_id} has unknown roles: {role_ids}')
+                for _r in role_ids:
+                    _roles.remove(_r)
+        return guild_roles.subset(_roles)
 
     @classmethod
     def _is_member_unknown_error(cls, r: requests.Response) -> bool:
