@@ -86,6 +86,7 @@ class UserProfile(models.Model):
         ('fr', _('French')),
         ('ja', _('Japanese')),
         ('it', _('Italian')),
+        ('uk', _('Ukrainian')),
     ]
     language = models.CharField(
         _("Language"), max_length=10,
