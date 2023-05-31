@@ -79,6 +79,8 @@ Copy this basic config into your config file. Make whatever changes you feel are
 ```
 server {
     listen 80;
+    listen [::]:80;
+
     server_name example.com;
 
     location = /favicon.ico { access_log off; log_not_found off; }
@@ -110,6 +112,7 @@ Your config will need a few additions once you've got your certificate.
 
 ```
     listen 443 ssl http2; # Replace listen 80; with this
+    listen [::]:443 ssl http2; # Replace listen [::]:80; with this
 
     ssl_certificate           /path/to/your/cert.crt;
     ssl_certificate_key       /path/to/your/cert.key;
@@ -126,6 +129,8 @@ If you want to redirect all your non-SSL visitors to your secure site, below you
 ```
 server {
     listen 80;
+    listen [::]:80;
+
     server_name example.com;
 
     # Redirect all HTTP requests to HTTPS with a 301 Moved Permanently response.
