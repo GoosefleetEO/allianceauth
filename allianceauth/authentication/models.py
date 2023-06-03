@@ -63,6 +63,22 @@ class UserProfile(models.Model):
     class Meta:
         default_permissions = ('change',)
 
+    class Language(models.TextChoices):
+        """
+        Choices for UserProfile.language
+        """
+
+        ENGLISH = 'en', _('English')
+        GERMAN = 'de', _('German')
+        SPANISH = 'es', _('Spanish')
+        CHINESE = 'zh-hans', _('Chinese Simplified')
+        RUSSIAN = 'ru', _('Russian')
+        KOREAN = 'ko', _('Korean')
+        FRENCH = 'fr', _('French')
+        JAPANESE = 'ja', _('Japanese')
+        ITALIAN = 'it', _('Italian')
+        UKRAINIAN = 'uk', _('Ukrainian')
+
     user = models.OneToOneField(
         User,
         related_name='profile',
@@ -76,20 +92,9 @@ class UserProfile(models.Model):
         State,
         on_delete=models.SET_DEFAULT,
         default=get_guest_state_pk)
-    LANGUAGE_CHOICES = [
-        ('en', _('English')),
-        ('de', _('German')),
-        ('es', _('Spanish')),
-        ('zh-hans', _('Chinese Simplified')),
-        ('ru', _('Russian')),
-        ('ko', _('Korean')),
-        ('fr', _('French')),
-        ('ja', _('Japanese')),
-        ('it', _('Italian')),
-    ]
     language = models.CharField(
         _("Language"), max_length=10,
-        choices=LANGUAGE_CHOICES,
+        choices=Language.choices,
         blank=True,
         default='')
     night_mode = models.BooleanField(
