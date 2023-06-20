@@ -25,7 +25,7 @@ before_script:
 pre-commit-check:
   <<: *only-default
   stage: pre-commit
-  image: python:3.8-bullseye
+  image: python:3.10-bullseye
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   cache:
