@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+lang_map = zh-Hans:zh_Hans
+
+[alliance-auth.django-po]
+file_filter = allianceauth/locale/<lang>/LC_MESSAGES/django.po
+minimum_perc = 0
+source_file = allianceauth/locale/en/LC_MESSAGES/django.po
+source_lang = en
+type = PO

@@ -94,6 +94,7 @@ LANGUAGES = (
     ("fr", "French"),
     ("ja", "Japanese"),
     ("it", "Italian"),
+    ("uk", "Ukrainian"),
 )
 
 TEMPLATES = [

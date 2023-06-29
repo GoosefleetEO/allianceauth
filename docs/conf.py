@@ -46,6 +46,7 @@ extensions = [
     'recommonmark',
     'sphinxcontrib_django2',
     'sphinx.ext.viewcode',
+    'sphinx_copybutton'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

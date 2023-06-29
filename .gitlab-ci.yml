@@ -25,7 +25,7 @@ before_script:
 pre-commit-check:
   <<: *only-default
   stage: pre-commit
-  image: python:3.8-bullseye
+  image: python:3.10-bullseye
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   cache:
@@ -99,6 +99,19 @@ test-3.11-core:
         coverage_format: cobertura
         path: coverage.xml
 
+test-pvpy-core:
+  <<: *only-default
+  image: pypy:3.9-bullseye
+  script:
+    - tox -e pypy-all
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  allow_failure: true
+
 test-3.8-all:
   <<: *only-default
   image: python:3.8-bullseye
@@ -147,6 +160,19 @@ test-3.11-all:
         coverage_format: cobertura
         path: coverage.xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+
+test-pvpy-all:
+  <<: *only-default
+  image: pypy:3.9-bullseye
+  script:
+    - tox -e pypy-all
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+  allow_failure: true
 
 build-test:
   stage: test

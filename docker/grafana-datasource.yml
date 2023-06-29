@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+
+- name: MySQL
+  type: mysql
+  url: auth_mysql
+  database: alliance_auth
+  user: grafana
+  editable: true
+  secureJsonData:
+    password: ${GF_AUTH_DATABASE_PASSWORD}

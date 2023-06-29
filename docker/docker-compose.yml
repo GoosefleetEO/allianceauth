@@ -52,12 +52,19 @@ services:
       - auth_mysql
 
   grafana:
-    image: grafana/grafana-oss:8.3.2
+    image: grafana/grafana-oss:8.5.22
     restart: always
     depends_on:
       - auth_mysql
     volumes:
+      - ./grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/datasource.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
       - grafana-data:/var/lib/grafana
+    environment:
+      GF_INSTALL_PLUGINS: grafana-piechart-panel,grafana-clock-panel,grafana-simple-json-datasource
+      GF_AUTH_DATABASE_PASSWORD: ${GRAFANA_DB_PASSWORD}
+
   proxy:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: always

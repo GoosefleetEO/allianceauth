@@ -69,11 +69,7 @@ celerybeat-schedule
 #gitlab configs
 .gitlab/
 
-#transifex
-.tx/
-
 #other
 .flake8
 .pylintrc
 Makefile
-.isort.cfg
