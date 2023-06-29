@@ -134,7 +134,7 @@ msgid "No main character set."
 msgstr "주 캐릭터가 지정되지 않음"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr "캐릭터 추가"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115

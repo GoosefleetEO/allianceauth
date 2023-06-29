@@ -128,7 +128,7 @@ msgid "No main character set."
 msgstr "メンキャラクターが選択されていません。"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr "キャラクターを追加"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115

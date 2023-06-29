@@ -106,7 +106,7 @@
                             <div class="col-sm-6">
                                 <p>
                                     <a href="{% url 'authentication:add_character' %}" class="btn btn-block btn-info"
-                                    title="Add Character">{% translate 'Add Character' %}</a>
+                                    title="Add Character (Public Data Only)">{% translate 'Add Character (Public Data Only)' %}</a>
                                 </p>
                             </div>
                             <div class="col-sm-6">
@@ -124,7 +124,6 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">{% translate "Group Memberships" %}</h3>
                     </div>
-                    <div class="panel-body">
                         <div style="height: 240px;overflow:-moz-scrollbars-vertical;overflow-y:auto;">                            
                             {% if not groups %}
                                 <p class="text-muted">No groups</p>
@@ -189,9 +188,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-
-{% block extra_css %}        
-    <link rel="stylesheet" href="{% static 'authentication/css/dashboard.css' %}" type="text/css" media="screen">    
 {% endblock %}
