@@ -16,14 +16,14 @@
     <td class="text-center">
         {% if not user_has_account %}
             <a href="{% url 'discord:activate' %}" title="{% translate 'Join the Discord server' %}" class="btn btn-primary">
-                <span class="glyphicon glyphicon-ok"></span>
+                Activate
             </a>
         {% else %}
-            <a href="{% url 'discord:reset' %}" title="{% translate 'Leave- and rejoin the Discord Server (Reset)' %}" class="btn btn-warning">
-                <span class="glyphicon glyphicon-refresh"></span>
-            </a>
+            <!-- <a href="{% url 'discord:reset' %}" title="{% translate 'Leave- and rejoin the Discord Server (Reset)' %}" class="btn btn-warning">
+                Leave and Rejoin
+            </a> -->
             <a href="{% url 'discord:deactivate' %}" title="{% translate 'Leave the Discord server' %}" class="btn btn-danger">
-                <span class="glyphicon glyphicon-remove"></span>
+                Deactivate
             </a>
         {% endif %}
         {% if request.user.is_superuser %}
