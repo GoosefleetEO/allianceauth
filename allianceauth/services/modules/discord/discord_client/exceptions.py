@@ -21,7 +21,7 @@ class DiscordApiBackoff(DiscordClientException):
     @property
     def retry_after_seconds(self):
         """Time to retry after in seconds."""
-        return math.ceil(self.retry_after / 1000)
+        return math.ceil(self.retry_after / 10)
 
 
 class DiscordRateLimitExhausted(DiscordApiBackoff):

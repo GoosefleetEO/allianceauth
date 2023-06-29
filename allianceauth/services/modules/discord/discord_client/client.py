@@ -42,7 +42,7 @@ RATE_LIMIT_MAX_REQUESTS = 5
 RATE_LIMIT_RESETS_AFTER = 5000
 
 # Delay used for API backoff in case no info returned from API on 429s
-DEFAULT_BACKOFF_DELAY = 5000
+DEFAULT_BACKOFF_DELAY = 50000
 
 # additional duration to compensate for potential clock discrepancies
 # with the Discord server
