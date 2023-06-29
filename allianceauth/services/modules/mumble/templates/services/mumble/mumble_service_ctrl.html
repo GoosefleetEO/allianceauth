@@ -5,24 +5,26 @@
             <td class="text-center">{{ service_url }}</td>
             <td class="text-center">
             <a href="{% url 'mumble:activate' %}" title="Activate" class="btn btn-warning">
-                <span class="glyphicon glyphicon-ok"></span>
+                Activate
             </a>
         </td>
         {% else %}
             <td class="text-center"><a href="mumble://{{ connect_url }}">{{ service_url }}</a></td>
             <td class="text-center">
             <a href="{% url 'mumble:set_password' %}" title="Set Password" class="btn btn-warning">
-                <span class="glyphicon glyphicon-pencil"></span>
+                Change Password
             </a>
             <a href="{% url 'mumble:reset_password' %}" title="Reset Password" class="btn btn-primary">
-                <span class="glyphicon glyphicon-refresh"></span>
+                Reset Password
             </a>
             <a href="{% url 'mumble:deactivate' %}" title="Deactivate" class="btn btn-danger">
-                <span class="glyphicon glyphicon-remove"></span>
+                Deactivate
             </a>
+            <!--
             <a href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
-                <span class="glyphicon glyphicon-arrow-right"></span>
+                Connect
             </a>
+            -->
         </td>
         {% endif %}
 </tr>
