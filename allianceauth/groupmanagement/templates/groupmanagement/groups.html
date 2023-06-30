@@ -29,7 +29,7 @@
 
                                 <tbody>
                                     {% for g in groups %}
-                                    {% if g.group in user.groups.all %}
+                                    {% if g.group in user.groups.all and not g.group.authgroup.open%}
                                         <tr>
                                             <td>{{ g.group.name }}</td>
                                             <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
@@ -43,6 +43,19 @@
                                                         {% translate "Pending" %}
                                                     </button>
                                                 {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% for g in groups %}
+                                    {% if g.group in user.groups.all and g.group.authgroup.open%}
+                                        <tr>
+                                            <td>{{ g.group.name }}</td>
+                                            <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
+                                            <td class="text-right">
+                                                <a href="{% url 'groupmanagement:request_leave' g.group.id %}" class="btn btn-danger">
+                                                    {% translate "Leave" %}
+                                                </a>
                                             </td>
                                         </tr>
                                     {% endif %}
