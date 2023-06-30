@@ -9,7 +9,7 @@
     <div class="col-sm-12">
         {% if groups %}
             <div class="row vertical-flexbox-row2">
-                <div class="col-sm-6 text-center">
+                <div class="col-sm-12">
                     <div class="panel panel-primary" style="height:100%">
                         <div class="panel-heading">
                             <h3 class="panel-title">
@@ -52,11 +52,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row vertical-flexbox-row2">
                 <div class="col-sm-6 text-center">
                     <div class="panel panel-primary" style="height:100%">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                            Available Groups
+                            Open Groups
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -77,17 +79,49 @@
                                             <td>{{ g.group.name }}</td>
                                             <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
                                             <td class="text-right">
-                                                {% if not g.request %}
-                                                    {% if g.group.authgroup.open %}
-                                                        <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
-                                                            {% translate "Join" %}
-                                                        </a>
-                                                    {% else %}
+                                                {% if g.group.authgroup.open %}
+                                                    <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
+                                                        {% translate "Join" %}
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                    <div class="panel panel-primary" style="height:100%">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                            Requestable Groups
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <table class="table table-aa">
+                                <thead>
+                                    <tr>
+                                        <th>{% translate "Name" %}</th>
+                                        <th>{% translate "Description" %}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for g in groups %}
+                                    {% if g.group not in user.groups.all%}
+                                        <tr>
+                                            <td>{{ g.group.name }}</td>
+                                            <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
+                                            <td class="text-right">
+                                                {% if not g.request and not g.group.authgroup.open%}
                                                         <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-primary">
                                                             {% translate "Request" %}
                                                         </a>
-                                                    {% endif %}
-                                                {% else %}
+                                                {% elif g.request %}
                                                     <button type="button" class="btn btn-primary" disabled>
                                                         {% translate "Pending" %}
                                                     </button>
