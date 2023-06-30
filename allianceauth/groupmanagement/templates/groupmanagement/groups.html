@@ -74,16 +74,14 @@
 
                                 <tbody>
                                     {% for g in groups %}
-                                    {% if g.group not in user.groups.all%}
+                                    {% if g.group not in user.groups.all and g.group.authgroup.open%}
                                         <tr>
                                             <td>{{ g.group.name }}</td>
                                             <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
                                             <td class="text-right">
-                                                {% if g.group.authgroup.open %}
-                                                    <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
-                                                        {% translate "Join" %}
-                                                    </a>
-                                                {% endif %}
+                                                <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-success">
+                                                    {% translate "Join" %}
+                                                </a>
                                             </td>
                                         </tr>
                                     {% endif %}
@@ -113,12 +111,12 @@
 
                                 <tbody>
                                     {% for g in groups %}
-                                    {% if g.group not in user.groups.all%}
+                                    {% if g.group not in user.groups.all and not g.group.authgroup.open%}
                                         <tr>
                                             <td>{{ g.group.name }}</td>
                                             <td>{{ g.group.authgroup.description|linebreaks|urlize }}</td>
                                             <td class="text-right">
-                                                {% if not g.request and not g.group.authgroup.open%}
+                                                {% if not g.request %}
                                                         <a href="{% url 'groupmanagement:request_add' g.group.id %}" class="btn btn-primary">
                                                             {% translate "Request" %}
                                                         </a>
