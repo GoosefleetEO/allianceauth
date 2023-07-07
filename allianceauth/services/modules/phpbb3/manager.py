@@ -176,7 +176,7 @@ class Phpbb3Manager:
         logger.debug(f"Proceeding to add phpbb user {username_clean} and pwhash starting with {pwhash[0:5]}")
         # check if the username was simply revoked
         if Phpbb3Manager.check_user(username_clean):
-            logger.warn("Unable to add phpbb user with username %s - already exists. Updating user instead." % username)
+            logger.warning("Unable to add phpbb user with username %s - already exists. Updating user instead." % username)
             Phpbb3Manager.__update_user_info(username_clean, email, pwhash)
         else:
             try:
