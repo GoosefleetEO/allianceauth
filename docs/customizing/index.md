@@ -71,3 +71,51 @@ urlpatterns = [
     re_path(r'', include(allianceauth.urls)),
 ]
 ```
+
+## Example: Adding an external link to the sidebar
+
+As an example we are adding an external links to the Alliance Auth sidebar using the template overrides feature. For our example let's add a link to Google's start page.
+
+### Step 1 - Create the template override folder
+
+First you need to create the folder for the template on your server. For AA to pick it up it has to match a specific structure.
+
+If you have a default installation you can create the folder like this:
+
+```sh
+mkdir -p /home/allianceserver/myauth/myauth/templates/allianceauth
+```
+
+### Step 2 - Download the original template
+
+Next you need to download a copy of the original template file we want to change. For that let's move into the above folder and then download the file into the current folder with:
+
+```sh
+cd /home/allianceserver/myauth/myauth/templates/allianceauth
+wget <https://gitlab.com/allianceauth/allianceauth/-/raw/master/allianceauth/templates/allianceauth/side-menu.html>
+```
+
+### Step 3 - Modify the template
+
+Now you can modify the template to add your custom link. To create the google link we can add this snippet *between* the `{% menu_items %}` and the `</ul>` tag:
+
+```sh
+nano /home/allianceserver/myauth/myauth/templates/allianceauth/side-menu.html
+```
+
+```jinja
+    <li>
+        <a href="https://www.google.com/" target="_blank">
+            <i class="fab fa-google fa-fw"></i>Google
+        </a>
+    </li>
+```
+
+```eval_rst
+.. hint::
+    You can find other icons with a matching style on the `Font Awesome site <https://fontawesome.com/v5/search?m=free>`_ . AA currently uses Font Awesome version 5. You also want to keep the ``fa-fw`` tag to ensure all icons have the same width.
+```
+
+### Step 4 - Restart your AA services
+
+Finally, restart your AA services and your custom link should appear in the sidebar.
