@@ -220,13 +220,13 @@ A few extra utilities are also required for installation of packages.
 Ubuntu 1804, 2004, 2204:
 
 ```bash
-sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev build-essential
+sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev build-essential pkg-config
 ```
 
 CentOS 7:
 
 ```bash
-sudo yum install gcc gcc-c++ unzip git redis curl bzip2-devel openssl-devel libffi-devel wget
+sudo yum install gcc gcc-c++ unzip git redis curl bzip2-devel openssl-devel libffi-devel wget pkg-config
 ```
 
 ```bash
