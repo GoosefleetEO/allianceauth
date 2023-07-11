@@ -82,6 +82,10 @@ Next we need to install Python and related development tools.
 .. note::
     Should your Ubuntu come with a newer version of Python we recommend to still setup your dev environment with the oldest Python 3 version currently supported by AA (e.g Python 3.8 at this time of writing) to ensure your apps are compatible with all current AA installations
     You an check out this `page <https://askubuntu.com/questions/682869/how-do-i-install-a-different-python-version-using-apt-get/1195153>`_ on how to install additional Python versions on Ubuntu.
+
+    If you install a different python version from the default you need to adjust some of the commands below to install appopriate versions of those packages for example using Python 3.8 you might need to run the following after using the setup steps for the repository mentioned in the AskUbuntu post above:
+
+    `sudo apt-get install python3.8 python3.8-dev python3.8-venv python3-setuptools python3-pip python-pip`
 ```
 
 Use the following command to install Python 3 with all required libraries with the default version:
@@ -93,7 +97,7 @@ sudo apt-get install python3 python3-dev python3-venv python3-setuptools python3
 ### Install redis and other tools
 
 ```bash
-sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev
+sudo apt-get install unzip git redis-server curl libssl-dev libbz2-dev libffi-dev pkg-config
 ```
 
 Start redis

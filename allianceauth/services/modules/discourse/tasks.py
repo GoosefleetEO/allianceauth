@@ -49,7 +49,7 @@ class DiscourseTasks:
             DiscourseManager.update_groups(user)
         except Exception as e:
             logger.exception(e)
-            logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user)
+            logger.warning("Discourse group sync failed for %s, retrying in 10 mins" % user)
             raise self.retry(countdown=60 * 10)
         logger.debug("Updated user %s discourse groups." % user)
 

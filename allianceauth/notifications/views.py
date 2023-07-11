@@ -44,7 +44,7 @@ def notification_view(request, notif_id):
         notif.mark_viewed()
         return render(request, 'notifications/view.html', context)
     else:
-        logger.warn(
+        logger.warning(
             "User %s not authorized to view notif_id %s belonging to user %s",
             request.user,
             notif_id, notif.user
