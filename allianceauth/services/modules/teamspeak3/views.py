@@ -44,7 +44,7 @@ def activate_teamspeak3(request):
 def verify_teamspeak3(request):
     logger.debug("verify_teamspeak3 called by user %s" % request.user)
     if not Teamspeak3Tasks.has_account(request.user):
-        logger.warn("Unable to validate user %s teamspeak: no teamspeak data" % request.user)
+        logger.warning("Unable to validate user %s teamspeak: no teamspeak data" % request.user)
         return redirect("services:services")
     if request.method == "POST":
         form = TeamspeakJoinForm(request.POST)

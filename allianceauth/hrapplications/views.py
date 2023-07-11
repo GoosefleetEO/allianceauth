@@ -57,7 +57,7 @@ def hr_application_create_view(request, form_id=None):
         app_form = get_object_or_404(ApplicationForm, id=form_id)
         if request.method == "POST":
             if Application.objects.filter(user=request.user).filter(form=app_form).exists():
-                logger.warn(f"User {request.user} attempting to duplicate application to {app_form.corp}")
+                logger.warning(f"User {request.user} attempting to duplicate application to {app_form.corp}")
             else:
                 application = Application(user=request.user, form=app_form)
                 application.save()
@@ -92,7 +92,7 @@ def hr_application_personal_view(request, app_id):
         }
         return render(request, 'hrapplications/view.html', context=context)
     else:
-        logger.warn(f"User {request.user} not authorized to view {app}")
+        logger.warning(f"User {request.user} not authorized to view {app}")
         return redirect('hrapplications:personal_view')
 
 
@@ -105,9 +105,9 @@ def hr_application_personal_removal(request, app_id):
             logger.info(f"User {request.user} deleting {app}")
             app.delete()
         else:
-            logger.warn(f"User {request.user} attempting to delete reviewed app {app}")
+            logger.warning(f"User {request.user} attempting to delete reviewed app {app}")
     else:
-        logger.warn(f"User {request.user} not authorized to delete {app}")
+        logger.warning(f"User {request.user} not authorized to delete {app}")
     return redirect('hrapplications:index')
 
 
@@ -132,7 +132,7 @@ def hr_application_view(request, app_id):
                 logger.info(f"Saved comment by user {request.user} to {app}")
                 return redirect('hrapplications:view', app_id)
         else:
-            logger.warn("User %s does not have permission to add ApplicationComments" % request.user)
+            logger.warning("User %s does not have permission to add ApplicationComments" % request.user)
             return redirect('hrapplications:view', app_id)
     else:
         logger.debug("Returning blank HRApplication comment form.")
@@ -171,7 +171,7 @@ def hr_application_approve(request, app_id):
         app.save()
         notify(app.user, "Application Accepted", message="Your application to %s has been approved." % app.form.corp, level="success")
     else:
-        logger.warn(f"User {request.user} not authorized to approve {app}")
+        logger.warning(f"User {request.user} not authorized to approve {app}")
     return redirect('hrapplications:index')
 
 
@@ -187,7 +187,7 @@ def hr_application_reject(request, app_id):
         app.save()
         notify(app.user, "Application Rejected", message="Your application to %s has been rejected." % app.form.corp, level="danger")
     else:
-        logger.warn(f"User {request.user} not authorized to reject {app}")
+        logger.warning(f"User {request.user} not authorized to reject {app}")
     return redirect('hrapplications:index')
 
 
@@ -208,7 +208,7 @@ def hr_application_search(request):
                     app_list = app_list.filter(
                         form__corp__corporation_id=request.user.profile.main_character.corporation_id)
                 except AttributeError:
-                    logger.warn(
+                    logger.warning(
                         "User %s missing main character model: unable to filter applications to search" % request.user)
 
             applications = app_list.filter(
@@ -246,6 +246,6 @@ def hr_application_mark_in_progress(request, app_id):
         app.save()
         notify(app.user, "Application In Progress", message=f"Your application to {app.form.corp} is being reviewed by {app.reviewer_str}")
     else:
-        logger.warn(
+        logger.warning(
             f"User {request.user} unable to mark {app} in progress: already being reviewed by {app.reviewer}")
     return redirect("hrapplications:view", app_id)
