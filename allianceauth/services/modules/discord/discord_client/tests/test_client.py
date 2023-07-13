@@ -899,8 +899,8 @@ class TestGuildMemberRoles(NoSocketsTestCase):
         mock_guild_roles.return_value = {role_a, role_b}
         client = DiscordClientStub(TEST_BOT_TOKEN, mock_redis)
         # when/then
-        with self.assertRaises(RuntimeError):
-            client.guild_member_roles(TEST_GUILD_ID, TEST_USER_ID)
+        roles = client.guild_member_roles(TEST_GUILD_ID, TEST_USER_ID)
+        self.assertEqual(roles, RolesSet([role_a]))
 
     # TODO: Re-enable after adding Discord general error handling
     # def test_should_raise_exception_if_member_info_is_invalid(
