@@ -83,8 +83,6 @@ server {
 
     server_name example.com;
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-
     location /static {
         alias /var/www/myauth/static;
         autoindex off;
@@ -92,6 +90,10 @@ server {
 
     location /robots.txt {
         alias /var/www/myauth/static/robots.txt;
+    }
+
+    location /favicon.ico {
+        alias /var/www/myauth/static/allianceauth/icons/favicon.png;
     }
 
     # Gunicorn config goes below
