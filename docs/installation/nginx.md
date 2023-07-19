@@ -93,7 +93,7 @@ server {
     }
 
     location /favicon.ico {
-        alias /var/www/myauth/static/allianceauth/icons/favicon.png;
+        alias /var/www/myauth/static/allianceauth/icons/favicon.ico;
     }
 
     # Gunicorn config goes below
