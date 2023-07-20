@@ -162,9 +162,11 @@
                                 <p class="text-muted">No groups</p>
                             {% else %}
                                 {% for group in groups %}
-                                    <span class="label label-default label-group" title="{{ group.authgroup.description }}">
-                                        {{ group.name }}
-                                    </span>
+                                    {% if not group.internal %}
+                                        <span class="label label-default label-group" title="{{ group.authgroup.description }}">
+                                            {{ group.name }}
+                                        </span>
+                                    {% endif %}
                                 {% endfor %}
                             {% endif %}
                         </div>
