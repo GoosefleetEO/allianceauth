@@ -312,7 +312,7 @@ def groups_view(request):
     logger.debug("groups_view called by user %s" % request.user)
 
     groups_qs = GroupManager.get_joinable_groups_for_user(
-        request.user, include_hidden=False
+        request.user, include_hidden=True
     )
     groups_qs = groups_qs.order_by('name')
     groups = []
