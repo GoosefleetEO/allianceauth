@@ -30,3 +30,21 @@
     </div>
 
 {% endblock content %}
+
+{% block extra_javascript %}
+{% include 'bundles/jquery-datetimepicker-js.html' %}
+{% endblock %}
+
+{% block extra_script %}
+$('#id_start').datetimepicker({
+setlocale: '{{ LANGUAGE_CODE }}',
+{% if NIGHT_MODE %}
+theme: 'dark',
+{% else %}
+theme: 'default',
+{% endif %}
+mask: true,
+format: 'Y-m-d H:i',
+minDate: 0
+});
+{% endblock extra_script %}
