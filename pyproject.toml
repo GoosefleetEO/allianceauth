@@ -1,6 +1,91 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "allianceauth"
+dynamic = ["version", "description"]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.8"
+authors = [
+    { name = "Alliance Auth", email = "adarnof@gmail.com" },
 ]
-build-backend = "setuptools.build_meta"
+keywords = [
+    "allianceauth",
+    "eveonline",
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "bcrypt",
+    "beautifulsoup4",
+    "celery-once>=3.0.1",
+    "celery>=5.2.0,<6",
+    "django-bootstrap-form",
+    "django-celery-beat>=2.3.0",
+    "django-esi>=4.0.1",
+    "django-redis>=5.2.0",
+    "django-registration>=3.3,<3.4",
+    "django-sortedm2m",
+    "django>=4.0.9,<4.1.0",
+    "dnspython",
+    "mysqlclient>=2.1.0",
+    "openfire-restapi",
+    "packaging>=21.0",
+    "passlib",
+    "pydiscourse",
+    "python-slugify>=1.2",
+    "redis>=4.0.0",
+    "requests-oauthlib",
+    "requests>=2.9.1",
+    "semantic-version",
+    "slixmpp",
+]
+
+[project.optional-dependencies]
+test = [
+    "coverage>=4.3.1",
+    "django-webtest",
+    "requests-mock>=1.2.0",
+]
+
+[project.scripts]
+allianceauth = "allianceauth.bin.allianceauth:main"
+
+[project.urls]
+Homepage = "https://gitlab.com/allianceauth/allianceauth"
+Documentation = "https://allianceauth.readthedocs.io/"
+Source = "https://gitlab.com/allianceauth/allianceauth"
+Tracker = "https://gitlab.com/allianceauth/allianceauth/-/issues"
+
+[tool.flit.module]
+name = "allianceauth"
+
+[tool.isort]
+profile = "django"
+sections = [
+    "FUTURE",
+    "STDLIB",
+    "THIRDPARTY",
+    "DJANGO",
+    "ESI",
+    "FIRSTPARTY",
+    "LOCALFOLDER"
+]
+known_esi = ["esi"]
+known_django = ["django"]
+skip_gitignore = true
