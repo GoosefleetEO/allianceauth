@@ -53,9 +53,3 @@ repos:
     hooks:
       - id: pyupgrade
         args: [ --py38-plus ]
-
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
-    hooks:
-      - id: setup-cfg-fmt
-        args: [ --include-version-classifiers ]
