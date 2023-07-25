@@ -29,7 +29,7 @@ DISCORD_SYNC_NAMES = False
 
 CELERYBEAT_SCHEDULE['discord.update_all_usernames'] = {
     'task': 'discord.update_all_usernames',
-    'schedule': crontab(minute=0, hour='*/12'),
+    'schedule': crontab(minute='0', hour='*/12'),
 }
 ```
 
