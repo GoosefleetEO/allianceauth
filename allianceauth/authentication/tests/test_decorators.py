@@ -4,16 +4,16 @@ from urllib import parse
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http.response import HttpResponse
-from django.shortcuts import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse, URLPattern
 
 from allianceauth.eveonline.models import EveCharacter
 from allianceauth.tests.auth_utils import AuthUtils
 
-from ..decorators import main_character_required
-from ..models import CharacterOwnership
 
+from ..decorators import decorate_url_patterns, main_character_required
+from ..models import CharacterOwnership
 
 MODULE_PATH = 'allianceauth.authentication'
 
@@ -66,3 +66,33 @@ class DecoratorTestCase(TestCase):
         setattr(self.request, 'user', self.main_user)
         response = self.dummy_view(self.request)
         self.assertEqual(response.status_code, 200)
+
+
+class TestDecorateUrlPatterns(TestCase):
+    def test_should_add_decorator_by_default(self):
+        # given
+        decorator = mock.MagicMock(name="decorator")
+        view = mock.MagicMock(name="view")
+        path = mock.MagicMock(spec=URLPattern, name="path")
+        path.callback = view
+        path.lookup_str = "my_lookup_str"
+        urls = [path]
+        urlconf_module = urls
+        # when
+        decorate_url_patterns(urlconf_module, decorator)
+        # then
+        self.assertEqual(path.callback, decorator(view))
+
+    def test_should_not_add_decorator_when_excluded(self):
+        # given
+        decorator = mock.MagicMock(name="decorator")
+        view = mock.MagicMock(name="view")
+        path = mock.MagicMock(spec=URLPattern, name="path")
+        path.callback = view
+        path.lookup_str = "my_lookup_str"
+        urls = [path]
+        urlconf_module = urls
+        # when
+        decorate_url_patterns(urlconf_module, decorator, excluded_views=["my_lookup_str"])
+        # then
+        self.assertEqual(path.callback, view)

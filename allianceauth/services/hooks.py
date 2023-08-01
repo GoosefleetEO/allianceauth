@@ -1,14 +1,17 @@
+from string import Formatter
+from typing import Iterable, Optional
+
+from django.conf import settings
 from django.conf.urls import include
-from django.urls import re_path
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
+from django.urls import re_path
 from django.utils.functional import cached_property
-from django.conf import settings
-from string import Formatter
 
 from allianceauth.hooks import get_hooks
 
 from .models import NameFormatConfig
+
 
 def get_extension_logger(name):
     """
@@ -156,8 +159,32 @@ class MenuItemHook:
 
 
 class UrlHook:
-    def __init__(self, urls, namespace, base_url):
+    """A hook for registering the URLs of a Django app.
+
+    Args:
+        - urls: The urls module to include
+        - namespace: The URL namespace to apply. This is usually just the app name.
+        - base_url: The URL prefix to match against in regex form.
+            Example ``r'^app_name/'``.
+            This prefix will be applied in front of all URL patterns included.
+            It is possible to use the same prefix as existing apps (or no prefix at all),
+            but standard URL resolution ordering applies
+            (hook URLs are the last ones registered).
+        - excluded_views: Optional list of views to be excluded
+            from auto-decorating them with the
+            default ``main_character_required`` decorator, e.g. to make them public.
+            Views must be specified by their qualified name,
+            e.g. ``["example.views.my_public_view"]``
+    """
+    def __init__(
+            self,
+            urls,
+            namespace: str,
+            base_url: str,
+            excluded_views : Optional[Iterable[str]] = None
+    ):
         self.include_pattern = re_path(base_url, include(urls, namespace=namespace))
+        self.excluded_views = set(excluded_views or [])
 
 
 class NameFormatter:
