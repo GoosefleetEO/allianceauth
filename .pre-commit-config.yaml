@@ -42,7 +42,7 @@ repos:
             \.mo|
             swagger\.json
           )
-#      - id: check-executables-have-shebangs
+      - id: check-executables-have-shebangs
       - id: end-of-file-fixer
         exclude: |
           (?x)(
