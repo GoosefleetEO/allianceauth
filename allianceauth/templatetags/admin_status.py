@@ -40,7 +40,7 @@ def decimal_widthratio(this_value, max_value, max_width) -> str:
     if max_value == 0:
         return str(0)
 
-    return str(round(this_value/max_value * max_width, 2))
+    return str(round(this_value / max_value * max_width, 2))
 
 
 @register.inclusion_tag('allianceauth/admin-status/overview.html')
@@ -54,7 +54,8 @@ def status_overview() -> dict:
         "tasks_failed": 0,
         "tasks_total": 0,
         "tasks_hours": 0,
-        "earliest_task": None
+        "earliest_task": None,
+        "tasks_running": 0
     }
     response.update(_current_notifications())
     response.update(_current_version_summary())
@@ -72,7 +73,8 @@ def _celery_stats() -> dict:
         "tasks_failed": results.failed,
         "tasks_total": results.total,
         "tasks_hours": results.hours,
-        "earliest_task": results.earliest_task
+        "earliest_task": results.earliest_task,
+        "tasks_running": results.running,
     }
 
 

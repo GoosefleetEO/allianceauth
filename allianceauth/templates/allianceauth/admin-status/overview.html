@@ -92,8 +92,11 @@
                         {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
                     </div>
                     <p>
+                        {% blocktranslate with running_count=tasks_running|default_if_none:"?"|intcomma %}
+                            {{ running_count }} running |
+                        {% endblocktranslate %}
                         {% blocktranslate with queue_length=task_queue_length|default_if_none:"?"|intcomma %}
-                        {{ queue_length }} queued tasks
+                            {{ queue_length }} queued
                         {% endblocktranslate %}
                     </p>
                 </div>
