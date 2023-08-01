@@ -75,6 +75,7 @@ Place your virtual host configuration in the appropriate section within `/etc/ht
 
         ProxyPassMatch ^/static !
         ProxyPassMatch ^/robots.txt !
+        ProxyPassMatch ^/favicon.ico !
 
         ProxyPass / http://127.0.0.1:8000/
         ProxyPassReverse / http://127.0.0.1:8000/
@@ -82,12 +83,18 @@ Place your virtual host configuration in the appropriate section within `/etc/ht
 
         Alias "/static" "/var/www/myauth/static"
         Alias "/robots.txt" "/var/www/myauth/static/robots.txt"
+        Alias "/favicon.ico" "/var/www/myauth/static/allianceauth/icons/favicon.ico"
 
         <Directory "/var/www/myauth/static">
             Require all granted
         </Directory>
 
         <Location "/robots.txt">
+            SetHandler None
+            Require all granted
+        </Location>
+
+        <Location "/favicon.ico">
             SetHandler None
             Require all granted
         </Location>
