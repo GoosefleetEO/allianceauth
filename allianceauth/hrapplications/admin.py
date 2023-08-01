@@ -10,6 +10,7 @@ class ChoiceInline(admin.TabularInline):
     verbose_name_plural = 'Choices (optional)'
     verbose_name= 'Choice'
 
+@admin.register(ApplicationQuestion)
 class QuestionAdmin(admin.ModelAdmin):
     fieldsets = [
             (None,      {'fields': ['title', 'help_text', 'multi_select']}),
@@ -18,6 +19,5 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Application)
 admin.site.register(ApplicationComment)
-admin.site.register(ApplicationQuestion, QuestionAdmin)
 admin.site.register(ApplicationForm)
 admin.site.register(ApplicationResponse)
