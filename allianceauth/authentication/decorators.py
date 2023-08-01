@@ -1,18 +1,28 @@
-from django.conf.urls import include
-from django.contrib.auth.decorators import user_passes_test
-from django.core.exceptions import PermissionDenied
 from functools import wraps
-from django.shortcuts import redirect
+from typing import Callable, Iterable, Optional
+
+from django.conf.urls import include
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.decorators import login_required
 
 
 def user_has_main_character(user):
     return bool(user.profile.main_character)
 
 
-def decorate_url_patterns(urls, decorator):
+def decorate_url_patterns(
+    urls, decorator: Callable, excluded_views: Optional[Iterable] = None
+):
+    """Decorate views given in url patterns except when they are explicitly excluded.
+
+    Args:
+        - urls: Django URL patterns
+        - decorator: Decorator to be added to each view
+        - exclude_views: Optional iterable of view names to be excluded
+    """
     url_list, app_name, namespace = include(urls)
 
     def process_patterns(url_patterns):
@@ -22,6 +32,8 @@ def decorate_url_patterns(urls, decorator):
                 process_patterns(pattern.url_patterns)
             else:
                 # this is a pattern
+                if excluded_views and pattern.lookup_str in excluded_views:
+                    return
                 pattern.callback = decorator(pattern.callback)
 
     process_patterns(url_list)
