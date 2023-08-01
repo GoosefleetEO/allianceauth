@@ -2,10 +2,9 @@ from string import Formatter
 from typing import Iterable, Optional
 
 from django.conf import settings
-from django.conf.urls import include
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from django.urls import re_path
+from django.urls import include, re_path
 from django.utils.functional import cached_property
 
 from allianceauth.hooks import get_hooks

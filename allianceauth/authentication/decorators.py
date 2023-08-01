@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Callable, Iterable, Optional
 
-from django.conf.urls import include
+from django.urls import include
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied

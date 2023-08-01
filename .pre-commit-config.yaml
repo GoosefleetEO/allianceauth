@@ -7,12 +7,33 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-      - id: check-case-conflict
-      - id: check-json
-      - id: check-xml
+      # Identify invalid files
+      - id: check-ast
       - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+
+      # git checks
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [ --maxkb=1000 ]
+      - id: detect-private-key
+      - id: check-case-conflict
+
+      # Python checks
+#      - id: check-docstring-first
+      - id: debug-statements
+#      - id: requirements-txt-fixer
+      - id: fix-encoding-pragma
+        args: [ --remove ]
       - id: fix-byte-order-marker
+
+      # General quality checks
+      - id: mixed-line-ending
+        args: [ --fix=lf ]
       - id: trailing-whitespace
+        args: [ --markdown-linebreak-ext=md ]
         exclude: |
           (?x)(
             \.min\.css|
@@ -21,6 +42,7 @@ repos:
             \.mo|
             swagger\.json
           )
+      - id: check-executables-have-shebangs
       - id: end-of-file-fixer
         exclude: |
           (?x)(
@@ -30,13 +52,9 @@ repos:
             \.mo|
             swagger\.json
           )
-      - id: mixed-line-ending
-        args: [ '--fix=lf' ]
-      - id: fix-encoding-pragma
-        args: [ '--remove' ]
 
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
-    rev: 2.7.1
+    rev: 2.7.2
     hooks:
       - id: editorconfig-checker
         exclude: |
@@ -48,8 +66,14 @@ repos:
             swagger\.json
           )
 
+  - repo: https://github.com/adamchainz/django-upgrade
+    rev: 1.14.0
+    hooks:
+      - id: django-upgrade
+        args: [ --target-version=4.0 ]
+
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
+    rev: v3.10.1
     hooks:
       - id: pyupgrade
         args: [ --py38-plus ]

@@ -36,10 +36,12 @@ class AuthTSgroupAdmin(admin.ModelAdmin):
             kwargs['queryset'] = TSgroup.objects.exclude(ts_group_name__in=ReservedGroupName.objects.values_list('name', flat=True))
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
+    @admin.display(
+        description='ts groups'
+    )
     def _ts_group(self, obj):
         return [x for x in obj.ts_group.all().order_by('ts_group_id')]
 
-    _ts_group.short_description = 'ts groups'
     # _ts_group.admin_order_field = 'profile__state'
 
 
