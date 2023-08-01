@@ -1,3 +1,5 @@
+"""Event series for Task Statistics."""
+
 import datetime as dt
 import logging
 from typing import List, Optional
@@ -73,8 +75,8 @@ class EventSeries:
         """
         if not event_time:
             event_time = dt.datetime.utcnow()
-        id = self._redis.incr(self._key_counter)
-        self._redis.zadd(self._key_sorted_set, {id: event_time.timestamp()})
+        my_id = self._redis.incr(self._key_counter)
+        self._redis.zadd(self._key_sorted_set, {my_id: event_time.timestamp()})
 
     def all(self) -> List[dt.datetime]:
         """List of all known events."""
@@ -101,9 +103,9 @@ class EventSeries:
         - earliest: Date of first events to count(inclusive), or -infinite if not specified
         - latest: Date of last events to count(inclusive), or +infinite if not specified
         """
-        min = "-inf" if not earliest else earliest.timestamp()
-        max = "+inf" if not latest else latest.timestamp()
-        return self._redis.zcount(self._key_sorted_set, min=min, max=max)
+        minimum = "-inf" if not earliest else earliest.timestamp()
+        maximum = "+inf" if not latest else latest.timestamp()
+        return self._redis.zcount(self._key_sorted_set, min=minimum, max=maximum)
 
     def first_event(self, earliest: dt.datetime = None) -> Optional[dt.datetime]:
         """Date/Time of first event. Returns `None` if series has no events.
@@ -111,10 +113,10 @@ class EventSeries:
         Args:
         - earliest: Date of first events to count(inclusive), or any if not specified
         """
-        min = "-inf" if not earliest else earliest.timestamp()
+        minimum = "-inf" if not earliest else earliest.timestamp()
         event = self._redis.zrangebyscore(
             self._key_sorted_set,
-            min,
+            minimum,
             "+inf",
             withscores=True,
             start=0,

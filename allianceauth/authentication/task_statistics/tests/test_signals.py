@@ -17,16 +17,17 @@ from allianceauth.eveonline.tasks import update_character
 
 
 @override_settings(
-    CELERY_ALWAYS_EAGER=True,ALLIANCEAUTH_DASHBOARD_TASK_STATISTICS_DISABLED=False
+    CELERY_ALWAYS_EAGER=True, ALLIANCEAUTH_DASHBOARD_TASK_STATISTICS_DISABLED=False
 )
 class TestTaskSignals(TestCase):
     fixtures = ["disable_analytics"]
 
-    def test_should_record_successful_task(self):
-        # given
+    def setUp(self) -> None:
         succeeded_tasks.clear()
         retried_tasks.clear()
         failed_tasks.clear()
+
+    def test_should_record_successful_task(self):
         # when
         with patch(
             "allianceauth.eveonline.tasks.EveCharacter.objects.update_character"
@@ -39,10 +40,6 @@ class TestTaskSignals(TestCase):
         self.assertEqual(failed_tasks.count(), 0)
 
     def test_should_record_retried_task(self):
-        # given
-        succeeded_tasks.clear()
-        retried_tasks.clear()
-        failed_tasks.clear()
         # when
         with patch(
             "allianceauth.eveonline.tasks.EveCharacter.objects.update_character"
@@ -55,10 +52,6 @@ class TestTaskSignals(TestCase):
         self.assertEqual(retried_tasks.count(), 1)
 
     def test_should_record_failed_task(self):
-        # given
-        succeeded_tasks.clear()
-        retried_tasks.clear()
-        failed_tasks.clear()
         # when
         with patch(
             "allianceauth.eveonline.tasks.EveCharacter.objects.update_character"
