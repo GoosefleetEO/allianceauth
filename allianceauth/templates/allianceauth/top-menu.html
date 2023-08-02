@@ -22,9 +22,12 @@
                 <li class="nav-item-eve-time">
                     <div class="eve-time-wrapper">{% translate "Eve Time" %}: <span class="eve-time-clock"></span></div>
                 </li>
-                <li class="{% navactive request 'notifications:' %}" id="menu_item_notifications">
-                    {% include 'allianceauth/notifications_menu_item.html' %}
-                </li>
+
+                {% if user.is_authenticated %}
+                    <li class="{% navactive request 'notifications:' %}" id="menu_item_notifications">
+                        {% include 'allianceauth/notifications_menu_item.html' %}
+                    </li>
+                {% endif %}
 
                 {% include 'allianceauth/top-menu-user-dropdown.html' %}
             </ul>
