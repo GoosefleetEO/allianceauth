@@ -96,6 +96,33 @@ class TestItemCounter(TestCase):
         with self.assertRaises(ValueError):
             counter.reset(-1)
 
+    def test_can_not_init_without_name(self):
+        # when/then
+        with self.assertRaises(ValueError):
+            ItemCounter(name="")
+
+    def test_can_ignore_invalid_values_when_incrementing(self):
+        # given
+        counter = ItemCounter(COUNTER_NAME)
+        counter.reset(0)
+        # when
+        with patch(MODULE_PATH + ".cache.incr") as m:
+            m.side_effect = ValueError
+            counter.incr()
+        # then
+        self.assertEqual(counter.value(), 0)
+
+    def test_can_ignore_invalid_values_when_decrementing(self):
+        # given
+        counter = ItemCounter(COUNTER_NAME)
+        counter.reset(1)
+        # when
+        with patch(MODULE_PATH + ".cache.decr") as m:
+            m.side_effect = ValueError
+            counter.decr()
+        # then
+        self.assertEqual(counter.value(), 1)
+
 
 class TestGetRedisClient(TestCase):
     def test_should_return_mock_if_redis_not_available_1(self):
