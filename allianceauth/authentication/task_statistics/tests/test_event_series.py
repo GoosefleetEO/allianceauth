@@ -1,48 +1,19 @@
 import datetime as dt
-from unittest.mock import patch
 
 from pytz import utc
-from redis import RedisError
 
 from django.test import TestCase
 from django.utils.timezone import now
 
 from allianceauth.authentication.task_statistics.event_series import (
     EventSeries,
-    _RedisStub,
 )
+from allianceauth.authentication.task_statistics.helpers import _RedisStub
 
 MODULE_PATH = "allianceauth.authentication.task_statistics.event_series"
 
 
 class TestEventSeries(TestCase):
-    def test_should_abort_without_redis_client(self):
-        # when
-        with patch(MODULE_PATH + ".get_redis_client") as mock:
-            mock.return_value = None
-            events = EventSeries("dummy")
-        # then
-        self.assertTrue(events._redis, _RedisStub)
-        self.assertTrue(events.is_disabled)
-
-    def test_should_disable_itself_if_redis_not_available_1(self):
-        # when
-        with patch(MODULE_PATH + ".get_redis_client") as mock_get_master_client:
-            mock_get_master_client.return_value.ping.side_effect = RedisError
-            events = EventSeries("dummy")
-        # then
-        self.assertIsInstance(events._redis, _RedisStub)
-        self.assertTrue(events.is_disabled)
-
-    def test_should_disable_itself_if_redis_not_available_2(self):
-        # when
-        with patch(MODULE_PATH + ".get_redis_client") as mock_get_master_client:
-            mock_get_master_client.return_value.ping.return_value = False
-            events = EventSeries("dummy")
-        # then
-        self.assertIsInstance(events._redis, _RedisStub)
-        self.assertTrue(events.is_disabled)
-
     def test_should_add_event(self):
         # given
         events = EventSeries("dummy")
@@ -166,3 +137,15 @@ class TestEventSeries(TestCase):
         results = events.all()
         # then
         self.assertEqual(len(results), 2)
+
+    def test_should_not_report_as_disabled_when_initialized_normally(self):
+        # given
+        events = EventSeries("dummy")
+        # when/then
+        self.assertFalse(events.is_disabled)
+
+    def test_should_report_as_disabled_when_initialized_with_redis_stub(self):
+        # given
+        events = EventSeries("dummy", redis=_RedisStub())
+        # when/then
+        self.assertTrue(events.is_disabled)
