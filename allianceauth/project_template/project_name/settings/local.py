@@ -33,12 +33,9 @@ INSTALLED_APPS += [
 # LOGGING['handlers']['extension_file']['level'] = 'DEBUG'
 
 # By default, apps are prevented from having public views for security reasons.
-# If you want to allow specific apps to have public views,
-# you can put their names here (same name as in INSTALLED_APPS).
-#
-# Note:
+# To allow specific apps to have public views, add them to APPS_WITH_PUBLIC_VIEWS
 #   » The format is the same as in INSTALLED_APPS
-#   » The app developer must explicitly allow public views for his app
+#   » The app developer must also explicitly allow public views for their app
 APPS_WITH_PUBLIC_VIEWS = [
 
 ]
