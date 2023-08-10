@@ -11,7 +11,10 @@
                 </span>
             {% endwith %}
         {% else %}
-            {% translate "User Menu" %}
+            <img class="img-rounded ra-avatar" src="{{ 1|character_portrait_url:32 }}" alt="{{ main.character_name }}">
+            <span class="hidden-sm hidden-md hidden-lg">
+                    {% translate "User Menu" %}
+                </span>
         {% endif %}
         <span class="caret"></span>
     </a>
