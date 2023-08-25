@@ -6,6 +6,7 @@ from ...admin import ServicesUserAdmin
 from . import __title__
 from .models import DiscordUser
 from .utils import LoggerAddTag
+from .auth_hooks import DiscordService
 
 logger = LoggerAddTag(logging.getLogger(__name__), __title__)
 
@@ -27,6 +28,6 @@ class DiscordUserAdmin(ServicesUserAdmin):
 
     @admin.display(description='Discord Username', ordering='username')
     def _username(self, obj):
-        if obj.username and obj.discriminator:
-            return f'{obj.username}#{obj.discriminator}'
-        return ''
+        return DiscordService.get_discord_username(
+            username=obj.username, discriminator=obj.discriminator
+        )

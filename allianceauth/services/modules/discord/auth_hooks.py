@@ -30,6 +30,29 @@ class DiscordService(ServicesHook):
         self.access_perm = 'discord.access_discord'
         self.name_format = '{character_name}'
 
+    @staticmethod
+    def get_discord_username(username:str, discriminator:str) -> str:
+        """
+        Determine the Discord username (Old and new format)
+        :param username:
+        :type username:
+        :param discriminator:
+        :type discriminator:
+        :return:
+        :rtype:
+        """
+
+        if username and discriminator:
+            discord_username = f'{username}#{discriminator}'
+
+            # New Discord user name format
+            if discriminator == '0':
+                discord_username = f'@{username}'
+        else:
+            discord_username = ''
+
+        return discord_username
+
     def delete_user(self, user: User, notify_user: bool = False) -> None:
         if self.user_has_account(user):
             logger.debug('Deleting user %s %s account', user, self.name)
@@ -43,10 +66,19 @@ class DiscordService(ServicesHook):
             user_has_account = True
             username = request.user.discord.username
             discriminator = request.user.discord.discriminator
-            if username and discriminator:
-                discord_username = f'{username}#{discriminator}'
-            else:
-                discord_username = ''
+
+            discord_username = self.get_discord_username(
+                username=username, discriminator=discriminator
+            )
+
+            # if username and discriminator:
+            #     discord_username = f'{username}#{discriminator}'
+            #
+            #     # New Discord user name format
+            #     if discriminator == '0':
+            #         discord_username = f'@{username}'
+            # else:
+            #     discord_username = ''
         else:
             discord_username = ''
             user_has_account = False
