@@ -4,13 +4,11 @@ import datetime as dt
 from typing import NamedTuple, Optional
 
 from .event_series import EventSeries
-from .helpers import ItemCounter
 
 # Global series for counting task events.
 succeeded_tasks = EventSeries("SUCCEEDED_TASKS")
 retried_tasks = EventSeries("RETRIED_TASKS")
 failed_tasks = EventSeries("FAILED_TASKS")
-running_tasks = ItemCounter("running_tasks")
 
 
 class _TaskCounts(NamedTuple):
@@ -20,7 +18,6 @@ class _TaskCounts(NamedTuple):
     total: int
     earliest_task: Optional[dt.datetime]
     hours: int
-    running: int
 
 
 def dashboard_results(hours: int) -> _TaskCounts:
@@ -38,7 +35,6 @@ def dashboard_results(hours: int) -> _TaskCounts:
     earliest_events += earliest_if_exists(retried_tasks, earliest)
     failed_count = failed_tasks.count(earliest=earliest)
     earliest_events += earliest_if_exists(failed_tasks, earliest)
-    running_count = running_tasks.value()
     return _TaskCounts(
         succeeded=succeeded_count,
         retried=retried_count,
@@ -46,5 +42,4 @@ def dashboard_results(hours: int) -> _TaskCounts:
         total=succeeded_count + retried_count + failed_count,
         earliest_task=min(earliest_events) if earliest_events else None,
         hours=hours,
-        running=running_count,
     )

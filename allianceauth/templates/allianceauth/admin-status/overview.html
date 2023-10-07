@@ -92,12 +92,8 @@
                         {% include "allianceauth/admin-status/celery_bar_partial.html" with label="failed" level="danger" tasks_count=tasks_failed %}
                     </div>
                     <p>
-                        {% blocktranslate with running_count=tasks_running|default_if_none:"?"|intcomma %}
-                            {{ running_count }} running |
-                        {% endblocktranslate %}
-                        {% blocktranslate with queue_length=task_queue_length|default_if_none:"?"|intcomma %}
-                            {{ queue_length }} queued
-                        {% endblocktranslate %}
+                        <span id="task-counts">?</span> {% translate 'running' %} |
+                        <span id="queued-tasks-count">?</span> {% translate 'queued' %}
                     </p>
                 </div>
             </div>
@@ -105,3 +101,36 @@
     </div>
     <div class="clearfix"></div>
 </div>
+
+<script>
+    const elemRunning = document.getElementById("task-counts");
+    const elemQueued = document.getElementById("queued-tasks-count");
+
+    fetch('{% url "authentication:task_counts" %}')
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error("Something went wrong");
+        })
+        .then((responseJson) => {
+            const running = responseJson.tasks_running;
+            if (running == null) {
+                elemRunning.textContent = "N/A";
+            } else {
+                elemRunning.textContent = running.toLocaleString();
+            }
+
+            const queued = responseJson.tasks_queued;
+            if (queued == null) {
+                elemQueued.textContent = "N/A";
+            } else {
+                elemQueued.textContent = queued.toLocaleString();
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            elemRunning.textContent = "ERROR";
+            elemQueued.textContent = "ERROR";
+        });
+</script>
