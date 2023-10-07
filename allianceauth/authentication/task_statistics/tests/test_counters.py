@@ -4,11 +4,7 @@ from django.test import TestCase
 from django.utils.timezone import now
 
 from allianceauth.authentication.task_statistics.counters import (
-    dashboard_results,
-    succeeded_tasks,
-    retried_tasks,
-    failed_tasks,
-    running_tasks,
+    dashboard_results, failed_tasks, retried_tasks, succeeded_tasks,
 )
 
 
@@ -32,7 +28,6 @@ class TestDashboardResults(TestCase):
         failed_tasks.add(now() - dt.timedelta(hours=1, seconds=1))
         failed_tasks.add()
 
-        running_tasks.reset(8)
         # when
         results = dashboard_results(hours=1)
         # then
@@ -41,14 +36,12 @@ class TestDashboardResults(TestCase):
         self.assertEqual(results.failed, 1)
         self.assertEqual(results.total, 6)
         self.assertEqual(results.earliest_task, earliest_task)
-        self.assertEqual(results.running, 8)
 
     def test_should_work_with_no_data(self):
         # given
         succeeded_tasks.clear()
         retried_tasks.clear()
         failed_tasks.clear()
-        running_tasks.reset()
         # when
         results = dashboard_results(hours=1)
         # then
@@ -57,4 +50,3 @@ class TestDashboardResults(TestCase):
         self.assertEqual(results.failed, 0)
         self.assertEqual(results.total, 0)
         self.assertIsNone(results.earliest_task)
-        self.assertEqual(results.running, 0)

@@ -9,12 +9,8 @@ from django.core.cache import cache
 from django.test import TestCase
 
 from allianceauth.templatetags.admin_status import (
-    status_overview,
-    _fetch_list_from_gitlab,
-    _current_notifications,
-    _current_version_summary,
-    _fetch_notification_issues_from_gitlab,
-    _latests_versions
+    _current_notifications, _current_version_summary, _fetch_list_from_gitlab,
+    _fetch_notification_issues_from_gitlab, _latests_versions, status_overview,
 )
 
 MODULE_PATH = 'allianceauth.templatetags'
@@ -56,14 +52,10 @@ TEST_VERSION = '2.6.5'
 
 class TestStatusOverviewTag(TestCase):
     @patch(MODULE_PATH + '.admin_status.__version__', TEST_VERSION)
-    @patch(MODULE_PATH + '.admin_status._fetch_celery_queue_length')
     @patch(MODULE_PATH + '.admin_status._current_version_summary')
     @patch(MODULE_PATH + '.admin_status._current_notifications')
     def test_status_overview(
-        self,
-        mock_current_notifications,
-        mock_current_version_info,
-        mock_fetch_celery_queue_length
+        self, mock_current_notifications, mock_current_version_info
     ):
         # given
         notifications = {
@@ -82,7 +74,6 @@ class TestStatusOverviewTag(TestCase):
             'latest_beta_version': '2.4.4a1',
         }
         mock_current_version_info.return_value = version_info
-        mock_fetch_celery_queue_length.return_value = 3
         # when
         result = status_overview()
         # then
@@ -96,7 +87,6 @@ class TestStatusOverviewTag(TestCase):
         self.assertEqual(result["latest_minor_version"], '2.4.0')
         self.assertEqual(result["latest_patch_version"], '2.4.5')
         self.assertEqual(result["latest_beta_version"], '2.4.4a1')
-        self.assertEqual(result["task_queue_length"], 3)
 
 
 class TestNotifications(TestCase):

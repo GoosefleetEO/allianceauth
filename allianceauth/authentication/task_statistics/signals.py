@@ -1,15 +1,12 @@
 """Signals for Task Statistics."""
 
 from celery.signals import (
-    task_failure, task_internal_error, task_postrun, task_prerun, task_retry,
-    task_success, worker_ready,
+    task_failure, task_internal_error, task_retry, task_success, worker_ready,
 )
 
 from django.conf import settings
 
-from .counters import (
-    failed_tasks, retried_tasks, running_tasks, succeeded_tasks,
-)
+from .counters import failed_tasks, retried_tasks, succeeded_tasks
 
 
 def reset_counters():
@@ -17,7 +14,6 @@ def reset_counters():
     succeeded_tasks.clear()
     failed_tasks.clear()
     retried_tasks.clear()
-    running_tasks.reset()
 
 
 def is_enabled() -> bool:
@@ -55,15 +51,3 @@ def record_task_failed(*args, **kwargs):
 def record_task_internal_error(*args, **kwargs):
     if is_enabled():
         failed_tasks.add()
-
-
-@task_prerun.connect
-def record_task_prerun(*args, **kwargs):
-    if is_enabled():
-        running_tasks.incr()
-
-
-@task_postrun.connect
-def record_task_postrun(*args, **kwargs):
-    if is_enabled():
-        running_tasks.decr()
