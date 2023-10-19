@@ -7,4 +7,5 @@ This section contains important information on how to develop Alliance Auth itse
     :maxdepth: 1
 
     documentation
+    code-style
 ```
