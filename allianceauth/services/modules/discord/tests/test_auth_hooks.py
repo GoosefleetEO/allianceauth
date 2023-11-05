@@ -150,3 +150,23 @@ class TestDiscordService(NoSocketsTestCase):
         self.assertTemplateUsed(service.service_ctrl_template)
         self.assertIn('/discord/reset/', response)
         self.assertIn('/discord/deactivate/', response)
+
+    def test_new_discord_username_format(self):
+        """
+        Test if we get Discord's new username format
+        :return:
+        :rtype:
+        """
+
+        # given
+        username = 'william_riker'
+        discriminator = '0'  # Seems to be returned as 0 for Discord's new username format
+
+        # when
+        discord_username = DiscordService.get_discord_username(
+            username=username, discriminator=discriminator
+        )
+
+        # then
+        expected_username = '@william_riker'
+        self.assertEqual(first=discord_username, second=expected_username)

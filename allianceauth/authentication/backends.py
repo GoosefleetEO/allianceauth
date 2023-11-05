@@ -65,7 +65,7 @@ class StateBackend(ModelBackend):
                     # we've seen this character owner before. Re-attach to their old user account
                     user = records[0].user
                     if user.profile.main_character:
-                        if ownership.user.profile.main_character.character_id != token.character_id:
+                        if user.profile.main_character.character_id != token.character_id:
                             ## this is an alt, enforce main only due to trust issues in SSO.
                             if request:
                                 messages.error("Unable to authenticate with this Character, Please log in with the main character associated with this account. Then add this character from the dashboard.")

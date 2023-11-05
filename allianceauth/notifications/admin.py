@@ -15,18 +15,22 @@ class NotificationAdmin(admin.ModelAdmin):
     ordering = ("-timestamp", )
     search_fields = ["user__username", "user__profile__main_character__character_name"]
 
+    @admin.display(
+        ordering="user__profile__main_character__character_name"
+    )
     def _main(self, obj):
         try:
             return obj.user.profile.main_character
         except AttributeError:
             return obj.user
 
-    _main.admin_order_field = "user__profile__main_character__character_name"
 
+    @admin.display(
+        ordering="user__profile__state__name"
+    )
     def _state(self, obj):
         return obj.user.profile.state
 
-    _state.admin_order_field = "user__profile__state__name"
 
     def has_change_permission(self, request, obj=None):
         return False

@@ -32,6 +32,13 @@ INSTALLED_APPS += [
 # To change the logging level for extensions, uncomment the following line.
 # LOGGING['handlers']['extension_file']['level'] = 'DEBUG'
 
+# By default, apps are prevented from having public views for security reasons.
+# To allow specific apps to have public views, add them to APPS_WITH_PUBLIC_VIEWS
+#   » The format is the same as in INSTALLED_APPS
+#   » The app developer must also explicitly allow public views for their app
+APPS_WITH_PUBLIC_VIEWS = [
+
+]
 
 # Enter credentials to use MySQL/MariaDB. Comment out to use sqlite3
 DATABASES['default'] = {

@@ -1,8 +1,5 @@
-from django.conf.urls import include
-
 from allianceauth.authentication import views
-from django.urls import re_path
-from django.urls import path
+from django.urls import include, re_path, path
 
 urlpatterns = [
     path('activate/complete/', views.activation_complete, name='registration_activation_complete'),

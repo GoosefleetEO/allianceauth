@@ -1,9 +1,7 @@
+"""Signals for Task Statistics."""
+
 from celery.signals import (
-    task_failure,
-    task_internal_error,
-    task_retry,
-    task_success,
-    worker_ready
+    task_failure, task_internal_error, task_retry, task_success, worker_ready,
 )
 
 from django.conf import settings
@@ -19,6 +17,7 @@ def reset_counters():
 
 
 def is_enabled() -> bool:
+    """Return True if task statistics are enabled, else return False."""
     return not bool(
         getattr(settings, "ALLIANCEAUTH_DASHBOARD_TASK_STATISTICS_DISABLED", False)
     )

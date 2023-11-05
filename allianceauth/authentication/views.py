@@ -1,31 +1,31 @@
 import logging
 
+from django_registration.backends.activation.views import (
+    REGISTRATION_SALT, ActivationView as BaseActivationView,
+    RegistrationView as BaseRegistrationView,
+)
+from django_registration.signals import user_registered
+
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
-from django.core.mail import EmailMultiAlternatives
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
-from allianceauth.eveonline.models import EveCharacter
 from esi.decorators import token_required
 from esi.models import Token
 
-from django_registration.backends.activation.views import (
-    RegistrationView as BaseRegistrationView,
-    ActivationView as BaseActivationView,
-    REGISTRATION_SALT
-)
-from django_registration.signals import user_registered
+from allianceauth.eveonline.models import EveCharacter
 
-from .models import CharacterOwnership
+from .core.celery_workers import active_tasks_count, queued_tasks_count
 from .forms import RegistrationForm
+from .models import CharacterOwnership
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
@@ -61,6 +61,7 @@ def dashboard(request):
     }
     return render(request, 'authentication/dashboard.html', context)
 
+
 @login_required
 def token_management(request):
     tokens = request.user.token_set.all()
@@ -69,6 +70,7 @@ def token_management(request):
         'tokens': tokens
     }
     return render(request, 'authentication/tokens.html', context)
+
 
 @login_required
 def token_delete(request, token_id=None):
@@ -82,6 +84,7 @@ def token_delete(request, token_id=None):
     except Token.DoesNotExist:
         messages.warning(request, "Token does not exist")
     return redirect('authentication:token_management')
+
 
 @login_required
 def token_refresh(request, token_id=None):
@@ -127,7 +130,7 @@ def main_character_change(request, token):
 def add_character(request, token):
     if CharacterOwnership.objects.filter(character__character_id=token.character_id).filter(
             owner_hash=token.character_owner_hash).filter(user=request.user).exists():
-        messages.success(request, _('Added %(name)s to your account.'% ({'name': token.character_name})))
+        messages.success(request, _('Added %(name)s to your account.' % ({'name': token.character_name})))
     else:
         messages.error(request, _('Failed to add %(name)s to your account: they already have an account.' % ({'name': token.character_name})))
     return redirect('authentication:dashboard')
@@ -268,8 +271,11 @@ class ActivationView(BaseActivationView):
 
     def validate_key(self, activation_key):
         try:
-            dump = signing.loads(activation_key, salt=REGISTRATION_SALT,
-                                max_age=settings.ACCOUNT_ACTIVATION_DAYS * 86400)
+            dump = signing.loads(
+                activation_key,
+                salt=REGISTRATION_SALT,
+                max_age=settings.ACCOUNT_ACTIVATION_DAYS * 86400
+            )
             return dump
         except signing.BadSignature:
             return None
@@ -299,3 +305,12 @@ def activation_complete(request):
 def registration_closed(request):
     messages.error(request, _('Registration of new accounts is not allowed at this time.'))
     return redirect('authentication:login')
+
+
+def task_counts(request) -> JsonResponse:
+    """Return task counts as JSON for an AJAX call."""
+    data = {
+        "tasks_running": active_tasks_count(),
+        "tasks_queued": queued_tasks_count()
+    }
+    return JsonResponse(data)

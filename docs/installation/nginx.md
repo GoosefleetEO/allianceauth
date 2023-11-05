@@ -44,7 +44,7 @@ You will need to have [Gunicorn](gunicorn.md) or some other WSGI server setup fo
 
 ## Install
 
-Ubuntu 1804, 2004. 2204:
+Ubuntu 1804, 2004, 2204:
 ```bash
 sudo apt-get install nginx
 ```
@@ -59,17 +59,12 @@ CentOS Stream 8, Stream 9:
 sudo dnf install nginx
 ```
 
-Create a config file in `/etc/nginx/sites-available` and call it `alliance-auth.conf` or whatever your preferred name is.
+Create a config file in `/etc/nginx/sites-available` (`/etc/nginx/conf.d` on CentOS) and call it `alliance-auth.conf` or whatever your preferred name is.
 
-Create a symbolic link to enable the site
+Create a symbolic link to enable the site (not needed on CentOS):
 ```bash
 ln -s /etc/nginx/sites-available/alliance-auth.conf /etc/nginx/sites-enabled/
 ```
-
-### CentOS
-
-Create a config file in `/etc/nginx/conf.d` and call it `alliance-auth.conf` or whatever your preferred name is.
-
 
 ### Basic config
 
@@ -83,8 +78,6 @@ server {
 
     server_name example.com;
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-
     location /static {
         alias /var/www/myauth/static;
         autoindex off;
@@ -92,6 +85,10 @@ server {
 
     location /robots.txt {
         alias /var/www/myauth/static/robots.txt;
+    }
+
+    location /favicon.ico {
+        alias /var/www/myauth/static/allianceauth/icons/favicon.ico;
     }
 
     # Gunicorn config goes below

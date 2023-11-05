@@ -399,16 +399,10 @@ Update & install basic tools before installing further Python packages:
 pip install -U pip setuptools wheel
 ```
 
-You can install **Alliance Auth** with the following command. This will install AA and all its Python dependencies.
+You can install **Alliance Auth** with the following command. This will install AA, AA's Python dependencies, superlance for memory monitoring and gunicorn as a wsgi server
 
 ```bash
-pip install allianceauth
-```
-
-You should also install Gunicorn now unless you want to use another WSGI server (see [Gunicorn](#gunicorn) for details):
-
-```bash
-pip install gunicorn
+pip install allianceauth superlance gunicorn
 ```
 
 #### Create Alliance Auth project

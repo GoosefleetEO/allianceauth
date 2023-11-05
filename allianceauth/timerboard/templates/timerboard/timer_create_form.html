@@ -12,3 +12,19 @@
 {% block submit_button_text %}
     {% translate "Create Timer" %}
 {% endblock %}
+
+{% block extra_javascript %}
+{% include 'bundles/timerboard-js.html' %}
+{% include 'bundles/jquery-datetimepicker-js.html' %}
+{% include 'bundles/jquery-datetimepicker-css.html' %}
+{% endblock %}
+
+{% block extra_script %}
+$('input#id_absolute_time').datetimepicker({
+    setlocale: '{{ LANGUAGE_CODE }}',
+    theme: {% if NIGHT_MODE %}'dark'{% else %}'default'{% endif %},
+    format: 'Y-m-d H:i',
+    minDate: 0,
+    defaultDate: null
+});
+{% endblock extra_script %}

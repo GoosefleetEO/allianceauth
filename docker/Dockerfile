@@ -1,5 +1,5 @@
 FROM python:3.9-slim
-ARG AUTH_VERSION=v3.5.0
+ARG AUTH_VERSION=v3.7.1
 ARG AUTH_PACKAGE=allianceauth==${AUTH_VERSION}
 ENV VIRTUAL_ENV=/opt/venv
 ENV AUTH_USER=allianceauth
@@ -21,7 +21,7 @@ RUN mkdir -p ${VIRTUAL_ENV} \
 
 # Install build dependencies
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    libmariadb-dev gcc supervisor git htop
+    libmariadb-dev gcc supervisor git htop pkg-config
 
 # Switch to non-root user
 USER ${AUTH_USER}

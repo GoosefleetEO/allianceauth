@@ -14,6 +14,7 @@ def sync_user_groups(modeladmin, request, queryset):
         agc.update_all_states_group_membership()
 
 
+@admin.register(AutogroupsConfig)
 class AutogroupsConfigAdmin(admin.ModelAdmin):
     formfield_overrides = {
         models.CharField: {'strip': False}
@@ -36,6 +37,5 @@ class AutogroupsConfigAdmin(admin.ModelAdmin):
         return actions
 
 
-admin.site.register(AutogroupsConfig, AutogroupsConfigAdmin)
 admin.site.register(ManagedCorpGroup)
 admin.site.register(ManagedAllianceGroup)
