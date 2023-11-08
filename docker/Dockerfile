@@ -1,5 +1,5 @@
 FROM python:3.9-slim
-ARG AUTH_VERSION=v3.7.1
+ARG AUTH_VERSION=v3.8.0
 ARG AUTH_PACKAGE=allianceauth==${AUTH_VERSION}
 ENV VIRTUAL_ENV=/opt/venv
 ENV AUTH_USER=allianceauth
