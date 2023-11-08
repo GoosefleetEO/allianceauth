@@ -81,10 +81,17 @@ class TestDiscordService(NoSocketsTestCase):
         self.assertFalse(DiscordUser.objects.filter(user=self.none_member).exists())
 
     @patch(MODULE_PATH + '.tasks.update_nickname')
+    @patch(MODULE_PATH + '.auth_hooks.DISCORD_SYNC_NAMES', True)
     def test_sync_nickname(self, mock_update_nickname):
         service = self.service()
         service.sync_nickname(self.member)
         self.assertTrue(mock_update_nickname.apply_async.called)
+
+    @patch(MODULE_PATH + '.tasks.update_nickname')
+    def test_sync_nickname_no_setting(self, mock_update_nickname):
+        service = self.service()
+        service.sync_nickname(self.member)
+        self.assertFalse(mock_update_nickname.apply_async.called)
 
     @patch(MODULE_PATH + '.tasks.update_nicknames_bulk')
     def test_sync_nicknames_bulk(self, mock_update_nicknames_bulk):
