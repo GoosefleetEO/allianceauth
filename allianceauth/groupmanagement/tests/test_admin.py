@@ -6,22 +6,22 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
-from django.test import TestCase, RequestFactory, Client, override_settings
+from django.test import Client, RequestFactory, TestCase, override_settings
 
 from allianceauth.authentication.models import CharacterOwnership, State
 from allianceauth.eveonline.models import (
-    EveCharacter, EveCorporationInfo, EveAllianceInfo
+    EveAllianceInfo, EveCharacter, EveCorporationInfo,
 )
 from allianceauth.tests.auth_utils import AuthUtils
 
-from . import get_admin_change_view_url
-from ..admin import HasLeaderFilter, GroupAdmin, Group
+from ..admin import Group, GroupAdmin, HasLeaderFilter
 from ..models import ReservedGroupName
-
+from . import get_admin_change_view_url
 
 if 'allianceauth.eveonline.autogroups' in settings.INSTALLED_APPS:
     _has_auto_groups = True
     from allianceauth.eveonline.autogroups.models import AutogroupsConfig
+
     from ..admin import IsAutoGroupFilter
 else:
     _has_auto_groups = False
@@ -621,21 +621,16 @@ class TestGroupAdmin2(TestCase):
         response = self.client.post(
             f"/admin/groupmanagement/group/{group.pk}/change/",
             data={
-                "name": f"{group.name}",
-                "authgroup-TOTAL_FORMS": "1",
-                "authgroup-INITIAL_FORMS": "1",
-                "authgroup-MIN_NUM_FORMS": "0",
-                "authgroup-MAX_NUM_FORMS": "1",
-                "authgroup-0-description": "",
-                "authgroup-0-states": f"{member_state.pk}",
+                "name": group.name,
+                "users": [user_member.pk, user_guest.pk],
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 1,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+                "authgroup-0-states": member_state.pk,
                 "authgroup-0-internal": "on",
                 "authgroup-0-hidden": "on",
-                "authgroup-0-group": f"{group.pk}",
-                "authgroup-__prefix__-description": "",
-                "authgroup-__prefix__-internal": "on",
-                "authgroup-__prefix__-hidden": "on",
-                "authgroup-__prefix__-group": f"{group.pk}",
-                "_save": "Save"
+                "authgroup-0-group": group.pk,
             }
         )
         # then
@@ -643,6 +638,85 @@ class TestGroupAdmin2(TestCase):
         self.assertEqual(response.url, "/admin/groupmanagement/group/")
         self.assertIn(group, user_member.groups.all())
         self.assertNotIn(group, user_guest.groups.all())
+
+    def test_should_add_user_to_existing_group(self):
+        # given
+        user_bruce = AuthUtils.create_user("Bruce Wayne")
+        user_lex = AuthUtils.create_user("Lex Luthor")
+        group = Group.objects.create(name="dummy")
+        user_bruce.groups.add(group)
+        self.client.force_login(self.superuser)
+        # when
+        response = self.client.post(
+            f"/admin/groupmanagement/group/{group.pk}/change/",
+            data={
+                "name": group.name,
+                "users": [user_bruce.pk, user_lex.pk],
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 1,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+                "authgroup-0-internal": "on",
+                "authgroup-0-hidden": "on",
+                "authgroup-0-group": group.pk,
+            }
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/group/")
+        self.assertIn(group, user_bruce.groups.all())
+        self.assertIn(group, user_lex.groups.all())
+
+    def test_should_remove_user_from_existing_group(self):
+        # given
+        user_bruce = AuthUtils.create_user("Bruce Wayne")
+        user_lex = AuthUtils.create_user("Lex Luthor")
+        group = Group.objects.create(name="dummy")
+        user_bruce.groups.add(group)
+        user_lex.groups.add(group)
+        self.client.force_login(self.superuser)
+        # when
+        response = self.client.post(
+            f"/admin/groupmanagement/group/{group.pk}/change/",
+            data={
+                "name": group.name,
+                "users": user_bruce.pk,
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 1,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+                "authgroup-0-internal": "on",
+                "authgroup-0-hidden": "on",
+                "authgroup-0-group": group.pk,
+            }
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/group/")
+        self.assertIn(group, user_bruce.groups.all())
+        self.assertNotIn(group, user_lex.groups.all())
+
+    def test_should_include_user_when_creating_group(self):
+        # given
+        user_bruce = AuthUtils.create_user("Bruce Wayne")
+        self.client.force_login(self.superuser)
+        # when
+        response = self.client.post(
+            "/admin/groupmanagement/group/add/",
+            data={
+                "name": "new group",
+                "users": user_bruce.pk,
+                "authgroup-TOTAL_FORMS": 1,
+                "authgroup-INITIAL_FORMS": 0,
+                "authgroup-MIN_NUM_FORMS": 0,
+                "authgroup-MAX_NUM_FORMS": 1,
+            }
+        )
+        # then
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/admin/groupmanagement/group/")
+        group = Group.objects.get(name="new group")
+        self.assertIn(group, user_bruce.groups.all())
 
 
 class TestReservedGroupNameAdmin(TestCase):
