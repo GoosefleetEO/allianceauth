@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-09 18:20+1000\n"
+"POT-Creation-Date: 2023-11-08 23:55+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Google Analytics V4"
 msgstr ""
 
-#: allianceauth/authentication/decorators.py:37
+#: allianceauth/authentication/decorators.py:49
 msgid "A main character is required to perform that action. Add one below."
 msgstr ""
 
@@ -39,63 +39,68 @@ msgstr ""
 msgid "You are not allowed to add or remove these restricted groups: %s"
 msgstr ""
 
-#: allianceauth/authentication/models.py:80
+#: allianceauth/authentication/models.py:71
 msgid "English"
 msgstr ""
 
-#: allianceauth/authentication/models.py:81
+#: allianceauth/authentication/models.py:72
 msgid "German"
 msgstr ""
 
-#: allianceauth/authentication/models.py:82
+#: allianceauth/authentication/models.py:73
 msgid "Spanish"
 msgstr ""
 
-#: allianceauth/authentication/models.py:83
+#: allianceauth/authentication/models.py:74
 msgid "Chinese Simplified"
 msgstr ""
 
-#: allianceauth/authentication/models.py:84
+#: allianceauth/authentication/models.py:75
 msgid "Russian"
 msgstr ""
 
-#: allianceauth/authentication/models.py:85
+#: allianceauth/authentication/models.py:76
 msgid "Korean"
 msgstr ""
 
-#: allianceauth/authentication/models.py:86
+#: allianceauth/authentication/models.py:77
 msgid "French"
 msgstr ""
 
-#: allianceauth/authentication/models.py:87
+#: allianceauth/authentication/models.py:78
 msgid "Japanese"
 msgstr ""
 
-#: allianceauth/authentication/models.py:88
+#: allianceauth/authentication/models.py:79
 msgid "Italian"
 msgstr ""
 
-#: allianceauth/authentication/models.py:91
-msgid "Language"
+#: allianceauth/authentication/models.py:80
+msgid "Ukrainian"
 msgstr ""
 
 #: allianceauth/authentication/models.py:96
+msgid "Language"
+msgstr ""
+
+#: allianceauth/authentication/models.py:101
 #: allianceauth/templates/allianceauth/night-toggle.html:6
 msgid "Night Mode"
 msgstr ""
 
-#: allianceauth/authentication/models.py:110
+#: allianceauth/authentication/models.py:115
 #, python-format
 msgid "State changed to: %s"
 msgstr ""
 
-#: allianceauth/authentication/models.py:111
+#: allianceauth/authentication/models.py:116
 #, python-format
 msgid "Your user's state is now: %(state)s"
 msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:4
 #: allianceauth/authentication/templates/authentication/dashboard.html:7
+#: allianceauth/authentication/templates/authentication/tokens.html:4
 #: allianceauth/templates/allianceauth/side-menu.html:10
 msgid "Dashboard"
 msgstr ""
@@ -151,8 +156,49 @@ msgstr ""
 msgid "Alliance"
 msgstr ""
 
+#: allianceauth/authentication/templates/authentication/tokens.html:7
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:62
+msgid "Token Management"
+msgstr ""
+
+#: allianceauth/authentication/templates/authentication/tokens.html:12
+msgid "Scopes"
+msgstr ""
+
+#: allianceauth/authentication/templates/authentication/tokens.html:13
+#: allianceauth/hrapplications/templates/hrapplications/management.html:28
+#: allianceauth/hrapplications/templates/hrapplications/management.html:83
+#: allianceauth/hrapplications/templates/hrapplications/management.html:127
+#: allianceauth/hrapplications/templates/hrapplications/searchview.html:27
+#: allianceauth/hrapplications/templates/hrapplications/view.html:73
+#: allianceauth/srp/templates/srp/data.html:101
+#: allianceauth/srp/templates/srp/management.html:44
+msgid "Actions"
+msgstr ""
+
+#: allianceauth/authentication/templates/authentication/tokens.html:14
+#: allianceauth/corputils/templates/corputils/corpstats.html:74
+#: allianceauth/corputils/templates/corputils/corpstats.html:112
+#: allianceauth/corputils/templates/corputils/corpstats.html:156
+#: allianceauth/corputils/templates/corputils/search.html:13
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:22
+#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:26
+#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
+#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:55
+#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
+msgid "Character"
+msgstr ""
+
+#: allianceauth/authentication/templates/authentication/tokens.html:28
+msgid ""
+"This page is a best attempt, but backups or database logs can still contain "
+"your tokens. Always revoke tokens on https://community.eveonline.com/support/"
+"third-party-applications/ where possible."
+msgstr ""
+
 #: allianceauth/authentication/templates/public/login.html:6
-#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:58
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:69
 msgid "Login"
 msgstr ""
 
@@ -184,47 +230,47 @@ msgstr ""
 msgid "Invalid or expired activation link."
 msgstr ""
 
-#: allianceauth/authentication/views.py:77
+#: allianceauth/authentication/views.py:118
 #, python-format
 msgid ""
 "Cannot change main character to %(char)s: character owned by a different "
 "account."
 msgstr ""
 
-#: allianceauth/authentication/views.py:83
+#: allianceauth/authentication/views.py:124
 #, python-format
 msgid "Changed main character to %(char)s"
 msgstr ""
 
-#: allianceauth/authentication/views.py:92
+#: allianceauth/authentication/views.py:133
 #, python-format
 msgid "Added %(name)s to your account."
 msgstr ""
 
-#: allianceauth/authentication/views.py:94
+#: allianceauth/authentication/views.py:135
 #, python-format
 msgid "Failed to add %(name)s to your account: they already have an account."
 msgstr ""
 
-#: allianceauth/authentication/views.py:133
+#: allianceauth/authentication/views.py:174
 msgid "Unable to authenticate as the selected character."
 msgstr ""
 
-#: allianceauth/authentication/views.py:197
+#: allianceauth/authentication/views.py:238
 msgid "Registration token has expired."
 msgstr ""
 
-#: allianceauth/authentication/views.py:252
+#: allianceauth/authentication/views.py:296
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr ""
 
-#: allianceauth/authentication/views.py:257
+#: allianceauth/authentication/views.py:301
 msgid "Confirmed your email address. Please login to continue."
 msgstr ""
 
-#: allianceauth/authentication/views.py:262
+#: allianceauth/authentication/views.py:306
 msgid "Registration of new accounts is not allowed at this time."
 msgstr ""
 
@@ -265,19 +311,6 @@ msgstr ""
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:38
 msgid "Last update:"
-msgstr ""
-
-#: allianceauth/corputils/templates/corputils/corpstats.html:74
-#: allianceauth/corputils/templates/corputils/corpstats.html:112
-#: allianceauth/corputils/templates/corputils/corpstats.html:156
-#: allianceauth/corputils/templates/corputils/search.html:13
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:22
-#: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:26
-#: allianceauth/groupmanagement/templates/groupmanagement/audit.html:30
-#: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:29
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:55
-#: allianceauth/groupmanagement/templates/groupmanagement/index.html:112
-msgid "Character"
 msgstr ""
 
 #: allianceauth/corputils/templates/corputils/corpstats.html:75
@@ -611,36 +644,41 @@ msgstr ""
 msgid "Group Management"
 msgstr ""
 
-#: allianceauth/groupmanagement/forms.py:15
+#: allianceauth/groupmanagement/forms.py:18
+#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:35
+msgid "Users"
+msgstr ""
+
+#: allianceauth/groupmanagement/forms.py:52
 msgid "This name has been reserved and can not be used for groups."
 msgstr ""
 
-#: allianceauth/groupmanagement/forms.py:25
+#: allianceauth/groupmanagement/forms.py:62
 msgid "(auto)"
 msgstr ""
 
-#: allianceauth/groupmanagement/forms.py:34
+#: allianceauth/groupmanagement/forms.py:71
 msgid "There already exists a group with that name."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:105
+#: allianceauth/groupmanagement/models.py:104
 msgid ""
 "Internal group, users cannot see, join or request to join this group."
 "<br>Used for groups such as Members, Corp_*, Alliance_* etc.<br><b>Overrides "
 "Hidden and Open options when selected.</b>"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:113
+#: allianceauth/groupmanagement/models.py:112
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:119
+#: allianceauth/groupmanagement/models.py:118
 msgid ""
 "Group is open and users will be automatically added upon request.<br>If the "
 "group is not open users will need their request manually approved."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:126
+#: allianceauth/groupmanagement/models.py:125
 msgid ""
 "Group is public. Any registered user is able to join this group, with "
 "visibility based on the other options set for this group.<br>Auth will not "
@@ -648,65 +686,65 @@ msgid ""
 "authenticated."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:135
+#: allianceauth/groupmanagement/models.py:134
 msgid ""
 "Group is restricted. This means that adding or removing users for this group "
 "requires a superuser admin."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:144
+#: allianceauth/groupmanagement/models.py:143
 msgid ""
 "Group leaders can process requests for this group. Use the <code>auth."
 "group_management</code> permission to allow a user to manage all groups.<br>"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:154
+#: allianceauth/groupmanagement/models.py:153
 msgid ""
 "Members of leader groups can process requests for this group. Use the "
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:163
+#: allianceauth/groupmanagement/models.py:162
 msgid ""
 "States listed here will have the ability to join this group provided they "
 "have the proper permissions.<br>"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:171
+#: allianceauth/groupmanagement/models.py:170
 msgid ""
 "Short description <i>(max. 512 characters)</i> of the group shown to users."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:178
+#: allianceauth/groupmanagement/models.py:177
 msgid "Can request non-public groups"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:209
+#: allianceauth/groupmanagement/models.py:208
 msgid "name"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:212
+#: allianceauth/groupmanagement/models.py:211
 msgid "Name that can not be used for groups."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:215
+#: allianceauth/groupmanagement/models.py:214
 msgid "reason"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:215
+#: allianceauth/groupmanagement/models.py:214
 msgid "Reason why this name is reserved."
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:218
+#: allianceauth/groupmanagement/models.py:217
 msgid "created by"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:223
+#: allianceauth/groupmanagement/models.py:222
 msgid "created at"
 msgstr ""
 
-#: allianceauth/groupmanagement/models.py:223
+#: allianceauth/groupmanagement/models.py:222
 msgid "Date when this entry was created"
 msgstr ""
 
@@ -933,86 +971,86 @@ msgstr ""
 msgid "Group Membership"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:163
+#: allianceauth/groupmanagement/views.py:166
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:165
+#: allianceauth/groupmanagement/views.py:168
 msgid "User does not exist in that group"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:168
+#: allianceauth/groupmanagement/views.py:171
 msgid "Group does not exist"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:195
+#: allianceauth/groupmanagement/views.py:198
 #, python-format
 msgid "Accepted application from %(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:201
-#: allianceauth/groupmanagement/views.py:232
+#: allianceauth/groupmanagement/views.py:204
+#: allianceauth/groupmanagement/views.py:235
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:226
+#: allianceauth/groupmanagement/views.py:229
 #, python-format
 msgid "Rejected application from %(mainchar)s to %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:261
+#: allianceauth/groupmanagement/views.py:264
 #, python-format
 msgid "Accepted application from %(mainchar)s to leave %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:266
-#: allianceauth/groupmanagement/views.py:298
+#: allianceauth/groupmanagement/views.py:269
+#: allianceauth/groupmanagement/views.py:301
 #, python-format
 msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:292
+#: allianceauth/groupmanagement/views.py:295
 #, python-format
 msgid "Rejected application from %(mainchar)s to leave %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:336
-#: allianceauth/groupmanagement/views.py:346
+#: allianceauth/groupmanagement/views.py:339
+#: allianceauth/groupmanagement/views.py:349
 msgid "You cannot join that group"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:341
+#: allianceauth/groupmanagement/views.py:344
 msgid "You are already a member of that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:358
+#: allianceauth/groupmanagement/views.py:361
 msgid "You already have a pending application for that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:367
+#: allianceauth/groupmanagement/views.py:370
 #, python-format
 msgid "Applied to group %(group)s."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:377
+#: allianceauth/groupmanagement/views.py:380
 msgid "You cannot leave that group"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:381
+#: allianceauth/groupmanagement/views.py:384
 msgid "You are not a member of that group"
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:393
+#: allianceauth/groupmanagement/views.py:396
 msgid "You already have a pending leave request for that group."
 msgstr ""
 
-#: allianceauth/groupmanagement/views.py:409
+#: allianceauth/groupmanagement/views.py:412
 #, python-format
 msgid "Applied to leave group %(group)s."
 msgstr ""
@@ -1072,16 +1110,6 @@ msgstr ""
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:23
 #: allianceauth/services/templates/services/services.html:15
 msgid "Username"
-msgstr ""
-
-#: allianceauth/hrapplications/templates/hrapplications/management.html:28
-#: allianceauth/hrapplications/templates/hrapplications/management.html:83
-#: allianceauth/hrapplications/templates/hrapplications/management.html:127
-#: allianceauth/hrapplications/templates/hrapplications/searchview.html:27
-#: allianceauth/hrapplications/templates/hrapplications/view.html:73
-#: allianceauth/srp/templates/srp/data.html:101
-#: allianceauth/srp/templates/srp/management.html:44
-msgid "Actions"
 msgstr ""
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:38
@@ -1420,10 +1448,6 @@ msgstr ""
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:29
 msgid "Code Name"
-msgstr ""
-
-#: allianceauth/permissions_tool/templates/permissions_tool/overview.html:35
-msgid "Users"
 msgstr ""
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:41
@@ -2146,11 +2170,11 @@ msgid ""
 msgstr ""
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
-#, python-format
-msgid ""
-"\n"
-"                        %(queue_length)s queued tasks\n"
-"                        "
+msgid "running"
+msgstr ""
+
+#: allianceauth/templates/allianceauth/admin-status/overview.html:96
+msgid "queued"
 msgstr ""
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
@@ -2166,11 +2190,11 @@ msgid "AA Support Discord"
 msgstr ""
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:10
-#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:14
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:16
 msgid "User Menu"
 msgstr ""
 
-#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:56
+#: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:67
 msgid "Logout"
 msgstr ""
 
@@ -2226,22 +2250,30 @@ msgid "Objective"
 msgstr ""
 
 #: allianceauth/timerboard/form.py:64
-msgid "Days Remaining"
+msgid "Absolute Timer"
 msgstr ""
 
 #: allianceauth/timerboard/form.py:65
-msgid "Hours Remaining"
+msgid "Date and Time"
+msgstr ""
+
+#: allianceauth/timerboard/form.py:66
+msgid "Days Remaining"
 msgstr ""
 
 #: allianceauth/timerboard/form.py:67
-msgid "Minutes Remaining"
+msgid "Hours Remaining"
 msgstr ""
 
 #: allianceauth/timerboard/form.py:69
+msgid "Minutes Remaining"
+msgstr ""
+
+#: allianceauth/timerboard/form.py:71
 msgid "Important"
 msgstr ""
 
-#: allianceauth/timerboard/form.py:70
+#: allianceauth/timerboard/form.py:72
 msgid "Corp-Restricted"
 msgstr ""
 
