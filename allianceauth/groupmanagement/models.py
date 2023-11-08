@@ -1,8 +1,7 @@
 from typing import Set
 
 from django.conf import settings
-from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -14,7 +13,7 @@ from allianceauth.notifications import notify
 class GroupRequest(models.Model):
     """Request from a user for joining or leaving a group."""
 
-    leave_request = models.BooleanField(default=0)
+    leave_request = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
@@ -49,7 +48,7 @@ class RequestLog(models.Model):
     request_type = models.BooleanField(null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     request_info = models.CharField(max_length=254)
-    action = models.BooleanField(default=0)
+    action = models.BooleanField(default=False)
     request_actor = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
