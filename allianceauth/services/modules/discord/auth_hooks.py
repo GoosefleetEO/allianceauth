@@ -11,6 +11,9 @@ from .models import DiscordUser
 from .urls import urlpatterns
 from .utils import LoggerAddTag
 from . import tasks, __title__
+from .app_settings import (
+    DISCORD_SYNC_NAMES
+)
 
 
 logger = LoggerAddTag(logging.getLogger(__name__), __title__)
@@ -99,17 +102,18 @@ class DiscordService(ServicesHook):
         return has_perms
 
     def sync_nickname(self, user):
-        logger.debug('Syncing %s nickname for user %s', self.name, user)
-        if self.user_has_account(user):
-            tasks.update_nickname.apply_async(
-                kwargs={
-                    'user_pk': user.pk,
-                    # since the new nickname is not yet in the DB we need to
-                    # provide it manually to the task
-                    'nickname': user_formatted_nick(user)
-                },
-                priority=SINGLE_TASK_PRIORITY
-            )
+        if DISCORD_SYNC_NAMES:
+            logger.debug('Syncing %s nickname for user %s', self.name, user)
+            if self.user_has_account(user):
+                tasks.update_nickname.apply_async(
+                    kwargs={
+                        'user_pk': user.pk,
+                        # since the new nickname is not yet in the DB we need to
+                        # provide it manually to the task
+                        'nickname': user_formatted_nick(user)
+                    },
+                    priority=SINGLE_TASK_PRIORITY
+                )
 
     def sync_nicknames_bulk(self, users: list):
         """Sync nickname for a list of users in bulk.

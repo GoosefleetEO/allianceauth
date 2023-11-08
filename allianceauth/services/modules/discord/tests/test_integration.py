@@ -164,6 +164,7 @@ class TestServiceFeatures(TransactionTestCase):
         self.discord_user = DiscordUser.objects.create(user=self.user, uid=TEST_USER_ID)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
+    @patch(MODULE_PATH + '.auth_hooks.DISCORD_SYNC_NAMES', True)
     def test_when_name_of_main_changes_then_discord_nick_is_updated(
         self, requests_mocker
     ):
@@ -185,6 +186,7 @@ class TestServiceFeatures(TransactionTestCase):
         self.assertTrue(nick_updated)
         self.assertTrue(DiscordUser.objects.user_has_account(self.user))
 
+    @patch(MODULE_PATH + '.auth_hooks.DISCORD_SYNC_NAMES', True)
     def test_when_name_of_main_changes_and_user_deleted_then_account_is_deleted(
         self, requests_mocker
     ):
