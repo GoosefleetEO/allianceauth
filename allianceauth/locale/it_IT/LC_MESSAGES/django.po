@@ -4,7 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Alessandro Cresti, 2021
+# Alessandro Cresti, 2023
 # Linus Hope, 2023
 # 
 #, fuzzy
@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-09 18:20+1000\n"
-"PO-Revision-Date: 2020-02-18 03:14+0000\n"
+"PO-Revision-Date: 2023-10-08 09:23+0000\n"
 "Last-Translator: Linus Hope, 2023\n"
 "Language-Team: Italian (Italy) (https://app.transifex.com/alliance-auth/teams/107430/it_IT/)\n"
 "MIME-Version: 1.0\n"
@@ -119,7 +119,7 @@ msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:101
 msgid "No main character set."
-msgstr "Nessun personaggio principale impostato"
+msgstr "Nessun personaggio principale impostato."
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
 msgid "Add Character"
@@ -185,7 +185,7 @@ msgstr "Gestisci applicazioni ESI"
 
 #: allianceauth/authentication/templates/public/register.html:6
 msgid "Registration"
-msgstr "Iscriviti"
+msgstr "Registrazione"
 
 #: allianceauth/authentication/templates/public/register.html:21
 msgid "Register"
@@ -223,18 +223,18 @@ msgstr ""
 
 #: allianceauth/authentication/views.py:133
 msgid "Unable to authenticate as the selected character."
-msgstr "Impossibile autenticarsi con il personaggio selezioanto."
+msgstr "Impossibile autenticarsi con il personaggio selezionato."
 
 #: allianceauth/authentication/views.py:197
 msgid "Registration token has expired."
-msgstr "L'invito per registrarsi è scaduto."
+msgstr "Il token di registrazione è scaduto."
 
 #: allianceauth/authentication/views.py:252
 msgid ""
 "Sent confirmation email. Please follow the link to confirm your email "
 "address."
 msgstr ""
-"Un messaggio di conferma è stato inviato. Per favore, utilizza il link per "
+"Una e-mail di conferma è stata inviata. Per favore, utilizza il link per "
 "confermare il tuo indirizzo di posta elettronica."
 
 #: allianceauth/authentication/views.py:257
@@ -352,7 +352,8 @@ msgstr "La corporazione selezionata dispone già di un modulo statistiche."
 #: allianceauth/corputils/views.py:56
 msgid "Failed to gather corporation statistics with selected token."
 msgstr ""
-"Impossibile raccogliere informazioni sulla corporazione con questo codice."
+"Raccolta di statistiche della corpoazione non riuscita con il token "
+"selezionato."
 
 #: allianceauth/fleetactivitytracking/auth_hooks.py:9
 msgid "Fleet Activity Tracking"
@@ -403,7 +404,7 @@ msgstr "Crea Fatlink"
 #: allianceauth/optimer/templates/optimer/add.html:13
 #: allianceauth/optimer/templates/optimer/add.html:22
 msgid "Create Fleet Operation"
-msgstr "Crea Fleet Operation"
+msgstr "Crea operazione di flotta"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkformatter.html:13
 msgid "Bad request!"
@@ -575,7 +576,7 @@ msgstr "Statistiche fatlink"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:20
 msgid "Ticker"
-msgstr ""
+msgstr "Ticker"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:8
 msgid "Participation data"
@@ -583,7 +584,9 @@ msgstr "Statistiche di partecipazione"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:12
 msgid "Most recent clicked fatlinks"
-msgstr "Fatlink più recentemente selezionati"
+msgstr ""
+"Fatlink selezionati più di recente\n"
+" "
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:17
 msgid "Personal statistics"
@@ -654,8 +657,8 @@ msgid ""
 "etc.<br><b>Overrides Hidden and Open options when selected.</b>"
 msgstr ""
 "Gruppo interno, gli utenti non possono vedere, unirsi o fare richiesta di "
-"adesione a questo gruppo. <br>Utilizzato per gruppi come Membri, Corpazioni,"
-" Alleanze, etc. <br><b>Sovrascrive opzioni nascoste e aperte quando "
+"adesione a questo. <br>Utilizzato per gruppi come Membri, Corpazioni, "
+"Alleanze, etc. <br><b>Sovrascrive opzioni nascoste e aperte quando "
 "seleazionato."
 
 #: allianceauth/groupmanagement/models.py:113
@@ -670,7 +673,7 @@ msgid ""
 "group is not open users will need their request manually approved."
 msgstr ""
 "Il gruppo è aperto e gli utenti saranno automaticamente aggiunti a seguito "
-"richiesta. <br>Se il gruppo non è aperto gli utenti dovranno necessitare di "
+"di richiesta. <br>Se il gruppo non è aperto gli utenti necessiteranno di "
 "approvazione manuale."
 
 #: allianceauth/groupmanagement/models.py:126
@@ -680,12 +683,18 @@ msgid ""
 "remove users from this group automatically when they are no longer "
 "authenticated."
 msgstr ""
+"Il gruppo è pubblico. Qualsiasi utente registrato può unirsi a questo "
+"gruppo, con visibilità basata sulle altre opzioni impostate per questo "
+"gruppo. <br>Auth non rimuoverà automaticamente gli utenti da questo gruppo "
+"quando non sono più autenticati."
 
 #: allianceauth/groupmanagement/models.py:135
 msgid ""
 "Group is restricted. This means that adding or removing users for this group"
 " requires a superuser admin."
 msgstr ""
+"Il gruppo è limitato. Ciò significa che l'aggiunta o la rimozione di utenti "
+"per questo gruppo richiede un amministratore."
 
 #: allianceauth/groupmanagement/models.py:144
 msgid ""
@@ -693,6 +702,9 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"I leader del gruppo possono elaborare le richieste per questo gruppo. Usa "
+"l'<code>autorizzazione auth.group_management </code> per consentire ad un "
+"utente di gestire tutti i gruppi. <br> "
 
 #: allianceauth/groupmanagement/models.py:154
 msgid ""
@@ -700,54 +712,61 @@ msgid ""
 "<code>auth.group_management</code> permission to allow a user to manage all "
 "groups.<br>"
 msgstr ""
+"I membri dei gruppi leader possono elaborare le richieste per questo gruppo."
+" Usa l'<code>autorizzazione auth.group_management </code> per consentire ad "
+"un utente di gestire tutti i gruppi. <br> "
 
 #: allianceauth/groupmanagement/models.py:163
 msgid ""
 "States listed here will have the ability to join this group provided they "
 "have the proper permissions.<br>"
 msgstr ""
+"Gli stati qui elencati avranno la possibilità di aderire a questo gruppo a "
+"condizione che dispongano delle opportune autorizzazioni. <br> "
 
 #: allianceauth/groupmanagement/models.py:171
 msgid ""
 "Short description <i>(max. 512 characters)</i> of the group shown to users."
 msgstr ""
+"Breve descrizione <i>(max. 512 caratteri)</i> del gruppo da mostrare agli "
+"utenti."
 
 #: allianceauth/groupmanagement/models.py:178
 msgid "Can request non-public groups"
-msgstr ""
+msgstr "Può fare richiesta a gruppi non pubblici"
 
 #: allianceauth/groupmanagement/models.py:209
 msgid "name"
-msgstr ""
+msgstr "nome"
 
 #: allianceauth/groupmanagement/models.py:212
 msgid "Name that can not be used for groups."
-msgstr ""
+msgstr "Il nome scelto non può essere utilizzato per gruppi."
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "reason"
-msgstr ""
+msgstr "ragione"
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "Reason why this name is reserved."
-msgstr ""
+msgstr "Ragione per la quale questo nome è riservato."
 
 #: allianceauth/groupmanagement/models.py:218
 msgid "created by"
-msgstr ""
+msgstr "creato da"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "created at"
-msgstr ""
+msgstr "creato il"
 
 #: allianceauth/groupmanagement/models.py:223
 msgid "Date when this entry was created"
-msgstr ""
+msgstr "Data in cui è stata creata questa voce."
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:4
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:13
 msgid "Audit Log"
-msgstr ""
+msgstr "Registro di controllo"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:19
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:20
@@ -788,7 +807,7 @@ msgstr "Rimosso"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:60
 msgid "All times displayed are EVE/UTC."
-msgstr "Tutti gli orari visualizzati sono in riferimento al EVE/UTC"
+msgstr "Tutti gli orari visualizzati sono riferiti a EVE/UTC"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:67
 msgid "No entries found for this group."
@@ -808,13 +827,13 @@ msgstr "Organizzazione"
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:49
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:75
 msgid "Group leader"
-msgstr ""
+msgstr "Responsabile del gruppo"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:60
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:82
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:139
 msgid "(unknown)"
-msgstr ""
+msgstr "(sconosciuto)"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembers.html:65
 msgid "Remove from group"
@@ -860,7 +879,7 @@ msgstr "Nascosto"
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:44
 #: allianceauth/templates/allianceauth/admin-status/overview.html:14
 msgid "Open"
-msgstr "Libero"
+msgstr "Aperto"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groupmembership.html:46
 msgid "Requestable"
@@ -902,7 +921,7 @@ msgstr "Abbandona"
 #: allianceauth/srp/templates/srp/data.html:135
 #: allianceauth/srp/templates/srp/management.html:79
 msgid "Pending"
-msgstr ""
+msgstr "In attesa"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:39
 msgid "Join"
@@ -914,7 +933,7 @@ msgstr "Richiedi"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/groups.html:58
 msgid "No groups available."
-msgstr "Nessun gruppo disponibile"
+msgstr "Nessun gruppo disponibile."
 
 #: allianceauth/groupmanagement/templates/groupmanagement/index.html:5
 msgid "Groups Management"
@@ -965,12 +984,12 @@ msgstr "Richieste"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/menu.html:22
 msgid "Group Membership"
-msgstr ""
+msgstr "Membri del gruppo"
 
 #: allianceauth/groupmanagement/views.py:163
 #, python-format
 msgid "Removed user %(user)s from group %(group)s."
-msgstr "Rimosso il membro %(user)s da %(group)s."
+msgstr "Rimosso il membro %(user)s dal gruppo %(group)s."
 
 #: allianceauth/groupmanagement/views.py:165
 msgid "User does not exist in that group"
@@ -1014,7 +1033,7 @@ msgid ""
 "An unhandled error occurred while processing the application from "
 "%(mainchar)s to leave %(group)s."
 msgstr ""
-"Si è verificato un’errore durante l’elaborazione della domanda di comgedo da"
+"Si è verificato un’errore durante l’elaborazione della domanda di congedo da"
 " parte di %(mainchar)s per %(group)s."
 
 #: allianceauth/groupmanagement/views.py:292
@@ -1027,15 +1046,16 @@ msgstr ""
 #: allianceauth/groupmanagement/views.py:336
 #: allianceauth/groupmanagement/views.py:346
 msgid "You cannot join that group"
-msgstr "Non puoi aderire a questo gruppo"
+msgstr "Non puoi unirti a questo gruppo"
 
 #: allianceauth/groupmanagement/views.py:341
 msgid "You are already a member of that group."
-msgstr "Sei già parte del gruppo selezionato."
+msgstr "Fai già parte del gruppo selezionato."
 
 #: allianceauth/groupmanagement/views.py:358
 msgid "You already have a pending application for that group."
-msgstr "La tua domanda per questo gruppo non è ancora stata valutata."
+msgstr ""
+"Hai già una candidatura in attesa di essere elaborata per questo gruppo"
 
 #: allianceauth/groupmanagement/views.py:367
 #, python-format
@@ -1052,7 +1072,7 @@ msgstr "Non sei un membro di questo gruppo."
 
 #: allianceauth/groupmanagement/views.py:393
 msgid "You already have a pending leave request for that group."
-msgstr "La tua domanda di congedo non è ancora stata valutata."
+msgstr "Hai già una richiesta di congedo in sospeso per quel gruppo."
 
 #: allianceauth/groupmanagement/views.py:409
 #, python-format
@@ -1083,7 +1103,7 @@ msgstr "Corporazioni disponibili"
 
 #: allianceauth/hrapplications/templates/hrapplications/corpchoice.html:22
 msgid "No corps are accepting applications at this time."
-msgstr "Nessuna corporazione accetta domanda al momento."
+msgstr "Nessuna corporazione accetta domande al momento."
 
 #: allianceauth/hrapplications/templates/hrapplications/create.html:4
 #: allianceauth/hrapplications/templates/hrapplications/create.html:7
@@ -1097,7 +1117,7 @@ msgstr "Invia"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:5
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:5
 msgid "HR Application Management"
-msgstr "HR Risorse umane"
+msgstr "Gestione delle applicazioni HR"
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:10
 msgid "Personal Applications"
@@ -1165,7 +1185,7 @@ msgstr "Data"
 #: allianceauth/hrapplications/templates/hrapplications/management.html:138
 #: allianceauth/hrapplications/templates/hrapplications/view.html:22
 msgid "Reviewer:"
-msgstr ""
+msgstr "Revisore:"
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:113
 msgid "No pending applications."
@@ -1173,7 +1193,7 @@ msgstr "Nessuna domanda in sospeso."
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:162
 msgid "No reviewed applications."
-msgstr "Nessuna domanda revisionata."
+msgstr "Nessuna candidatura esaminata."
 
 #: allianceauth/hrapplications/templates/hrapplications/management.html:176
 #: allianceauth/hrapplications/templates/hrapplications/searchview.html:62
@@ -1266,11 +1286,11 @@ msgstr "Letto"
 
 #: allianceauth/notifications/templates/notifications/list.html:17
 msgid "Mark All Read"
-msgstr "Seleziona tutto visionato"
+msgstr "Segna tutto come letto"
 
 #: allianceauth/notifications/templates/notifications/list.html:18
 msgid "Delete All Read"
-msgstr "Cancella tutti i visionati"
+msgstr "Elimina tutti i letti"
 
 #: allianceauth/notifications/templates/notifications/list_partial.html:7
 msgid "Timestamp"
@@ -1282,340 +1302,347 @@ msgstr "Titolo"
 
 #: allianceauth/notifications/templates/notifications/list_partial.html:28
 msgid "No notifications."
-msgstr ""
+msgstr "Nessuna notifica."
 
 #: allianceauth/notifications/templates/notifications/view.html:4
 #: allianceauth/notifications/templates/notifications/view.html:8
 msgid "View Notification"
-msgstr ""
+msgstr "Vedi notifiche"
 
 #: allianceauth/notifications/views.py:52
 msgid "You are not authorized to view that notification."
-msgstr ""
+msgstr "Non sei autorizzato a visualizzare questa notifica."
 
 #: allianceauth/notifications/views.py:68
 msgid "Deleted notification."
-msgstr ""
+msgstr "Elimina notifiche."
 
 #: allianceauth/notifications/views.py:75
 msgid "Failed to locate notification."
-msgstr ""
+msgstr "Impossibile trovare la notifica."
 
 #: allianceauth/notifications/views.py:83
 msgid "Marked all notifications as read."
-msgstr ""
+msgstr "Contrassegna tutte le notifiche come lette."
 
 #: allianceauth/notifications/views.py:91
 msgid "Deleted all read notifications."
-msgstr ""
+msgstr "Elimina tutte le notifiche lette."
 
 #: allianceauth/optimer/auth_hooks.py:10
 msgid "Fleet Operations"
-msgstr ""
+msgstr "Operazioni di flotta"
 
 #: allianceauth/optimer/form.py:12
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:11
 msgid "Doctrine"
-msgstr ""
+msgstr "Dottrina"
 
 #: allianceauth/optimer/form.py:14
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:13
 msgid "Start Time"
-msgstr ""
+msgstr "Ora di inizio"
 
 #: allianceauth/optimer/form.py:15
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:9
 msgid "Operation Name"
-msgstr ""
+msgstr "Nome dell'operazione"
 
 #: allianceauth/optimer/form.py:16
 msgid "Operation Type"
-msgstr ""
+msgstr "Tipo di operazione"
 
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:38
 msgid "Fleet Commander"
-msgstr ""
+msgstr "Comandante della flotta"
 
 #: allianceauth/optimer/form.py:22 allianceauth/srp/form.py:14
 #: allianceauth/srp/templates/srp/data.html:91
 msgid "Additional Info"
-msgstr ""
+msgstr "Informazioni aggiuntive"
 
 #: allianceauth/optimer/form.py:23
 msgid "(Optional) Describe the operation with a couple of short words."
-msgstr ""
+msgstr "(Facoltativo) Breve descrizione del tipo di operazione."
 
 #: allianceauth/optimer/templates/optimer/add.html:6
 #: allianceauth/optimer/templates/optimer/management.html:13
 msgid "Create Operation"
-msgstr ""
+msgstr "Crea operazione"
 
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:12
 msgid "Form Up System"
-msgstr ""
+msgstr "Sistema di partenza"
 
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:14
 #: allianceauth/timerboard/templates/timerboard/view.html:36
 #: allianceauth/timerboard/templates/timerboard/view.html:203
 #: allianceauth/timerboard/templates/timerboard/view.html:376
 msgid "Local Time"
-msgstr ""
+msgstr "Ora locale"
 
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:16
 msgid "FC"
-msgstr ""
+msgstr "Comandante della flotta"
 
 #: allianceauth/optimer/templates/optimer/management.html:5
 msgid "Fleet Operation Management"
-msgstr ""
+msgstr "Gestione delle operazioni di flotta"
 
 #: allianceauth/optimer/templates/optimer/management.html:10
 msgid "Fleet Operation Timers"
-msgstr ""
+msgstr "Timer delle operazioni di flotta"
 
 #: allianceauth/optimer/templates/optimer/management.html:20
 #: allianceauth/timerboard/templates/timerboard/view.html:22
 msgid "Current Eve Time:"
-msgstr ""
+msgstr "Ora EVE attuale:"
 
 #: allianceauth/optimer/templates/optimer/management.html:26
 msgid "Next Fleet Operations"
-msgstr ""
+msgstr "Prossime operazioni di flotta"
 
 #: allianceauth/optimer/templates/optimer/management.html:30
 #: allianceauth/timerboard/templates/timerboard/view.html:362
 msgid "No upcoming timers."
-msgstr ""
+msgstr "Nessun timer prossimo."
 
 #: allianceauth/optimer/templates/optimer/management.html:33
 msgid "Past Fleet Operations"
-msgstr ""
+msgstr "Operazioni di flotta passate"
 
 #: allianceauth/optimer/templates/optimer/management.html:37
 #: allianceauth/timerboard/templates/timerboard/view.html:535
 msgid "No past timers."
-msgstr ""
+msgstr "Nessun timer passato."
 
 #: allianceauth/optimer/templates/optimer/update.html:6
 #: allianceauth/optimer/templates/optimer/update.html:15
 #: allianceauth/optimer/templates/optimer/update.html:27
 msgid "Update Fleet Operation"
-msgstr ""
+msgstr "Aggiorna operazioni di flotta"
 
 #: allianceauth/optimer/templates/optimer/update.html:21
 msgid "Fleet Operation Does Not Exist"
-msgstr ""
+msgstr "L'operazione di flotta non esiste"
 
 #: allianceauth/optimer/views.py:69
 #, python-format
 msgid "Created operation timer for %(opname)s."
-msgstr ""
+msgstr "Creato il timer per l'operazione %(opname)s."
 
 #: allianceauth/optimer/views.py:87
 #, python-format
 msgid "Removed operation timer for %(opname)s."
-msgstr ""
+msgstr "Rimosso il timer per l'operazione %(opname)s."
 
 #: allianceauth/optimer/views.py:125
 #, python-format
 msgid "Saved changes to operation timer for %(opname)s."
-msgstr ""
+msgstr "Salvati i cambiamenti per l'operazione %(opname)s."
 
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:4
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:8
 msgid "Permissions Audit"
-msgstr ""
+msgstr "Verifica dei permessi"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/audit.html:20
 msgid "User / Character"
-msgstr ""
+msgstr "Utente / Personaggio"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:4
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:8
 msgid "Permissions Overview"
-msgstr ""
+msgstr "Panoramica dei permessi"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:11
 msgid "Showing only applied permissions"
-msgstr ""
+msgstr "Mostrando solo i permessi applicati"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:12
 msgid "Show All"
-msgstr ""
+msgstr "Mostra tutto"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:14
 msgid "Showing all permissions"
-msgstr ""
+msgstr "Mostrando tutti i permessi"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:15
 msgid "Show Applied"
-msgstr ""
+msgstr "Mostra applicati"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:23
 msgid "App"
-msgstr ""
+msgstr "App"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:26
 msgid "Model"
-msgstr ""
+msgstr "Modello"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:29
 msgid "Code Name"
-msgstr ""
+msgstr "Nome del codice"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:35
 msgid "Users"
-msgstr ""
+msgstr "Utenti"
 
 #: allianceauth/permissions_tool/templates/permissions_tool/overview.html:41
 msgid "States"
-msgstr ""
+msgstr "Stati"
 
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
-msgstr ""
+msgstr "Un account per questo servizio già esiste"
 
 #: allianceauth/services/abstract.py:103
 #, python-brace-format
 msgid "Successfully set your {self.service_name} password"
-msgstr ""
+msgstr "La password del {self.service_name}  è stata impostata con sucesso"
 
 #: allianceauth/services/auth_hooks.py:12
 msgid "Services"
-msgstr ""
+msgstr "Servizi"
 
 #: allianceauth/services/forms.py:6
 msgid "Name of Fleet:"
-msgstr ""
+msgstr "Nome della flotta:"
 
 #: allianceauth/services/forms.py:7
 msgid "Fleet Commander:"
-msgstr ""
+msgstr "Comandante della flotta:"
 
 #: allianceauth/services/forms.py:8
 msgid "Fleet Comms:"
-msgstr ""
+msgstr "Canale voce della flotta:"
 
 #: allianceauth/services/forms.py:9
 msgid "Fleet Type:"
-msgstr ""
+msgstr "Tipo di flotta:"
 
 #: allianceauth/services/forms.py:10
 msgid "Ship Priorities:"
-msgstr ""
+msgstr "Navi prioritarie:"
 
 #: allianceauth/services/forms.py:11
 msgid "Formup Location:"
-msgstr ""
+msgstr "Sistema di partenza:"
 
 #: allianceauth/services/forms.py:12
 msgid "Formup Time:"
-msgstr ""
+msgstr "Ora di partenza:"
 
 #: allianceauth/services/forms.py:13
 msgid "Expected Duration:"
-msgstr ""
+msgstr "Durata stimata:"
 
 #: allianceauth/services/forms.py:14
 msgid "Purpose:"
-msgstr ""
+msgstr "Obiettivo:"
 
 #: allianceauth/services/forms.py:15
 msgid "Reimbursable?*"
-msgstr ""
+msgstr "SRP?*"
 
 #: allianceauth/services/forms.py:15 allianceauth/services/forms.py:16
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: allianceauth/services/forms.py:15 allianceauth/services/forms.py:16
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: allianceauth/services/forms.py:16
 msgid "Important?*"
-msgstr ""
+msgstr "Importante?*"
 
 #: allianceauth/services/forms.py:21 allianceauth/services/forms.py:31
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: allianceauth/services/forms.py:26 allianceauth/services/forms.py:36
 msgid "Password must be at least 8 characters long."
-msgstr ""
+msgstr "La password deve contenere almeno 8 caratteri."
 
 #: allianceauth/services/modules/discord/models.py:187
 msgid "Discord Account Disabled"
-msgstr ""
+msgstr "Account discord disabilitato"
 
 #: allianceauth/services/modules/discord/models.py:189
 msgid ""
 "Your Discord account was disabled automatically by Auth. If you think this "
 "was a mistake, please contact an admin."
 msgstr ""
+"Il tuo account discord è stato disabilitato automaticamente dall'Auth. Se "
+"pensi questo sia un errore per favore contatta un ammistratore."
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:5
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:18
 msgid "Join the Discord server"
-msgstr ""
+msgstr "Unisciti al server discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:22
 msgid "Leave- and rejoin the Discord Server (Reset)"
-msgstr ""
+msgstr "Abbandona e unisciti nuovamente al server discord (ripristino)"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:25
 msgid "Leave the Discord server"
-msgstr ""
+msgstr "Lascia il server discord"
 
 #: allianceauth/services/modules/discord/templates/services/discord/discord_service_ctrl.html:32
 msgid "Link Discord Server"
-msgstr ""
+msgstr "Collega server discord"
 
 #: allianceauth/services/modules/discord/views.py:30
 msgid "Deactivated Discord account."
-msgstr ""
+msgstr "Disabilita l'account discord"
 
 #: allianceauth/services/modules/discord/views.py:36
 #: allianceauth/services/modules/discord/views.py:59
 msgid "An error occurred while processing your Discord account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account discord."
 
 #: allianceauth/services/modules/discord/views.py:102
 msgid "Your Discord account has been successfully activated."
-msgstr ""
+msgstr "Il tuo account discord è stato attivato con successo."
 
 #: allianceauth/services/modules/discord/views.py:108
 msgid ""
 "An error occurred while trying to activate your Discord account. Please try "
 "again."
 msgstr ""
+"Si è verificato un errore durante l'attivazione del tuo account discord. Per"
+" favore ritenta."
 
 #: allianceauth/services/modules/discourse/views.py:29
 msgid "You are not authorized to access Discourse."
-msgstr ""
+msgstr "Non sei autorizzato ad accedere Discourse."
 
 #: allianceauth/services/modules/discourse/views.py:34
 msgid "You must have a main character set to access Discourse."
 msgstr ""
+"Devi avere impostato un personaggio principale per poter accedere Discourse."
 
 #: allianceauth/services/modules/discourse/views.py:44
 msgid ""
 "No SSO payload or signature. Please contact support if this problem "
 "persists."
 msgstr ""
+"Nessun payload o firma SSO. Contatta l'assistenza se il problema persiste."
 
 #: allianceauth/services/modules/discourse/views.py:54
 #: allianceauth/services/modules/discourse/views.py:62
 msgid "Invalid payload. Please contact support if this problem persists."
-msgstr ""
+msgstr "Payload non valido. Contatta l'assistenza se il problema persiste."
 
 #: allianceauth/services/modules/ips4/views.py:31
 msgid "Activated IPSuite4 account."
-msgstr ""
+msgstr "Attiva account IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:39
 #: allianceauth/services/modules/ips4/views.py:60
@@ -1623,32 +1650,33 @@ msgstr ""
 #: allianceauth/services/modules/ips4/views.py:101
 msgid "An error occurred while processing your IPSuite4 account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:52
 msgid "Reset IPSuite4 password."
-msgstr ""
+msgstr "Reimposta password IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:78
 msgid "Set IPSuite4 password."
-msgstr ""
+msgstr "Imposta password IPSuite4."
 
 #: allianceauth/services/modules/ips4/views.py:98
 msgid "Deactivated IPSuite4 account."
-msgstr ""
+msgstr "Disattiva account IPSuite4."
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:26
 msgid "Jabber"
-msgstr ""
+msgstr "Jabber"
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:79
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:5
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:10
 msgid "Jabber Broadcast"
-msgstr ""
+msgstr "Jabber broadcast"
 
 #: allianceauth/services/modules/openfire/auth_hooks.py:94
 msgid "Fleet Broadcast Formatter"
-msgstr ""
+msgstr "Strumento formattazione broadcast"
 
 #: allianceauth/services/modules/openfire/forms.py:7
 msgid "Message"
@@ -1656,15 +1684,15 @@ msgstr "Messaggio"
 
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:16
 msgid "Broadcast Sent!!"
-msgstr ""
+msgstr "Broadcast inviato!"
 
 #: allianceauth/services/modules/openfire/templates/services/openfire/broadcast.html:22
 msgid "Broadcast"
-msgstr ""
+msgstr "Broadcast"
 
 #: allianceauth/services/modules/openfire/views.py:35
 msgid "Activated jabber account."
-msgstr ""
+msgstr "Attivato account jabber."
 
 #: allianceauth/services/modules/openfire/views.py:43
 #: allianceauth/services/modules/openfire/views.py:56
@@ -1672,23 +1700,24 @@ msgstr ""
 #: allianceauth/services/modules/openfire/views.py:147
 msgid "An error occurred while processing your jabber account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account jabber."
 
 #: allianceauth/services/modules/openfire/views.py:69
 msgid "Reset jabber password."
-msgstr ""
+msgstr "Reimposta password jabber."
 
 #: allianceauth/services/modules/openfire/views.py:115
 #, python-format
 msgid "Sent jabber broadcast to %s"
-msgstr ""
+msgstr "Broadcast jabber inviato a %s"
 
 #: allianceauth/services/modules/openfire/views.py:144
 msgid "Set jabber password."
-msgstr ""
+msgstr "Imposta password jabber."
 
 #: allianceauth/services/modules/phpbb3/views.py:34
 msgid "Activated forum account."
-msgstr ""
+msgstr "Account forum attivato."
 
 #: allianceauth/services/modules/phpbb3/views.py:42
 #: allianceauth/services/modules/phpbb3/views.py:56
@@ -1696,90 +1725,92 @@ msgstr ""
 #: allianceauth/services/modules/phpbb3/views.py:101
 msgid "An error occurred while processing your forum account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account forum."
 
 #: allianceauth/services/modules/phpbb3/views.py:53
 msgid "Deactivated forum account."
-msgstr ""
+msgstr "Disattivato account forum."
 
 #: allianceauth/services/modules/phpbb3/views.py:70
 msgid "Reset forum password."
-msgstr ""
+msgstr "Reimposta password forum."
 
 #: allianceauth/services/modules/phpbb3/views.py:98
 msgid "Set forum password."
-msgstr ""
+msgstr "Imposta password forum."
 
 #: allianceauth/services/modules/smf/views.py:52
 msgid "Activated SMF account."
-msgstr ""
+msgstr "Attivato account SMF."
 
 #: allianceauth/services/modules/smf/views.py:65
 #: allianceauth/services/modules/smf/views.py:81
 #: allianceauth/services/modules/smf/views.py:102
 #: allianceauth/services/modules/smf/views.py:124
 msgid "An error occurred while processing your SMF account."
-msgstr ""
+msgstr "Si è verificato un errore durante l'elaborazione del tuo account SMF."
 
 #: allianceauth/services/modules/smf/views.py:78
 msgid "Deactivated SMF account."
-msgstr ""
+msgstr "Disattivato account SMF."
 
 #: allianceauth/services/modules/smf/views.py:95
 msgid "Reset SMF password."
-msgstr ""
+msgstr "Reimposta password SMF."
 
 #: allianceauth/services/modules/smf/views.py:121
 msgid "Set SMF password."
-msgstr ""
+msgstr "Imposta password SMF."
 
 #: allianceauth/services/modules/teamspeak3/forms.py:14
 #, python-format
 msgid "Unable to locate user %s on server"
-msgstr ""
+msgstr "Impossibile trovare utente %s nel server"
 
 #: allianceauth/services/modules/teamspeak3/templates/admin/teamspeak3/authts/change_list.html:8
 msgid "Update TS3 groups"
-msgstr ""
+msgstr "Aggiorna gruppi TS3"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:5
 msgid "Verify Teamspeak"
-msgstr ""
+msgstr "Verifica Teamspeak"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:10
 msgid "Verify Teamspeak Identity"
-msgstr ""
+msgstr "Verifica identità teamspeak"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:13
 msgid "Join Server"
-msgstr ""
+msgstr "Unisciti al server"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:19
 #: allianceauth/services/templates/services/service_credentials.html:19
 #: allianceauth/srp/templates/srp/add.html:31
 msgid "Continue"
-msgstr ""
+msgstr "Continua"
 
 #: allianceauth/services/modules/teamspeak3/views.py:35
 msgid "Activated TeamSpeak3 account."
-msgstr ""
+msgstr "Account Teamspeak3 attivato."
 
 #: allianceauth/services/modules/teamspeak3/views.py:38
 #: allianceauth/services/modules/teamspeak3/views.py:74
 #: allianceauth/services/modules/teamspeak3/views.py:100
 msgid "An error occurred while processing your TeamSpeak3 account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account Teamspeak3."
 
 #: allianceauth/services/modules/teamspeak3/views.py:71
 msgid "Deactivated TeamSpeak3 account."
-msgstr ""
+msgstr "Disattivato account TeamSpeak3."
 
 #: allianceauth/services/modules/teamspeak3/views.py:97
 msgid "Reset TeamSpeak3 permission key."
-msgstr ""
+msgstr "Reimposta la chiave di autorizzazione TeamSpeak3."
 
 #: allianceauth/services/modules/xenforo/views.py:30
 msgid "Activated XenForo account."
-msgstr ""
+msgstr "Attivato account XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:40
 #: allianceauth/services/modules/xenforo/views.py:52
@@ -1787,310 +1818,317 @@ msgstr ""
 #: allianceauth/services/modules/xenforo/views.py:94
 msgid "An error occurred while processing your XenForo account."
 msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:50
 msgid "Deactivated XenForo account."
-msgstr ""
+msgstr "Disattivato account XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:65
 msgid "Reset XenForo account password."
-msgstr ""
+msgstr "Reimposta password dell'account XenForo."
 
 #: allianceauth/services/modules/xenforo/views.py:91
 msgid "Changed XenForo password."
-msgstr ""
+msgstr "Password XenForo modificata."
 
 #: allianceauth/services/templates/services/fleetformattertool.html:5
 msgid "Fleet Formatter Tool"
-msgstr ""
+msgstr "Strumento formattazione della flotta"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:10
 msgid "Fleet Broadcast Formatter Tool"
-msgstr ""
+msgstr "Strumento formattazione brocast della flotta"
 
 #: allianceauth/services/templates/services/fleetformattertool.html:23
 msgid "Format"
-msgstr ""
+msgstr "Formato"
 
 #: allianceauth/services/templates/services/service_confirm_delete.html:6
 #: allianceauth/services/templates/services/service_confirm_delete.html:12
 #, python-format
 msgid "Delete %(service_name)s Account?"
-msgstr ""
+msgstr "Eliminare l'account %(service_name)s?"
 
 #: allianceauth/services/templates/services/service_confirm_delete.html:20
 #, python-format
 msgid ""
 "Are you sure you want to delete your %(service_name)s account %(object)s?"
-msgstr ""
+msgstr "Sei sicuro di voler eliminare l'account %(service_name)s %(object)s?"
 
 #: allianceauth/services/templates/services/service_credentials.html:4
 #: allianceauth/services/templates/services/service_credentials.html:8
 #, python-format
 msgid "%(service_name)s Credentials"
-msgstr ""
+msgstr "%(service_name)s Credenziali"
 
 #: allianceauth/services/templates/services/service_password.html:5
 #, python-format
 msgid "%(service_name)s Password Change"
-msgstr ""
+msgstr "%(service_name)s Modifica password"
 
 #: allianceauth/services/templates/services/service_password.html:9
 #, python-format
 msgid "Set %(service_name)s Password"
-msgstr ""
+msgstr "Imposta password %(service_name)s "
 
 #: allianceauth/services/templates/services/service_password.html:17
 msgid "Set Password"
-msgstr ""
+msgstr "Imposta password"
 
 #: allianceauth/services/templates/services/services.html:4
 msgid "Services Management"
-msgstr ""
+msgstr "Gestione dei servizi"
 
 #: allianceauth/services/templates/services/services.html:9
 msgid "Available Services"
-msgstr ""
+msgstr "Servizi disponibili"
 
 #: allianceauth/services/templates/services/services.html:14
 msgid "Service"
-msgstr ""
+msgstr "Servizio"
 
 #: allianceauth/services/templates/services/services.html:16
 msgid "Domain"
-msgstr ""
+msgstr "Dominio"
 
 #: allianceauth/srp/auth_hooks.py:13
 msgid "Ship Replacement"
-msgstr ""
+msgstr "Sostituzione della nave"
 
 #: allianceauth/srp/form.py:9
 #: allianceauth/srp/templates/srp/management.html:36
 msgid "Fleet Time"
-msgstr ""
+msgstr "Orario della flotta"
 
 #: allianceauth/srp/form.py:10
 #: allianceauth/srp/templates/srp/management.html:37
 msgid "Fleet Doctrine"
-msgstr ""
+msgstr "Dottrina della flotta"
 
 #: allianceauth/srp/form.py:16
 msgid "Killboard Link (zkillboard.com or kb.evetools.org)"
-msgstr ""
+msgstr "Killboard link (zkillboard.com o kb.evetools.org) "
 
 #: allianceauth/srp/form.py:34
 msgid "Invalid Link. Please use zkillboard.com or kb.evetools.org"
-msgstr ""
+msgstr "Link non valido. Per favore utilizza zkillboard.com o kb.evetools.org"
 
 #: allianceauth/srp/form.py:46
 msgid "Invalid Link. Please post a direct link to a killmail."
 msgstr ""
+"Link non valido. Per favore utilizza un link direttamente collegato alla "
+"killmail."
 
 #: allianceauth/srp/form.py:53
 msgid "After Action Report Link"
-msgstr ""
+msgstr "Link di resoconto della flotta"
 
 #: allianceauth/srp/templates/srp/add.html:5
 msgid "SRP Fleet Create"
-msgstr ""
+msgstr "Crea SRP della flotta"
 
 #: allianceauth/srp/templates/srp/add.html:13
 #: allianceauth/srp/templates/srp/add.html:23
 msgid "Create SRP Fleet"
-msgstr ""
+msgstr "Crea SRP della flotta"
 
 #: allianceauth/srp/templates/srp/add.html:26
 msgid "Give this link to the line members"
-msgstr ""
+msgstr "Fornisci questo link ai membri"
 
 #: allianceauth/srp/templates/srp/data.html:5
 msgid "Srp Fleet Data"
-msgstr ""
+msgstr "Dati del SRP della flotta"
 
 #: allianceauth/srp/templates/srp/data.html:50
 msgid "SRP Fleet Data"
-msgstr ""
+msgstr "Dati del SRP della flotta"
 
 #: allianceauth/srp/templates/srp/data.html:55
 msgid "Mark Incomplete"
-msgstr ""
+msgstr "Contrassegna incompleto"
 
 #: allianceauth/srp/templates/srp/data.html:59
 msgid "Mark Completed"
-msgstr ""
+msgstr "Contrassegna completo"
 
 #: allianceauth/srp/templates/srp/data.html:71
 #: allianceauth/srp/templates/srp/data.html:157
 msgid "Total Losses:"
-msgstr ""
+msgstr "Perdite totali:"
 
 #: allianceauth/srp/templates/srp/data.html:72
 #: allianceauth/srp/templates/srp/data.html:158
 #: allianceauth/srp/templates/srp/management.html:28
 msgid "Total ISK Cost:"
-msgstr ""
+msgstr "Costo totale in ISK:"
 
 #: allianceauth/srp/templates/srp/data.html:80
 #: allianceauth/srp/templates/srp/data.html:166
 msgid "Are you sure you want to delete SRP requests?"
-msgstr ""
+msgstr "Sei sicuro di voler eliminare la richiesta di SRP?"
 
 #: allianceauth/srp/templates/srp/data.html:89
 msgid "Pilot Name"
-msgstr ""
+msgstr "Nome del pilota"
 
 #: allianceauth/srp/templates/srp/data.html:90
 msgid "Killboard Link"
-msgstr ""
+msgstr "Link killboard"
 
 #: allianceauth/srp/templates/srp/data.html:92
 msgid "Ship Type"
-msgstr ""
+msgstr "Tipologia nave"
 
 #: allianceauth/srp/templates/srp/data.html:93
 msgid "Killboard Loss Amt"
-msgstr ""
+msgstr "Valore delle perdite Killboard"
 
 #: allianceauth/srp/templates/srp/data.html:94
 msgid "SRP ISK Cost"
-msgstr ""
+msgstr "Costo in ISK del SRP"
 
 #: allianceauth/srp/templates/srp/data.html:95
 msgid "Click value to edit Enter to save & next ESC to cancel"
 msgstr ""
+"Fai clic sul valore per modificare, Invio per salvare e proseguire, ESC per "
+"annullare"
 
 #: allianceauth/srp/templates/srp/data.html:98
 msgid "Post Time"
-msgstr ""
+msgstr "Ora di pubblicazione"
 
 #: allianceauth/srp/templates/srp/data.html:175
 msgid "No SRP requests for this fleet."
-msgstr ""
+msgstr "Nessuna richiesta di SRP per questa flotta."
 
 #: allianceauth/srp/templates/srp/management.html:6
 msgid "Srp Management"
-msgstr ""
+msgstr "Gestione SRP"
 
 #: allianceauth/srp/templates/srp/management.html:12
 msgid "SRP Management"
-msgstr ""
+msgstr "Gestione SRP"
 
 #: allianceauth/srp/templates/srp/management.html:16
 msgid "View All"
-msgstr ""
+msgstr "Vedi tutti"
 
 #: allianceauth/srp/templates/srp/management.html:21
 msgid "Add SRP Fleet"
-msgstr ""
+msgstr "Aggiungi SRP alla flotta"
 
 #: allianceauth/srp/templates/srp/management.html:39
 msgid "Fleet AAR"
-msgstr ""
+msgstr "Resoconto della flotta"
 
 #: allianceauth/srp/templates/srp/management.html:40
 msgid "Fleet SRP Code"
-msgstr ""
+msgstr "Codice SRP della flotta"
 
 #: allianceauth/srp/templates/srp/management.html:41
 msgid "Fleet ISK Cost"
-msgstr ""
+msgstr "Costo in ISK della flotta"
 
 #: allianceauth/srp/templates/srp/management.html:42
 msgid "SRP Status"
-msgstr ""
+msgstr "Status del SRP"
 
 #: allianceauth/srp/templates/srp/management.html:43
 msgid "Pending Requests"
-msgstr ""
+msgstr "Richieste in sospeso"
 
 #: allianceauth/srp/templates/srp/management.html:62
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: allianceauth/srp/templates/srp/management.html:70
 msgid "Disabled"
-msgstr ""
+msgstr "Disabilitato"
 
 #: allianceauth/srp/templates/srp/management.html:83
 msgid "Completed"
-msgstr ""
+msgstr "Completato"
 
 #: allianceauth/srp/templates/srp/management.html:101
 msgid "Are you sure you want to delete this SRP code and its contents?"
-msgstr ""
+msgstr "Sei sicuro di voler eliminare questo codice SRP e i suoi contenuti?"
 
 #: allianceauth/srp/templates/srp/management.html:122
 msgid "No SRP fleets created."
-msgstr ""
+msgstr "Nessun SRP delle flotte creato."
 
 #: allianceauth/srp/templates/srp/request.html:5
 msgid "SRP Request"
-msgstr ""
+msgstr "Richieste SRP"
 
 #: allianceauth/srp/templates/srp/request.html:10
 #: allianceauth/srp/templates/srp/request.html:19
 msgid "Create SRP Request"
-msgstr ""
+msgstr "Crea richiesta SRP"
 
 #: allianceauth/srp/templates/srp/update.html:5
 #: allianceauth/srp/templates/srp/update.html:10
 #: allianceauth/srp/templates/srp/update.html:22
 msgid "Update AAR Link"
-msgstr ""
+msgstr "Aggiorna resoconto della flotta"
 
 #: allianceauth/srp/templates/srp/update.html:16
 msgid "SRP Fleet Does Not Exist"
-msgstr ""
+msgstr "SRP della flotta non esiste"
 
 #: allianceauth/srp/views.py:85
 #, python-format
 msgid "Created SRP fleet %(fleetname)s."
-msgstr ""
+msgstr "Creato SRP della flotta %(fleetname)s."
 
 #: allianceauth/srp/views.py:103
 #, python-format
 msgid "Removed SRP fleet %(fleetname)s."
-msgstr ""
+msgstr "Rimosso SRP della flotta %(fleetname)s."
 
 #: allianceauth/srp/views.py:115
 #, python-format
 msgid "Disabled SRP fleet %(fleetname)s."
-msgstr ""
+msgstr "Disabilitato SRP della flotta %(fleetname)s."
 
 #: allianceauth/srp/views.py:127
 #, python-format
 msgid "Enabled SRP fleet %(fleetname)s."
-msgstr ""
+msgstr "Abilitato SRP della flotta %(fleetname)s."
 
 #: allianceauth/srp/views.py:140
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as completed."
-msgstr ""
+msgstr "SRP della flotta %(fleetname)s è stato contrassegnato completato."
 
 #: allianceauth/srp/views.py:153
 #, python-format
 msgid "Marked SRP fleet %(fleetname)s as incomplete."
-msgstr ""
+msgstr "L'SRP della flotta %(fleetname)s è stato contrassegnato incompleto."
 
 #: allianceauth/srp/views.py:165
 #, python-format
 msgid "Unable to locate SRP code with ID %(srpfleetid)s"
-msgstr ""
+msgstr "Impossibile trovare il codice di SRP con ID %(srpfleetid)s"
 
 #: allianceauth/srp/views.py:179
 msgid "This kill mail has already been posted."
-msgstr ""
+msgstr "Questa killmail è già stata pubblicata."
 
 #: allianceauth/srp/views.py:200
 msgid ""
 "Your SRP request Killmail link is invalid. Please make sure you are using "
 "zKillboard."
 msgstr ""
+"La tua richiesta di SRP contiente un link killmail non valido. Per favore "
+"assicurarti di utilizzare zKillboard."
 
 #: allianceauth/srp/views.py:212
 #, python-format
 msgid "Submitted SRP request for your %(ship)s."
-msgstr ""
+msgstr "Richiesta di SRP inviata per la tua nave %(ship)s."
 
 #: allianceauth/srp/views.py:216
 #, python-format
@@ -2098,88 +2136,90 @@ msgid ""
 "Character %(charid)s does not belong to your Auth account. Please add the "
 "API key for this character and try again"
 msgstr ""
+"Il personaggio %(charid)s non è collegato al tuo profilo Auth. Per favore "
+"aggiungi le API key di questo personaggio e ritenta."
 
 #: allianceauth/srp/views.py:236 allianceauth/srp/views.py:262
 #: allianceauth/srp/views.py:300
 msgid "No SRP requests selected"
-msgstr ""
+msgstr "Nessuna richiesta di SRP selezionata"
 
 #: allianceauth/srp/views.py:247 allianceauth/srp/views.py:285
 msgid "Unable to locate selected SRP request."
-msgstr ""
+msgstr "Impossible trovare la richiesta di SRP selezionata."
 
 #: allianceauth/srp/views.py:250
 #, python-format
 msgid "Deleted %(numrequests)s SRP requests"
-msgstr ""
+msgstr "Eliminata/e %(numrequests)s richiesta/e di SRP"
 
 #: allianceauth/srp/views.py:288
 #, python-format
 msgid "Approved %(numrequests)s SRP requests"
-msgstr ""
+msgstr "Approvata/e %(numrequests)srichiesta/e di SRP"
 
 #: allianceauth/srp/views.py:320
 msgid "Unable to locate selected SRP request"
-msgstr ""
+msgstr "Impossible trovare la richiesta di SRP selezionata"
 
 #: allianceauth/srp/views.py:323
 #, python-format
 msgid "Rejected %(numrequests)s SRP requests."
-msgstr ""
+msgstr "Rifiutata/e %(numrequests)s richiesta/e di SRP."
 
 #: allianceauth/srp/views.py:336
 #, python-format
 msgid "Unable to locate SRP request with ID %(requestid)s"
-msgstr ""
+msgstr "Impossibile trovare la richiesta di SRP con ID %(requestid)s"
 
 #: allianceauth/srp/views.py:360
 #, python-format
 msgid "Saved changes to SRP fleet %(fleetname)s"
-msgstr ""
+msgstr "Salvati i cambiamenti al SRP della flotta %(fleetname)s"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:8
 msgid "Alliance Auth Notifications"
-msgstr ""
+msgstr "Notifiche Auth Alleanza"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:16
 msgid "Closed"
-msgstr ""
+msgstr "Chiuso"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:28
 msgid "Powered by GitLab"
-msgstr ""
+msgstr "Powered by GitLab"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:35
 msgid "Support Discord"
-msgstr ""
+msgstr "Discord di supporto"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:43
 msgid "Software Version"
-msgstr ""
+msgstr "Versione del software"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:47
 msgid "Current"
-msgstr ""
+msgstr "Attuale"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:53
 msgid "Latest Stable"
-msgstr ""
+msgstr "Ultima versione stabile"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:59
 msgid "Update available"
-msgstr ""
+msgstr "Aggiornamento disponibile"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:64
 msgid "Latest Pre-Release"
-msgstr ""
+msgstr "Ultima versione preliminare"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:70
 msgid "Pre-Release available"
-msgstr ""
+msgstr "Versione preliminare disponibile"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:78
 msgid "Task Queue"
-msgstr ""
+msgstr "Coda delle attività"
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:81
 #, python-format
@@ -2188,6 +2228,9 @@ msgid ""
 "                    Status of %(total)s processed tasks • last %(latest)s\n"
 "                    "
 msgstr ""
+"\n"
+"                    Stato di %(total)s attività elaborate • ultimo %(latest)s\n"
+"                    "
 
 #: allianceauth/templates/allianceauth/admin-status/overview.html:95
 #, python-format
@@ -2196,183 +2239,185 @@ msgid ""
 "                        %(queue_length)s queued tasks\n"
 "                        "
 msgstr ""
+"\n"
+"%(queue_length)scompiti in coda"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:9
 msgid "Admin"
-msgstr ""
+msgstr "Amministratore"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:19
 msgid "AA Documentation"
-msgstr ""
+msgstr "Documentazione AA"
 
 #: allianceauth/templates/allianceauth/top-menu-admin.html:26
 msgid "AA Support Discord"
-msgstr ""
+msgstr "AA Discord di supporto"
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:10
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:14
 msgid "User Menu"
-msgstr ""
+msgstr "Menu utente"
 
 #: allianceauth/templates/allianceauth/top-menu-user-dropdown.html:56
 msgid "Logout"
-msgstr ""
+msgstr "Disconnettersi"
 
 #: allianceauth/timerboard/form.py:53
 msgid "Other"
-msgstr ""
+msgstr "Altro"
 
 #: allianceauth/timerboard/form.py:54
 #: allianceauth/timerboard/templates/timerboard/view.html:62
 #: allianceauth/timerboard/templates/timerboard/view.html:229
 #: allianceauth/timerboard/templates/timerboard/view.html:402
 msgid "Friendly"
-msgstr ""
+msgstr "Amichevole"
 
 #: allianceauth/timerboard/form.py:55
 #: allianceauth/timerboard/templates/timerboard/view.html:57
 #: allianceauth/timerboard/templates/timerboard/view.html:224
 #: allianceauth/timerboard/templates/timerboard/view.html:397
 msgid "Hostile"
-msgstr ""
+msgstr "Ostile"
 
 #: allianceauth/timerboard/form.py:56
 #: allianceauth/timerboard/templates/timerboard/view.html:67
 #: allianceauth/timerboard/templates/timerboard/view.html:234
 #: allianceauth/timerboard/templates/timerboard/view.html:407
 msgid "Neutral"
-msgstr ""
+msgstr "Neutrale"
 
 #: allianceauth/timerboard/form.py:58
 #: allianceauth/timerboard/templates/timerboard/view.html:31
 #: allianceauth/timerboard/templates/timerboard/view.html:198
 #: allianceauth/timerboard/templates/timerboard/view.html:371
 msgid "Details"
-msgstr ""
+msgstr "Dettagli"
 
 #: allianceauth/timerboard/form.py:60
 msgid "Planet/Moon"
-msgstr ""
+msgstr "Pianeta/Luna"
 
 #: allianceauth/timerboard/form.py:61
 msgid "Structure Type"
-msgstr ""
+msgstr "Tipologia di struttura"
 
 #: allianceauth/timerboard/form.py:62
 msgid "Timer Type"
-msgstr ""
+msgstr "Tipologia di timer"
 
 #: allianceauth/timerboard/form.py:63
 #: allianceauth/timerboard/templates/timerboard/view.html:32
 #: allianceauth/timerboard/templates/timerboard/view.html:199
 #: allianceauth/timerboard/templates/timerboard/view.html:372
 msgid "Objective"
-msgstr ""
+msgstr "Obiettivo"
 
 #: allianceauth/timerboard/form.py:64
 msgid "Days Remaining"
-msgstr ""
+msgstr "Giorni rimanenti"
 
 #: allianceauth/timerboard/form.py:65
 msgid "Hours Remaining"
-msgstr ""
+msgstr "Ore rimanenti"
 
 #: allianceauth/timerboard/form.py:67
 msgid "Minutes Remaining"
-msgstr ""
+msgstr "Minuti rimanenti "
 
 #: allianceauth/timerboard/form.py:69
 msgid "Important"
-msgstr ""
+msgstr "Importante"
 
 #: allianceauth/timerboard/form.py:70
 msgid "Corp-Restricted"
-msgstr ""
+msgstr "Limitato alla corporazione"
 
 #: allianceauth/timerboard/models.py:14
 msgid "Not Specified"
-msgstr ""
+msgstr "Non specificato"
 
 #: allianceauth/timerboard/models.py:15
 msgid "Shield"
-msgstr ""
+msgstr "Scudo"
 
 #: allianceauth/timerboard/models.py:16
 msgid "Armor"
-msgstr ""
+msgstr "Armatura"
 
 #: allianceauth/timerboard/models.py:17
 msgid "Hull"
-msgstr ""
+msgstr "Struttura"
 
 #: allianceauth/timerboard/models.py:18
 msgid "Final"
-msgstr ""
+msgstr "Ultimo"
 
 #: allianceauth/timerboard/models.py:19
 msgid "Anchoring"
-msgstr ""
+msgstr "In ancoraggio"
 
 #: allianceauth/timerboard/models.py:20
 msgid "Unanchoring"
-msgstr ""
+msgstr "In disancoraggio"
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"
-msgstr ""
+msgstr "Elimina timer "
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:19
 #, python-format
 msgid "Are you sure you want to delete timer \"%(object)s\"?"
-msgstr ""
+msgstr "Sei sicuro di voler eliminare il timer \"%(object)s\"?"
 
 #: allianceauth/timerboard/templates/timerboard/timer_create_form.html:5
 #: allianceauth/timerboard/templates/timerboard/timer_create_form.html:13
 msgid "Create Timer"
-msgstr ""
+msgstr "Crea timer"
 
 #: allianceauth/timerboard/templates/timerboard/timer_create_form.html:9
 #: allianceauth/timerboard/templates/timerboard/view.html:15
 msgid "Create Structure Timer"
-msgstr ""
+msgstr "Crea timer struttura"
 
 #: allianceauth/timerboard/templates/timerboard/timer_update_form.html:5
 #: allianceauth/timerboard/templates/timerboard/timer_update_form.html:9
 #: allianceauth/timerboard/templates/timerboard/timer_update_form.html:13
 msgid "Update Structure Timer"
-msgstr ""
+msgstr "Aggiorna timer struttura"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:6
 msgid "Structure Timer Management"
-msgstr ""
+msgstr "Gestione timer strutture"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:11
 msgid "Structure Timers"
-msgstr ""
+msgstr "Timer delle strutture"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:27
 msgid "Corp Timers"
-msgstr ""
+msgstr "Timer di corporazione"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:34
 #: allianceauth/timerboard/templates/timerboard/view.html:201
 #: allianceauth/timerboard/templates/timerboard/view.html:374
 msgid "Structure"
-msgstr ""
+msgstr "Struttura"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:193
 msgid "Next Timers"
-msgstr ""
+msgstr "Timer prossimi"
 
 #: allianceauth/timerboard/templates/timerboard/view.html:366
 msgid "Past Timers"
-msgstr ""
+msgstr "Timer passati"
 
 #: allianceauth/timerboard/views.py:74
 #, python-format
 msgid "Added new timer in %(system)s at %(time)s."
-msgstr ""
+msgstr "Aggiunto un nuovo timer in %(system)salle %(time)s."
 
 #: allianceauth/timerboard/views.py:82
 msgid "Saved changes to the timer."
-msgstr ""
+msgstr "Salvati i cambiamenti al timer."
