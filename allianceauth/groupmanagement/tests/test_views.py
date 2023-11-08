@@ -1,6 +1,7 @@
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
+from allianceauth.groupmanagement.models import Group, GroupRequest
 from allianceauth.tests.auth_utils import AuthUtils
 
 from .. import views
@@ -16,6 +17,7 @@ class TestViews(TestCase):
         self.factory = RequestFactory()
         self.user = AuthUtils.create_user('Peter Parker')
         self.user_with_manage_permission = AuthUtils.create_user('Bruce Wayne')
+        self.group = Group.objects.create(name="Example group")
 
         # set permissions
         AuthUtils.add_permission_to_user_by_name(
@@ -83,3 +85,19 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('<a data-toggle="tab" href="#leave">', content)
         self.assertNotIn('<div id="leave" class="tab-pane">', content)
+
+    @override_settings(GROUPMANAGEMENT_AUTO_LEAVE=True)
+    def test_should_not_hide_leave_requests_tab_when_there_are_open_requests(self):
+        # given
+        request = self.factory.get(reverse('groupmanagement:management'))
+        request.user = self.user_with_manage_permission
+        GroupRequest.objects.create(user=self.user, group=self.group, leave_request=True)
+
+        # when
+        response = views.group_management(request)
+
+        # then
+        content = response_content_to_str(response)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('<a data-toggle="tab" href="#leave">', content)
+        self.assertIn('<div id="leave" class="tab-pane">', content)

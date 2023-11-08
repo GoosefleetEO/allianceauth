@@ -2,20 +2,18 @@ import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models import Count
 from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 
 from allianceauth.notifications import notify
 
 from .managers import GroupManager
 from .models import GroupRequest, RequestLog
-
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +43,15 @@ def group_management(request):
     logger.debug("Providing user {} with {} acceptrequests and {} leaverequests.".format(
         request.user, len(acceptrequests), len(leaverequests)))
 
+    show_leave_tab = (
+        getattr(settings, 'GROUPMANAGEMENT_AUTO_LEAVE', False)
+        and not GroupRequest.objects.filter(leave_request=True).exists()
+    )
+
     render_items = {
         'acceptrequests': acceptrequests,
         'leaverequests': leaverequests,
-        'auto_leave': getattr(settings, 'GROUPMANAGEMENT_AUTO_LEAVE', False),
+        'show_leave_tab': show_leave_tab,
     }
 
     return render(request, 'groupmanagement/index.html', context=render_items)

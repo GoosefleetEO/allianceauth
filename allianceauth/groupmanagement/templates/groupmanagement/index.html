@@ -29,7 +29,7 @@
                 </a>
             </li>
 
-            {%  if not auto_leave %}
+            {%  if not show_leave_tab %}
                 <li>
                     <a data-toggle="tab" href="#leave">
                         {% translate "Leave Requests" %}
@@ -102,7 +102,7 @@
                         {% endif %}
                     </div>
 
-                    {%  if not auto_leave %}
+                    {%  if not show_leave_tab %}
                         <div id="leave" class="tab-pane">
                             {% if leaverequests %}
                                 <div class="table-responsive">
