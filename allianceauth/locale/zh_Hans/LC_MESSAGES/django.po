@@ -4,9 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Joel Falknau <ozirascal@gmail.com>, 2020
-# Jesse . <sgeine@hotmail.com>, 2020
-# Aaron BuBu <351793078@qq.com>, 2020
+# Jesse . <sgeine@hotmail.com>, 2023
+# Aaron BuBu <351793078@qq.com>, 2023
+# Joel Falknau <ozirascal@gmail.com>, 2023
+# Shen Yang, 2023
 # 
 #, fuzzy
 msgid ""
@@ -14,8 +15,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-09 18:20+1000\n"
-"PO-Revision-Date: 2020-02-18 03:14+0000\n"
-"Last-Translator: Aaron BuBu <351793078@qq.com>, 2020\n"
+"PO-Revision-Date: 2023-10-08 09:23+0000\n"
+"Last-Translator: Shen Yang, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/alliance-auth/teams/107430/zh-Hans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,48 +47,48 @@ msgstr ""
 
 #: allianceauth/authentication/models.py:80
 msgid "English"
-msgstr ""
+msgstr "英语"
 
 #: allianceauth/authentication/models.py:81
 msgid "German"
-msgstr ""
+msgstr "德语"
 
 #: allianceauth/authentication/models.py:82
 msgid "Spanish"
-msgstr ""
+msgstr "西班牙语"
 
 #: allianceauth/authentication/models.py:83
 msgid "Chinese Simplified"
-msgstr ""
+msgstr "简体中文"
 
 #: allianceauth/authentication/models.py:84
 msgid "Russian"
-msgstr ""
+msgstr "俄语"
 
 #: allianceauth/authentication/models.py:85
 msgid "Korean"
-msgstr ""
+msgstr "韩语"
 
 #: allianceauth/authentication/models.py:86
 msgid "French"
-msgstr ""
+msgstr "法语"
 
 #: allianceauth/authentication/models.py:87
 msgid "Japanese"
-msgstr ""
+msgstr "日语"
 
 #: allianceauth/authentication/models.py:88
 msgid "Italian"
-msgstr ""
+msgstr "意大利语"
 
 #: allianceauth/authentication/models.py:91
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 #: allianceauth/authentication/models.py:96
 #: allianceauth/templates/allianceauth/night-toggle.html:6
 msgid "Night Mode"
-msgstr ""
+msgstr "夜间模式"
 
 #: allianceauth/authentication/models.py:110
 #, python-format
@@ -696,7 +697,7 @@ msgstr ""
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "reason"
-msgstr ""
+msgstr "原因"
 
 #: allianceauth/groupmanagement/models.py:215
 msgid "Reason why this name is reserved."
@@ -754,7 +755,7 @@ msgstr "操作者"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:48
 msgid "Removed"
-msgstr ""
+msgstr "已移除"
 
 #: allianceauth/groupmanagement/templates/groupmanagement/audit.html:60
 msgid "All times displayed are EVE/UTC."
@@ -1198,11 +1199,11 @@ msgstr "添加评论"
 
 #: allianceauth/notifications/models.py:21
 msgid "danger"
-msgstr ""
+msgstr "危险"
 
 #: allianceauth/notifications/models.py:22
 msgid "warning"
-msgstr ""
+msgstr "警告"
 
 #: allianceauth/notifications/models.py:23
 msgid "info"
@@ -1343,7 +1344,7 @@ msgstr "当前EVE游戏内时间"
 
 #: allianceauth/optimer/templates/optimer/management.html:26
 msgid "Next Fleet Operations"
-msgstr ""
+msgstr "下一个舰队任务"
 
 #: allianceauth/optimer/templates/optimer/management.html:30
 #: allianceauth/timerboard/templates/timerboard/view.html:362
@@ -1352,7 +1353,7 @@ msgstr "没有快到的时间节点，歇一会吧"
 
 #: allianceauth/optimer/templates/optimer/management.html:33
 msgid "Past Fleet Operations"
-msgstr ""
+msgstr "过去的舰队任务"
 
 #: allianceauth/optimer/templates/optimer/management.html:37
 #: allianceauth/timerboard/templates/timerboard/view.html:535
@@ -2257,15 +2258,15 @@ msgstr ""
 
 #: allianceauth/timerboard/models.py:15
 msgid "Shield"
-msgstr ""
+msgstr "护盾"
 
 #: allianceauth/timerboard/models.py:16
 msgid "Armor"
-msgstr ""
+msgstr "装甲"
 
 #: allianceauth/timerboard/models.py:17
 msgid "Hull"
-msgstr ""
+msgstr "结构"
 
 #: allianceauth/timerboard/models.py:18
 msgid "Final"
@@ -2273,11 +2274,11 @@ msgstr ""
 
 #: allianceauth/timerboard/models.py:19
 msgid "Anchoring"
-msgstr ""
+msgstr "铆钉"
 
 #: allianceauth/timerboard/models.py:20
 msgid "Unanchoring"
-msgstr ""
+msgstr "解锚"
 
 #: allianceauth/timerboard/templates/timerboard/timer_confirm_delete.html:11
 msgid "Delete Timer"

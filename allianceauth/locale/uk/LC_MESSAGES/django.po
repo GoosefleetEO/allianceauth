@@ -4,6 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
+# Denys Ivchenko, 2023
 # Kristof Swensen, 2023
 # 
 #, fuzzy
@@ -12,7 +13,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-10-09 18:20+1000\n"
-"PO-Revision-Date: 2020-02-18 03:14+0000\n"
+"PO-Revision-Date: 2023-10-08 09:23+0000\n"
 "Last-Translator: Kristof Swensen, 2023\n"
 "Language-Team: Ukrainian (https://app.transifex.com/alliance-auth/teams/107430/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +33,7 @@ msgstr "Google Analytics V4"
 #: allianceauth/authentication/decorators.py:37
 msgid "A main character is required to perform that action. Add one below."
 msgstr ""
-"Для виконання цієї дії потрібен головний персонаж. Додайте його нижче."
+"Для виконання цієї дії потрібен основний персонаж. Додайте його нижче."
 
 #: allianceauth/authentication/forms.py:12
 msgid "Email"
@@ -124,7 +125,7 @@ msgstr "Додати персонажа"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115
 msgid "Change Main"
-msgstr "Змінити головного персонажа"
+msgstr "Змінити основного персонажа"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:125
 msgid "Group Memberships"
@@ -352,7 +353,7 @@ msgstr "Не вдалося зібрати статистику корпорац
 
 #: allianceauth/fleetactivitytracking/auth_hooks.py:9
 msgid "Fleet Activity Tracking"
-msgstr "Відстеження активності флоту"
+msgstr "Відстеження активності флотів"
 
 #: allianceauth/fleetactivitytracking/forms.py:6 allianceauth/srp/form.py:8
 #: allianceauth/srp/templates/srp/management.html:35
@@ -456,7 +457,7 @@ msgstr "Корабель"
 #: allianceauth/timerboard/templates/timerboard/view.html:202
 #: allianceauth/timerboard/templates/timerboard/view.html:375
 msgid "Eve Time"
-msgstr "Час в грі"
+msgstr "Ігровий час"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkmodify.html:33
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkview.html:36
@@ -560,16 +561,16 @@ msgstr "Fats"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:4
 msgid "Fatlink Corp Statistics"
-msgstr "Статистика корпорації Fatlink"
+msgstr "Статистика фатів корпорації"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticscorpview.html:23
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:24
 msgid "Average fats"
-msgstr "Середній показник fats"
+msgstr "Середній показник фатів"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:4
 msgid "Fatlink statistics"
-msgstr "Статистика Fatlink"
+msgstr "Статистика фатів"
 
 #: allianceauth/fleetactivitytracking/templates/fleetactivitytracking/fatlinkstatisticsview.html:20
 msgid "Ticker"
@@ -625,7 +626,7 @@ msgid ""
 "Cannot register the fleet participation for {character.character_name}. The "
 "character needs to be online."
 msgstr ""
-"Не можна зареєструвати участь в флоті для {character.character_name}. "
+"Не вдалося зареєструвати участь в флоті для {character.character_name}. "
 "Персонаж повинен бути в мережі."
 
 #: allianceauth/groupmanagement/auth_hooks.py:17
@@ -659,8 +660,7 @@ msgstr ""
 #: allianceauth/groupmanagement/models.py:113
 msgid "Group is hidden from users but can still join with the correct link."
 msgstr ""
-"Група прихована від користувачів, але можна приєднатися з правильним "
-"посиланням."
+"Група прихована від користувачів, але можна приєднатися за посиланням."
 
 #: allianceauth/groupmanagement/models.py:119
 msgid ""
@@ -1045,7 +1045,7 @@ msgstr "Ви вже є членом цієї групи."
 
 #: allianceauth/groupmanagement/views.py:358
 msgid "You already have a pending application for that group."
-msgstr "У вас вже є очікуюча заявка на вступ до цієї групи."
+msgstr "Ви вже подали заявку на вступ до цієї групи."
 
 #: allianceauth/groupmanagement/views.py:367
 #, python-format
@@ -1062,7 +1062,7 @@ msgstr "Ви не є учасником цієї групи"
 
 #: allianceauth/groupmanagement/views.py:393
 msgid "You already have a pending leave request for that group."
-msgstr "Ви вже маєте очікувану запит на вихід з цієї групи."
+msgstr "Ви вже подали запит на вихід з цієї групи."
 
 #: allianceauth/groupmanagement/views.py:409
 #, python-format
@@ -1321,7 +1321,7 @@ msgstr "Всі прочитані повідомлення видалено."
 
 #: allianceauth/optimer/auth_hooks.py:10
 msgid "Fleet Operations"
-msgstr "Операції флоту"
+msgstr "Флотові операції"
 
 #: allianceauth/optimer/form.py:12
 #: allianceauth/optimer/templates/optimer/fleetoptable.html:11
@@ -1345,7 +1345,7 @@ msgstr "Тип операції"
 #: allianceauth/optimer/form.py:17
 #: allianceauth/srp/templates/srp/management.html:38
 msgid "Fleet Commander"
-msgstr "Командувач флоту"
+msgstr "Командир флоту"
 
 #: allianceauth/optimer/form.py:22 allianceauth/srp/form.py:14
 #: allianceauth/srp/templates/srp/data.html:91
@@ -1400,7 +1400,7 @@ msgstr "Немає наступних таймерів."
 
 #: allianceauth/optimer/templates/optimer/management.html:33
 msgid "Past Fleet Operations"
-msgstr "Минулі флотові операції"
+msgstr "Завершені флотові операції"
 
 #: allianceauth/optimer/templates/optimer/management.html:37
 #: allianceauth/timerboard/templates/timerboard/view.html:535
@@ -1484,7 +1484,7 @@ msgstr "Стани"
 
 #: allianceauth/services/abstract.py:72
 msgid "That service account already exists"
-msgstr "Такий обліковий запис сервісу вже існує"
+msgstr "Такий сервісний обліковий запис вже існує"
 
 #: allianceauth/services/abstract.py:103
 #, python-brace-format
@@ -1505,7 +1505,7 @@ msgstr "Командир флоту:"
 
 #: allianceauth/services/forms.py:8
 msgid "Fleet Comms:"
-msgstr "Комунікації флоту:"
+msgstr "Голосовий канал флоту:"
 
 #: allianceauth/services/forms.py:9
 msgid "Fleet Type:"
@@ -1545,7 +1545,7 @@ msgstr "Ні"
 
 #: allianceauth/services/forms.py:16
 msgid "Important?*"
-msgstr "Важливо?*"
+msgstr "Важливий?*"
 
 #: allianceauth/services/forms.py:21 allianceauth/services/forms.py:31
 msgid "Password"
@@ -1614,7 +1614,7 @@ msgstr "Ви не маєте прав на доступ до Discourse."
 
 #: allianceauth/services/modules/discourse/views.py:34
 msgid "You must have a main character set to access Discourse."
-msgstr "Ви повинні мати головний персонаж, щоб отримати доступ до Discourse."
+msgstr "Ви повинні мати основний персонаж, щоб отримати доступ до Discourse."
 
 #: allianceauth/services/modules/discourse/views.py:44
 msgid ""
@@ -1702,7 +1702,7 @@ msgstr "Відправлено трансляцію Jabber на %s"
 
 #: allianceauth/services/modules/openfire/views.py:144
 msgid "Set jabber password."
-msgstr "Встановлення пароля Jabber."
+msgstr "Встановити пароль Jabber."
 
 #: allianceauth/services/modules/phpbb3/views.py:34
 msgid "Activated forum account."
@@ -1713,7 +1713,7 @@ msgstr "Активований обліковий запис форуму."
 #: allianceauth/services/modules/phpbb3/views.py:78
 #: allianceauth/services/modules/phpbb3/views.py:101
 msgid "An error occurred while processing your forum account."
-msgstr "Виникла помилка під час обробки вашого облікового запису форуму."
+msgstr "Виникла помилка під час обробки вашого облікового запису на форумі."
 
 #: allianceauth/services/modules/phpbb3/views.py:53
 msgid "Deactivated forum account."
@@ -1721,11 +1721,11 @@ msgstr "Деактивований обліковий запис форуму."
 
 #: allianceauth/services/modules/phpbb3/views.py:70
 msgid "Reset forum password."
-msgstr "Скидання пароля форуму."
+msgstr "Скинути пароль форуму."
 
 #: allianceauth/services/modules/phpbb3/views.py:98
 msgid "Set forum password."
-msgstr "Встановлення пароля форуму."
+msgstr "Встановити пароль форуму."
 
 #: allianceauth/services/modules/smf/views.py:52
 msgid "Activated SMF account."
@@ -1744,11 +1744,11 @@ msgstr "Деактивований обліковий запис SMF."
 
 #: allianceauth/services/modules/smf/views.py:95
 msgid "Reset SMF password."
-msgstr "Скидання пароля SMF."
+msgstr "Скинути пароль SMF."
 
 #: allianceauth/services/modules/smf/views.py:121
 msgid "Set SMF password."
-msgstr "Встановлення пароля SMF."
+msgstr "Встановити пароль SMF."
 
 #: allianceauth/services/modules/teamspeak3/forms.py:14
 #, python-format
@@ -1761,7 +1761,7 @@ msgstr "Оновити групи TS3"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:5
 msgid "Verify Teamspeak"
-msgstr "Перевірте Teamspeak"
+msgstr "Перевірити Teamspeak"
 
 #: allianceauth/services/modules/teamspeak3/templates/services/teamspeak3/teamspeakjoin.html:10
 msgid "Verify Teamspeak Identity"
@@ -1869,11 +1869,11 @@ msgstr "Керування послугами"
 
 #: allianceauth/services/templates/services/services.html:9
 msgid "Available Services"
-msgstr "Доступні послуги"
+msgstr "Доступні сервіси"
 
 #: allianceauth/services/templates/services/services.html:14
 msgid "Service"
-msgstr "Послуга"
+msgstr "Сервіс"
 
 #: allianceauth/services/templates/services/services.html:16
 msgid "Domain"
@@ -1881,7 +1881,7 @@ msgstr "Домен"
 
 #: allianceauth/srp/auth_hooks.py:13
 msgid "Ship Replacement"
-msgstr "Компенсація за корабель"
+msgstr "Компенсації"
 
 #: allianceauth/srp/form.py:9
 #: allianceauth/srp/templates/srp/management.html:36
