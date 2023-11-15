@@ -123,7 +123,7 @@ msgid "No main character set."
 msgstr "Kein Hauptcharakter gesetzt."
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr "Charakter hinzufügen"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115

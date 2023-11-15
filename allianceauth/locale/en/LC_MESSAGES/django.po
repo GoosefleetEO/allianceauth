@@ -118,7 +118,7 @@ msgid "No main character set."
 msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr ""
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115

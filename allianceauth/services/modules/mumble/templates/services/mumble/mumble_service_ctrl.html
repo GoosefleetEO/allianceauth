@@ -11,6 +11,7 @@
         {% else %}
             <td class="text-center"><a href="mumble://{{ connect_url }}">{{ service_url }}</a></td>
             <td class="text-center">
+
             <a href="{% url 'mumble:set_password' %}" title="Set Password" class="btn btn-primary">
                 Change Password
             </a>
@@ -20,10 +21,12 @@
             <a href="{% url 'mumble:deactivate' %}" title="Deactivate" class="btn btn-danger">
                 Deactivate
             </a>
-	<!--
-            <a  href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
+
+            <!--
+            <a href="mumble://{{ connect_url }}" class="btn btn-success" title="Connect">
                 Connect
             </a>
-	-->
+            -->
+        </td>
         {% endif %}
 </tr>

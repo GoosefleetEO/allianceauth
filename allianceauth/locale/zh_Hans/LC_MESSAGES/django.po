@@ -119,7 +119,7 @@ msgid "No main character set."
 msgstr "没有主要角色组"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr "添加角色"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115

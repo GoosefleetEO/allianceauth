@@ -124,7 +124,7 @@ msgid "No main character set."
 msgstr "No se ha seleccionado un personaje principal."
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:109
-msgid "Add Character"
+msgid "Add Character (Public Data Only)"
 msgstr "Agregar Personaje"
 
 #: allianceauth/authentication/templates/authentication/dashboard.html:115
